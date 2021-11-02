@@ -1,3 +1,5 @@
 # qpwgraph
 
-PipeWire Graph Qt GUI Interface
+A PipeWire Graph Qt GUI Interface
+
+WIP

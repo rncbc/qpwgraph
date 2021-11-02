@@ -1,0 +1,18 @@
+<RCC version="1.0">
+	<qresource>
+		<file>images/qpwgraph.png</file>
+		<file>images/itemConnect.png</file>
+		<file>images/itemDisconnect.png</file>
+		<file>images/editUndo.png</file>
+		<file>images/editRedo.png</file>
+		<file>images/editRename.png</file>
+		<file>images/viewCenter.png</file>
+		<file>images/viewColors.png</file>
+		<file>images/viewZoomIn.png</file>
+		<file>images/viewZoomOut.png</file>
+		<file>images/viewZoomFit.png</file>
+		<file>images/viewZoomReset.png</file>
+		<file>images/viewZoomRange.png</file>
+		<file>images/viewZoomTool.png</file>
+	</qresource>
+</RCC>

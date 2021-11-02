@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qpwgraph - A PipeWire Graph Qt GUI Interface
+
+   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ </comment>
+ <class>qpwgraph_form</class>
+ <widget class="QMainWindow" name="qpwgraph_form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>qpwgraph</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="qpwgraph.qrc">:/images/qpwgraph.png</iconset>
+  </property>
+  <widget class="QWidget" name="MainCentralWidget">
+   <layout class="QVBoxLayout">
+    <item>
+     <widget class="qpwgraph_canvas" name="graphCanvas"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="StatusBar"/>
+  <widget class="QMenuBar" name="MenuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="graphMenu">
+    <property name="title">
+     <string>&amp;Graph</string>
+    </property>
+    <addaction name="graphConnectAction"/>
+    <addaction name="graphDisconnectAction"/>
+    <addaction name="separator"/>
+    <addaction name="graphExitAction"/>
+   </widget>
+   <widget class="QMenu" name="editMenu">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="editSelectAllAction"/>
+    <addaction name="editSelectNoneAction"/>
+    <addaction name="editSelectInvertAction"/>
+    <addaction name="separator"/>
+    <addaction name="editRenameItemAction"/>
+   </widget>
+   <widget class="QMenu" name="viewMenu">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="viewZoomMenu">
+     <property name="title">
+      <string>&amp;Zoom</string>
+     </property>
+     <property name="icon">
+      <iconset resource="qpwgraph.qrc">:/images/viewZoomTool.png</iconset>
+     </property>
+     <addaction name="viewZoomInAction"/>
+     <addaction name="viewZoomOutAction"/>
+     <addaction name="separator"/>
+     <addaction name="viewZoomFitAction"/>
+     <addaction name="viewZoomResetAction"/>
+    </widget>
+    <widget class="QMenu" name="viewColorsMenu">
+     <property name="title">
+      <string>Co&amp;lors</string>
+     </property>
+     <property name="icon">
+      <iconset resource="qpwgraph.qrc">:/images/viewColors.png</iconset>
+     </property>
+     <addaction name="viewColorsPipewireAudioAction"/>
+     <addaction name="viewColorsPipewireMidiAction"/>
+     <addaction name="viewColorsPipewireVideoAction"/>
+     <addaction name="viewColorsPipewireOtherAction"/>
+     <addaction name="separator"/>
+     <addaction name="viewColorsResetAction"/>
+    </widget>
+    <widget class="QMenu" name="viewSortMenu">
+     <property name="title">
+      <string>S&amp;ort</string>
+     </property>
+     <addaction name="viewSortPortNameAction"/>
+     <addaction name="viewSortPortTitleAction"/>
+     <addaction name="viewSortPortIndexAction"/>
+     <addaction name="separator"/>
+     <addaction name="viewSortAscendingAction"/>
+     <addaction name="viewSortDescendingAction"/>
+    </widget>
+    <addaction name="viewMenubarAction"/>
+    <addaction name="viewStatusbarAction"/>
+    <addaction name="viewToolbarAction"/>
+    <addaction name="separator"/>
+    <addaction name="viewTextBesideIconsAction"/>
+    <addaction name="viewColorsMenu"/>
+    <addaction name="viewSortMenu"/>
+    <addaction name="separator"/>
+    <addaction name="viewCenterAction"/>
+    <addaction name="viewZoomMenu"/>
+    <addaction name="viewZoomRangeAction"/>
+    <addaction name="separator"/>
+    <addaction name="viewRefreshAction"/>
+   </widget>
+   <widget class="QMenu" name="helpMenu">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="helpAboutAction"/>
+    <addaction name="helpAboutQtAction"/>
+   </widget>
+   <addaction name="graphMenu"/>
+   <addaction name="editMenu"/>
+   <addaction name="viewMenu"/>
+   <addaction name="separator"/>
+   <addaction name="helpMenu"/>
+  </widget>
+  <widget class="QToolBar" name="ToolBar">
+   <property name="allowedAreas">
+    <set>Qt::AllToolBarAreas</set>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <property name="floatable">
+    <bool>true</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="graphConnectAction"/>
+   <addaction name="graphDisconnectAction"/>
+   <addaction name="separator"/>
+   <addaction name="viewCenterAction"/>
+   <addaction name="separator"/>
+   <addaction name="viewZoomInAction"/>
+   <addaction name="viewZoomOutAction"/>
+   <addaction name="separator"/>
+   <addaction name="viewZoomFitAction"/>
+   <addaction name="viewZoomResetAction"/>
+   <addaction name="separator"/>
+   <addaction name="viewZoomRangeAction"/>
+  </widget>
+  <action name="graphConnectAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/itemConnect.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Connect</string>
+   </property>
+   <property name="iconText">
+    <string>Connect</string>
+   </property>
+   <property name="toolTip">
+    <string>Connect</string>
+   </property>
+   <property name="statusTip">
+    <string>Connect selected ports</string>
+   </property>
+   <property name="shortcut">
+    <string>Ins</string>
+   </property>
+  </action>
+  <action name="graphDisconnectAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/itemDisconnect.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Disconnect</string>
+   </property>
+   <property name="iconText">
+    <string>Disconnect</string>
+   </property>
+   <property name="toolTip">
+    <string>Disconnect</string>
+   </property>
+   <property name="statusTip">
+    <string>Disconnect selected ports</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="graphExitAction">
+   <property name="text">
+    <string>E&amp;xit</string>
+   </property>
+   <property name="iconText">
+    <string>Exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit</string>
+   </property>
+   <property name="statusTip">
+    <string>Exit this application program</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="editSelectAllAction">
+   <property name="text">
+    <string>Select &amp;All</string>
+   </property>
+   <property name="iconText">
+    <string>Select All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select All</string>
+   </property>
+   <property name="statusTip">
+    <string>Select All</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="editSelectNoneAction">
+   <property name="text">
+    <string>Select &amp;None</string>
+   </property>
+   <property name="iconText">
+    <string>Select None</string>
+   </property>
+   <property name="toolTip">
+    <string>Select None</string>
+   </property>
+   <property name="statusTip">
+    <string>Select None</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="editSelectInvertAction">
+   <property name="text">
+    <string>Select &amp;Invert</string>
+   </property>
+   <property name="iconText">
+    <string>Select Invert</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Invert</string>
+   </property>
+   <property name="statusTip">
+    <string>Select Invert</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="editRenameItemAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/editRename.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Rename...</string>
+   </property>
+   <property name="iconText">
+    <string>Rename item</string>
+   </property>
+   <property name="toolTip">
+    <string>Rename Item</string>
+   </property>
+   <property name="statusTip">
+    <string>Rename Item</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewMenubarAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Menubar</string>
+   </property>
+   <property name="iconText">
+    <string>Menubar</string>
+   </property>
+   <property name="toolTip">
+    <string>Menubar</string>
+   </property>
+   <property name="statusTip">
+    <string>Show/hide the main program window menubar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="viewToolbarAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Toolbar</string>
+   </property>
+   <property name="iconText">
+    <string>Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Toolbar</string>
+   </property>
+   <property name="statusTip">
+    <string>Show/hide main program window file toolbar</string>
+   </property>
+  </action>
+  <action name="viewStatusbarAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Statusbar</string>
+   </property>
+   <property name="iconText">
+    <string>Statusbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Statusbar</string>
+   </property>
+   <property name="statusTip">
+    <string>Show/hide the main program window statusbar</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewTextBesideIconsAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Text Beside &amp;Icons</string>
+   </property>
+   <property name="iconText">
+    <string>Text beside icons</string>
+   </property>
+   <property name="toolTip">
+    <string>Text beside icons</string>
+   </property>
+   <property name="statusTip">
+    <string>Show/hide text beside icons</string>
+   </property>
+  </action>
+  <action name="viewCenterAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/viewCenter.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Center</string>
+   </property>
+   <property name="iconText">
+    <string>Center</string>
+   </property>
+   <property name="toolTip">
+    <string>Center</string>
+   </property>
+   <property name="statusTip">
+    <string>Center view</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewRefreshAction">
+   <property name="text">
+    <string>&amp;Refresh</string>
+   </property>
+   <property name="iconText">
+    <string>Refresh</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh</string>
+   </property>
+   <property name="statusTip">
+    <string>Refresh view</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="viewZoomInAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/viewZoomIn.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom &amp;In</string>
+   </property>
+   <property name="iconText">
+    <string>Zoom In</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom In</string>
+   </property>
+   <property name="statusTip">
+    <string>Zoom In</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="viewZoomOutAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/viewZoomOut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom &amp;Out</string>
+   </property>
+   <property name="iconText">
+    <string>Zoom Out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom Out</string>
+   </property>
+   <property name="statusTip">
+    <string>Zoom Out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="viewZoomFitAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/viewZoomFit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom &amp;Fit</string>
+   </property>
+   <property name="iconText">
+    <string>Zoom Fit</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom Fit</string>
+   </property>
+   <property name="statusTip">
+    <string>Zoom Fit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+0</string>
+   </property>
+  </action>
+  <action name="viewZoomResetAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/viewZoomReset.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom &amp;Reset</string>
+   </property>
+   <property name="iconText">
+    <string>Zoom Reset</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom Reset</string>
+   </property>
+   <property name="statusTip">
+    <string>Zoom Reset</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="viewZoomRangeAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/viewZoomRange.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Zoom Range</string>
+   </property>
+   <property name="iconText">
+    <string>Zoom Range</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom Range</string>
+   </property>
+   <property name="statusTip">
+    <string>Zoom Range</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewColorsPipewireAudioAction">
+   <property name="text">
+    <string>PipeWire &amp;Audio...</string>
+   </property>
+   <property name="iconText">
+    <string>PipeWire Audio color</string>
+   </property>
+   <property name="toolTip">
+    <string>PipeWire Audio color</string>
+   </property>
+   <property name="statusTip">
+    <string>PipeWire Audio color</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewColorsPipewireMidiAction">
+   <property name="text">
+    <string>PipeWire &amp;MIDI...</string>
+   </property>
+   <property name="iconText">
+    <string>PipeWire MIDI</string>
+   </property>
+   <property name="toolTip">
+    <string>PipeWire MIDI color</string>
+   </property>
+   <property name="statusTip">
+    <string>PipeWire MIDI color</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewColorsPipewireVideoAction">
+   <property name="text">
+    <string>PipeWire &amp;Video...</string>
+   </property>
+   <property name="iconText">
+    <string>PipeWire Video</string>
+   </property>
+   <property name="toolTip">
+    <string>PipeWire Video color</string>
+   </property>
+   <property name="statusTip">
+    <string>PipeWire Video color</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewColorsPipewireOtherAction">
+   <property name="text">
+    <string>PipeWire &amp;Other...</string>
+   </property>
+   <property name="iconText">
+    <string>PipeWire Other color</string>
+   </property>
+   <property name="toolTip">
+    <string>PipeWire Other color</string>
+   </property>
+   <property name="statusTip">
+    <string>PipeWire Other color</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewColorsResetAction">
+   <property name="text">
+    <string>&amp;Reset</string>
+   </property>
+   <property name="iconText">
+    <string>Reset colors</string>
+   </property>
+   <property name="toolTip">
+    <string>Reset colors</string>
+   </property>
+   <property name="statusTip">
+    <string>Reset colors</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewSortPortNameAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Port &amp;Name</string>
+   </property>
+   <property name="toolTip">
+    <string>Port name</string>
+   </property>
+   <property name="statusTip">
+    <string>Sort by port name</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewSortPortTitleAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Port &amp;Title</string>
+   </property>
+   <property name="toolTip">
+    <string>Port title</string>
+   </property>
+   <property name="statusTip">
+    <string>Sort by port title</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewSortPortIndexAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Port &amp;Index</string>
+   </property>
+   <property name="toolTip">
+    <string>Port index</string>
+   </property>
+   <property name="statusTip">
+    <string>Sort by port index</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewSortAscendingAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Ascending</string>
+   </property>
+   <property name="toolTip">
+    <string>Ascending</string>
+   </property>
+   <property name="statusTip">
+    <string>Ascending sort order</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewSortDescendingAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Descending</string>
+   </property>
+   <property name="toolTip">
+    <string>Descending</string>
+   </property>
+   <property name="statusTip">
+    <string>Descending sort order</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="helpAboutAction">
+   <property name="text">
+    <string>&amp;About...</string>
+   </property>
+   <property name="iconText">
+    <string>About...</string>
+   </property>
+   <property name="toolTip">
+    <string>About</string>
+   </property>
+   <property name="statusTip">
+    <string>Show information about this application program</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="helpAboutQtAction">
+   <property name="text">
+    <string>About &amp;Qt...</string>
+   </property>
+   <property name="iconText">
+    <string>About Qt...</string>
+   </property>
+   <property name="toolTip">
+    <string>About Qt</string>
+   </property>
+   <property name="statusTip">
+    <string>Show information about the Qt toolkit</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="4" margin="4"/>
+ <customwidgets>
+  <customwidget>
+   <class>qpwgraph_canvas</class>
+   <extends>QGraphicsView</extends>
+   <header>qpwgraph_canvas.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="qpwgraph.qrc"/>
+ </resources>
+ <connections/>
+</ui>
