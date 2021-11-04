@@ -62,9 +62,9 @@ void qpwgraph_registry_event_global (
 	uint32_t version,
 	const struct spa_dict *props )
 {
-	qpwgraph_pipewire::Data *d = static_cast<qpwgraph_pipewire::Data *> (data);
+	qpwgraph_pipewire *pw = static_cast<qpwgraph_pipewire *> (data);
 #ifdef CONFIG_DEBUG
-	qDebug("gpwgraph_registry_event_global[%p]: id:%u type:%s/%u", d, id, type, version);
+	qDebug("gpwgraph_registry_event_global[%p]: id:%u type:%s/%u", pw, id, type, version);
 #endif
 
 	// TODO: ?...
@@ -74,9 +74,9 @@ void qpwgraph_registry_event_global (
 static
 void qpwgraph_registry_event_global_remove ( void *data, uint32_t id )
 {
-	qpwgraph_pipewire::Data *d = static_cast<qpwgraph_pipewire::Data *> (data);
+	qpwgraph_pipewire *pw = static_cast<qpwgraph_pipewire *> (data);
 #ifdef CONFIG_DEBUG
-	qDebug("qpwgraph_registry_event_global_remove[%p]: id:%u", d, id);
+	qDebug("qpwgraph_registry_event_global_remove[%p]: id:%u", pw, id);
 #endif
 
 	// TODO: ?...
@@ -96,9 +96,9 @@ const struct pw_registry_events qpwgraph_registry_events = {
 static
 void qpwgraph_core_event_done ( void *data, uint32_t id, int seq )
 {
-	qpwgraph_pipewire::Data *d = static_cast<qpwgraph_pipewire::Data *> (data);
+	qpwgraph_pipewire *pw = static_cast<qpwgraph_pipewire *> (data);
 #ifdef CONFIG_DEBUG
-	qDebug("qpwgraph_core_event_done[%p]: id:%u seq:%d", d, id, seq);
+	qDebug("qpwgraph_core_event_done[%p]: id:%u seq:%d", pw, id, seq);
 #endif
 
 	// TODO: ?...
@@ -109,9 +109,9 @@ static
 void qpwgraph_core_event_error (
 	void *data, uint32_t id, int seq, int res, const char *message )
 {
-	qpwgraph_pipewire::Data *d = static_cast<qpwgraph_pipewire::Data *> (data);
+	qpwgraph_pipewire *pw = static_cast<qpwgraph_pipewire *> (data);
 #ifdef CONFIG_DEBUG
-	qDebug("gpwgraph_core_event_error[%p]: id:%u seq:%d res:%d : %s", d, id, seq, res, message);
+	qDebug("gpwgraph_core_event_error[%p]: id:%u seq:%d res:%d : %s", pw, id, seq, res, message);
 #endif
 
 	// TODO: ?...
@@ -161,7 +161,7 @@ bool qpwgraph_pipewire::open (void)
 	m_data = new Data;
 	spa_zero(*m_data);
 
-	m_data->loop = pw_thread_loop_new("gpwgraph_thread_loop", nullptr);
+	m_data->loop = pw_thread_loop_new("qpwgraph_thread_loop", nullptr);
 	if (m_data->loop == nullptr) {
 		qDebug("pw_thread_loop_new: Can't create thread loop.");
 		close();
@@ -190,10 +190,12 @@ bool qpwgraph_pipewire::open (void)
 
 	m_data->registry = pw_core_get_registry(m_data->core,
 		PW_VERSION_REGISTRY, 0 /*user_data size*/);
+
 	pw_registry_add_listener(m_data->registry,
 		&m_data->registry_listener, &qpwgraph_registry_events, this);
 
 	pw_thread_loop_start(m_data->loop);
+
 	return true;
 }
 
@@ -201,6 +203,9 @@ bool qpwgraph_pipewire::open (void)
 void qpwgraph_pipewire::close (void)
 {
 	QMutexLocker locker(&g_mutex);
+
+	if (m_data && m_data->loop)
+		pw_thread_loop_stop(m_data->loop);
 
 	if (m_data && m_data->registry)
 		pw_proxy_destroy((struct pw_proxy*)m_data->registry);
