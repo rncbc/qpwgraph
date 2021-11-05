@@ -75,8 +75,39 @@ public:
 	// Node/port renaming method (virtual override).
 	void renameItem(qpwgraph_item *item, const QString& name);
 
-	// PipeWire client decl.
+	// PipeWire client decls.
 	struct Data;
+	struct Object;
+	struct Node;
+	struct Port;
+	struct Link;
+
+	// Object methods...
+	Object *findObject(uint id) const;
+	void addObject(uint id, Object *object);
+	void removeObject(uint id);
+	void clearObjects();
+
+	// Node methods....
+	Node *findNode(uint node_id) const;
+	Node *createNode(uint node_id, const QString& node_name);
+	void destroyNode(Node *node);
+
+	// Port methods....
+	Port *findPort(uint port_id) const;
+	Port *createPort(
+		uint node_id,
+		uint port_id,
+		qpwgraph_item::Mode port_mode,
+		const QString& port_name,
+		uint port_type,
+		uint port_flags);
+	void destroyPort(Port *port);
+
+	// Link methods....
+	Link *findLink(uint link_id) const;
+	Link *createLink(uint link_id, uint port1_id, uint port2_id);
+	void destroyLink(Link *link);
 
 signals:
 

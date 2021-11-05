@@ -656,7 +656,7 @@ void qpwgraph_form::pipewire_changed (void)
 
 
 // Pseudo-asyncronous timed refreshner.
-void qgraph1_form::refresh (void)
+void qpwgraph_form::refresh (void)
 {
 	if (m_pipewire_changed > 0) {
 		m_pipewire_changed = 0;

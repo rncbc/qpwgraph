@@ -27,6 +27,8 @@
 
 #include <pipewire/pipewire.h>
 
+#include <QList>
+
 #include <QMutexLocker>
 
 
@@ -37,7 +39,53 @@
 
 
 //----------------------------------------------------------------------------
-// qpwgraph_pipewire::Data -- PipeWire graph driver
+// qpwgraph_pipewire::Data -- PipeWire graph data structs.
+
+struct qpwgraph_pipewire::Object
+{
+	enum Type { Node, Port, Link };
+
+	Object(uint oid, Type otype) : id(oid), type(otype) {}
+
+	uint id;
+	Type type;
+};
+
+struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
+{
+	Node (uint node_id) : Object(node_id, Type::Node) {}
+
+	QString node_name;
+	QList<qpwgraph_pipewire::Port *> node_ports;
+};
+
+struct qpwgraph_pipewire::Port : public qpwgraph_pipewire::Object
+{
+	Port (uint port_id) : Object(port_id, Type::Port) {}
+
+	enum Flags {
+		None     = 0,
+		Physical = 1,
+		Terminal = 2,
+		Monitor  = 4,
+		Control  = 8
+	};
+
+	uint node_id;
+	QString port_name;
+	qpwgraph_item::Mode port_mode;
+	uint port_type;
+	Flags port_flags;
+	QList<qpwgraph_pipewire::Link *> port_links;
+};
+
+struct qpwgraph_pipewire::Link : public qpwgraph_pipewire::Object
+{
+	Link (uint link_id) : Object(link_id, Type::Link) {}
+
+	uint port1_id;
+	uint port2_id;
+};
 
 struct qpwgraph_pipewire::Data
 {
@@ -49,6 +97,9 @@ struct qpwgraph_pipewire::Data
 
 	struct pw_registry *registry;
 	struct spa_hook registry_listener;
+
+	QHash<uint, Object *> objectids;
+	QList<Object *> objects;
 };
 
 
@@ -67,8 +118,81 @@ void qpwgraph_registry_event_global (
 	qDebug("gpwgraph_registry_event_global[%p]: id:%u type:%s/%u", pw, id, type, version);
 #endif
 
-	// TODO: ?...
-	//
+	if (props == nullptr)
+		return;
+
+	int changed = 0;
+
+	if (spa_streq(type, PW_TYPE_INTERFACE_Node)) {
+		QString node_name;
+		const char *str = spa_dict_lookup(props, PW_KEY_NODE_DESCRIPTION);
+		if (str == nullptr)
+			str = spa_dict_lookup(props, PW_KEY_NODE_NICK);
+		if (str == nullptr)
+			str = spa_dict_lookup(props, PW_KEY_NODE_NAME);
+		if (str == nullptr)
+			str = "node";
+		const char *app = spa_dict_lookup(props, PW_KEY_APP_NAME);
+		if (app && !spa_streq(app, str)) {
+			node_name += app;
+			node_name += '/';
+		}
+		if (pw->createNode(id, node_name + str))
+			++changed;
+	}
+	else
+	if (spa_streq(type, PW_TYPE_INTERFACE_Port)) {
+		// TODO: ?...
+		const char *str = spa_dict_lookup(props, PW_KEY_NODE_ID);
+		const uint node_id = (str ? uint(::atoi(str)) : 0);
+		QString port_name;
+		str = spa_dict_lookup(props, PW_KEY_PORT_ALIAS);
+		if (str == nullptr)
+			str = spa_dict_lookup(props, PW_KEY_PORT_NAME);
+		if (str == nullptr)
+			str = "port";
+		port_name += str;
+		uint port_type = qpwgraph_pipewire::otherPortType();
+		str = spa_dict_lookup(props, PW_KEY_FORMAT_DSP);
+		if (str)
+			port_type = qpwgraph_item::itemType(str);
+		qpwgraph_item::Mode port_mode = qpwgraph_item::None;
+		str = spa_dict_lookup(props, PW_KEY_PORT_DIRECTION);
+		if (str) {
+			if (spa_streq(str, "in"))
+				port_mode = qpwgraph_item::Input;
+			else
+			if (spa_streq(str, "out"))
+				port_mode = qpwgraph_item::Output;
+		}
+		uint port_flags = qpwgraph_pipewire::Port::None;
+		str = spa_dict_lookup(props, PW_KEY_PORT_PHYSICAL);
+		if (str && pw_properties_parse_bool(str))
+			port_flags |= qpwgraph_pipewire::Port::Physical;
+		str = spa_dict_lookup(props, PW_KEY_PORT_TERMINAL);
+		if (str && pw_properties_parse_bool(str))
+			port_flags |= qpwgraph_pipewire::Port::Terminal;
+		str = spa_dict_lookup(props, PW_KEY_PORT_MONITOR);
+		if (str && pw_properties_parse_bool(str))
+			port_flags |= qpwgraph_pipewire::Port::Monitor;
+		str = spa_dict_lookup(props, PW_KEY_PORT_CONTROL);
+		if (str && pw_properties_parse_bool(str))
+			port_flags |= qpwgraph_pipewire::Port::Control;
+		if (pw->createPort(node_id, id, port_mode, port_name, port_type, port_flags))
+			++changed;
+	}
+	else
+	if (spa_streq(type, PW_TYPE_INTERFACE_Link)) {
+		const char *str = spa_dict_lookup(props, PW_KEY_LINK_OUTPUT_PORT);
+		const uint port1_id = (str ? uint(pw_properties_parse_int(str)) : 0);
+		str = spa_dict_lookup(props, PW_KEY_LINK_INPUT_PORT);
+		const uint port2_id = (str ? uint(pw_properties_parse_int(str)) : 0);
+		if (pw->createLink(id, port1_id, port2_id))
+			++changed;
+	}
+
+	if (changed > 0)
+		pw->changedNotify();
 }
 
 static
@@ -79,8 +203,8 @@ void qpwgraph_registry_event_global_remove ( void *data, uint32_t id )
 	qDebug("qpwgraph_registry_event_global_remove[%p]: id:%u", pw, id);
 #endif
 
-	// TODO: ?...
-	//
+	pw->removeObject(id);
+	pw->changedNotify();
 }
 
 static
@@ -204,6 +328,8 @@ void qpwgraph_pipewire::close (void)
 {
 	QMutexLocker locker(&g_mutex);
 
+	clearObjects();
+
 	if (m_data && m_data->loop)
 		pw_thread_loop_stop(m_data->loop);
 
@@ -308,8 +434,47 @@ bool qpwgraph_pipewire::findNodePort (
 	uint32_t node_id, uint32_t port_id,  qpwgraph_item::Mode port_mode,
 	qpwgraph_node **node, qpwgraph_port **port, bool add_new )
 {
-	// TODO: ?...
-	//
+	Node *n = findNode(node_id);
+	if (n == nullptr)
+		return false;
+
+	Port *p = findPort(port_id);
+	if (p == nullptr)
+		return false;
+
+	const uint node_type
+		= qpwgraph_pipewire::nodeType();
+	qpwgraph_item::Mode node_mode
+		= port_mode;
+	const uint port_type
+		= p->port_type;
+
+	*node = qpwgraph_sect::findNode(node_id, node_mode, node_type);
+	*port = nullptr;
+
+	if (*node == nullptr) {
+		const uint port_flags = p->port_flags;
+		const uint port_flags_mask
+			= (Port::Physical | Port::Terminal);
+		if ((port_flags & port_flags_mask) != port_flags_mask) {
+			node_mode = qpwgraph_item::Duplex;
+			*node = qpwgraph_sect::findNode(node_id, node_mode, node_type);
+		}
+	}
+
+	if (*node)
+		*port = (*node)->findPort(port_id, port_mode, port_type);
+
+	if (add_new && *node == nullptr) {
+		*node = new qpwgraph_node(node_id, n->node_name, node_mode, node_type);
+		(*node)->setNodeIcon(QIcon(":/images/itemPipewire.png"));
+		qpwgraph_sect::addItem(*node);
+	}
+
+	if (add_new && *port == nullptr && *node) {
+		*port = (*node)->addPort(port_id, p->port_name, port_mode, port_type);
+		(*port)->updatePortTypeColors(canvas());
+	}
 
 	return (*node && *port);
 }
@@ -327,8 +492,49 @@ void qpwgraph_pipewire::updateItems (void)
 	qDebug("qpwgraph_pipewire::updateItems()");
 #endif
 
-	// TODO: ?...
+	// Nodes/ports/links inventory...
 	//
+	foreach (Object *object,  m_data->objects) {
+		if (object->type != Object::Node)
+			continue;
+		Node *n1 = static_cast<Node *> (object);
+		foreach (const Port *p1, n1->node_ports) {
+			const qpwgraph_item::Mode port_mode1
+				= p1->port_mode;
+			qpwgraph_node *node1 = nullptr;
+			qpwgraph_port *port1 = nullptr;
+			if (findNodePort(n1->id, p1->id,
+					port_mode1, &node1, &port1, true)) {
+				node1->setMarked(true);
+				port1->setMarked(true);
+			}
+			if ((port_mode1 & qpwgraph_item::Output) == 0)
+				continue;
+			foreach (const Link *link, p1->port_links) {
+				Port *p2 = findPort(link->port2_id);
+				if (p2 == nullptr)
+					continue;
+				const qpwgraph_item::Mode port_mode2
+					= qpwgraph_item::Input;
+				qpwgraph_node *node2 = nullptr;
+				qpwgraph_port *port2 = nullptr;
+				if (findNodePort(p2->node_id, link->port2_id,
+						port_mode2, &node2, &port2, false)) {
+					qpwgraph_connect *connect = port1->findConnect(port2);
+					if (connect == nullptr) {
+						connect = new qpwgraph_connect();
+						connect->setPort1(port1);
+						connect->setPort2(port2);
+						connect->updatePortTypeColors();
+						connect->updatePath();
+						qpwgraph_sect::addItem(connect);
+					}
+					if (connect)
+						connect->setMarked(true);
+				}
+			}
+		}
+	}
 
 	// Clean-up all un-marked items...
 	//
@@ -346,9 +552,6 @@ void qpwgraph_pipewire::clearItems (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qpwgraph_pipewire::clearItems()");
 #endif
-
-	// TODO: ?...
-	//
 
 	// Clean-up all items...
 	//
@@ -385,6 +588,183 @@ void qpwgraph_pipewire::renameItem (
 	//
 
 	qpwgraph_sect::renameItem(item, name);
+}
+
+
+// Object methods.
+//
+qpwgraph_pipewire::Object *qpwgraph_pipewire::findObject ( uint id ) const
+{
+	return m_data->objectids.value(id, nullptr);
+}
+
+
+void qpwgraph_pipewire::addObject ( uint id, Object *object )
+{
+	m_data->objectids.insert(id, object);
+	m_data->objects.append(object);
+}
+
+
+void qpwgraph_pipewire::removeObject ( uint id )
+{
+	Object *object = m_data->objectids.value(id, nullptr);
+	if (object == nullptr)
+		return;
+
+	m_data->objectids.remove(id);
+	m_data->objects.removeAll(object);
+
+	if (object->type == Object::Node)
+		destroyNode(static_cast<Node *> (object));
+	else
+	if (object->type == Object::Port)
+		destroyPort(static_cast<Port *> (object));
+	else
+	if (object->type == Object::Link)
+		destroyLink(static_cast<Link *> (object));
+}
+
+
+void qpwgraph_pipewire::clearObjects (void)
+{
+	if (m_data == nullptr)
+		return;
+
+	qDeleteAll(m_data->objects);
+	m_data->objects.clear();
+	m_data->objectids.clear();
+}
+
+
+// Node methods.
+//
+qpwgraph_pipewire::Node *qpwgraph_pipewire::findNode ( uint node_id ) const
+{
+	Node *node = static_cast<Node *> (findObject(node_id));
+	return (node && node->type == Object::Node ? node : nullptr);
+}
+
+
+qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode ( uint node_id, const QString& node_name )
+{
+	Node *node = new Node(node_id);
+	node->node_name = node_name;
+
+	addObject(node_id, node);
+
+	return node;
+}
+
+
+void qpwgraph_pipewire::destroyNode ( Node *node )
+{
+	foreach (const Port *port, node->node_ports)
+		removeObject(port->id);
+
+	node->node_ports.clear();
+
+	delete node;
+}
+
+
+// Port methods.
+//
+qpwgraph_pipewire::Port *qpwgraph_pipewire::findPort ( uint port_id ) const
+{
+	Port *port = static_cast<Port *> (findObject(port_id));
+	return (port && port->type == Object::Port ? port : nullptr);
+}
+
+
+qpwgraph_pipewire::Port *qpwgraph_pipewire::createPort (
+	uint node_id,
+	uint port_id,
+	qpwgraph_item::Mode port_mode,
+	const QString& port_name,
+	uint port_type,
+	uint port_flags )
+{
+	Node *node = findNode(node_id);
+	if (node == nullptr)
+		return nullptr;
+
+	Port *port = new Port(port_id);
+	port->node_id = node_id;
+	port->port_mode = port_mode;
+	port->port_name = port_name;
+	port->port_type = port_type;
+	port->port_flags = Port::Flags(port_flags);
+
+	node->node_ports.append(port);
+
+	addObject(port_id, port);
+
+	return port;
+}
+
+
+void qpwgraph_pipewire::destroyPort ( Port *port )
+{
+	Node *node = findNode(port->node_id);
+	if (node == nullptr)
+		return;
+
+	foreach (const Link *link, port->port_links)
+		removeObject(link->id);
+
+	port->port_links.clear();
+	node->node_ports.removeAll(port);
+
+	delete port;
+}
+
+
+// Link methods.
+//
+qpwgraph_pipewire::Link *qpwgraph_pipewire::findLink ( uint link_id ) const
+{
+	Link *link = static_cast<Link *> (findObject(link_id));
+	return (link && link->type == Object::Link ? link : nullptr);
+}
+
+
+qpwgraph_pipewire::Link *qpwgraph_pipewire::createLink (
+	uint link_id, uint port1_id, uint port2_id )
+{
+	Port *port1 = findPort(port1_id);
+	if (port1 == nullptr)
+		return nullptr;
+	if ((port1->port_mode & qpwgraph_item::Output) == 0)
+		return nullptr;
+
+	Port *port2 = findPort(port2_id);
+	if (port2 == nullptr)
+		return nullptr;
+	if ((port2->port_mode & qpwgraph_item::Input) == 0)
+		return nullptr;
+
+	Link *link = new Link(link_id);
+	link->port1_id = port1_id;
+	link->port2_id = port2_id;
+
+	port1->port_links.append(link);
+
+	addObject(link_id, link);
+
+	return link;
+}
+
+
+void qpwgraph_pipewire::destroyLink ( Link *link )
+{
+	Port *port = findPort(link->port1_id);
+	if (port == nullptr)
+		return;
+
+	port->port_links.removeAll(link);
+
+	delete link;
 }
 
 
