@@ -75,6 +75,9 @@ protected slots:
 	// Graph section slots.
 	void pipewire_changed();
 
+	// Pseudo-asynchronous timed refreshner.
+	void refresh();
+
 	// Graph selection change slot.
 	void stabilize();
 

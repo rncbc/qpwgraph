@@ -377,6 +377,8 @@ qpwgraph_form::qpwgraph_form (
 
 	// Trigger refresh cycle...
 	pipewire_changed();
+
+	QTimer::singleShot(300, this, SLOT(refresh()));
 }
 
 
@@ -435,6 +437,8 @@ void qpwgraph_form::viewCenter (void)
 void qpwgraph_form::viewRefresh (void)
 {
 	pipewire_changed();
+
+	refresh();
 }
 
 
@@ -648,6 +652,20 @@ void qpwgraph_form::renamed ( qpwgraph_item *item, const QString& name )
 void qpwgraph_form::pipewire_changed (void)
 {
 	++m_pipewire_changed;
+}
+
+
+// Pseudo-asyncronous timed refreshner.
+void qgraph1_form::refresh (void)
+{
+	if (m_pipewire_changed > 0) {
+		m_pipewire_changed = 0;
+		if (m_pipewire)
+			m_pipewire->updateItems();
+		stabilize();
+	}
+
+	QTimer::singleShot(300, this, SLOT(refresh()));
 }
 
 

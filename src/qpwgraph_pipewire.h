@@ -52,6 +52,10 @@ public:
 	// PipeWire port (dis)connection.
 	void connectPorts(qpwgraph_port *port1, qpwgraph_port *port2, bool connect);
 
+	// PipeWire graph updaters.
+	void updateItems();
+	void clearItems();
+
 	// Special port-type colors defaults (virtual).
 	void resetPortTypeColors();
 

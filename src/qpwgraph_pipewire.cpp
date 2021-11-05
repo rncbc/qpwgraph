@@ -315,6 +315,47 @@ bool qpwgraph_pipewire::findNodePort (
 }
 
 
+// PipeWire graph updaters.
+void qpwgraph_pipewire::updateItems (void)
+{
+	QMutexLocker locker(&g_mutex);
+
+	if (m_data == nullptr)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qpwgraph_pipewire::updateItems()");
+#endif
+
+	// TODO: ?...
+	//
+
+	// Clean-up all un-marked items...
+	//
+	qpwgraph_sect::resetItems(qpwgraph_pipewire::nodeType());
+}
+
+
+void qpwgraph_pipewire::clearItems (void)
+{
+	QMutexLocker locker(&g_mutex);
+
+	if (m_data == nullptr)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qpwgraph_pipewire::clearItems()");
+#endif
+
+	// TODO: ?...
+	//
+
+	// Clean-up all items...
+	//
+	qpwgraph_sect::clearItems(qpwgraph_pipewire::nodeType());
+}
+
+
 // Special port-type colors defaults (virtual).
 void qpwgraph_pipewire::resetPortTypeColors (void)
 {
