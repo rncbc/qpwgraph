@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.13)
 
 project(qpwgraph
-  VERSION 0.0.1
+  VERSION 0.0.3
   DESCRIPTION "A PipeWire Graph Qt GUI Interface"
   LANGUAGES C CXX)
 
