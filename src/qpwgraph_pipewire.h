@@ -75,12 +75,15 @@ public:
 	// Node/port renaming method (virtual override).
 	void renameItem(qpwgraph_item *item, const QString& name);
 
-	// PipeWire client decls.
+	// PipeWire client data struct access.
+	//
 	struct Data;
 	struct Object;
 	struct Node;
 	struct Port;
 	struct Link;
+
+	Data *data() const;
 
 	// Object methods...
 	Object *findObject(uint id) const;

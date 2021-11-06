@@ -98,6 +98,11 @@ struct qpwgraph_pipewire::Data
 	struct pw_registry *registry;
 	struct spa_hook registry_listener;
 
+	int pending_seq;
+	int last_seq;
+	int last_res;
+	bool error;
+
 	QHash<uint, Object *> objectids;
 	QList<Object *> objects;
 };
@@ -115,7 +120,7 @@ void qpwgraph_registry_event_global (
 {
 	qpwgraph_pipewire *pw = static_cast<qpwgraph_pipewire *> (data);
 #ifdef CONFIG_DEBUG
-	qDebug("gpwgraph_registry_event_global[%p]: id:%u type:%s/%u", pw, id, type, version);
+	qDebug("qpwgraph_registry_event_global[%p]: id:%u type:%s/%u", pw, id, type, version);
 #endif
 
 	if (props == nullptr)
@@ -221,12 +226,16 @@ static
 void qpwgraph_core_event_done ( void *data, uint32_t id, int seq )
 {
 	qpwgraph_pipewire *pw = static_cast<qpwgraph_pipewire *> (data);
+	qpwgraph_pipewire::Data *pd = pw->data();
 #ifdef CONFIG_DEBUG
-	qDebug("qpwgraph_core_event_done[%p]: id:%u seq:%d", pw, id, seq);
+	qDebug("qpwgraph_core_event_done[%p]: id:%u seq:%d", pd, id, seq);
 #endif
 
-	// TODO: ?...
-	//
+	if (id == PW_ID_CORE) {
+		pd->last_seq = seq;
+		if (pd->pending_seq == seq)
+			pw_thread_loop_signal(pd->loop, false);
+	}
 }
 
 static
@@ -234,12 +243,17 @@ void qpwgraph_core_event_error (
 	void *data, uint32_t id, int seq, int res, const char *message )
 {
 	qpwgraph_pipewire *pw = static_cast<qpwgraph_pipewire *> (data);
+	qpwgraph_pipewire::Data *pd = pw->data();
 #ifdef CONFIG_DEBUG
-	qDebug("gpwgraph_core_event_error[%p]: id:%u seq:%d res:%d : %s", pw, id, seq, res, message);
+	qDebug("qpwgraph_core_event_error[%p]: id:%u seq:%d res:%d : %s", pd, id, seq, res, message);
 #endif
 
-	// TODO: ?...
-	//
+	if (id == PW_ID_CORE) {
+		pd->error = true;
+		pd->last_res = res;
+	}
+
+	pw_thread_loop_signal(pd->loop, false);
 }
 
 static
@@ -250,6 +264,47 @@ const struct pw_core_events qpwgraph_core_events = {
 	.error = qpwgraph_core_event_error,
 };
 // core-events.
+
+
+// link-events...
+static
+int qpwgraph_link_proxy_sync ( qpwgraph_pipewire *pw )
+{
+	qpwgraph_pipewire::Data *pd = pw->data();
+
+	if (pw_thread_loop_in_thread(pd->loop))
+		return 0;
+
+	pd->pending_seq = pw_proxy_sync((struct pw_proxy *)pd->core, pd->pending_seq);
+
+	while (true) {
+		pw_thread_loop_wait(pd->loop);
+		if (pd->error)
+			return pd->last_res;
+		if (pd->pending_seq == pd->last_seq)
+			break;
+	}
+
+	return 0;
+}
+
+static
+void qpwgraph_link_proxy_error ( void *data, int seq, int res, const char *message )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qpwgraph_link_proxy_error: seq:%d res:%d : %s", seq, res, message);
+#endif
+
+	int *link_res = (int *)data;
+	*link_res = res;
+}
+
+static
+const struct pw_proxy_events qpwgraph_link_proxy_events = {
+	.version = PW_VERSION_PROXY_EVENTS,
+	.error = qpwgraph_link_proxy_error,
+};
+// link-events.
 
 
 //----------------------------------------------------------------------------
@@ -318,6 +373,10 @@ bool qpwgraph_pipewire::open (void)
 	pw_registry_add_listener(m_data->registry,
 		&m_data->registry_listener, &qpwgraph_registry_events, this);
 
+	m_data->pending_seq = 0;
+	m_data->last_seq = 0;
+	m_data->error = false;
+
 	pw_thread_loop_start(m_data->loop);
 
 	return true;
@@ -365,6 +424,9 @@ void qpwgraph_pipewire::changedNotify (void)
 void qpwgraph_pipewire::connectPorts (
 	qpwgraph_port *port1, qpwgraph_port *port2, bool connect )
 {
+	if (m_data == nullptr)
+		return;
+
 	if (port1 == nullptr || port2 == nullptr)
 		return;
 
@@ -376,8 +438,66 @@ void qpwgraph_pipewire::connectPorts (
 
 	QMutexLocker locker(&g_mutex);
 
-	// TODO: ?...
-	//
+	pw_thread_loop_lock(m_data->loop);
+
+	Port *p1 = findPort(port1->portId());
+	Port *p2 = findPort(port2->portId());
+
+	if ((p1 == nullptr || p2 == nullptr) ||
+		(p1->port_mode & qpwgraph_item::Output) == 0 ||
+		(p2->port_mode & qpwgraph_item::Input)  == 0 ||
+		(p1->port_type != p2->port_type)) {
+		pw_thread_loop_unlock(m_data->loop);
+		return;
+	}
+
+	if (!connect) {
+		// Disconnect ports...
+		foreach (Link *link, p1->port_links) {
+			if ((link->port1_id == p1->id) &&
+				(link->port2_id == p2->id)) {
+				pw_registry_destroy(m_data->registry, link->id);
+				qpwgraph_link_proxy_sync(this);
+				break;
+			}
+		}
+		pw_thread_loop_unlock(m_data->loop);
+		return;
+	}
+
+	// Connect ports...
+	char val[4][16];
+	::snprintf(val[0], sizeof(val[0]), "%u", p1->node_id);
+	::snprintf(val[1], sizeof(val[1]), "%u", p1->id);
+	::snprintf(val[2], sizeof(val[2]), "%u", p2->node_id);
+	::snprintf(val[3], sizeof(val[3]), "%u", p2->id);
+
+	struct spa_dict props;
+	struct spa_dict_item items[6];
+	props = SPA_DICT_INIT(items, 0);
+	items[props.n_items++] = SPA_DICT_ITEM_INIT(PW_KEY_LINK_OUTPUT_NODE, val[0]);
+	items[props.n_items++] = SPA_DICT_ITEM_INIT(PW_KEY_LINK_OUTPUT_PORT, val[1]);
+	items[props.n_items++] = SPA_DICT_ITEM_INIT(PW_KEY_LINK_INPUT_NODE,  val[2]);
+	items[props.n_items++] = SPA_DICT_ITEM_INIT(PW_KEY_LINK_INPUT_PORT,  val[3]);
+	items[props.n_items++] = SPA_DICT_ITEM_INIT(PW_KEY_OBJECT_LINGER,    "true");
+	const char *str = ::getenv("PIPEWIRE_LINK_PASSIVE");
+	if (str && pw_properties_parse_bool(str))
+		items[props.n_items++] = SPA_DICT_ITEM_INIT(PW_KEY_LINK_PASSIVE, "true");
+
+	struct pw_proxy *proxy = (struct pw_proxy *)pw_core_create_object(m_data->core,
+		"link-factory", PW_TYPE_INTERFACE_Link, PW_VERSION_LINK, &props, 0);
+	if (proxy) {
+		int link_res = 0;
+		struct spa_hook listener;
+		spa_zero(listener);
+		pw_proxy_add_listener(proxy,
+			&listener, &qpwgraph_link_proxy_events, &link_res);
+		qpwgraph_link_proxy_sync(this);
+		spa_hook_remove(&listener);
+		pw_proxy_destroy(proxy);
+	}
+
+	pw_thread_loop_unlock(m_data->loop);
 }
 
 
@@ -588,6 +708,14 @@ void qpwgraph_pipewire::renameItem (
 	//
 
 	qpwgraph_sect::renameItem(item, name);
+}
+
+
+// PipeWire client data struct access.
+//
+qpwgraph_pipewire::Data *qpwgraph_pipewire::data (void) const
+{
+	return m_data;
 }
 
 
