@@ -19,7 +19,6 @@
 
 *****************************************************************************/
 
-#include "qpwgraph.h"
 #include "qpwgraph_pipewire.h"
 
 #include "qpwgraph_canvas.h"
@@ -27,6 +26,7 @@
 
 #include <pipewire/pipewire.h>
 
+#include <QHash>
 #include <QList>
 
 #include <QMutexLocker>
@@ -102,9 +102,6 @@ struct qpwgraph_pipewire::Data
 	int last_seq;
 	int last_res;
 	bool error;
-
-	QHash<uint, Object *> objectids;
-	QList<Object *> objects;
 };
 
 
@@ -614,7 +611,7 @@ void qpwgraph_pipewire::updateItems (void)
 
 	// Nodes/ports/links inventory...
 	//
-	foreach (Object *object,  m_data->objects) {
+	foreach (Object *object, m_objects) {
 		if (object->type != Object::Node)
 			continue;
 		Node *n1 = static_cast<Node *> (object);
@@ -723,25 +720,25 @@ qpwgraph_pipewire::Data *qpwgraph_pipewire::data (void) const
 //
 qpwgraph_pipewire::Object *qpwgraph_pipewire::findObject ( uint id ) const
 {
-	return m_data->objectids.value(id, nullptr);
+	return m_objectids.value(id, nullptr);
 }
 
 
 void qpwgraph_pipewire::addObject ( uint id, Object *object )
 {
-	m_data->objectids.insert(id, object);
-	m_data->objects.append(object);
+	m_objectids.insert(id, object);
+	m_objects.append(object);
 }
 
 
 void qpwgraph_pipewire::removeObject ( uint id )
 {
-	Object *object = m_data->objectids.value(id, nullptr);
+	Object *object = m_objectids.value(id, nullptr);
 	if (object == nullptr)
 		return;
 
-	m_data->objectids.remove(id);
-	m_data->objects.removeAll(object);
+	m_objectids.remove(id);
+	m_objects.removeAll(object);
 
 	if (object->type == Object::Node)
 		destroyNode(static_cast<Node *> (object));
@@ -756,12 +753,9 @@ void qpwgraph_pipewire::removeObject ( uint id )
 
 void qpwgraph_pipewire::clearObjects (void)
 {
-	if (m_data == nullptr)
-		return;
-
-	qDeleteAll(m_data->objects);
-	m_data->objects.clear();
-	m_data->objectids.clear();
+	qDeleteAll(m_objects);
+	m_objects.clear();
+	m_objectids.clear();
 }
 
 

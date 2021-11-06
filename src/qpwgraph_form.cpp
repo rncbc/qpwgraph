@@ -19,12 +19,12 @@
 
 *****************************************************************************/
 
-#include "qpwgraph.h"
 #include "qpwgraph_form.h"
 
 #include "qpwgraph_config.h"
 
 #include "qpwgraph_pipewire.h"
+#include "qpwgraph_alsamidi.h"
 
 #include <QTimer>
 #include <QMenu>
@@ -91,8 +91,14 @@ qpwgraph_form::qpwgraph_form (
 	m_ui.graphCanvas->setSettings(m_config->settings());
 
 	m_pipewire = new qpwgraph_pipewire(m_ui.graphCanvas);
+#ifdef CONFIG_ALSA_MIDI
+	m_alsamidi = new qpwgraph_alsamidi(m_ui.graphCanvas);
+#else
+	m_alsamidi = nullptr;
+#endif
 
 	m_pipewire_changed = 0;
+	m_alsamidi_changed = 0;
 
 	m_ins = m_mids = m_outs = 0;
 
@@ -164,7 +170,13 @@ qpwgraph_form::qpwgraph_form (
 			SIGNAL(changed()),
 			SLOT(pipewire_changed()));
 	}
-
+#ifdef CONFIG_ALSA_MIDI
+	if (m_alsamidi) {
+		QObject::connect(m_alsamidi,
+			SIGNAL(changed()),
+			SLOT(alsamidi_changed()));
+	}
+#endif
 	QObject::connect(m_ui.graphCanvas,
 		SIGNAL(added(qpwgraph_node *)),
 		SLOT(added(qpwgraph_node *)));
@@ -258,6 +270,11 @@ qpwgraph_form::qpwgraph_form (
 	m_ui.viewColorsPipewireMidiAction->setData(qpwgraph_pipewire::midiPortType());
 	m_ui.viewColorsPipewireVideoAction->setData(qpwgraph_pipewire::videoPortType());
 	m_ui.viewColorsPipewireOtherAction->setData(qpwgraph_pipewire::otherPortType());
+#ifdef CONFIG_ALSA_MIDI
+	m_ui.viewColorsAlsaMidiAction->setData(qpwgraph_alsamidi::midiPortType());
+#else
+	m_ui.viewColorsMenu->removeAction(m_ui.viewColorsAlsaMidiAction);
+#endif
 
 	QObject::connect(m_ui.viewColorsPipewireAudioAction,
 		SIGNAL(triggered(bool)),
@@ -271,6 +288,11 @@ qpwgraph_form::qpwgraph_form (
 	QObject::connect(m_ui.viewColorsPipewireOtherAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewColorsAction()));
+#ifdef CONFIG_ALSA_MIDI
+	QObject::connect(m_ui.viewColorsAlsaMidiAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewColorsAction()));
+#endif
 	QObject::connect(m_ui.viewColorsResetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewColorsReset()));
@@ -377,6 +399,7 @@ qpwgraph_form::qpwgraph_form (
 
 	// Trigger refresh cycle...
 	pipewire_changed();
+	alsamidi_changed();
 
 	QTimer::singleShot(300, this, SLOT(refresh()));
 }
@@ -390,6 +413,10 @@ qpwgraph_form::~qpwgraph_form (void)
 
 	if (m_pipewire)
 		delete m_pipewire;
+#ifdef CONFIG_ALSA_MIDI
+	if (m_alsamidi)
+		delete m_alsamidi;
+#endif
 
 	delete m_config;
 }
@@ -437,6 +464,7 @@ void qpwgraph_form::viewCenter (void)
 void qpwgraph_form::viewRefresh (void)
 {
 	pipewire_changed();
+	alsamidi_changed();
 
 	refresh();
 }
@@ -474,6 +502,10 @@ void qpwgraph_form::viewColorsReset (void)
 	m_ui.graphCanvas->clearPortTypeColors();
 	if (m_pipewire)
 		m_pipewire->resetPortTypeColors();
+#ifdef CONFIG_ALSA_MIDI
+	if (m_alsamidi)
+		m_alsamidi->resetPortTypeColors();
+#endif
 	m_ui.graphCanvas->updatePortTypeColors();
 
 	updateViewColors();
@@ -622,7 +654,14 @@ void qpwgraph_form::connected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 			m_pipewire->connectPorts(port1, port2, true);
 		pipewire_changed();
 	}
-
+#ifdef CONFIG_ALSA_MIDI
+	else
+	if (qpwgraph_alsamidi::isPortType(port1->portType())) {
+		if (m_alsamidi)
+			m_alsamidi->connectPorts(port1, port2, true);
+		alsamidi_changed();
+	}
+#endif
 	stabilize();
 }
 
@@ -634,7 +673,14 @@ void qpwgraph_form::disconnected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 			m_pipewire->connectPorts(port1, port2, false);
 		pipewire_changed();
 	}
-
+#ifdef CONFIG_ALSA_MIDI
+	else
+	if (qpwgraph_alsamidi::isPortType(port1->portType())) {
+		if (m_alsamidi)
+			m_alsamidi->connectPorts(port1, port2, false);
+		alsamidi_changed();
+	}
+#endif
 	stabilize();
 }
 
@@ -655,6 +701,12 @@ void qpwgraph_form::pipewire_changed (void)
 }
 
 
+void qpwgraph_form::alsamidi_changed (void)
+{
+	++m_alsamidi_changed;
+}
+
+
 // Pseudo-asyncronous timed refreshner.
 void qpwgraph_form::refresh (void)
 {
@@ -664,7 +716,14 @@ void qpwgraph_form::refresh (void)
 			m_pipewire->updateItems();
 		stabilize();
 	}
-
+#ifdef CONFIG_ALSA_MIDI
+	if (m_alsamidi_changed > 0) {
+		m_alsamidi_changed = 0;
+		if (m_alsamidi)
+			m_alsamidi->updateItems();
+		stabilize();
+	}
+#endif
 	QTimer::singleShot(300, this, SLOT(refresh()));
 }
 
@@ -774,7 +833,7 @@ void qpwgraph_form::closeEvent ( QCloseEvent *pCloseEvent )
 
 
 // Special port-type color methods.
-void qpwgraph_form::updateViewColorsAction ( QAction *action  )
+void qpwgraph_form::updateViewColorsAction ( QAction *action )
 {
 	const uint port_type = action->data().toUInt();
 	if (0 >= port_type)
@@ -796,13 +855,38 @@ void qpwgraph_form::updateViewColors (void)
 	updateViewColorsAction(m_ui.viewColorsPipewireMidiAction);
 	updateViewColorsAction(m_ui.viewColorsPipewireVideoAction);
 	updateViewColorsAction(m_ui.viewColorsPipewireOtherAction);
+#ifdef CONFIG_ALSA_MIDI
+	updateViewColorsAction(m_ui.viewColorsAlsaMidiAction);
+#endif
 }
 
 
 // Item sect predicate.
-qpwgraph_sect *qpwgraph_form::item_sect ( qpwgraph_item */*item*/ ) const
+qpwgraph_sect *qpwgraph_form::item_sect ( qpwgraph_item *item ) const
 {
-	return m_pipewire;
+	if (item->type() == qpwgraph_node::Type) {
+		qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
+		if (node && qpwgraph_pipewire::isNodeType(node->nodeType()))
+			return m_pipewire;
+	#ifdef CONFIG_ALSA_MIDI
+		else
+		if (node && qpwgraph_alsamidi::isNodeType(node->nodeType()))
+			return m_alsamidi;
+	#endif
+	}
+	else
+	if (item->type() == qpwgraph_port::Type) {
+		qpwgraph_port *port = static_cast<qpwgraph_port *> (item);
+		if (port && qpwgraph_pipewire::isPortType(port->portType()))
+			return m_pipewire;
+	#ifdef CONFIG_ALSA_MIDI
+		else
+		if (port && qpwgraph_alsamidi::isPortType(port->portType()))
+			return m_alsamidi;
+	#endif
+	}
+
+	return nullptr; // No deal!
 }
 
 

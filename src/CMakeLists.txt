@@ -23,6 +23,7 @@ set (HEADERS
   qpwgraph_item.h
   qpwgraph_sect.h
   qpwgraph_pipewire.h
+  qpwgraph_alsamidi.h
   qpwgraph_form.h
 )
 
@@ -37,6 +38,7 @@ set (SOURCES
   qpwgraph_item.cpp
   qpwgraph_sect.cpp
   qpwgraph_pipewire.cpp
+  qpwgraph_alsamidi.cpp
   qpwgraph_form.cpp
 )
 
@@ -69,6 +71,15 @@ include(FindPkgConfig)
 pkg_check_modules (PIPEWIRE REQUIRED IMPORTED_TARGET libpipewire-0.3)
 if (PIPEWIRE_FOUND)
   target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::PIPEWIRE)
+else ()
+  message (WARNING "*** ALSA MIDI library not found.")
+endif ()
+
+if (CONFIG_ALSA_MIDI)
+  pkg_check_modules (ALSA REQUIRED IMPORTED_TARGET alsa)
+  if (ALSA_FOUND)
+    target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::ALSA)
+  endif ()
 endif ()
 
 target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

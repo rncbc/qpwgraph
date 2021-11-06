@@ -31,6 +31,9 @@ if (GIT_DESCRIBE_RESULT EQUAL 0)
 endif ()
 
 
+# Enable ALSA MIDI support option.
+option (CONFIG_ALSA_MIDI "Enable ALSA MIDI support (default=no)" 0)
+
 # Enable Qt6 build preference.
 option (CONFIG_QT6 "Enable Qt6 build (default=yes)" 1)
 

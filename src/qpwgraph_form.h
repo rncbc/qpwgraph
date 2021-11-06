@@ -30,6 +30,7 @@ class qpwgraph_config;
 
 class qpwgraph_sect;
 class qpwgraph_pipewire;
+class qpwgraph_alsamidi;
 
 class qpwgraph_item;
 class qpwgraph_port;
@@ -74,6 +75,7 @@ protected slots:
 
 	// Graph section slots.
 	void pipewire_changed();
+	void alsamidi_changed();
 
 	// Pseudo-asynchronous timed refreshner.
 	void refresh();
@@ -134,8 +136,10 @@ private:
 	qpwgraph_config *m_config;
 
 	qpwgraph_pipewire *m_pipewire;
+	qpwgraph_alsamidi *m_alsamidi;
 
 	int m_pipewire_changed;
+	int m_alsamidi_changed;
 
 	int m_ins, m_mids, m_outs;
 

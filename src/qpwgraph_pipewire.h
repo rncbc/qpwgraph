@@ -22,7 +22,9 @@
 #ifndef __qpwgraph_pipewire_h
 #define __qpwgraph_pipewire_h
 
+#include "config.h"
 #include "qpwgraph_sect.h"
+
 
 #include <QMutex>
 
@@ -127,6 +129,10 @@ private:
 
 	// PipeWire client impl.
 	Data *m_data;
+
+	// PipeWire object database.
+	QHash<uint, Object *> m_objectids;
+	QList<Object *> m_objects;
 
 	// Callback sanity mutex.
 	static QMutex g_mutex;

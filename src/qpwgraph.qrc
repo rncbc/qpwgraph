@@ -2,6 +2,7 @@
 	<qresource>
 		<file>images/qpwgraph.png</file>
 		<file>images/itemPipewire.png</file>
+		<file>images/itemAlsamidi.png</file>
 		<file>images/itemConnect.png</file>
 		<file>images/itemDisconnect.png</file>
 		<file>images/editUndo.png</file>

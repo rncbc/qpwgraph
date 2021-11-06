@@ -36,6 +36,9 @@ int main ( int argc, char *argv[] )
 #endif
 	QApplication app(argc, argv);
 
+	app.setApplicationName(PROJECT_NAME);
+	app.setApplicationDisplayName(PROJECT_DESCRIPTION);
+
 	qpwgraph_form form;
 	form.show();
 

@@ -15,5 +15,8 @@
 /* Define if debugging is enabled. */
 #cmakedefine CONFIG_DEBUG @CONFIG_DEBUG@
 
+/* Define if ALSA MIDI support is available. */
+#cmakedefine CONFIG_ALSA_MIDI @CONFIG_ALSA_MIDI@
+
 
 #endif // __CONFIG_H

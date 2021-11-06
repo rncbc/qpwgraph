@@ -101,6 +101,8 @@
      <addaction name="viewColorsPipewireVideoAction"/>
      <addaction name="viewColorsPipewireOtherAction"/>
      <addaction name="separator"/>
+     <addaction name="viewColorsAlsaMidiAction"/>
+     <addaction name="separator"/>
      <addaction name="viewColorsResetAction"/>
     </widget>
     <widget class="QMenu" name="viewSortMenu">
@@ -578,6 +580,23 @@
    </property>
    <property name="statusTip">
     <string>PipeWire Other color</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewColorsAlsaMidiAction">
+   <property name="text">
+    <string>&amp;ALSA MIDI...</string>
+   </property>
+   <property name="iconText">
+    <string>ALSA MIDI</string>
+   </property>
+   <property name="toolTip">
+    <string>ALSA MIDI color</string>
+   </property>
+   <property name="statusTip">
+    <string>ALSA MIDI color</string>
    </property>
    <property name="shortcut">
     <string/>
