@@ -26,9 +26,6 @@
 
 #include <pipewire/pipewire.h>
 
-#include <QHash>
-#include <QList>
-
 #include <QMutexLocker>
 
 

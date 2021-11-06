@@ -25,6 +25,7 @@
 #include "config.h"
 #include "qpwgraph_sect.h"
 
+#include <QHash>
 
 #include <QMutex>
 
