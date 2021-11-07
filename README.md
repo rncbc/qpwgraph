@@ -19,7 +19,7 @@
    
    Optionally on build configure time, [ALSA](https://www.alsa-project.org)
    development libraries and headers (_alsa-devel_) are also required if
-   ALSA MIDI (Sequencer) support is desired (`-DCONFIG_ALSA_MIDI=1|ON`).
+   ALSA MIDI (Sequencer) support is desired (`cmake -DCONFIG_ALSA_MIDI=[1|ON]`...).
 
 ## Building
 
@@ -28,8 +28,8 @@
    
    On the source distribution top directory:
 
-    cmake [-DCMAKE_INSTALL_PREFIX=/usr/local] -B build -S .
-    make -C build [--parallel]
+    cmake [-DCMAKE_INSTALL_PREFIX=/usr/local] -B build
+    cmake --build build [--parallel]
 
    After successful build you may test run it immedialy as follows:
 
@@ -37,7 +37,7 @@
    
    If you may install it permanently, then run, optionally as root:
 
-    sudo make -C build install
+    sudo cmake --install build
 
 
    Enjoy.
