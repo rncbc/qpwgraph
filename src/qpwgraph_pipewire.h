@@ -96,16 +96,20 @@ public:
 
 	// Node methods....
 	Node *findNode(uint node_id) const;
-	Node *createNode(uint node_id, const QString& node_name);
+	Node *createNode(
+		uint node_id,
+		const QString& node_name,
+		qpwgraph_item::Mode node_mode,
+		uint node_types);
 	void destroyNode(Node *node);
 
 	// Port methods....
 	Port *findPort(uint port_id) const;
 	Port *createPort(
-		uint node_id,
 		uint port_id,
-		qpwgraph_item::Mode port_mode,
+		uint node_id,
 		const QString& port_name,
+		qpwgraph_item::Mode port_mode,
 		uint port_type,
 		uint port_flags);
 	void destroyPort(Port *port);

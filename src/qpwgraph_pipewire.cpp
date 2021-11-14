@@ -52,7 +52,16 @@ struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
 {
 	Node (uint node_id) : Object(node_id, Type::Node) {}
 
+	enum Types {
+		None  = 0,
+		Audio = 1,
+		Video = 2,
+		Midi  = 4
+	};
+
 	QString node_name;
+	qpwgraph_item::Mode node_mode;
+	Types node_types;
 	QList<qpwgraph_pipewire::Port *> node_ports;
 };
 
@@ -136,7 +145,35 @@ void qpwgraph_registry_event_global (
 			node_name += app;
 			node_name += '/';
 		}
-		if (pw->createNode(id, node_name + str))
+		node_name += str;
+		qpwgraph_item::Mode node_mode = qpwgraph_item::None;
+		uint node_types = qpwgraph_pipewire::Node::None;
+		str = spa_dict_lookup(props, PW_KEY_MEDIA_CLASS);
+		if (str) {
+			const QString media_class(str);
+			if (media_class.contains("Source") ||
+				media_class.contains("Output"))
+				node_mode = qpwgraph_item::Output;
+			else
+			if (media_class.contains("Sink") ||
+				media_class.contains("Input"))
+				node_mode = qpwgraph_item::Input;
+			if (media_class.contains("Audio"))
+				node_types |= qpwgraph_pipewire::Node::Audio;
+			if (media_class.contains("Video"))
+				node_types |= qpwgraph_pipewire::Node::Video;
+			if (media_class.contains("Midi"))
+				node_types |= qpwgraph_pipewire::Node::Midi;
+		}
+		if (node_mode == qpwgraph_item::None) {
+			str = spa_dict_lookup(props, PW_KEY_MEDIA_CATEGORY);
+			if (str) {
+				const QString media_category(str);
+				if (media_category.contains("Duplex"))
+					node_mode = qpwgraph_item::Duplex;
+			}
+		}
+		if (pw->createNode(id, node_name, node_mode, node_types))
 			++changed;
 	}
 	else
@@ -151,10 +188,14 @@ void qpwgraph_registry_event_global (
 		if (str == nullptr)
 			str = "port";
 		port_name += str;
+		qpwgraph_pipewire::Node *n = pw->findNode(node_id);
 		uint port_type = qpwgraph_pipewire::otherPortType();
 		str = spa_dict_lookup(props, PW_KEY_FORMAT_DSP);
 		if (str)
 			port_type = qpwgraph_item::itemType(str);
+		else
+		if (n && n->node_types == qpwgraph_pipewire::Node::Video)
+			port_type = qpwgraph_pipewire::videoPortType();
 		qpwgraph_item::Mode port_mode = qpwgraph_item::None;
 		str = spa_dict_lookup(props, PW_KEY_PORT_DIRECTION);
 		if (str) {
@@ -165,6 +206,8 @@ void qpwgraph_registry_event_global (
 				port_mode = qpwgraph_item::Output;
 		}
 		uint port_flags = qpwgraph_pipewire::Port::None;
+		if (n && (n->node_mode != qpwgraph_item::Duplex))
+			port_flags |= qpwgraph_pipewire::Port::Terminal;
 		str = spa_dict_lookup(props, PW_KEY_PORT_PHYSICAL);
 		if (str && pw_properties_parse_bool(str))
 			port_flags |= qpwgraph_pipewire::Port::Physical;
@@ -177,7 +220,7 @@ void qpwgraph_registry_event_global (
 		str = spa_dict_lookup(props, PW_KEY_PORT_CONTROL);
 		if (str && pw_properties_parse_bool(str))
 			port_flags |= qpwgraph_pipewire::Port::Control;
-		if (pw->createPort(node_id, id, port_mode, port_name, port_type, port_flags))
+		if (pw->createPort(id, node_id, port_name, port_mode, port_type, port_flags))
 			++changed;
 	}
 	else
@@ -765,10 +808,16 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::findNode ( uint node_id ) const
 }
 
 
-qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode ( uint node_id, const QString& node_name )
+qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
+	uint node_id,
+	const QString& node_name,
+	qpwgraph_item::Mode node_mode,
+	uint node_types )
 {
 	Node *node = new Node(node_id);
 	node->node_name = node_name;
+	node->node_mode = node_mode;
+	node->node_types = Node::Types(node_types);
 
 	addObject(node_id, node);
 
@@ -797,10 +846,10 @@ qpwgraph_pipewire::Port *qpwgraph_pipewire::findPort ( uint port_id ) const
 
 
 qpwgraph_pipewire::Port *qpwgraph_pipewire::createPort (
-	uint node_id,
 	uint port_id,
-	qpwgraph_item::Mode port_mode,
+	uint node_id,
 	const QString& port_name,
+	qpwgraph_item::Mode port_mode,
 	uint port_type,
 	uint port_flags )
 {
@@ -810,8 +859,8 @@ qpwgraph_pipewire::Port *qpwgraph_pipewire::createPort (
 
 	Port *port = new Port(port_id);
 	port->node_id = node_id;
-	port->port_mode = port_mode;
 	port->port_name = port_name;
+	port->port_mode = port_mode;
 	port->port_type = port_type;
 	port->port_flags = Port::Flags(port_flags);
 
