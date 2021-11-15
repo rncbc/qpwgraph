@@ -479,7 +479,8 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 		}
 		break;
 	case DragMove:
-		QGraphicsView::ensureVisible(QRectF(pos, QSizeF(2, 2)), 8, 8);
+		if ((pos - m_pos).manhattanLength() > 8.0) {
+			QGraphicsView::ensureVisible(QRectF(pos, QSizeF(2, 2)), 8, 8);
 		// Move new connection line...
 		if (m_connect)
 			m_connect->updatePathTo(pos);
