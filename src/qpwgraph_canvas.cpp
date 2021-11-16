@@ -477,10 +477,11 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 				m_rubberband = new QRubberBand(QRubberBand::Rectangle, this);
 			}
 			// Set allowed auto-scroll margins/limits...
-			const QRectF& rect = QGraphicsView::sceneRect();
-			const qreal mx = rect.width();
-			const qreal my = rect.height();
-			m_rect1 = m_scene->sceneRect().marginsAdded(QMarginsF(mx, my, mx, my));
+			const QRect& rect = QGraphicsView::rect();
+			const qreal mx = 0.5f * rect.width();
+			const qreal my = 0.5f * rect.height();
+			m_rect1 = m_scene->itemsBoundingRect()
+				.marginsAdded(QMarginsF(mx, my, mx, my));
 		}
 		break;
 	case DragMove:
