@@ -230,6 +230,9 @@ private:
 
 	// Original node position (for move command).
 	QPointF m_pos1;
+
+	// Allowed auto-scroll margins/limits (for move command).
+	QRectF m_rect1;
 };
 
 

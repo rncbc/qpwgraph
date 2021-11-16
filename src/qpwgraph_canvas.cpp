@@ -476,10 +476,17 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 				QGraphicsView::setCursor(Qt::CrossCursor);
 				m_rubberband = new QRubberBand(QRubberBand::Rectangle, this);
 			}
+			// Set allowed auto-scroll margins/limits...
+			const QRectF& rect = QGraphicsView::sceneRect();
+			const qreal mx = rect.width();
+			const qreal my = rect.height();
+			m_rect1 = m_scene->sceneRect().marginsAdded(QMarginsF(mx, my, mx, my));
 		}
 		break;
 	case DragMove:
-		QGraphicsView::ensureVisible(QRectF(pos, QSizeF(2, 2)), 8, 8);
+		// Allow auto-scroll only if within allowed margins/limits...
+		if (m_rect1.contains(pos))
+			QGraphicsView::ensureVisible(QRectF(pos, QSizeF(2, 2)), 8, 8);
 		// Move new connection line...
 		if (m_connect)
 			m_connect->updatePathTo(pos);
