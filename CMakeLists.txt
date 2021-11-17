@@ -62,7 +62,7 @@ else ()
   find_package (QT QUIET NAMES Qt5)
 endif ()
 
-find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets)
+find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Network)
 
 
 add_subdirectory (src)

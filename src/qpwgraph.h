@@ -24,6 +24,57 @@
 
 #include "config.h"
 
+#include <QApplication>
+
+
+// Foward decls.
+class QWidget;
+class QSharedMemory;
+class QLocalServer;
+
+
+//-------------------------------------------------------------------------
+// Singleton application instance - decl.
+//
+
+class qpwgraph_application : public QApplication
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qpwgraph_application(int& argc, char **argv);
+
+	// Destructor.
+	~qpwgraph_application();
+
+	// Main application widget accessors.
+	void setMainWidget(QWidget *widget)
+		{ m_widget = widget; }
+	QWidget *mainWidget() const
+		{ return m_widget; }
+
+	// Check if another instance is running,
+	// and raise its proper main widget...
+	bool setup();
+
+protected slots:
+
+	// Local server slots.
+	void newConnectionSlot();
+	void readyReadSlot();
+
+private:
+
+	// Instance variables.
+	QWidget       *m_widget;
+	QString        m_unique;
+	QSharedMemory *m_memory;
+	QLocalServer  *m_server;
+};
+
+
 #endif	// __qpwgraph_h
 
 // end of qpwgraph.h
