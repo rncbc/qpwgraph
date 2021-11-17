@@ -24,6 +24,7 @@ set (HEADERS
   qpwgraph_sect.h
   qpwgraph_pipewire.h
   qpwgraph_alsamidi.h
+  qpwgraph_systray.h
   qpwgraph_form.h
 )
 
@@ -39,6 +40,7 @@ set (SOURCES
   qpwgraph_sect.cpp
   qpwgraph_pipewire.cpp
   qpwgraph_alsamidi.cpp
+  qpwgraph_systray.cpp
   qpwgraph_form.cpp
 )
 

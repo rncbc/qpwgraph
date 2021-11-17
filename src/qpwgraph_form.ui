@@ -60,7 +60,7 @@
     <addaction name="graphConnectAction"/>
     <addaction name="graphDisconnectAction"/>
     <addaction name="separator"/>
-    <addaction name="graphExitAction"/>
+    <addaction name="graphQuitAction"/>
    </widget>
    <widget class="QMenu" name="editMenu">
     <property name="title">
@@ -215,18 +215,18 @@
     <string>Del</string>
    </property>
   </action>
-  <action name="graphExitAction">
+  <action name="graphQuitAction">
    <property name="text">
-    <string>E&amp;xit</string>
+    <string>&amp;Quit</string>
    </property>
    <property name="iconText">
-    <string>Exit</string>
+    <string>Quit</string>
    </property>
    <property name="toolTip">
-    <string>Exit</string>
+    <string>Quit</string>
    </property>
    <property name="statusTip">
-    <string>Exit this application program</string>
+    <string>Quit this application program</string>
    </property>
    <property name="shortcut">
     <string/>

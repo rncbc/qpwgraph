@@ -1,4 +1,4 @@
-// qpwgraph_sect.h
+// qpwgraph_systray.h
 //
 /****************************************************************************
    Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -19,57 +19,50 @@
 
 *****************************************************************************/
 
-#ifndef __qpwgraph_sect_h
-#define __qpwgraph_sect_h
+#ifndef __qpwgraph_systray_h
+#define __qpwgraph_systray_h
 
-#include "qpwgraph_node.h"
-
-#include <QObject>
-#include <QList>
+#include <QSystemTrayIcon>
+#include <QMenu>
 
 
-// Forwards decls.
-class qpwgraph_canvas;
+// Forward decls.
+class QAction;
 
 
 //----------------------------------------------------------------------------
-// qpwgraph_sect -- Generic graph driver
+// qpwgraph_systray -- Custom system tray icon.
 
-class qpwgraph_sect : public QObject
+class qpwgraph_systray : public QSystemTrayIcon
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qpwgraph_sect(qpwgraph_canvas *canvas);
+	qpwgraph_systray(QWidget *widget);
 
-	// Accessors.
-	qpwgraph_canvas *canvas() const;
+	// Update context menu.
+	void updateContextMenu();
 
-	// Generic sect/graph methods.
-	void addItem(qpwgraph_item *item);
-	void removeItem(qpwgraph_item *item);
+protected slots:
 
-	// Clean-up all un-marked items...
-	void resetItems(uint node_type);
-	void clearItems(uint node_type);
+	// Handle systeam tray activity.
+	void activated(QSystemTrayIcon::ActivationReason reason);
 
-	// Special node finder.
-	qpwgraph_node *findNode(uint id, qpwgraph_item::Mode mode, int type = 0) const;
-
-	// Client/port renaming method.
-	virtual void renameItem(qpwgraph_item *item, const QString& name);
+	// Handle menu actions.
+	void showHide();
+	void closeQuit();
 
 private:
 
-	// Instance variables.
-	qpwgraph_canvas *m_canvas;
-
-	QList<qpwgraph_connect *> m_connects;
+	QWidget *m_widget;
+	QAction *m_show;
+	QAction *m_quit;
+	QMenu    m_menu;
 };
 
 
-#endif	// __qpwgraph_sect_h
+#endif  // __qpwgraph_systray_h
 
-// end of qpwgraph_sect.h
+// end of qpwgraph_systray.h

@@ -35,6 +35,8 @@ class qpwgraph_alsamidi;
 class qpwgraph_item;
 class qpwgraph_port;
 
+class qpwgraph_systray;
+
 class QResizeEvent;
 class QCloseEvent;
 
@@ -109,16 +111,20 @@ protected slots:
 
 	void zoomValueChanged(int zoom_value);
 
+	void closeQuit();
+
 protected:
 
 	// Context-menu event handler.
-	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
+	void contextMenuEvent(QContextMenuEvent *event);
 
 	// Widget resize event handler.
-	void resizeEvent(QResizeEvent *pResizeEvent);
+	void resizeEvent(QResizeEvent *event);
 
-	// Widget close event handler.
-	void closeEvent(QCloseEvent *pCloseEvent);
+	// Widget event handlers.
+	void showEvent(QShowEvent *event);
+	void hideEvent(QHideEvent *event);
+	void closeEvent(QCloseEvent *event);
 
 	// Special port-type color method.
 	void updateViewColorsAction(QAction *action);
@@ -126,6 +132,10 @@ protected:
 
 	// Item sect predicate.
 	qpwgraph_sect *item_sect(qpwgraph_item *item) const;
+
+	// Restore/save whole form state...
+	void restoreState();
+	void saveState();
 
 private:
 
@@ -148,6 +158,8 @@ private:
 
 	QActionGroup *m_sort_type;
 	QActionGroup *m_sort_order;
+
+	qpwgraph_systray *m_systray;
 };
 
 

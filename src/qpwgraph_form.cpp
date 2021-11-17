@@ -26,6 +26,8 @@
 #include "qpwgraph_pipewire.h"
 #include "qpwgraph_alsamidi.h"
 
+#include "qpwgraph_systray.h"
+
 #include <QTimer>
 #include <QMenu>
 
@@ -210,9 +212,9 @@ qpwgraph_form::qpwgraph_form (
 		SIGNAL(triggered(bool)),
 		m_ui.graphCanvas, SLOT(disconnectItems()));
 
-	QObject::connect(m_ui.graphExitAction,
+	QObject::connect(m_ui.graphQuitAction,
 		SIGNAL(triggered(bool)),
-		SLOT(close()));
+		SLOT(closeQuit()));
 
 	QObject::connect(m_ui.editSelectAllAction,
 		SIGNAL(triggered(bool)),
@@ -343,52 +345,10 @@ qpwgraph_form::qpwgraph_form (
 		SIGNAL(orientationChanged(Qt::Orientation)),
 		SLOT(orientationChanged(Qt::Orientation)));
 
-	m_config->restoreState(this);
+	m_systray = new qpwgraph_systray(this);
+	m_systray->show();
 
-	m_ui.viewMenubarAction->setChecked(m_config->isMenubar());
-	m_ui.viewToolbarAction->setChecked(m_config->isToolbar());
-	m_ui.viewStatusbarAction->setChecked(m_config->isStatusbar());
-
-	m_ui.viewTextBesideIconsAction->setChecked(m_config->isTextBesideIcons());
-	m_ui.viewZoomRangeAction->setChecked(m_config->isZoomRange());
-
-	const qpwgraph_port::SortType sort_type
-		= qpwgraph_port::SortType(m_config->sortType());
-	qpwgraph_port::setSortType(sort_type);
-	switch (sort_type) {
-	case qpwgraph_port::PortIndex:
-		m_ui.viewSortPortIndexAction->setChecked(true);
-		break;
-	case qpwgraph_port::PortTitle:
-		m_ui.viewSortPortTitleAction->setChecked(true);
-		break;
-	case qpwgraph_port::PortName:
-	default:
-		m_ui.viewSortPortNameAction->setChecked(true);
-		break;
-	}
-
-	const qpwgraph_port::SortOrder sort_order
-		= qpwgraph_port::SortOrder(m_config->sortOrder());
-	qpwgraph_port::setSortOrder(sort_order);
-	switch (sort_order) {
-	case qpwgraph_port::Descending:
-		m_ui.viewSortDescendingAction->setChecked(true);
-		break;
-	case qpwgraph_port::Ascending:
-	default:
-		m_ui.viewSortAscendingAction->setChecked(true);
-		break;
-	}
-
-	viewMenubar(m_config->isMenubar());
-	viewToolbar(m_config->isToolbar());
-	viewStatusbar(m_config->isStatusbar());
-
-	viewTextBesideIcons(m_config->isTextBesideIcons());
-	viewZoomRange(m_config->isZoomRange());
-
-	m_ui.graphCanvas->restoreState();
+	restoreState();
 
 	updateViewColors();
 
@@ -408,6 +368,8 @@ qpwgraph_form::qpwgraph_form (
 // Destructor.
 qpwgraph_form::~qpwgraph_form (void)
 {
+	delete m_systray;
+
 	delete m_sort_order;
 	delete m_sort_type;
 
@@ -782,7 +744,7 @@ void qpwgraph_form::orientationChanged ( Qt::Orientation orientation )
 
 
 // Context-menu event handler.
-void qpwgraph_form::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
+void qpwgraph_form::contextMenuEvent ( QContextMenuEvent *event )
 {
 //	m_ui.graphCanvas->clear();
 
@@ -796,40 +758,48 @@ void qpwgraph_form::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
 	menu.addSeparator();
 	menu.addMenu(m_ui.viewZoomMenu);
 
-	menu.exec(pContextMenuEvent->globalPos());
+	menu.exec(event->globalPos());
 
 	stabilize();
 }
 
 
 // Widget resize event handler.
-void qpwgraph_form::resizeEvent ( QResizeEvent *pResizeEvent )
+void qpwgraph_form::resizeEvent ( QResizeEvent *event )
 {
-	QMainWindow::resizeEvent(pResizeEvent);
+	QMainWindow::resizeEvent(event);
 
 	stabilize();
 }
 
 
-// Widget close event handler.
-void qpwgraph_form::closeEvent ( QCloseEvent *pCloseEvent )
+// Widget event handlers.
+void qpwgraph_form::showEvent ( QShowEvent *event )
 {
-	m_ui.graphCanvas->saveState();
+	QMainWindow::showEvent(event);
 
-	m_config->setTextBesideIcons(m_ui.viewTextBesideIconsAction->isChecked());
-	m_config->setZoomRange(m_ui.viewZoomRangeAction->isChecked());
-	m_config->setSortType(int(qpwgraph_port::sortType()));
-	m_config->setSortOrder(int(qpwgraph_port::sortOrder()));
-
-	m_config->setStatusbar(m_ui.StatusBar->isVisible());
-	m_config->setToolbar(m_ui.ToolBar->isVisible());
-	m_config->setMenubar(m_ui.MenuBar->isVisible());
-
-	m_config->saveState(this);
-
-	QMainWindow::closeEvent(pCloseEvent);
+	m_systray->updateContextMenu();
 }
 
+
+void qpwgraph_form::hideEvent ( QHideEvent *event )
+{
+	QMainWindow::hideEvent(event);
+
+	m_systray->updateContextMenu();
+
+	saveState();
+}
+
+
+void qpwgraph_form::closeEvent ( QCloseEvent *event )
+{
+	hide();
+
+	m_systray->updateContextMenu();
+
+	event->ignore();
+}
 
 
 // Special port-type color methods.
@@ -887,6 +857,89 @@ qpwgraph_sect *qpwgraph_form::item_sect ( qpwgraph_item *item ) const
 	}
 
 	return nullptr; // No deal!
+}
+
+
+// Restore whole form state...
+void qpwgraph_form::restoreState (void)
+{
+	m_config->restoreState(this);
+
+	m_ui.viewMenubarAction->setChecked(m_config->isMenubar());
+	m_ui.viewToolbarAction->setChecked(m_config->isToolbar());
+	m_ui.viewStatusbarAction->setChecked(m_config->isStatusbar());
+
+	m_ui.viewTextBesideIconsAction->setChecked(m_config->isTextBesideIcons());
+	m_ui.viewZoomRangeAction->setChecked(m_config->isZoomRange());
+
+	const qpwgraph_port::SortType sort_type
+		= qpwgraph_port::SortType(m_config->sortType());
+	qpwgraph_port::setSortType(sort_type);
+	switch (sort_type) {
+	case qpwgraph_port::PortIndex:
+		m_ui.viewSortPortIndexAction->setChecked(true);
+		break;
+	case qpwgraph_port::PortTitle:
+		m_ui.viewSortPortTitleAction->setChecked(true);
+		break;
+	case qpwgraph_port::PortName:
+	default:
+		m_ui.viewSortPortNameAction->setChecked(true);
+		break;
+	}
+
+	const qpwgraph_port::SortOrder sort_order
+		= qpwgraph_port::SortOrder(m_config->sortOrder());
+	qpwgraph_port::setSortOrder(sort_order);
+	switch (sort_order) {
+	case qpwgraph_port::Descending:
+		m_ui.viewSortDescendingAction->setChecked(true);
+		break;
+	case qpwgraph_port::Ascending:
+	default:
+		m_ui.viewSortAscendingAction->setChecked(true);
+		break;
+	}
+
+	viewMenubar(m_config->isMenubar());
+	viewToolbar(m_config->isToolbar());
+	viewStatusbar(m_config->isStatusbar());
+
+	viewTextBesideIcons(m_config->isTextBesideIcons());
+	viewZoomRange(m_config->isZoomRange());
+
+	m_ui.graphCanvas->restoreState();
+}
+
+
+// Forcibly save whole form state.
+void qpwgraph_form::saveState (void)
+{
+	m_ui.graphCanvas->saveState();
+
+	m_config->setTextBesideIcons(m_ui.viewTextBesideIconsAction->isChecked());
+	m_config->setZoomRange(m_ui.viewZoomRangeAction->isChecked());
+	m_config->setSortType(int(qpwgraph_port::sortType()));
+	m_config->setSortOrder(int(qpwgraph_port::sortOrder()));
+
+	m_config->setStatusbar(m_ui.StatusBar->isVisible());
+	m_config->setToolbar(m_ui.ToolBar->isVisible());
+	m_config->setMenubar(m_ui.MenuBar->isVisible());
+
+	m_config->saveState(this);
+}
+
+
+// Forcibly quit application.
+void qpwgraph_form::closeQuit (void)
+{
+	saveState();
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	QApplication::exit(0);
+#else
+	QApplication::quit();
+#endif
 }
 
 
