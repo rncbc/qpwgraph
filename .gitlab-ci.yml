@@ -1,0 +1,114 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+# qpwgraph Pipeline
+=======
+>>>>>>> 6dd091d (Update .gitlab-ci.yml file)
+=======
+# qpwgraph Pipeline
+>>>>>>> eb37035 (Update .gitlab-ci.yml file)
+#
+# A pipeline is composed of independent jobs that run scripts, grouped into stages.
+# Stages run in sequential order, but jobs within stages run in parallel.
+#
+# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
+
+stages:          # List of stages for jobs, and their order of execution
+  - container
+  - build
+  - deploy
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+variables:
+  FDO_UPSTREAM_REPO: 'rncbc/qpwgraph'
+
+=======
+>>>>>>> eb37035 (Update .gitlab-ci.yml file)
+=======
+variables:
+  FDO_UPSTREAM_REPO: 'rncbc/qpwgraph'
+
+>>>>>>> 293e2e7 (Update .gitlab-ci.yml file)
+include:
+  - project: 'freedesktop/ci-templates'
+    file: '/templates/fedora.yml'
+  - project: 'freedesktop/ci-templates'
+    file: '/templates/ubuntu.yml'
+
+<<<<<<< HEAD
+=======
+>>>>>>> 6dd091d (Update .gitlab-ci.yml file)
+=======
+>>>>>>> eb37035 (Update .gitlab-ci.yml file)
+container_fedora:
+  stage: container
+  extends:
+    - .fedora
+    - .fdo.container-build@fedora
+  variables:
+    GIT_STRATEGY: none # no need to pull the whole tree for rebuilding the image
+
+container_ubuntu:
+  stage: container
+  extends:
+    - .ubuntu
+    - .fdo.container-build@ubuntu
+  variables:
+    GIT_STRATEGY: none # no need to pull the whole tree for rebuilding the image
+
+.fedora:
+  variables:
+    # Update this tag when you want to trigger a rebuild
+    FDO_DISTRIBUTION_TAG: '2021-11-21.0'
+    FDO_DISTRIBUTION_VERSION: '35'
+    FDO_DISTRIBUTION_PACKAGES: >-
+      gcc
+      gcc-c++
+      findutils
+      pkgconf
+      cmake
+      qt5-qtbase-devel
+      qt5-qttools-devel
+      alsa-lib-devel
+      pipewire-devel
+
+.ubuntu:
+  variables:
+    # Update this tag when you want to trigger a rebuild
+    FDO_DISTRIBUTION_TAG: '2021-11-21.0'
+    FDO_DISTRIBUTION_VERSION: '21.10'
+    FDO_DISTRIBUTION_PACKAGES: >-
+      debhelper-compat
+      gcc
+<<<<<<< HEAD
+<<<<<<< HEAD
+      g++
+=======
+      gcc-c++
+>>>>>>> 6dd091d (Update .gitlab-ci.yml file)
+=======
+      g++
+>>>>>>> 7b25de9 (Update .gitlab-ci.yml file)
+      findutils
+      pkg-config
+      cmake
+      qtbase5-dev
+      qttools5-dev
+      libasound2-dev
+      libpipewire-0.3-dev
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  script:
+    - echo "Building application..."
+    - cmake -DCONFIG_QT6=OFF -DCONFIG_ALSA_MIDI=ON -B build
+    - cmake --build build
+    - echo "Build complete."
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  script:
+    - echo "Deploying application..."
+    - cmake --install build
+    - echo "Deplay complete."
