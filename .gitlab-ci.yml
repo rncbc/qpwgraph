@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 # qpwgraph Pipeline
-=======
->>>>>>> 6dd091d (Update .gitlab-ci.yml file)
-=======
-# qpwgraph Pipeline
->>>>>>> eb37035 (Update .gitlab-ci.yml file)
 #
 # A pipeline is composed of independent jobs that run scripts, grouped into stages.
 # Stages run in sequential order, but jobs within stages run in parallel.
@@ -17,30 +10,15 @@ stages:          # List of stages for jobs, and their order of execution
   - build
   - deploy
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 variables:
   FDO_UPSTREAM_REPO: 'rncbc/qpwgraph'
 
-=======
->>>>>>> eb37035 (Update .gitlab-ci.yml file)
-=======
-variables:
-  FDO_UPSTREAM_REPO: 'rncbc/qpwgraph'
-
->>>>>>> 293e2e7 (Update .gitlab-ci.yml file)
 include:
   - project: 'freedesktop/ci-templates'
     file: '/templates/fedora.yml'
   - project: 'freedesktop/ci-templates'
     file: '/templates/ubuntu.yml'
 
-<<<<<<< HEAD
-=======
->>>>>>> 6dd091d (Update .gitlab-ci.yml file)
-=======
->>>>>>> eb37035 (Update .gitlab-ci.yml file)
 container_fedora:
   stage: container
   extends:
@@ -81,15 +59,7 @@ container_ubuntu:
     FDO_DISTRIBUTION_PACKAGES: >-
       debhelper-compat
       gcc
-<<<<<<< HEAD
-<<<<<<< HEAD
       g++
-=======
-      gcc-c++
->>>>>>> 6dd091d (Update .gitlab-ci.yml file)
-=======
-      g++
->>>>>>> 7b25de9 (Update .gitlab-ci.yml file)
       findutils
       pkg-config
       cmake
