@@ -1,14 +1,9 @@
 # qpwgraph Pipeline
 #
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
 
-stages:          # List of stages for jobs, and their order of execution
+stages:
   - container
   - build
-  - deploy
 
 variables:
   FDO_UPSTREAM_REPO: 'rncbc/qpwgraph'
@@ -68,17 +63,24 @@ container_ubuntu:
       libasound2-dev
       libpipewire-0.3-dev
 
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
+.build:
   script:
     - echo "Building application..."
     - cmake -DCONFIG_QT6=OFF -DCONFIG_ALSA_MIDI=ON -B build
     - cmake --build build
+    - cmake --install build
     - echo "Build complete."
 
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  script:
-    - echo "Deploying application..."
-    - cmake --install build
-    - echo "Deplay complete."
+build_fedora:
+  extends:
+    - .fedora
+    - .fdo.distribution-image@fedora
+    - .build
+  stage: build
+
+build_ubuntu:
+  extends:
+    - .ubuntu
+    - .fdo.distribution-image@ubuntu
+    - .build
+  stage: build
