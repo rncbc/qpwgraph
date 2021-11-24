@@ -77,7 +77,7 @@ container_ubuntu:
   artifacts:
     name: qpwgraph-$CI_COMMIT_SHA
     paths:
-      - /usr/local/bin/qpwgraph
+      - build/src/qpwgraph
 
 build_fedora:
   extends:
