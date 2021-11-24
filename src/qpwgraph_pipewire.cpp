@@ -129,7 +129,7 @@ void qpwgraph_registry_event_global (
 	if (props == nullptr)
 		return;
 
-	int changed = 0;
+	int nchanged = 0;
 
 	if (spa_streq(type, PW_TYPE_INTERFACE_Node)) {
 		QString node_name;
@@ -174,7 +174,7 @@ void qpwgraph_registry_event_global (
 			}
 		}
 		if (pw->createNode(id, node_name, node_mode, node_types))
-			++changed;
+			++nchanged;
 	}
 	else
 	if (spa_streq(type, PW_TYPE_INTERFACE_Port)) {
@@ -221,7 +221,7 @@ void qpwgraph_registry_event_global (
 		if (str && pw_properties_parse_bool(str))
 			port_flags |= qpwgraph_pipewire::Port::Control;
 		if (pw->createPort(id, node_id, port_name, port_mode, port_type, port_flags))
-			++changed;
+			++nchanged;
 	}
 	else
 	if (spa_streq(type, PW_TYPE_INTERFACE_Link)) {
@@ -230,10 +230,10 @@ void qpwgraph_registry_event_global (
 		str = spa_dict_lookup(props, PW_KEY_LINK_INPUT_PORT);
 		const uint port2_id = (str ? uint(pw_properties_parse_int(str)) : 0);
 		if (pw->createLink(id, port1_id, port2_id))
-			++changed;
+			++nchanged;
 	}
 
-	if (changed > 0)
+	if (nchanged > 0)
 		pw->changedNotify();
 }
 
@@ -649,8 +649,10 @@ void qpwgraph_pipewire::updateItems (void)
 	qDebug("qpwgraph_pipewire::updateItems()");
 #endif
 
-	// Nodes/ports/links inventory...
+	// 1. Nodes/ports inventory...
 	//
+	QList<qpwgraph_port *> ports;
+
 	foreach (Object *object, m_objects) {
 		if (object->type != Object::Node)
 			continue;
@@ -665,35 +667,43 @@ void qpwgraph_pipewire::updateItems (void)
 				node1->setMarked(true);
 				port1->setMarked(true);
 			}
-			if ((port_mode1 & qpwgraph_item::Output) == 0)
+			if (port_mode1 & qpwgraph_item::Output)
+				ports.append(port1);
+		}
+	}
+
+	// 2. Links inventory...
+	//
+	foreach (qpwgraph_port *port1, ports) {
+		Port *p1 = findPort(port1->portId());
+		if (p1 == nullptr)
+			continue;
+		foreach (const Link *link, p1->port_links) {
+			Port *p2 = findPort(link->port2_id);
+			if (p2 == nullptr)
 				continue;
-			foreach (const Link *link, p1->port_links) {
-				Port *p2 = findPort(link->port2_id);
-				if (p2 == nullptr)
-					continue;
-				const qpwgraph_item::Mode port_mode2
-					= qpwgraph_item::Input;
-				qpwgraph_node *node2 = nullptr;
-				qpwgraph_port *port2 = nullptr;
-				if (findNodePort(p2->node_id, link->port2_id,
-						port_mode2, &node2, &port2, false)) {
-					qpwgraph_connect *connect = port1->findConnect(port2);
-					if (connect == nullptr) {
-						connect = new qpwgraph_connect();
-						connect->setPort1(port1);
-						connect->setPort2(port2);
-						connect->updatePortTypeColors();
-						connect->updatePath();
-						qpwgraph_sect::addItem(connect);
-					}
-					if (connect)
-						connect->setMarked(true);
+			const qpwgraph_item::Mode port_mode2
+				= qpwgraph_item::Input;
+			qpwgraph_node *node2 = nullptr;
+			qpwgraph_port *port2 = nullptr;
+			if (findNodePort(p2->node_id, link->port2_id,
+					port_mode2, &node2, &port2, false)) {
+				qpwgraph_connect *connect = port1->findConnect(port2);
+				if (connect == nullptr) {
+					connect = new qpwgraph_connect();
+					connect->setPort1(port1);
+					connect->setPort2(port2);
+					connect->updatePortTypeColors();
+					connect->updatePath();
+					qpwgraph_sect::addItem(connect);
 				}
+				if (connect)
+					connect->setMarked(true);
 			}
 		}
 	}
 
-	// Clean-up all un-marked items...
+	// 3. Clean-up all un-marked items...
 	//
 	qpwgraph_sect::resetItems(qpwgraph_pipewire::nodeType());
 }
