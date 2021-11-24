@@ -515,6 +515,12 @@ void qpwgraph_form::helpAbout (void)
 	text += "<br />\n";
 	text += tr("Version") + ": <b>" + version + "</b><br />\n";
 	text += "<br />\n";
+	text += tr("Using: Qt %1").arg(qVersion());
+#if defined(QT_STATIC)
+	text += "-static";
+#endif
+	text += "<br />\n";
+	text += "<br />\n";
 	text += "<small>";
 	text += copyright + "<br />\n";
 	text += "<br />\n";
