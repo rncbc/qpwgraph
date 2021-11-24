@@ -1,5 +1,9 @@
 # qpwgraph Pipeline
 #
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - when: never
 
 stages:
   - container
@@ -70,6 +74,10 @@ container_ubuntu:
     - cmake --build build
     - cmake --install build
     - echo "Build complete."
+  artifacts:
+    name: qpwgraph-$CI_COMMIT_SHA
+    paths:
+      - /usr/local/bin/qpwgraph
 
 build_fedora:
   extends:
