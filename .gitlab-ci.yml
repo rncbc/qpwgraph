@@ -70,9 +70,9 @@ container_ubuntu:
 .build:
   script:
     - echo "Building application..."
-    - cmake -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/usr/local \
-            -DCONFIG_QT6=OFF \
-            -DCONFIG_ALSA_MIDI=ON \
+    - cmake -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/usr/local
+            -DCONFIG_QT6=OFF
+            -DCONFIG_ALSA_MIDI=ON
             -B build
     - cmake --build build
     - cmake --install build
