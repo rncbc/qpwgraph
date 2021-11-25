@@ -70,14 +70,17 @@ container_ubuntu:
 .build:
   script:
     - echo "Building application..."
-    - cmake -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR -DCONFIG_QT6=OFF -DCONFIG_ALSA_MIDI=ON -B build
+    - cmake -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/usr/local \
+            -DCONFIG_QT6=OFF \
+            -DCONFIG_ALSA_MIDI=ON \
+            -B build
     - cmake --build build
     - cmake --install build
     - echo "Build complete."
   artifacts:
-    name: qpwgraph-$CI_COMMIT_TAG.$CI_COMMIT_SHORT_SHA
+    name: qpwgraph-$CI_COMMIT_SHORT_SHA
     paths:
-      - bin/qpwgraph
+      - usr/local/bin/qpwgraph
 
 build_fedora:
   extends:
