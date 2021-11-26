@@ -811,8 +811,10 @@ void qpwgraph_form::closeEvent ( QCloseEvent *event )
 	hide();
 #ifdef CONFIG_SYSTEM_TRAY
 	m_systray->updateContextMenu();
-#endif
 	event->ignore();
+#else
+	QMainWindow::closeEvent(event);
+#endif
 }
 
 
