@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.15)
 
 project(qpwgraph
-  VERSION 0.0.7
+  VERSION 0.0.8
   DESCRIPTION "A PipeWire Graph Qt GUI Interface"
   LANGUAGES C CXX)
 
@@ -34,6 +34,9 @@ endif ()
 # Enable ALSA MIDI support option.
 option (CONFIG_ALSA_MIDI "Enable ALSA MIDI support (default=no)" 0)
 
+# Enable system-tray icon support option.
+option (CONFIG_SYSTEM_TRAY "Enable system-tray icon support (default=yes)" 1)
+
 # Enable Qt6 build preference.
 option (CONFIG_QT6 "Enable Qt6 build (default=yes)" 1)
 
@@ -62,7 +65,11 @@ else ()
   find_package (QT QUIET NAMES Qt5)
 endif ()
 
-find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Network)
+find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets)
+
+if (CONFIG_SYSTEM_TRAY)
+  find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Network)
+endif ()
 
 
 add_subdirectory (src)

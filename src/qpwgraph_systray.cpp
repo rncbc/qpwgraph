@@ -21,6 +21,9 @@
 
 #include "qpwgraph_systray.h"
 
+
+#ifdef CONFIG_SYSTEM_TRAY
+
 #include <QWidget>
 #include <QAction>
 
@@ -103,5 +106,7 @@ void qpwgraph_systray::closeQuit (void)
 #endif
 }
 
+
+#endif	// CONFIG_SYSTEM_TRAY
 
 // end of qpwgraph_systray.cpp

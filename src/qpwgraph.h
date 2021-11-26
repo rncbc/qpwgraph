@@ -26,11 +26,12 @@
 
 #include <QApplication>
 
-
 // Foward decls.
 class QWidget;
+#ifdef CONFIG_SYSTEM_TRAY
 class QSharedMemory;
 class QLocalServer;
+#endif
 
 
 //-------------------------------------------------------------------------
@@ -55,6 +56,8 @@ public:
 	QWidget *mainWidget() const
 		{ return m_widget; }
 
+#ifdef CONFIG_SYSTEM_TRAY
+
 	// Check if another instance is running,
 	// and raise its proper main widget...
 	bool setup();
@@ -65,13 +68,17 @@ protected slots:
 	void newConnectionSlot();
 	void readyReadSlot();
 
+#endif
+
 private:
 
 	// Instance variables.
 	QWidget       *m_widget;
+#ifdef CONFIG_SYSTEM_TRAY
 	QString        m_unique;
 	QSharedMemory *m_memory;
 	QLocalServer  *m_server;
+#endif
 };
 
 

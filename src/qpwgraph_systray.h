@@ -22,6 +22,10 @@
 #ifndef __qpwgraph_systray_h
 #define __qpwgraph_systray_h
 
+#include "config.h"
+
+#ifdef CONFIG_SYSTEM_TRAY
+
 #include <QSystemTrayIcon>
 #include <QMenu>
 
@@ -62,6 +66,8 @@ private:
 	QMenu    m_menu;
 };
 
+
+#endif	// CONFIG_SYSTEM_TRAY
 
 #endif  // __qpwgraph_systray_h
 

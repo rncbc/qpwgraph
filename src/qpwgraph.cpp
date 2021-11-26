@@ -22,10 +22,12 @@
 #include "qpwgraph.h"
 #include "qpwgraph_form.h"
 
+#ifdef CONFIG_SYSTEM_TRAY
 #include <QSharedMemory>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QHostInfo>
+#endif
 
 
 //-------------------------------------------------------------------------
@@ -34,8 +36,10 @@
 
 // Constructor.
 qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
-	: QApplication(argc, argv),
-		m_widget(nullptr), m_memory(nullptr), m_server(nullptr)
+	: QApplication(argc, argv), m_widget(nullptr)
+#ifdef CONFIG_SYSTEM_TRAY
+	, m_memory(nullptr), m_server(nullptr)
+#endif
 {
 	QApplication::setApplicationName(PROJECT_NAME);
 	QApplication::setApplicationDisplayName(PROJECT_DESCRIPTION);
@@ -45,18 +49,21 @@ qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 // Destructor.
 qpwgraph_application::~qpwgraph_application (void)
 {
+#ifdef CONFIG_SYSTEM_TRAY
 	if (m_server) {
 		m_server->close();
 		delete m_server;
 		m_server = nullptr;
 	}
-
 	if (m_memory) {
 		delete m_memory;
 		m_memory = nullptr;
 	}
+#endif
 }
 
+
+#ifdef CONFIG_SYSTEM_TRAY
 
 // Check if another instance is running,
 // and raise its proper main widget...
@@ -145,6 +152,8 @@ void qpwgraph_application::readyReadSlot (void)
 	}
 }
 
+#endif	// CONFIG_SYSTEM_TRAY
+
 
 //----------------------------------------------------------------------------
 // main.
@@ -158,11 +167,13 @@ int main ( int argc, char *argv[] )
 #endif
 	qpwgraph_application app(argc, argv);
 
+#ifdef CONFIG_SYSTEM_TRAY
 	// Have another instance running?
 	if (app.setup()) {
 		app.quit();
 		return 2;
 	}
+#endif
 
 	qpwgraph_form form;
 	app.setMainWidget(&form);

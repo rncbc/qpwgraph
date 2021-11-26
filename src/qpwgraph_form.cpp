@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "config.h"
 #include "qpwgraph_form.h"
 
 #include "qpwgraph_config.h"
@@ -345,8 +346,12 @@ qpwgraph_form::qpwgraph_form (
 		SIGNAL(orientationChanged(Qt::Orientation)),
 		SLOT(orientationChanged(Qt::Orientation)));
 
+#ifdef CONFIG_SYSTEM_TRAY
 	m_systray = new qpwgraph_systray(this);
 	m_systray->show();
+#else
+	m_systray = nullptr;
+#endif
 
 	restoreState();
 
@@ -368,7 +373,9 @@ qpwgraph_form::qpwgraph_form (
 // Destructor.
 qpwgraph_form::~qpwgraph_form (void)
 {
+#ifdef CONFIG_SYSTEM_TRAY
 	delete m_systray;
+#endif
 
 	delete m_sort_order;
 	delete m_sort_type;
@@ -783,17 +790,18 @@ void qpwgraph_form::resizeEvent ( QResizeEvent *event )
 void qpwgraph_form::showEvent ( QShowEvent *event )
 {
 	QMainWindow::showEvent(event);
-
+#ifdef CONFIG_SYSTEM_TRAY
 	m_systray->updateContextMenu();
+#endif
 }
 
 
 void qpwgraph_form::hideEvent ( QHideEvent *event )
 {
 	QMainWindow::hideEvent(event);
-
+#ifdef CONFIG_SYSTEM_TRAY
 	m_systray->updateContextMenu();
-
+#endif
 	saveState();
 }
 
@@ -801,9 +809,9 @@ void qpwgraph_form::hideEvent ( QHideEvent *event )
 void qpwgraph_form::closeEvent ( QCloseEvent *event )
 {
 	hide();
-
+#ifdef CONFIG_SYSTEM_TRAY
 	m_systray->updateContextMenu();
-
+#endif
 	event->ignore();
 }
 

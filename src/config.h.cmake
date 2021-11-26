@@ -15,8 +15,12 @@
 /* Define if debugging is enabled. */
 #cmakedefine CONFIG_DEBUG @CONFIG_DEBUG@
 
+
 /* Define if ALSA MIDI support is available. */
 #cmakedefine CONFIG_ALSA_MIDI @CONFIG_ALSA_MIDI@
+
+/* Define if system-tray icon support is available. */
+#cmakedefine CONFIG_SYSTEM_TRAY @CONFIG_SYSTEM_TRAY@
 
 
 #endif // __CONFIG_H
