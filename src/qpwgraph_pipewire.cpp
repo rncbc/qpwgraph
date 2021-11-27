@@ -380,7 +380,8 @@ bool qpwgraph_pipewire::open (void)
 	m_data->loop = pw_thread_loop_new("qpwgraph_thread_loop", nullptr);
 	if (m_data->loop == nullptr) {
 		qDebug("pw_thread_loop_new: Can't create thread loop.");
-		close();
+		delete m_data;
+		pw_deinit();
 		return false;
 	}
 
@@ -389,7 +390,10 @@ bool qpwgraph_pipewire::open (void)
 		nullptr /*properties*/, 0 /*user_data size*/);
 	if (m_data->context == nullptr) {
 		qDebug("pw_context_new: Can't create context.");
-		close();
+		pw_thread_loop_destroy(m_data->loop);
+		delete m_data;
+		m_data = nullptr;
+		pw_deinit();
 		return false;
 	}
 
@@ -397,7 +401,11 @@ bool qpwgraph_pipewire::open (void)
 		nullptr /*properties*/, 0 /*user_data size*/);
 	if (m_data->core == nullptr) {
 		qDebug("pw_context_connect: Can't connect context.");
-		close();
+		pw_context_destroy(m_data->context);
+		pw_thread_loop_destroy(m_data->loop);
+		delete m_data;
+		m_data = nullptr;
+		pw_deinit();
 		return false;
 	}
 
@@ -426,25 +434,26 @@ void qpwgraph_pipewire::close (void)
 
 	clearObjects();
 
-	if (m_data && m_data->loop)
+	if (m_data == nullptr)
+		return;
+
+	if (m_data->loop)
 		pw_thread_loop_stop(m_data->loop);
 
-	if (m_data && m_data->registry)
+	if (m_data->registry)
 		pw_proxy_destroy((struct pw_proxy*)m_data->registry);
 
-	if (m_data && m_data->core)
+	if (m_data->core)
 		pw_core_disconnect(m_data->core);
 
-	if (m_data && m_data->context)
+	if (m_data->context)
 		pw_context_destroy(m_data->context);
 
-	if (m_data && m_data->loop)
+	if (m_data->loop)
 		pw_thread_loop_destroy(m_data->loop);
 
-	if (m_data) {
-		delete m_data;
-		m_data = nullptr;
-	}
+	delete m_data;
+	m_data = nullptr;
 
 	pw_deinit();
 }
