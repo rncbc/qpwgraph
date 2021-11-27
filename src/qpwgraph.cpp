@@ -22,6 +22,8 @@
 #include "qpwgraph.h"
 #include "qpwgraph_form.h"
 
+#include <QTextStream>
+
 #ifdef CONFIG_SYSTEM_TRAY
 #include <QSharedMemory>
 #include <QLocalServer>
@@ -60,6 +62,59 @@ qpwgraph_application::~qpwgraph_application (void)
 		m_memory = nullptr;
 	}
 #endif
+}
+
+
+// Parse command line arguments.
+bool qpwgraph_application::parse_args (  )
+{
+	QTextStream out(stderr);
+
+	const QStringList& args
+		= QApplication::arguments();
+	const int argc = args.count();
+
+	for (int i = 1; i < argc; ++i) {
+		const QString& arg = args.at(i);
+		if (arg == "-h" || arg == "--help") {
+			print_usage(args.at(0));
+			return false;
+		}
+		else if (arg == "-v" || arg == "--version") {
+			out << QString("Qt: %1").arg(qVersion());
+		#if defined(QT_STATIC)
+			out << "-static";
+		#endif
+			out << '\n';
+			out << QString("%1: %2\n")
+				.arg(PROJECT_NAME)
+				.arg(PROJECT_VERSION);
+			return false;
+		}
+	}
+
+	// Alright with argument parsing.
+	return true;
+}
+
+
+// Help about command line options.
+void qpwgraph_application::print_usage ( const QString& arg0 )
+{
+	QTextStream out(stderr);
+
+	out << PROJECT_NAME " - " << QObject::tr(PROJECT_DESCRIPTION) << '\n'
+		<< '\n';
+	out << QObject::tr("Usage: %1 [options]").arg(arg0) << '\n'
+		<< '\n';
+	out << QObject::tr("Options:") << '\n'
+		<< '\n';
+	out << "  -h, --help" << '\n'
+		<< '\t' << QObject::tr("Show help about command line options") << '\n'
+		<< '\n';
+	out << "  -v, --version" << '\n'
+		<< '\t' << QObject::tr("Show version information") << '\n'
+		<< '\n';
 }
 
 
@@ -119,7 +174,7 @@ bool qpwgraph_application::setup (void)
 		}
 	}
 
-	return !is_server;
+	return is_server;
 }
 
 
@@ -167,9 +222,14 @@ int main ( int argc, char *argv[] )
 #endif
 	qpwgraph_application app(argc, argv);
 
+	if (!app.parse_args()) {
+		app.quit();
+		return 1;
+	}
+
 #ifdef CONFIG_SYSTEM_TRAY
 	// Have another instance running?
-	if (app.setup()) {
+	if (!app.setup()) {
 		app.quit();
 		return 2;
 	}

@@ -50,6 +50,10 @@ public:
 	// Destructor.
 	~qpwgraph_application();
 
+	// Parse/help about command line arguments.
+	bool parse_args();
+	void print_usage(const QString& arg0);
+
 	// Main application widget accessors.
 	void setMainWidget(QWidget *widget)
 		{ m_widget = widget; }
