@@ -73,3 +73,20 @@ endif ()
 
 
 add_subdirectory (src)
+
+
+# Configuration status
+macro (SHOW_OPTION text value)
+  if (${value})
+    message ("${text}: yes")
+  else ()
+    message ("${text}: no")
+  endif ()
+endmacro ()
+
+message   ("\n  ${PROJECT_NAME} ${PROJECT_VERSION} (Qt ${QT_VERSION})\n")
+show_option ("  Debug build type . . . . . . . . . . . . . . . . ." CONFIG_DEBUG)
+message     ("")
+show_option ("  ALSA MIDI support  . . . . . . . . . . . . . . . ." CONFIG_ALSA_MIDI)
+show_option ("  System-tray icon support . . . . . . . . . . . . ." CONFIG_SYSTEM_TRAY)
+message   ("\n  Install prefix . . . . . . . . . . . . . . . . . .: ${CMAKE_INSTALL_PREFIX}\n")
