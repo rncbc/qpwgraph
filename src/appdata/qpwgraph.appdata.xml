@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2010-2020 Rui Nuno Capela <rncbc@rncbc.org> -->
+<component type="desktop">
+ <id>org.freedesktop.rncbc.qpwgraph</id>
+ <metadata_license>FSFAP</metadata_license>
+ <project_license>GPL-2.0+</project_license>
+ <name>qpwgraph</name>
+ <summary>A PipeWire Graph Qt GUI Interface</summary>
+ <description>
+  <p>qpwgraph is a graph manager dedicated for PipeWire (https://pipewire.org),
+  using the Qt C++ framework (https://qt.io), based and pretty much like the
+  same of QjackCtl (https://qjackctl.sourceforge.io).</p>
+ </description>
+ <launchable type="desktop-id">qpwgraph.desktop</launchable>
+ <provides>
+  <binary>qpwgraph</binary>
+ </provides>
+ <screenshots>
+  <screenshot type="default">
+   <image>https://gitlab.freedesktop.org/rncbc/qpwgraph/-/raw/main/src/images/qpwgraph.png</image>
+   <caption>The system tray icon showing the application in action</caption>
+  </screenshot>
+ </screenshots>
+ <keywords>
+  <keyword>AudioVideo</keyword>
+  <keyword>Audio</keyword>
+  <keyword>Video</keyword>
+  <keyword>MIDI</keyword>
+  <keyword>Qt</keyword>
+ </keywords>
+ <url type="homepage">https://gitlab.freedesktop.org/rncbc/qpwgraph</url>
+ <developer_name>rncbc aka. Rui Nuno Capela</developer_name>
+ <update_contact>rncbc@rncbc.org</update_contact>
+</component>

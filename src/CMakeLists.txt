@@ -90,4 +90,13 @@ if (CONFIG_SYSTEM_TRAY)
   target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
 endif ()
 
-install (TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install (TARGETS ${PROJECT_NAME} RUNTIME
+  DESTINATION ${CMAKE_INSTALL_BINDIR})
+install (FILES ${PROJECT_NAME}.desktop
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+install (FILES images/${PROJECT_NAME}.png
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/apps)
+install (FILES images/${PROJECT_NAME}.svg
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
+install (FILES appdata/${PROJECT_NAME}.appdata.xml
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)

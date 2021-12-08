@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=qpwgraph
+Version=1.0
+GenericName=PipeWire Graph
+Comment=qpwgraph is a PipeWire graph Qt GUI interface
+Exec=qpwgraph
+Icon=qpwgraph
+Categories=AudioVideo;Audio;Video;Midi;X-Alsa;X-PipeWire;Qt;
+Keywords=PipeWire;MIDI;ALSA;
+Terminal=false
+Type=Application
+StartupWMClass=qpwgraph
+X-Window-Icon=qpwgraph
