@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2010-2020 Rui Nuno Capela <rncbc@rncbc.org> -->
 <component type="desktop">
- <id>org.freedesktop.rncbc.qpwgraph</id>
+ <id>org.rncbc.qpwgraph</id>
  <metadata_license>FSFAP</metadata_license>
  <project_license>GPL-2.0+</project_license>
  <name>qpwgraph</name>
  <summary>A PipeWire Graph Qt GUI Interface</summary>
  <description>
-  <p>qpwgraph is a graph manager dedicated for PipeWire (https://pipewire.org),
+  <p>qpwgraph is a graph manager dedicated to PipeWire (https://pipewire.org),
   using the Qt C++ framework (https://qt.io), based and pretty much like the
   same of QjackCtl (https://qjackctl.sourceforge.io).</p>
  </description>
