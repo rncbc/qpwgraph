@@ -2,7 +2,7 @@
 
 ## A PipeWire Graph Qt GUI Interface
 
-  **qpwgraph** is a graph manager dedicated for [PipeWire](https://pipewire.org),
+  **qpwgraph** is a graph manager dedicated to [PipeWire](https://pipewire.org),
   using the [Qt C++ framework](https://qt.io), based and pretty much like the
   same of [QjackCtl](https://qjackctl.sourceforge.io).
 
