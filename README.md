@@ -23,7 +23,7 @@
 
 ## Building
 
-   **qpwgraph** uses the [CMake](https:://cmake.org) build system, version
+   **qpwgraph** uses the [CMake](https://cmake.org) build system, version
    3.15 or newer.
    
    On the source distribution top directory:
