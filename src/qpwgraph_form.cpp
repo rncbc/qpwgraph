@@ -29,6 +29,8 @@
 
 #include "qpwgraph_systray.h"
 
+#include <pipewire/pipewire.h>
+
 #include <QTimer>
 #include <QMenu>
 
@@ -526,6 +528,10 @@ void qpwgraph_form::helpAbout (void)
 #if defined(QT_STATIC)
 	text += "-static";
 #endif
+	text += ", ";
+	text +=	tr("libpipewire: %1 (headers: %2)")
+		.arg(pw_get_library_version())
+		.arg(pw_get_headers_version());
 	text += "<br />\n";
 	text += "<br />\n";
 	text += "<small>";

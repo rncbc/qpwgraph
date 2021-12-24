@@ -22,6 +22,8 @@
 #include "qpwgraph.h"
 #include "qpwgraph_form.h"
 
+#include <pipewire/pipewire.h>
+
 #include <QTextStream>
 
 #ifdef CONFIG_SYSTEM_TRAY
@@ -85,6 +87,10 @@ bool qpwgraph_application::parse_args (  )
 		#if defined(QT_STATIC)
 			out << "-static";
 		#endif
+			out << '\n';
+			out << QString("libpipewire: %1 (headers: %2)")
+				.arg(pw_get_library_version())
+				.arg(pw_get_headers_version());
 			out << '\n';
 			out << QString("%1: %2\n")
 				.arg(PROJECT_NAME)

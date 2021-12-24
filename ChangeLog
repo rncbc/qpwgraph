@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 0.1.1  2021-12-18  One second alpha.
 
+- Added libpipewire (and headers) version inormation to about box.
 - Added icons, desktop and appstream data to installation.
 
 
