@@ -529,7 +529,7 @@ void qpwgraph_form::helpAbout (void)
 	text += "-static";
 #endif
 	text += ", ";
-	text +=	tr("libpipewire: %1 (headers: %2)")
+	text +=	tr("libpipewire %1 (headers: %2)")
 		.arg(pw_get_library_version())
 		.arg(pw_get_headers_version());
 	text += "<br />\n";
