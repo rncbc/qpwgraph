@@ -11,6 +11,9 @@
 /* Define to the description of this package. */
 #cmakedefine PROJECT_DESCRIPTION "@PROJECT_DESCRIPTION@"
 
+/* Define to the homepage of this package. */
+#cmakedefine PROJECT_HOMEPAGE_URL "@PROJECT_HOMEPAGE_URL@"
+
 
 /* Define if debugging is enabled. */
 #cmakedefine CONFIG_DEBUG @CONFIG_DEBUG@

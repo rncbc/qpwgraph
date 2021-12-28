@@ -516,6 +516,7 @@ void qpwgraph_form::helpAbout (void)
 	static const QString title = PROJECT_NAME;
 	static const QString version = PROJECT_VERSION;
 	static const QString subtitle = PROJECT_DESCRIPTION;
+	static const QString website = PROJECT_HOMEPAGE_URL;
 	static const QString copyright
 		= "Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.";
 
@@ -533,6 +534,8 @@ void qpwgraph_form::helpAbout (void)
 		.arg(pw_get_library_version())
 		.arg(pw_get_headers_version());
 	text += "<br />\n";
+	text += "<br />\n";
+	text += tr("Website") + ": <a href=\"" + website + + "\">" + website + "</a><br />\n";
 	text += "<br />\n";
 	text += "<small>";
 	text += copyright + "<br />\n";
