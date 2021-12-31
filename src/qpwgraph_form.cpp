@@ -1,7 +1,7 @@
 // qpwgraph_form.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -518,7 +518,7 @@ void qpwgraph_form::helpAbout (void)
 	static const QString subtitle = PROJECT_DESCRIPTION;
 	static const QString website = PROJECT_HOMEPAGE_URL;
 	static const QString copyright
-		= "Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.";
+		= "Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.";
 
 	QString text = "<p>\n";
 	text += "<b>" + title + " - " + subtitle + "</b><br />\n";
