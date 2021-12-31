@@ -33,7 +33,7 @@ endif ()
 
 
 # Enable ALSA MIDI support option.
-option (CONFIG_ALSA_MIDI "Enable ALSA MIDI support (default=no)" 0)
+option (CONFIG_ALSA_MIDI "Enable ALSA MIDI support (default=no)" 1)
 
 # Enable system-tray icon support option.
 option (CONFIG_SYSTEM_TRAY "Enable system-tray icon support (default=yes)" 1)

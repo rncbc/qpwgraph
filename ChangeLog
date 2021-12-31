@@ -2,6 +2,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- ALSA MIDI (Sequencer) support is now opted in by default.
+
+
 0.1.1  2021-12-18  One second alpha.
 
 - Added libpipewire (and headers) version information to about box.
