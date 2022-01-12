@@ -4,6 +4,16 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Corrected appdata file suffix to .metainfo.xml
+
+
+0.1.3  2022-01-09  A Winter'22 Release.
+
+- Updated and renamed appdata and desktop files.
+
+
+0.1.2  2021-12-31  One third alpha.
+
 - ALSA MIDI (Sequencer) support is now opted in by default.
 
 
