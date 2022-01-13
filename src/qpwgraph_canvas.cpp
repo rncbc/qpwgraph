@@ -1,7 +1,7 @@
 // qpwgraph_canvas.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -51,6 +51,9 @@ static const char *CanvasZoomKey    = "/CanvasZoom";
 static const char *NodePosGroup     = "/GraphNodePos";
 
 static const char *ColorsGroup      = "/GraphColors";
+
+static const char *NodeAliasesGroup = "/GraphNodeAliases";
+static const char *PortAliasesGroup = "/GraphPortAliases";
 
 
 //----------------------------------------------------------------------------
@@ -133,16 +136,23 @@ QSettings *qpwgraph_canvas::settings (void) const
 // Canvas methods.
 void qpwgraph_canvas::addItem ( qpwgraph_item *item )
 {
-	m_scene->addItem(item);
+	if (item->type() != qpwgraph_port::Type) // ports are already in nodes
+		m_scene->addItem(item);
 
 	if (item->type() == qpwgraph_node::Type) {
 		qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
 		if (node) {
 			m_nodes.append(node);
 			m_nodekeys.insert(qpwgraph_node::NodeKey(node), node);
-			if (!restoreNodePos(node))
+			if (!restoreNode(node))
 				emit added(node);
 		}
+	}
+	else
+	if (item->type() == qpwgraph_port::Type) {
+		qpwgraph_port *port = static_cast<qpwgraph_port *> (item);
+		if (port)
+			restorePort(port);
 	}
 }
 
@@ -151,12 +161,18 @@ void qpwgraph_canvas::removeItem ( qpwgraph_item *item )
 {
 	if (item->type() == qpwgraph_node::Type) {
 		qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
-		if (node && saveNodePos(node)) {
+		if (node && saveNode(node)) {
 			emit removed(node);
 			node->removePorts();
 			m_nodekeys.remove(qpwgraph_node::NodeKey(node));
 			m_nodes.removeAll(node);
 		}
+	}
+	else
+	if (item->type() == qpwgraph_port::Type) {
+		qpwgraph_port *port = static_cast<qpwgraph_port *> (item);
+		if (port)
+			savePort(port);
 	}
 
 	// Do not remove items from the scene
@@ -1028,15 +1044,25 @@ void qpwgraph_canvas::zoomFitRange ( const QRectF& range_rect )
 }
 
 
-// Graph node position methods.
-bool qpwgraph_canvas::restoreNodePos ( qpwgraph_node *node )
+// Graph node/port state methods.
+bool qpwgraph_canvas::restoreNode ( qpwgraph_node *node )
 {
 	if (m_settings == nullptr || node == nullptr)
 		return false;
 
+	const QString& node_key = nodeKey(node);
+
+	m_settings->beginGroup(NodeAliasesGroup);
+	const QString& node_title
+		= m_settings->value('/' + node_key).toString();
+	m_settings->endGroup();
+
+	if (!node_title.isEmpty())
+		node->setNodeTitle(node_title);
+
 	m_settings->beginGroup(NodePosGroup);
 	const QPointF& node_pos
-		= m_settings->value('/' + nodeKey(node)).toPointF();
+		= m_settings->value('/' + node_key).toPointF();
 	m_settings->endGroup();
 
 	if (node_pos.isNull())
@@ -1047,13 +1073,61 @@ bool qpwgraph_canvas::restoreNodePos ( qpwgraph_node *node )
 }
 
 
-bool qpwgraph_canvas::saveNodePos ( qpwgraph_node *node ) const
+bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 {
 	if (m_settings == nullptr || node == nullptr)
 		return false;
 
+	const QString& node_key = nodeKey(node);
+
+	m_settings->beginGroup(NodeAliasesGroup);
+	if (node->nodeName() != node->nodeTitle()) {
+		m_settings->setValue('/' + node_key, node->nodeTitle());
+	} else {
+		m_settings->remove('/' + node_key);
+	}
+	m_settings->endGroup();
+
 	m_settings->beginGroup(NodePosGroup);
-	m_settings->setValue('/' + nodeKey(node), node->pos());
+	m_settings->setValue('/' + node_key, node->pos());
+	m_settings->endGroup();
+
+	return true;
+}
+
+
+bool qpwgraph_canvas::restorePort ( qpwgraph_port *port )
+{
+	if (m_settings == nullptr || port == nullptr)
+		return false;
+
+	const QString& port_key = portKey(port);
+
+	m_settings->beginGroup(PortAliasesGroup);
+	const QString& port_title
+		= m_settings->value('/' + port_key).toString();
+	m_settings->endGroup();
+
+	if (port_title.isEmpty())
+		return false;
+
+	port->setPortTitle(port_title);
+	return true;
+}
+
+
+bool qpwgraph_canvas::savePort ( qpwgraph_port *port ) const
+{
+	if (m_settings == nullptr || port == nullptr)
+		return false;
+
+	const QString& port_key = portKey(port);
+
+	m_settings->beginGroup(PortAliasesGroup);
+	if (port->portName() != port->portTitle())
+		m_settings->setValue('/' + port_key, port->portTitle());
+	else
+		m_settings->remove('/' + port_key);
 	m_settings->endGroup();
 
 	return true;
@@ -1100,16 +1174,37 @@ bool qpwgraph_canvas::saveState (void) const
 	if (m_settings == nullptr)
 		return false;
 
-	m_settings->beginGroup(NodePosGroup);
 	const QList<QGraphicsItem *> items(m_scene->items());
 	foreach (QGraphicsItem *item, items) {
 		if (item->type() == qpwgraph_node::Type) {
 			qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
-			if (node)
-				m_settings->setValue('/' + nodeKey(node), node->pos());
+			if (node) {
+				const QString& node_key = nodeKey(node);
+				m_settings->beginGroup(NodePosGroup);
+				m_settings->setValue('/' + node_key, node->pos());
+				m_settings->endGroup();
+				m_settings->beginGroup(NodeAliasesGroup);
+				if (node->nodeName() != node->nodeTitle())
+					m_settings->setValue('/' + node_key, node->nodeTitle());
+				else
+					m_settings->remove('/' + node_key);
+				m_settings->endGroup();
+			}
+		}
+		else
+		if (item->type() == qpwgraph_port::Type) {
+			qpwgraph_port *port = static_cast<qpwgraph_port *> (item);
+			if (port) {
+				const QString& port_key = portKey(port);
+				m_settings->beginGroup(PortAliasesGroup);
+				if (port && port->portName() != port->portTitle())
+					m_settings->setValue('/' + port_key, port->portTitle());
+				else
+					m_settings->remove('/' + port_key);
+				m_settings->endGroup();
+			}
 		}
 	}
-	m_settings->endGroup();
 
 	m_settings->beginGroup(CanvasGroup);
 	m_settings->setValue(CanvasZoomKey, zoom());
@@ -1132,7 +1227,7 @@ bool qpwgraph_canvas::saveState (void) const
 }
 
 
-// Graph node key mangler.
+// Graph node/port key helpers.
 QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node ) const
 {
 	QString node_key = node->nodeName();
@@ -1149,6 +1244,33 @@ QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node ) const
 	}
 
 	return node_key;
+}
+
+
+QString qpwgraph_canvas::portKey ( qpwgraph_port *port ) const
+{
+	QString port_key;
+
+	qpwgraph_node *node = port->portNode();
+	if (node == nullptr)
+		return port_key;
+
+	port_key += node->nodeName();
+	port_key += ':';
+	port_key += port->portName();
+
+	switch (port->portMode()) {
+	case qpwgraph_item::Input:
+		port_key += ":Input";
+		break;
+	case qpwgraph_item::Output:
+		port_key += ":Output";
+		break;
+	default:
+		break;
+	}
+
+	return port_key;
 }
 
 

@@ -1,7 +1,7 @@
 // qpwgraph_canvas.h
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -183,15 +183,19 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *event);
 
-	// Graph node key helper.
+	// Graph node/port key helpers.
 	QString nodeKey(qpwgraph_node *node) const;
+	QString portKey(qpwgraph_port *port) const;
 
 	// Zoom in rectangle range.
 	void zoomFitRange(const QRectF& range_rect);
 
-	// Graph node position state methods.
-	bool restoreNodePos(qpwgraph_node *node);
-	bool saveNodePos(qpwgraph_node *node) const;
+	// Graph node/port state methods.
+	bool restoreNode(qpwgraph_node *node);
+	bool saveNode(qpwgraph_node *node) const;
+
+	bool restorePort(qpwgraph_port *port);
+	bool savePort(qpwgraph_port *port) const;
 
 	// Renaming editor position and size updater.
 	void updateEditorGeometry();

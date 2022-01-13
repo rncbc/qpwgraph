@@ -4,10 +4,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Nodes and port renames (titles aka aliases) are now persistent.
 - Corrected appdata file suffix to .metainfo.xml
 
 
-0.1.3  2022-01-09  A Winter'22 Release.
+0.1.3  2022-01-13  A Winter'22 Release.
 
 - Updated and renamed appdata and desktop files.
 

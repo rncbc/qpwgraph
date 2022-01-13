@@ -1,7 +1,7 @@
 // qpwgraph_pipewire.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -640,6 +640,7 @@ bool qpwgraph_pipewire::findNodePort (
 	if (add_new && *port == nullptr && *node) {
 		*port = (*node)->addPort(port_id, p->port_name, port_mode, port_type);
 		(*port)->updatePortTypeColors(canvas());
+		qpwgraph_sect::addItem(*port);
 	}
 
 	return (*node && *port);
