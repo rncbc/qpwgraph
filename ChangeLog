@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Retry/recover from PipeWire service errors/outages automatically.
 - Nodes and port renames (titles aka aliases) are now persistent.
 - Corrected appdata file suffix to .metainfo.xml
 

@@ -28,6 +28,8 @@
 
 #include <QMutexLocker>
 
+#include <QTimer>
+
 
 // Default port types...
 #define DEFAULT_AUDIO_TYPE "32 bit float mono audio"
@@ -356,7 +358,8 @@ qpwgraph_pipewire::qpwgraph_pipewire ( qpwgraph_canvas *canvas )
 {
 	resetPortTypeColors();
 
-	open();
+	if (!open())
+		QTimer::singleShot(3000, this, SLOT(reset()));
 }
 
 
@@ -456,6 +459,18 @@ void qpwgraph_pipewire::close (void)
 	m_data = nullptr;
 
 	pw_deinit();
+}
+
+
+// Get a brand new core and context...
+void qpwgraph_pipewire::reset (void)
+{
+	clearItems();
+
+	close();
+
+	if (!open())
+		QTimer::singleShot(3000, this, SLOT(reset()));
 }
 
 
@@ -658,6 +673,13 @@ void qpwgraph_pipewire::updateItems (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qpwgraph_pipewire::updateItems()");
 #endif
+
+	// 0. Check for core errors...
+	//
+	if (m_data->error) {
+		QTimer::singleShot(3000, this, SLOT(reset()));
+		return;
+	}
 
 	// 1. Nodes/ports inventory...
 	//

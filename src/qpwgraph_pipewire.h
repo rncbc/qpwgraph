@@ -123,6 +123,10 @@ signals:
 
 	void changed();
 
+protected slots:
+
+	void reset();
+
 protected:
 
 	// PipeWire node:port finder and creator if not existing.
