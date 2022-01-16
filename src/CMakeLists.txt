@@ -74,7 +74,7 @@ pkg_check_modules (PIPEWIRE REQUIRED IMPORTED_TARGET libpipewire-0.3)
 if (PIPEWIRE_FOUND)
   target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::PIPEWIRE)
 else ()
-  message (WARNING "*** ALSA MIDI library not found.")
+  message (WARNING "*** PipeWire library not found.")
 endif ()
 
 if (CONFIG_ALSA_MIDI)
@@ -92,11 +92,11 @@ endif ()
 
 install (TARGETS ${PROJECT_NAME} RUNTIME
   DESTINATION ${CMAKE_INSTALL_BINDIR})
-install (FILES org.freedesktop.rncbc.${PROJECT_NAME}.desktop
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install (FILES images/${PROJECT_NAME}.png
   DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/apps)
 install (FILES images/${PROJECT_NAME}.svg
   DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
+install (FILES appdata/org.freedesktop.rncbc.${PROJECT_NAME}.desktop
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install (FILES appdata/org.freedesktop.rncbc.${PROJECT_NAME}.metainfo.xml
   DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
