@@ -1,6 +1,11 @@
 qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
+GIT HEAD
+
+- Migrated command line parsing to QCommandLineParser/Option
+  (Qt >= 5.2) (EXPERIMENTAL)
+
 
 0.2.0  2022-01-16  Enter first beta.
 

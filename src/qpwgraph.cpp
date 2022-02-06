@@ -1,7 +1,7 @@
 // qpwgraph.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,6 +26,9 @@
 
 #include <QTextStream>
 
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+
 #ifdef CONFIG_SYSTEM_TRAY
 #include <QSharedMemory>
 #include <QLocalServer>
@@ -47,6 +50,18 @@ qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 {
 	QApplication::setApplicationName(PROJECT_NAME);
 	QApplication::setApplicationDisplayName(PROJECT_DESCRIPTION);
+
+	QString version(PROJECT_VERSION);
+	version += '\n';
+	version += QString("Qt: %1").arg(qVersion());
+#if defined(QT_STATIC)
+	version += "-static";
+#endif
+	version += '\n';
+	version += QString("libpipewire: %1 (headers: %2)")
+		.arg(pw_get_library_version())
+		.arg(pw_get_headers_version());
+	QApplication::setApplicationVersion(version);
 }
 
 
@@ -70,57 +85,18 @@ qpwgraph_application::~qpwgraph_application (void)
 // Parse command line arguments.
 bool qpwgraph_application::parse_args (  )
 {
-	QTextStream out(stderr);
+	const QStringList& args = QApplication::arguments();
 
-	const QStringList& args
-		= QApplication::arguments();
-	const int argc = args.count();
+	QCommandLineParser parser;
+	parser.setApplicationDescription(
+		PROJECT_NAME " - " + QObject::tr(PROJECT_DESCRIPTION));
 
-	for (int i = 1; i < argc; ++i) {
-		const QString& arg = args.at(i);
-		if (arg == "-h" || arg == "--help") {
-			print_usage(args.at(0));
-			return false;
-		}
-		else if (arg == "-v" || arg == "--version") {
-			out << QString("Qt: %1").arg(qVersion());
-		#if defined(QT_STATIC)
-			out << "-static";
-		#endif
-			out << '\n';
-			out << QString("libpipewire: %1 (headers: %2)")
-				.arg(pw_get_library_version())
-				.arg(pw_get_headers_version());
-			out << '\n';
-			out << QString("%1: %2\n")
-				.arg(PROJECT_NAME)
-				.arg(PROJECT_VERSION);
-			return false;
-		}
-	}
+	parser.addHelpOption();
+	parser.addVersionOption();
+	parser.process(args);
 
 	// Alright with argument parsing.
 	return true;
-}
-
-
-// Help about command line options.
-void qpwgraph_application::print_usage ( const QString& arg0 )
-{
-	QTextStream out(stderr);
-
-	out << PROJECT_NAME " - " << QObject::tr(PROJECT_DESCRIPTION) << '\n'
-		<< '\n';
-	out << QObject::tr("Usage: %1 [options]").arg(arg0) << '\n'
-		<< '\n';
-	out << QObject::tr("Options:") << '\n'
-		<< '\n';
-	out << "  -h, --help" << '\n'
-		<< '\t' << QObject::tr("Show help about command line options") << '\n'
-		<< '\n';
-	out << "  -v, --version" << '\n'
-		<< '\t' << QObject::tr("Show version information") << '\n'
-		<< '\n';
 }
 
 
