@@ -59,15 +59,15 @@ add_executable (${PROJECT_NAME}
   ${RESOURCES}
 )
 
+# Add some debugger flags.
+if (CONFIG_DEBUG AND UNIX AND NOT APPLE)
+  set (CONFIG_DEBUG_OPTIONS -g -fsanitize=address -fno-omit-frame-pointer)
+  target_compile_options (${PROJECT_NAME} PRIVATE ${CONFIG_DEBUG_OPTIONS})
+  target_link_options (${PROJECT_NAME} PRIVATE ${CONFIG_DEBUG_OPTIONS})
+endif ()
 
 set_target_properties (${PROJECT_NAME} PROPERTIES C_STANDARD 99)
 set_target_properties (${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
-
-if (CONFIG_DEBUG)
-  target_compile_options (${PROJECT_NAME} PRIVATE -g)
-else ()
-  target_compile_options (${PROJECT_NAME} PRIVATE -O2)
-endif ()
 
 include(FindPkgConfig)
 pkg_check_modules (PIPEWIRE REQUIRED IMPORTED_TARGET libpipewire-0.3)

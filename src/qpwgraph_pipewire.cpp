@@ -46,6 +46,8 @@ struct qpwgraph_pipewire::Object
 
 	Object(uint oid, Type otype) : id(oid), type(otype) {}
 
+	virtual ~Object() {}
+
 	uint id;
 	Type type;
 };
