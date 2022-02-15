@@ -88,6 +88,7 @@ if (CONFIG_ALSA_MIDI)
 endif ()
 
 target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Xml)
 
 if (CONFIG_SYSTEM_TRAY)
   target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)

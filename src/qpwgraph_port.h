@@ -1,7 +1,7 @@
 // qpwgraph_port.h
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -96,13 +96,22 @@ public:
 	// Special port-type color business.
 	void updatePortTypeColors(qpwgraph_canvas *canvas);
 
-	// Port hash/map key.
-	class PortKey : public ItemKey
+	// Port hash/map key (by id).
+	class PortIdKey : public IdKey
 	{
 	public:
-		// Constructors.
-		PortKey(qpwgraph_port *port)
-			: ItemKey(port->portId(), port->portMode(), port->portType()) {}
+		// Constructor.
+		PortIdKey(qpwgraph_port *port)
+			: IdKey(port->portId(), port->portMode(), port->portType()) {}
+	};
+
+	// Port hash/map key (by name).
+	class PortNameKey : public NameKey
+	{
+	public:
+		// Constructor.
+		PortNameKey(qpwgraph_port *port)
+			: NameKey(port->portName(), port->portMode(), port->portType()) {}
 	};
 
 	// Port sorting type.

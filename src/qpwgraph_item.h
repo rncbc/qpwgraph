@@ -1,7 +1,7 @@
 // qpwgraph_item.h
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -61,15 +61,15 @@ public:
 		Input = 1, Output = 2,
 		Duplex = Input | Output };
 
-	// Item hash/map key.
-	class ItemKey
+	// Item hash/map key (by id).
+	class IdKey
 	{
 	public:
 
 		// Constructors.
-		ItemKey (uint id, Mode mode, uint type = 0)
+		IdKey (uint id, Mode mode, uint type = 0)
 			: m_id(id), m_mode(mode), m_type(type) {}
-		ItemKey (const ItemKey& key)
+		IdKey (const IdKey& key)
 			: m_id(key.id()), m_mode(key.mode()), m_type(key.type()) {}
 
 		// Key accessors.
@@ -81,11 +81,11 @@ public:
 			{ return m_type; }
 
 		// Hash/map key comparators.
-		bool operator== (const ItemKey& key) const
+		bool operator== (const IdKey& key) const
 		{
-			return ItemKey::type() == key.type()
-				&& ItemKey::mode() == key.mode()
-				&& ItemKey::id()   == key.id();
+			return IdKey::type() == key.type()
+				&& IdKey::mode() == key.mode()
+				&& IdKey::id()   == key.id();
 		}
 
 	private:
@@ -96,7 +96,44 @@ public:
 		uint m_type;
 	};
 
-	typedef QHash<ItemKey, qpwgraph_item *> ItemKeys;
+	typedef QHash<IdKey, qpwgraph_item *> IdKeys;
+
+	// Item hash/map key (by name).
+	class NameKey
+	{
+	public:
+
+		// Constructors.
+		NameKey (const QString& name, Mode mode, uint type = 0)
+			: m_name(name), m_mode(mode), m_type(type) {}
+		NameKey (const NameKey& key)
+			: m_name(key.name()), m_mode(key.mode()), m_type(key.type()) {}
+
+		// Key accessors.
+		const QString& name() const
+			{ return m_name; }
+		Mode mode() const
+			{ return m_mode; }
+		uint type() const
+			{ return m_type; }
+
+		// Hash/map key comparators.
+		bool operator== (const NameKey& key) const
+		{
+			return NameKey::type() == key.type()
+				&& NameKey::mode() == key.mode()
+				&& NameKey::name() == key.name();
+		}
+
+	private:
+
+		// Key fields.
+		QString m_name;
+		Mode m_mode;
+		uint m_type;
+	};
+
+	typedef QHash<NameKey, qpwgraph_item *> NameKeys;
 
 	// Item-type hash (static)
 	static uint itemType(const QByteArray& type_name);
@@ -124,9 +161,14 @@ private:
 
 
 // Item hash function.
-inline uint qHash ( const qpwgraph_item::ItemKey& key )
+inline uint qHash ( const qpwgraph_item::IdKey& key )
 {
 	return qHash(key.id()) ^ qHash(uint(key.mode())) ^ qHash(key.type());
+}
+
+inline uint qHash ( const qpwgraph_item::NameKey& key )
+{
+	return qHash(key.name()) ^ qHash(uint(key.mode())) ^ qHash(key.type());
 }
 
 

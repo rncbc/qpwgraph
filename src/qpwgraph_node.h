@@ -1,7 +1,7 @@
 // qpwgraph_node.h
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -77,8 +77,9 @@ public:
 	void removePort(qpwgraph_port *port);
 	void removePorts();
 
-	// Port finder (by name, mode and type)
+	// Port finder (by id/name, mode and type)
 	qpwgraph_port *findPort(uint id, Mode mode, uint type = 0);
+	qpwgraph_port *findPort(const QString& name, Mode mode, uint type = 0);
 
 	// Port-list accessor.
 	const QList<qpwgraph_port *>& ports() const;
@@ -89,13 +90,22 @@ public:
 	// Path/shape updater.
 	void updatePath();
 
-	// Node hash key.
-	class NodeKey : public ItemKey
+	// Node hash key (by id).
+	class NodeIdKey : public IdKey
 	{
 	public:
 		// Constructors.
-		NodeKey(qpwgraph_node *node)
-			: ItemKey(node->nodeId(), node->nodeMode(), node->nodeType()) {}
+		NodeIdKey(qpwgraph_node *node)
+			: IdKey(node->nodeId(), node->nodeMode(), node->nodeType()) {}
+	};
+
+	// Node hash key (by name).
+	class NodeNameKey : public NameKey
+	{
+	public:
+		// Constructors.
+		NodeNameKey(qpwgraph_node *node)
+			: NameKey(node->nodeName(), node->nodeMode(), node->nodeType()) {}
 	};
 
 	// Rectangular editor extents.
@@ -123,7 +133,8 @@ private:
 	QGraphicsPixmapItem *m_pixmap;
 	QGraphicsTextItem   *m_text;
 
-	qpwgraph_port::ItemKeys m_portkeys;
+	qpwgraph_port::IdKeys   m_port_ids;
+	qpwgraph_port::NameKeys m_port_names;
 	QList<qpwgraph_port *>  m_ports;
 };
 

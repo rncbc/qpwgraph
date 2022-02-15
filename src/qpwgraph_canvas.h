@@ -91,9 +91,11 @@ public:
 	void resetNodes(uint node_type);
 	void clearNodes(uint node_type);
 
-	// Special node finder.
+	// Special node finders.
 	qpwgraph_node *findNode(
 		uint id, qpwgraph_item::Mode mode, uint type = 0) const;
+	qpwgraph_node *findNode(
+		const QString& name, qpwgraph_item::Mode mode, uint type = 0) const;
 
 	// Port (dis)connections notifiers.
 	void emitConnected(qpwgraph_port *port1, qpwgraph_port *port2);
@@ -215,7 +217,8 @@ private:
 	qreal            m_zoom;
 	bool             m_zoomrange;
 
-	qpwgraph_node::ItemKeys m_nodekeys;
+	qpwgraph_node::IdKeys   m_node_ids;
+	qpwgraph_node::NameKeys m_node_names;
 	QList<qpwgraph_node *>  m_nodes;
 
 	QUndoStack *m_commands;
