@@ -36,6 +36,12 @@
 #include <QFileInfo>
 
 
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
+
+
 //----------------------------------------------------------------------------
 // qpwgraph_patchbay -- Persistant connections patchbay impl.
 
@@ -149,6 +155,14 @@ bool qpwgraph_patchbay::save ( const QString& filename ) const
 			}
 		}
 	}
+
+	QFile file(filename);
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+		return false;
+
+	QTextStream ts(&file);
+	ts << doc.toString() << endl;
+	file.close();
 
 	return true;
 }
