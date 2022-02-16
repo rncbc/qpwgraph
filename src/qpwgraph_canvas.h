@@ -97,6 +97,9 @@ public:
 	qpwgraph_node *findNode(
 		const QString& name, qpwgraph_item::Mode mode, uint type = 0) const;
 
+	// Port (dis)connections dispatcher.
+	void emitConnectPorts(qgraph1_port *port1, qgraph1_port *port2, bool is_connect);
+
 	// Port (dis)connections notifiers.
 	void emitConnected(qpwgraph_port *port1, qpwgraph_port *port2);
 	void emitDisconnected(qpwgraph_port *port1, qpwgraph_port *port2);
@@ -208,14 +211,14 @@ private:
 	enum DragState { DragNone = 0, DragStart, DragMove, DragScroll };
 
 	// Instance variables.
-	QGraphicsScene  *m_scene;
-	DragState        m_state;
-	QPointF          m_pos;
+	QGraphicsScene   *m_scene;
+	DragState         m_state;
+	QPointF           m_pos;
 	qpwgraph_item    *m_item;
 	qpwgraph_connect *m_connect;
-	QRubberBand     *m_rubberband;
-	qreal            m_zoom;
-	bool             m_zoomrange;
+	QRubberBand      *m_rubberband;
+	qreal             m_zoom;
+	bool              m_zoomrange;
 
 	qpwgraph_node::IdKeys   m_node_ids;
 	qpwgraph_node::NameKeys m_node_names;
@@ -232,8 +235,8 @@ private:
 
 	// Item renaming stuff.
 	qpwgraph_item *m_edit_item;
-	QLineEdit    *m_editor;
-	int           m_edited;
+	QLineEdit     *m_editor;
+	int            m_edited;
 
 	// Original node position (for move command).
 	QPointF m_pos1;

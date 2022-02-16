@@ -366,6 +366,20 @@ qpwgraph_node *qpwgraph_canvas::findNode (
 }
 
 
+// Port (dis)connections dispatcher.
+void qpwgraph_canvas::emitConnectPorts (
+	qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect )
+{
+	//	if (m_patchbay)
+	//		m_patchbay->connectPorts(port1, port2, is_connect);
+
+	if (is_connect)
+		emitConnected(port1, port2);
+	else
+		emitDisconnected(port1, port2);
+}
+
+
 // Port (dis)connections notifiers.
 void qpwgraph_canvas::emitConnected (
 	qpwgraph_port *port1, qpwgraph_port *port2 )

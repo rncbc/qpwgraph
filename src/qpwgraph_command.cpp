@@ -1,7 +1,7 @@
 // qpwgraph_command.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -111,10 +111,7 @@ bool qpwgraph_connect_command::execute ( bool is_undo )
 
 	const bool is_connect
 		= (m_item.is_connect() && !is_undo) || (!m_item.is_connect() && is_undo);
-	if (is_connect)
-		canvas->emitConnected(port1, port2);
-	else
-		canvas->emitDisconnected(port1, port2);
+	canvas->emitConnectPorts(port1, port2, is_connect);
 
 	return true;
 }
