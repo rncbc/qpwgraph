@@ -61,7 +61,7 @@ bool qpwgraph_patchbay::load ( const QString& filename )
 	}
 	file.close();
 
-	clear();
+//	clear();
 
 	QDomElement edoc = doc.documentElement();
 	for (QDomNode nroot = edoc.firstChild();
