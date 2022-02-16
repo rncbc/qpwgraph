@@ -30,6 +30,7 @@
 // Forward decls.
 class qpwgraph_canvas;
 class qpwgraph_connect;
+class qpwgraph_port;
 
 
 //----------------------------------------------------------------------------
@@ -51,6 +52,9 @@ public:
 
 	// Execute and apply rules to graph.
 	bool scan();
+
+	// Update rules on demand.
+	void connectPorts(qpwgraph_port *port1, qpwgraph_port *port2, bool connect);
 
 	// Clear all patchbay rules and cache.
 	void clear();
@@ -97,7 +101,7 @@ private:
 
 	// Instance variables.
 	qpwgraph_canvas *m_canvas;
-	QList<Item *> m_list;
+	QHash<Item, Item *> m_items;
 	QHash<Item, qpwgraph_connect *> m_cache;
 };
 

@@ -100,7 +100,8 @@ bool qpwgraph_patchbay::load ( const QString& filename )
 					if (node_type > 0 && port_type > 0
 						&& !node1.isEmpty() && !port1.isEmpty()
 						&& !node2.isEmpty() && !port2.isEmpty()) {
-						m_list.append(new Item(node_type, port_type, node1, port1, node2, port2));
+						Item *item = new Item(node_type, port_type, node1, port1, node2, port2);
+						m_items.insert(*item, item);
 					}
 				}
 			}
@@ -178,9 +179,13 @@ bool qpwgraph_patchbay::scan (void)
 	if (scene == nullptr)
 		return false;
 
-	QHash<Item, qpwgraph_connect *>::Iterator iter;
+	QHash<Item, qpwgraph_connect *>::Iterator iter2;
+	const QHash<Item, qpwgraph_connect *>::Iterator& iter2_end = m_cache.end();
 
-	foreach (Item *item, m_list) {
+	QHash<Item, Item *>::ConstIterator iter = m_items.constBegin();
+	const QHash<Item, Item *>::ConstIterator& iter_end = m_items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		Item *item = m_items.value();
 		qpwgraph_node *node1
 			= m_canvas->findNode(
 				item->node1,
@@ -202,29 +207,57 @@ bool qpwgraph_patchbay::scan (void)
 			qpwgraph_node *node2 = port2->portNode();
 			if (node2 == nullptr)
 				continue;
-			const Item item(
+			const Item item2(
 				node1->nodeType(),
 				port1->portType(),
 				node1->nodeName(),
 				port1->portName(),
 				node2->nodeName(),
 				port2->portName());
-			iter = m_cache.find(item);
-			if (iter == m_cache.end() || iter.value() == nullptr)
+			iter2 = m_cache.find(item2);
+			if (iter2 == iter2_end || iter2.value() == nullptr)
 				m_canvas->emitConnected(port1, port2);
-			m_cache.insert(item, nullptr);
+			m_cache.insert(item2, nullptr);
 		}
 	}
 
-	for (iter = m_cache.begin(); iter != m_cache.end(); ++iter) {
-		qpwgraph_connect *connect = iter.value();
+	for (iter2 = m_cache.begin(); iter2 != iter2_end; ++iter2) {
+		qpwgraph_connect *connect = iter2.value();
 		if (connect) {
 			m_canvas->emitDisconnected(connect->port1(), connect->port2());
-			*iter = nullptr;
+			*iter2 = nullptr;
 		}
 	}
 
 	return true;
+}
+
+
+// Update rules on demand.
+void qpwgraph_patchbay::connectPorts ( qpwgraph_port *port1, qpwgraph_port *port2, bool connect )
+{
+	if (port1 == nullptr || port2 == nullptr)
+		return;
+
+	qpwgraph_node *node1 = port1->portNode();
+	qpwgraph_node *node2 = port2->portNode();
+	if (node1 && node2) {
+		const Item item(
+			node1->nodeType(),
+			port1->portType(),
+			node1->nodeName(),
+			port1->portName(),
+			node2->nodeName(),
+			port2->portName());
+		QHash<Item, Item *>::Iterator iter = m_items.find(item);
+		if (iter == m_items.end() && connect)
+			m_items.insert(item, new Item(item));
+		else
+		if (iter != m_items.end() && !connect) {
+			delete iter.value();
+			m_items.erase(iter);
+		}
+	}
 }
 
 
@@ -306,11 +339,14 @@ const char *qpwgraph_patchbay::textFromPortType ( uint port_type )
 // Clear all patchbay rules and cache.
 void qpwgraph_patchbay::clear (void)
 {
-	qDeleteAll(m_list);
-	m_list.clear();
+	QHash<Item, Item *>::ConstIterator iter = m_items.constBegin();
+	const QHash<Item, Item *>::ConstIterator& iter_end = m_items.constEnd();
+	for ( ; iter != iter_end; ++iter)
+		delete iter.value();
+
+	m_items.clear();
 	m_cache.clear();
 }
 
 
 // end of qpwgraph_patchbay.cpp
-
