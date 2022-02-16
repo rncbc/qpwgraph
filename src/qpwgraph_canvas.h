@@ -43,6 +43,8 @@ class QMouseEvent;
 class QWheelEvent;
 class QKeyEvent;
 
+class qpwgraph_patchbay;
+
 
 //----------------------------------------------------------------------------
 // qpwgraph_canvas -- Canvas graphics scene/view.
@@ -65,6 +67,8 @@ public:
 
 	void setSettings(QSettings *settings);
 	QSettings *settings() const;
+
+	qpwgraph_patchbay *patchbay() const;
 
 	// Canvas methods.
 	void addItem(qpwgraph_item *item);
@@ -226,6 +230,8 @@ private:
 
 	QUndoStack *m_commands;
 	QSettings  *m_settings;
+
+	qpwgraph_patchbay *m_patchbay;
 
 	QList<QGraphicsItem *> m_selected;
 	int m_selected_nodes;

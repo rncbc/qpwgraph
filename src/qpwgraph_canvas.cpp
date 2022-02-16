@@ -22,6 +22,7 @@
 #include "qpwgraph_canvas.h"
 
 #include "qpwgraph_connect.h"
+#include "qpwgraph_patchbay.h"
 
 #include <QGraphicsScene>
 #include <QRegularExpression>
@@ -64,13 +65,15 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 	: QGraphicsView(parent), m_state(DragNone), m_item(nullptr),
 		m_connect(nullptr), m_rubberband(nullptr),
 		m_zoom(1.0), m_zoomrange(false),
-		m_commands(nullptr), m_settings(nullptr),
+		m_commands(nullptr), m_settings(nullptr), m_patchbay(nullptr),
 		m_selected_nodes(0), m_edit_item(nullptr),
 		m_editor(nullptr), m_edited(0)
 {
 	m_scene = new QGraphicsScene();
 
 	m_commands = new QUndoStack();
+
+	m_patchbay = new qpwgraph_patchbay(this);
 
 	QGraphicsView::setScene(m_scene);
 
@@ -103,6 +106,7 @@ qpwgraph_canvas::~qpwgraph_canvas (void)
 	clear();
 
 	delete m_editor;
+	delete m_patchbay;
 	delete m_commands;
 	delete m_scene;
 }
@@ -130,6 +134,12 @@ void qpwgraph_canvas::setSettings ( QSettings *settings )
 QSettings *qpwgraph_canvas::settings (void) const
 {
 	return m_settings;
+}
+
+
+qpwgraph_patchbay *qpwgraph_canvas::patchbay (void) const
+{
+	return m_patchbay;
 }
 
 
@@ -370,8 +380,8 @@ qpwgraph_node *qpwgraph_canvas::findNode (
 void qpwgraph_canvas::emitConnectPorts (
 	qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect )
 {
-	//	if (m_patchbay)
-	//		m_patchbay->connectPorts(port1, port2, is_connect);
+	if (m_patchbay)
+		m_patchbay->connectPorts(port1, port2, is_connect);
 
 	if (is_connect)
 		emitConnected(port1, port2);
