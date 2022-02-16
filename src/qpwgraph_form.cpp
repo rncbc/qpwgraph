@@ -27,6 +27,7 @@
 #include "qpwgraph_pipewire.h"
 #include "qpwgraph_alsamidi.h"
 
+#include "qpwgraph_patchbay.h"
 #include "qpwgraph_systray.h"
 
 #include <pipewire/pipewire.h>
@@ -694,20 +695,30 @@ void qpwgraph_form::alsamidi_changed (void)
 // Pseudo-asyncronous timed refreshner.
 void qpwgraph_form::refresh (void)
 {
+	int nchanged = 0;
+
 	if (m_pipewire_changed > 0) {
 		m_pipewire_changed = 0;
 		if (m_pipewire)
 			m_pipewire->updateItems();
-		stabilize();
+		++nchanged;
 	}
 #ifdef CONFIG_ALSA_MIDI
 	if (m_alsamidi_changed > 0) {
 		m_alsamidi_changed = 0;
 		if (m_alsamidi)
 			m_alsamidi->updateItems();
-		stabilize();
+		++nchanged;
 	}
 #endif
+
+	if (nchanged > 0) {
+		qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+		if (patchbay)
+			patchbay->scan();
+		stabilize();
+	}
+
 	QTimer::singleShot(300, this, SLOT(refresh()));
 }
 

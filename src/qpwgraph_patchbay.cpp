@@ -185,7 +185,7 @@ bool qpwgraph_patchbay::scan (void)
 	QHash<Item, Item *>::ConstIterator iter = m_items.constBegin();
 	const QHash<Item, Item *>::ConstIterator& iter_end = m_items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
-		Item *item = m_items.value();
+		Item *item = iter.value();
 		qpwgraph_node *node1
 			= m_canvas->findNode(
 				item->node1,

@@ -102,8 +102,8 @@ public:
 		const QString& name, qpwgraph_item::Mode mode, uint type = 0) const;
 
 	// Port (dis)connections dispatcher.
-	void emitConnectPorts(qgraph1_port *port1, qgraph1_port *port2, bool is_connect);
-
+	void emitConnectPorts(
+		qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect);
 	// Port (dis)connections notifiers.
 	void emitConnected(qpwgraph_port *port1, qpwgraph_port *port2);
 	void emitDisconnected(qpwgraph_port *port1, qpwgraph_port *port2);
