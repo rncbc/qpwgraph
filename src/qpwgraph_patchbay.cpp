@@ -179,8 +179,7 @@ bool qpwgraph_patchbay::scan (void)
 	if (scene == nullptr)
 		return false;
 
-	QHash<Item, qpwgraph_connect *>::Iterator iter2;
-	const QHash<Item, qpwgraph_connect *>::Iterator& iter2_end = m_cache.end();
+	QHash<Item, qpwgraph_connect *> connects;
 
 	QHash<Item, Item *>::ConstIterator iter = m_items.constBegin();
 	const QHash<Item, Item *>::ConstIterator& iter_end = m_items.constEnd();
@@ -192,6 +191,11 @@ bool qpwgraph_patchbay::scan (void)
 				qpwgraph_item::Output,
 				item->node_type);
 		if (node1 == nullptr)
+			node1 = m_canvas->findNode(
+				item->node1,
+				qpwgraph_item::Duplex,
+				item->node_type);
+		if (node1 == nullptr)
 			continue;
 		qpwgraph_port *port1
 			= node1->findPort(
@@ -200,33 +204,56 @@ bool qpwgraph_patchbay::scan (void)
 				item->port_type);
 		if (port1 == nullptr)
 			continue;
-		foreach (qpwgraph_connect *connect, port1->connects()) {
-			qpwgraph_port *port2 = connect->port2();
-			if (port2 == nullptr)
-				continue;
-			qpwgraph_node *node2 = port2->portNode();
-			if (node2 == nullptr)
-				continue;
-			const Item item2(
-				node1->nodeType(),
-				port1->portType(),
-				node1->nodeName(),
-				port1->portName(),
-				node2->nodeName(),
-				port2->portName());
-			iter2 = m_cache.find(item2);
-			if (iter2 == iter2_end || iter2.value() == nullptr)
-				m_canvas->emitConnected(port1, port2);
-			m_cache.insert(item2, nullptr);
+		qpwgraph_node *node2
+			= m_canvas->findNode(
+				item->node2,
+				qpwgraph_item::Input,
+				item->node_type);
+		if (node2 == nullptr)
+			node2 = m_canvas->findNode(
+				item->node2,
+				qpwgraph_item::Duplex,
+				item->node_type);
+		if (node2 == nullptr)
+			continue;
+		qpwgraph_port *port2
+			= node2->findPort(
+				item->port2,
+				qpwgraph_item::Input,
+				item->port_type);
+		if (port2 == nullptr)
+			continue;
+		if (!port1->findConnect(port2)) {
+			// exclusive?...
+			foreach (qpwgraph_connect *connect, port1->connects()) {
+				if (connect->port2() != port2) {
+					port2 = connect->port2();
+					if (port2 == nullptr)
+						continue;
+					node2 = port2->portNode();
+					if (node2 == nullptr)
+						continue;
+					const Item item2(
+						node1->nodeType(),
+						port1->portType(),
+						node1->nodeName(),
+						port1->portName(),
+						node2->nodeName(),
+						port2->portName());
+					connects.insert(item2, connect);
+				}
+			}
+			// inclusive!
+			m_canvas->emitConnected(port1, port2);
 		}
 	}
 
-	for (iter2 = m_cache.begin(); iter2 != iter2_end; ++iter2) {
-		qpwgraph_connect *connect = iter2.value();
-		if (connect) {
+	QHash<Item, qpwgraph_connect *>::Iterator iter3 = connects.begin();
+	const QHash<Item, qpwgraph_connect *>::Iterator& iter3_end = connects.end();
+	for (; iter3 != iter3_end; ++iter3) {
+		qpwgraph_connect *connect = iter3.value();
+		if (connect)
 			m_canvas->emitDisconnected(connect->port1(), connect->port2());
-			*iter2 = nullptr;
-		}
 	}
 
 	return true;
@@ -249,11 +276,13 @@ void qpwgraph_patchbay::connectPorts ( qpwgraph_port *port1, qpwgraph_port *port
 			port1->portName(),
 			node2->nodeName(),
 			port2->portName());
-		QHash<Item, Item *>::Iterator iter = m_items.find(item);
-		if (iter == m_items.end() && connect)
+		QHash<Item, Item *>::ConstIterator iter = m_items.constFind(item);
+		const QHash<Item, Item *>::ConstIterator& iter_end = m_items.constEnd();
+		if (iter == iter_end && connect) {
 			m_items.insert(item, new Item(item));
+		}
 		else
-		if (iter != m_items.end() && !connect) {
+		if (iter != iter_end && !connect) {
 			delete iter.value();
 			m_items.erase(iter);
 		}
@@ -345,7 +374,6 @@ void qpwgraph_patchbay::clear (void)
 		delete iter.value();
 
 	m_items.clear();
-	m_cache.clear();
 }
 
 

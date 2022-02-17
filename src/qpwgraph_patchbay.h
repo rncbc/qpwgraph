@@ -101,8 +101,8 @@ private:
 
 	// Instance variables.
 	qpwgraph_canvas *m_canvas;
+
 	QHash<Item, Item *> m_items;
-	QHash<Item, qpwgraph_connect *> m_cache;
 };
 
 
