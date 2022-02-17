@@ -135,7 +135,7 @@ void qpwgraph_registry_event_global (
 
 	int nchanged = 0;
 
-	if (spa_streq(type, PW_TYPE_INTERFACE_Node)) {
+	if (::strcmp(type, PW_TYPE_INTERFACE_Node) == 0) {
 		QString node_name;
 		const char *str = spa_dict_lookup(props, PW_KEY_NODE_DESCRIPTION);
 		if (str == nullptr)
@@ -181,7 +181,7 @@ void qpwgraph_registry_event_global (
 			++nchanged;
 	}
 	else
-	if (spa_streq(type, PW_TYPE_INTERFACE_Port)) {
+	if (::strcmp(type, PW_TYPE_INTERFACE_Port) == 0) {
 		// TODO: ?...
 		const char *str = spa_dict_lookup(props, PW_KEY_NODE_ID);
 		const uint node_id = (str ? uint(::atoi(str)) : 0);
@@ -228,7 +228,7 @@ void qpwgraph_registry_event_global (
 			++nchanged;
 	}
 	else
-	if (spa_streq(type, PW_TYPE_INTERFACE_Link)) {
+	if (::strcmp(type, PW_TYPE_INTERFACE_Link) == 0) {
 		const char *str = spa_dict_lookup(props, PW_KEY_LINK_OUTPUT_PORT);
 		const uint port1_id = (str ? uint(pw_properties_parse_int(str)) : 0);
 		str = spa_dict_lookup(props, PW_KEY_LINK_INPUT_PORT);
