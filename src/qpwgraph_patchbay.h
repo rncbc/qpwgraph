@@ -41,10 +41,25 @@ class qpwgraph_patchbay
 public:
 
 	// Constructor.
-	qpwgraph_patchbay(qpwgraph_canvas *canvas) : m_canvas(canvas) {}
+	qpwgraph_patchbay(qpwgraph_canvas *canvas)
+		: m_canvas(canvas), m_activated(false), m_exclusive(false) {}
 
 	// Destructor.
 	~qpwgraph_patchbay() { clear(); }
+
+	// Mode/properties accessors.
+	void setActivated(bool activated)
+		{ m_activated = activated; }
+	bool isActivated() const
+		{ return m_activated; }
+
+	void setExclusive(bool activated)
+		{ m_activated = activated; }
+	bool isExclusive() const
+		{ return m_exclusive; }
+
+	// Clear all patchbay rules and cache.
+	void clear();
 
 	// Patchbay rules file I/O methods.
 	bool load(const QString& filename);
@@ -55,9 +70,6 @@ public:
 
 	// Update rules on demand.
 	void connectPorts(qpwgraph_port *port1, qpwgraph_port *port2, bool connect);
-
-	// Clear all patchbay rules and cache.
-	void clear();
 
 	// Patchbay rule item.
 	struct Item
@@ -101,6 +113,9 @@ private:
 
 	// Instance variables.
 	qpwgraph_canvas *m_canvas;
+
+	bool m_activated;
+	bool m_exclusive;
 
 	QHash<Item, Item *> m_items;
 };

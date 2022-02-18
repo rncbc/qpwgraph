@@ -46,6 +46,18 @@
 // qpwgraph_patchbay -- Persistant connections patchbay impl.
 
 
+// Clear all patchbay rules and cache.
+void qpwgraph_patchbay::clear (void)
+{
+	QHash<Item, Item *>::ConstIterator iter = m_items.constBegin();
+	const QHash<Item, Item *>::ConstIterator& iter_end = m_items.constEnd();
+	for ( ; iter != iter_end; ++iter)
+		delete iter.value();
+
+	m_items.clear();
+}
+
+
 // Patchbay rules file I/O methods.
 bool qpwgraph_patchbay::load ( const QString& filename )
 {
@@ -176,6 +188,9 @@ bool qpwgraph_patchbay::save ( const QString& filename ) const
 // Execute and apply rules to graph.
 bool qpwgraph_patchbay::scan (void)
 {
+	if (!m_activated)
+		return false;
+
 	if (m_canvas == nullptr)
 		return false;
 
@@ -228,26 +243,26 @@ bool qpwgraph_patchbay::scan (void)
 		if (port2 == nullptr)
 			continue;
 		if (!port1->findConnect(port2)) {
-			// exclusive?...
-			foreach (qpwgraph_connect *connect, port1->connects()) {
-				if (connect->port2() != port2) {
-					port2 = connect->port2();
-					if (port2 == nullptr)
-						continue;
-					node2 = port2->portNode();
-					if (node2 == nullptr)
-						continue;
-					const Item item2(
-						node1->nodeType(),
-						port1->portType(),
-						node1->nodeName(),
-						port1->portName(),
-						node2->nodeName(),
-						port2->portName());
-					connects.insert(item2, connect);
+			if (m_exclusive) {
+				foreach (qpwgraph_connect *connect, port1->connects()) {
+					if (connect->port2() != port2) {
+						port2 = connect->port2();
+						if (port2 == nullptr)
+							continue;
+						node2 = port2->portNode();
+						if (node2 == nullptr)
+							continue;
+						const Item item2(
+							node1->nodeType(),
+							port1->portType(),
+							node1->nodeName(),
+							port1->portName(),
+							node2->nodeName(),
+							port2->portName());
+						connects.insert(item2, connect);
+					}
 				}
 			}
-			// inclusive!
 			m_canvas->emitConnected(port1, port2);
 		}
 	}
@@ -366,18 +381,6 @@ const char *qpwgraph_patchbay::textFromPortType ( uint port_type )
 	else
 #endif
 	return nullptr;
-}
-
-
-// Clear all patchbay rules and cache.
-void qpwgraph_patchbay::clear (void)
-{
-	QHash<Item, Item *>::ConstIterator iter = m_items.constBegin();
-	const QHash<Item, Item *>::ConstIterator& iter_end = m_items.constEnd();
-	for ( ; iter != iter_end; ++iter)
-		delete iter.value();
-
-	m_items.clear();
 }
 
 
