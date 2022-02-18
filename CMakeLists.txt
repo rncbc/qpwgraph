@@ -44,8 +44,10 @@ option (CONFIG_QT6 "Enable Qt6 build (default=yes)" 1)
 
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
   set (CONFIG_DEBUG 1)
+  set (CONFIG_BUILD_TYPE "debug")
 else ()
   set (CONFIG_DEBUG 0)
+  set (CONFIG_BUILD_TYPE "release")
 endif ()
 
 
@@ -86,7 +88,7 @@ macro (SHOW_OPTION text value)
 endmacro ()
 
 message   ("\n  ${PROJECT_NAME} ${PROJECT_VERSION} (Qt ${QT_VERSION})\n")
-show_option ("  Debug build type . . . . . . . . . . . . . . . . ." CONFIG_DEBUG)
+message   ("\n  Build target . . . . . . . . . . . . . . . . . . .: ${CONFIG_BUILD_TYPE}\n")
 message     ("")
 show_option ("  ALSA MIDI support  . . . . . . . . . . . . . . . ." CONFIG_ALSA_MIDI)
 show_option ("  System-tray icon support . . . . . . . . . . . . ." CONFIG_SYSTEM_TRAY)

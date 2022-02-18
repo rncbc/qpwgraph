@@ -145,7 +145,7 @@ void qpwgraph_registry_event_global (
 		if (str == nullptr)
 			str = "node";
 		const char *app = spa_dict_lookup(props, PW_KEY_APP_NAME);
-		if (app && !spa_streq(app, str)) {
+		if (app && ::strcmp(app, str) != 0) {
 			node_name += app;
 			node_name += '/';
 		}
@@ -203,10 +203,10 @@ void qpwgraph_registry_event_global (
 		qpwgraph_item::Mode port_mode = qpwgraph_item::None;
 		str = spa_dict_lookup(props, PW_KEY_PORT_DIRECTION);
 		if (str) {
-			if (spa_streq(str, "in"))
+			if (::strcmp(str, "in") == 0)
 				port_mode = qpwgraph_item::Input;
 			else
-			if (spa_streq(str, "out"))
+			if (::strcmp(str, "out") == 0)
 				port_mode = qpwgraph_item::Output;
 		}
 		uint port_flags = qpwgraph_pipewire::Port::None;
