@@ -100,7 +100,9 @@ bool qpwgraph_patchbay::load ( const QString& filename )
 					if (node_type > 0 && port_type > 0
 						&& !node1.isEmpty() && !port1.isEmpty()
 						&& !node2.isEmpty() && !port2.isEmpty()) {
-						Item *item = new Item(node_type, port_type, node1, port1, node2, port2);
+						Item *item = new Item(
+							node_type, port_type,
+							node1, port1, node2, port2);
 						m_items.insert(*item, item);
 					}
 				}
@@ -129,6 +131,7 @@ bool qpwgraph_patchbay::save ( const QString& filename ) const
 	eroot.setAttribute("version", PROJECT_VERSION);
 	doc.appendChild(eroot);
 
+	QDomElement eitems = doc.createElement("items");
 	foreach (QGraphicsItem *item, scene->items()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
@@ -150,12 +153,13 @@ bool qpwgraph_patchbay::save ( const QString& filename ) const
 						eitem2.setAttribute("node", node2->nodeName());
 						eitem2.setAttribute("port", port2->portName());
 						eitem.appendChild(eitem2);
-						eroot.appendChild(eitem);
+						eitems.appendChild(eitem);
 					}
 				}
 			}
 		}
 	}
+	eroot.appendChild(eitems);
 
 	QFile file(filename);
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
