@@ -5,6 +5,11 @@
 		<file>images/itemAlsamidi.png</file>
 		<file>images/itemConnect.png</file>
 		<file>images/itemDisconnect.png</file>
+		<file>images/itemActivate.png</file>
+		<file>images/itemExclusive.png</file>
+		<file>images/fileNew.png</file>
+		<file>images/fileOpen.png</file>
+		<file>images/fileSave.png</file>
 		<file>images/editUndo.png</file>
 		<file>images/editRedo.png</file>
 		<file>images/editRename.png</file>

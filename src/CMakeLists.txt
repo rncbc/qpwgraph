@@ -104,3 +104,9 @@ install (FILES appdata/org.freedesktop.rncbc.${PROJECT_NAME}.desktop
   DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install (FILES appdata/org.freedesktop.rncbc.${PROJECT_NAME}.metainfo.xml
   DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
+install (FILES mimetypes/${PROJECT_NAME}.xml
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
+install (FILES mimetypes/application-x-${PROJECT_NAME}-patchbay.png
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/mimetypes)
+install (FILES mimetypes/application-x-${PROJECT_NAME}-patchbay.svg
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/mimetypes)
