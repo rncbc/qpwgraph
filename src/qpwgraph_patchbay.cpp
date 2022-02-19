@@ -282,6 +282,9 @@ bool qpwgraph_patchbay::scan (void)
 // Update rules on demand.
 void qpwgraph_patchbay::connectPorts ( qpwgraph_port *port1, qpwgraph_port *port2, bool connect )
 {
+	if (!m_activated)
+		return;
+
 	if (port1 == nullptr || port2 == nullptr)
 		return;
 
