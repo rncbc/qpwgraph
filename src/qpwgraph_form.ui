@@ -57,8 +57,30 @@
     <property name="title">
      <string>&amp;Graph</string>
     </property>
+    <widget class="QMenu" name="patchbayMenu">
+     <property name="title">
+      <string>&amp;Patchbay</string>
+     </property>
+     <widget class="QMenu" name="patchbayOpenRecentMenu">
+      <property name="title">
+       <string>Open &amp;Recent</string>
+      </property>
+     </widget>
+     <addaction name="patchbayNewAction"/>
+     <addaction name="separator"/>
+     <addaction name="patchbayOpenAction"/>
+     <addaction name="patchbayOpenRecentMenu"/>
+     <addaction name="separator"/>
+     <addaction name="patchbaySaveAction"/>
+     <addaction name="patchbaySaveAsAction"/>
+     <addaction name="separator"/>
+     <addaction name="patchbayActivateAction"/>
+     <addaction name="patchbayExclusiveAction"/>
+    </widget>
     <addaction name="graphConnectAction"/>
     <addaction name="graphDisconnectAction"/>
+    <addaction name="separator"/>
+    <addaction name="patchbayMenu"/>
     <addaction name="separator"/>
     <addaction name="graphQuitAction"/>
    </widget>
@@ -213,6 +235,126 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="patchbayNewAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/fileNew.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New</string>
+   </property>
+   <property name="iconText">
+    <string>New</string>
+   </property>
+   <property name="toolTip">
+    <string>New file</string>
+   </property>
+   <property name="statusTip">
+    <string>New file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="patchbayOpenAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/fileOpen.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+   <property name="iconText">
+    <string>Open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open patchbay</string>
+   </property>
+   <property name="statusTip">
+    <string>Open patchbay</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="patchbaySaveAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/fileSave.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+   <property name="iconText">
+    <string>Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save patchbay</string>
+   </property>
+   <property name="statusTip">
+    <string>Save current patchbay</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="patchbaySaveAsAction">
+   <property name="text">
+    <string>Save &amp;As...</string>
+   </property>
+   <property name="iconText">
+    <string>Save As</string>
+   </property>
+   <property name="toolTip">
+    <string>Save as</string>
+   </property>
+   <property name="statusTip">
+    <string>Save current patchbay with another name</string>
+   </property>
+  </action>
+  <action name="patchbayActivateAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/itemActivate.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Activate</string>
+   </property>
+   <property name="iconText">
+    <string>Activate</string>
+   </property>
+   <property name="toolTip">
+    <string>Activate patchbay</string>
+   </property>
+   <property name="statusTip">
+    <string>Activate current patchbay</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="patchbayExclusiveAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/itemExclusive.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Exclusive</string>
+   </property>
+   <property name="iconText">
+    <string>Exclusive</string>
+   </property>
+   <property name="toolTip">
+    <string>Exclusive patchbay</string>
+   </property>
+   <property name="statusTip">
+    <string>Exclusive current patchbay</string>
+   </property>
+   <property name="shortcut">
+    <string/>
    </property>
   </action>
   <action name="graphQuitAction">
