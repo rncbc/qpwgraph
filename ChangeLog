@@ -3,6 +3,9 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Patchbay feature introduced: save connections to file; restore
+  connections from file and maintain when activated; disconnect
+  all others when activated in exclusive mode. (EXPERIMENTAL)
 - Migrated command line parsing to QCommandLineParser/Option
   (Qt >= 5.2) (EXPERIMENTAL)
 
