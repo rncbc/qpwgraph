@@ -1,7 +1,7 @@
 // qpwgraph_config.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@
 // Local constants.
 static const char *GeometryGroup    = "/GraphGeometry";
 static const char *LayoutGroup      = "/GraphLayout";
+
 static const char *ViewGroup        = "/GraphView";
 static const char *ViewMenubarKey   = "/Menubar";
 static const char *ViewToolbarKey   = "/Toolbar";
@@ -37,6 +38,11 @@ static const char *ViewTextBesideIconsKey = "/TextBesideIcons";
 static const char *ViewZoomRangeKey = "/ZoomRange";
 static const char *ViewSortTypeKey  = "/SortType";
 static const char *ViewSortOrderKey = "/SortOrder";
+
+static const char *PatchbayGroup    = "/Patchbay";
+static const char *RecentFilesKey	= "/RecentFiles";
+static const char *ActivatedKey	    = "/Activated";
+static const char *ExclusiveKey	    = "/Exclusive";
 
 
 //----------------------------------------------------------------------------
@@ -159,11 +165,62 @@ int qpwgraph_config::sortOrder (void) const
 }
 
 
+void qpwgraph_config::patchbayRecentFiles ( const QString& path )
+{
+	// Remove from list if already there (avoid duplicates)
+	if (m_patchbay_recentfiles.contains(path))
+		m_patchbay_recentfiles.removeAll(path);
+
+	// Put it to front...
+	m_patchbay_recentfiles.push_front(path);
+
+	// Time to keep the list under limits.
+	int nfiles = m_patchbay_recentfiles.count();
+	while (nfiles > 8) {
+		m_patchbay_recentfiles.pop_back();
+		--nfiles;
+	}
+}
+
+const QStringList& qpwgraph_config::patchbayRecentFiles (void) const
+{
+	return m_patchbay_recentfiles;
+}
+
+
+void qpwgraph_config::setPatchbayActivated ( bool activated )
+{
+	m_patchbay_activated = activated;
+}
+
+int qpwgraph_config::isPatchbayActivated (void) const
+{
+	return m_patchbay_activated;
+}
+
+
+void qpwgraph_config::setPatchbayExclusive ( bool exclusive )
+{
+	m_patchbay_exclusive = exclusive;
+}
+
+int qpwgraph_config::isPatchbayExclusive (void) const
+{
+	return m_patchbay_exclusive;
+}
+
+
 // Graph main-widget state methods.
 bool qpwgraph_config::restoreState ( QMainWindow *widget )
 {
 	if (m_settings == nullptr || widget == nullptr)
 		return false;
+
+	m_settings->beginGroup(PatchbayGroup);
+	m_patchbay_recentfiles = m_settings->value(RecentFilesKey).toStringList();
+	m_patchbay_activated = m_settings->value(ActivatedKey).toBool();
+	m_patchbay_exclusive = m_settings->value(ExclusiveKey).toBool();
+	m_settings->endGroup();
 
 	m_settings->beginGroup(ViewGroup);
 	m_menubar = m_settings->value(ViewMenubarKey, true).toBool();
@@ -203,6 +260,12 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 {
 	if (m_settings == nullptr || widget == nullptr)
 		return false;
+
+	m_settings->beginGroup(PatchbayGroup);
+	m_settings->setValue(RecentFilesKey, m_patchbay_recentfiles);
+	m_settings->setValue(ActivatedKey, m_patchbay_activated);
+	m_settings->setValue(ExclusiveKey, m_patchbay_exclusive);
+	m_settings->endGroup();
 
 	m_settings->beginGroup(ViewGroup);
 	m_settings->setValue(ViewMenubarKey, m_menubar);

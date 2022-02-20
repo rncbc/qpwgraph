@@ -88,6 +88,20 @@ protected slots:
 	// Tool-bar orientation change slot.
 	void orientationChanged(Qt::Orientation orientation);
 
+	// Patchbay menu slots.
+	void updatePatchbayMenu();
+
+	void patchbayNew();
+	void patchbayOpen();
+	void patchbayOpenRecent();
+	void patchbaySave();
+	void patchbaySaveAs();
+
+	void patchbayActivated(bool on);
+	void patchbayExclusive(bool on);
+
+	void patchbayScan();
+
 	// Main menu slots.
 	void viewMenubar(bool on);
 	void viewToolbar(bool on);
@@ -114,6 +128,23 @@ protected slots:
 	void closeQuit();
 
 protected:
+
+	// Open/save patchbay file.
+	bool patchbayOpenFile(const QString& path, bool clear = true);
+	bool patchbaySaveFile(const QString& path);
+
+	// Get the current display file-name.
+	QString patchbayCurrentName() const;
+
+	// Get default patchbay file extension/filter.
+	QString patchbayFileExt() const;
+	QString patchbayFileFilter() const;
+
+	// Make current patchbay dirty if activated.
+	void patchbayActivatedDirty();
+
+	// Whether we can close current patchbay.
+	bool patchbayQueryClose();
 
 	// Context-menu event handler.
 	void contextMenuEvent(QContextMenuEvent *event);
@@ -158,6 +189,10 @@ private:
 
 	QActionGroup *m_sort_type;
 	QActionGroup *m_sort_order;
+
+	QString m_patchbay_path;
+	int     m_patchbay_dirty;
+	int     m_patchbay_untitled;
 
 	qpwgraph_systray *m_systray;
 };

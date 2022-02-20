@@ -74,8 +74,10 @@
      <addaction name="patchbaySaveAction"/>
      <addaction name="patchbaySaveAsAction"/>
      <addaction name="separator"/>
-     <addaction name="patchbayActivateAction"/>
+     <addaction name="patchbayActivatedAction"/>
      <addaction name="patchbayExclusiveAction"/>
+     <addaction name="separator"/>
+     <addaction name="patchbayScanAction"/>
     </widget>
     <addaction name="graphConnectAction"/>
     <addaction name="graphDisconnectAction"/>
@@ -311,7 +313,7 @@
     <string>Save current patchbay with another name</string>
    </property>
   </action>
-  <action name="patchbayActivateAction">
+  <action name="patchbayActivatedAction">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -319,13 +321,13 @@
     <iconset resource="qpwgraph.qrc">:/images/itemActivate.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Activate</string>
+    <string>Act&amp;ivated</string>
    </property>
    <property name="iconText">
-    <string>Activate</string>
+    <string>Activated</string>
    </property>
    <property name="toolTip">
-    <string>Activate patchbay</string>
+    <string>Activated patchbay</string>
    </property>
    <property name="statusTip">
     <string>Activate current patchbay</string>
@@ -342,7 +344,7 @@
     <iconset resource="qpwgraph.qrc">:/images/itemExclusive.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Exclusive</string>
+    <string>E&amp;xclusive</string>
    </property>
    <property name="iconText">
     <string>Exclusive</string>
@@ -355,6 +357,20 @@
    </property>
    <property name="shortcut">
     <string/>
+   </property>
+  </action>
+  <action name="patchbayScanAction">
+   <property name="text">
+    <string>S&amp;can</string>
+   </property>
+   <property name="iconText">
+    <string>Scan</string>
+   </property>
+   <property name="toolTip">
+    <string>Scan patchbay</string>
+   </property>
+   <property name="statusTip">
+    <string>Scan current patchbay</string>
    </property>
   </action>
   <action name="graphQuitAction">

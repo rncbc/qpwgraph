@@ -1,7 +1,7 @@
 // qpwgraph_config.h
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -71,6 +71,15 @@ public:
 	void setSortOrder(int sortorder);
 	int sortOrder() const;
 
+	void patchbayRecentFiles(const QString& path);
+	const QStringList& patchbayRecentFiles() const;
+
+	void setPatchbayActivated(bool activated);
+	int isPatchbayActivated() const;
+
+	void setPatchbayExclusive(bool exclusive);
+	int isPatchbayExclusive() const;
+
 	// Graph main-widget state methods.
 	bool restoreState(QMainWindow *widget);
 	bool saveState(QMainWindow *widget) const;
@@ -78,16 +87,20 @@ public:
 private:
 
 	// Instance variables.
-	QSettings *m_settings;
-	bool       m_owner;
+	QSettings  *m_settings;
+	bool        m_owner;
 
-	bool       m_menubar;
-	bool       m_toolbar;
-	bool       m_statusbar;
-	bool       m_texticons;
-	bool       m_zoomrange;
-	int        m_sorttype;
-	int        m_sortorder;
+	bool        m_menubar;
+	bool        m_toolbar;
+	bool        m_statusbar;
+	bool        m_texticons;
+	bool        m_zoomrange;
+	int         m_sorttype;
+	int         m_sortorder;
+
+	QStringList m_patchbay_recentfiles;
+	bool        m_patchbay_activated;
+	bool        m_patchbay_exclusive;
 };
 
 

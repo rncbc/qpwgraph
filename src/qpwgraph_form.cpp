@@ -35,6 +35,9 @@
 #include <QTimer>
 #include <QMenu>
 
+#include <QFileInfo>
+#include <QFileDialog>
+
 #include <QMessageBox>
 
 #include <QHBoxLayout>
@@ -216,6 +219,34 @@ qpwgraph_form::qpwgraph_form (
 		SIGNAL(triggered(bool)),
 		m_ui.graphCanvas, SLOT(disconnectItems()));
 
+	QObject::connect(m_ui.patchbayMenu,
+		 SIGNAL(aboutToShow()),
+		 SLOT(updatePatchbayMenu()));
+
+	QObject::connect(m_ui.patchbayNewAction,
+		SIGNAL(triggered(bool)),
+		SLOT(patchbayNew()));
+	QObject::connect(m_ui.patchbayOpenAction,
+		SIGNAL(triggered(bool)),
+		SLOT(patchbayOpen()));
+	QObject::connect(m_ui.patchbaySaveAction,
+		SIGNAL(triggered(bool)),
+		SLOT(patchbaySave()));
+	QObject::connect(m_ui.patchbaySaveAsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(patchbaySaveAs()));
+
+	QObject::connect(m_ui.patchbayActivatedAction,
+		SIGNAL(toggled(bool)),
+		SLOT(patchbayActivated(bool)));
+	QObject::connect(m_ui.patchbayExclusiveAction,
+		SIGNAL(toggled(bool)),
+		SLOT(patchbayExclusive(bool)));
+
+	QObject::connect(m_ui.patchbayScanAction,
+		SIGNAL(triggered(bool)),
+		SLOT(patchbayScan()));
+
 	QObject::connect(m_ui.graphQuitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(closeQuit()));
@@ -358,7 +389,11 @@ qpwgraph_form::qpwgraph_form (
 
 	restoreState();
 
+	updatePatchbayMenu();
 	updateViewColors();
+
+	m_patchbay_dirty = 0;
+	m_patchbay_untitled = 1;
 
 	stabilize();
 
@@ -391,6 +426,146 @@ qpwgraph_form::~qpwgraph_form (void)
 #endif
 
 	delete m_config;
+}
+
+
+// Patchbay menu slots.
+void qpwgraph_form::patchbayNew (void)
+{
+	if (!patchbayQueryClose())
+		return;
+
+	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+	if (patchbay)
+		patchbay->clear();
+
+	m_patchbay_path.clear();
+	m_patchbay_dirty = 0;
+	++m_patchbay_untitled;
+
+	stabilize();
+}
+
+
+void qpwgraph_form::patchbayOpen (void)
+{
+	if (!patchbayQueryClose())
+		return;
+
+	const QString& path
+		= QFileDialog::getOpenFileName(this,
+			tr("Open Patchbay File"), m_patchbay_path, patchbayFileFilter());
+	if (path.isEmpty())
+		return;
+
+	patchbayOpenFile(path);
+	stabilize();
+}
+
+
+void qpwgraph_form::updatePatchbayMenu (void)
+{
+	// Rebuild the recent files menu...
+	m_ui.patchbayOpenRecentMenu->clear();
+	QStringListIterator iter(m_config->patchbayRecentFiles());
+	for (int i = 0; iter.hasNext(); ++i) {
+		const QString& path = iter.next();
+		if (QFileInfo(path).exists()) {
+			QAction *action = m_ui.patchbayOpenRecentMenu->addAction(
+				QString("&%1 %2").arg(i + 1).arg(path),
+				this, SLOT(patchbayOpenRecent()));
+			action->setData(i);
+		}
+	}
+
+	// Settle as enabled?
+	m_ui.patchbayOpenRecentMenu->setEnabled(
+		!m_ui.patchbayOpenRecentMenu->isEmpty());
+}
+
+
+void qpwgraph_form::patchbayOpenRecent (void)
+{
+	// Retrive filename index from action data...
+	QAction *action = qobject_cast<QAction *> (sender());
+	if (action) {
+		const int index = action->data().toInt();
+		if (index >= 0 && index < m_config->patchbayRecentFiles().count()) {
+			const QString path
+				= m_config->patchbayRecentFiles().at(index);
+			// Check if we can safely close the current file...
+			if (!path.isEmpty() && patchbayQueryClose())
+				patchbayOpenFile(path);
+		}
+	}
+
+	stabilize();
+}
+
+
+void qpwgraph_form::patchbaySave (void)
+{
+	if (m_patchbay_path.isEmpty()) {
+		patchbaySaveAs();
+		return;
+	}
+
+	patchbaySaveFile(m_patchbay_path);
+
+	stabilize();
+}
+
+
+void qpwgraph_form::patchbaySaveAs (void)
+{
+	const QString& path
+		= QFileDialog::getSaveFileName(this,
+			tr("Save Patchbay File"), m_patchbay_path, patchbayFileFilter());
+	if (path.isEmpty())
+		return;
+
+	if (QFileInfo(path).suffix().isEmpty())
+		patchbaySaveFile(path + '.' + patchbayFileExt());
+	else
+		patchbaySaveFile(path);
+
+	stabilize();
+}
+
+
+void qpwgraph_form::patchbayActivated ( bool on )
+{
+	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+	if (patchbay) {
+		patchbay->setActivated(on);
+		if (on)
+			patchbay->scan();
+	}
+
+	stabilize();
+}
+
+
+void qpwgraph_form::patchbayExclusive ( bool on )
+{
+	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+	if (patchbay) {
+		patchbay->setExclusive(on);
+		if (on)
+			patchbay->scan();
+	}
+
+	stabilize();
+}
+
+
+void qpwgraph_form::patchbayScan (void)
+{
+	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+	if (patchbay)
+		patchbay->scan();
+
+	stabilize();
 }
 
 
@@ -647,6 +822,8 @@ void qpwgraph_form::connected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 		alsamidi_changed();
 	}
 #endif
+
+	patchbayActivatedDirty();
 	stabilize();
 }
 
@@ -666,6 +843,8 @@ void qpwgraph_form::disconnected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 		alsamidi_changed();
 	}
 #endif
+
+	patchbayActivatedDirty();
 	stabilize();
 }
 
@@ -713,10 +892,8 @@ void qpwgraph_form::refresh (void)
 #endif
 
 	if (nchanged > 0) {
-		qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
-		if (patchbay)
-			patchbay->scan();
-		stabilize();
+		patchbayScan();
+	//	stabilize();
 	}
 
 	QTimer::singleShot(300, this, SLOT(refresh()));
@@ -726,6 +903,12 @@ void qpwgraph_form::refresh (void)
 // Graph selection change slot.
 void qpwgraph_form::stabilize (void)
 {
+	// Update window title.
+	QString title = patchbayCurrentName();
+	if (m_patchbay_dirty > 0)
+		title += ' ' + tr("[modified]");
+	setWindowTitle(title);
+
 	const qpwgraph_canvas *canvas = m_ui.graphCanvas;
 
 	m_ui.graphConnectAction->setEnabled(canvas->canConnect());
@@ -762,6 +945,15 @@ void qpwgraph_form::stabilize (void)
 	m_zoom_slider->setValue(zoom_value);
 	m_zoom_spinbox->blockSignals(is_spinbox_blocked);
 	m_zoom_slider->blockSignals(is_slider_blocked);
+
+	const qpwgraph_patchbay *patchbay = canvas->patchbay();
+	if (patchbay) {
+		const bool is_activated = patchbay->isActivated();
+		m_ui.patchbayExclusiveAction->setEnabled(is_activated);
+		m_ui.patchbayScanAction->setEnabled(is_activated);
+	}
+
+	m_ui.patchbaySaveAction->setEnabled(m_patchbay_dirty > 0);
 }
 
 
@@ -773,6 +965,117 @@ void qpwgraph_form::orientationChanged ( Qt::Orientation orientation )
 	} else {
 		m_ui.ToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 	}
+}
+
+
+// Open/save patchbay file.
+bool qpwgraph_form::patchbayOpenFile ( const QString& path, bool clear )
+{
+	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+	if (patchbay == nullptr)
+		return false;
+
+	if (clear) {
+		patchbay->clear();
+		m_patchbay_path.clear();
+		++m_patchbay_dirty;
+	}
+
+	if (!patchbay->load(path)) {
+		QMessageBox::critical(this, tr("Error"),
+			tr("Could not open patchbay file:\n\n%1\n\nSorry.").arg(path),
+			QMessageBox::Cancel);
+		return false;
+	}
+
+	m_config->patchbayRecentFiles(path);
+	m_patchbay_path = path;
+	m_patchbay_dirty = 0;
+
+	patchbay->scan();
+	return true;
+}
+
+
+bool qpwgraph_form::patchbaySaveFile ( const QString& path )
+{
+	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+	if (patchbay == nullptr)
+		return false;
+
+	if (!patchbay->save(path)) {
+		QMessageBox::critical(this, tr("Error"),
+			tr("Could not save patchbay file:\n\n%1\n\nSorry.").arg(path),
+			QMessageBox::Cancel);
+		return false;
+	}
+
+	m_config->patchbayRecentFiles(path);
+	m_patchbay_path = path;
+	m_patchbay_dirty = 0;
+
+	return true;
+}
+
+
+// Get the current display file-name.
+QString qpwgraph_form::patchbayCurrentName (void) const
+{
+	if (m_patchbay_path.isEmpty())
+		return tr("Untitled%1").arg(m_patchbay_untitled);
+	else
+		return QFileInfo(m_patchbay_path).completeBaseName();
+}
+
+
+// Get default patchbay file extension/filter.
+QString qpwgraph_form::patchbayFileExt (void) const
+{
+	return QString(PROJECT_NAME).toLower();
+}
+
+
+QString qpwgraph_form::patchbayFileFilter (void) const
+{
+	return tr("Patchbay files (*.%1)").arg(patchbayFileExt()) + ";;"
+		 + tr("All files (*.*)");
+}
+
+
+// Make current patchbay dirty if activated.
+void qpwgraph_form::patchbayActivatedDirty (void)
+{
+	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+	if (patchbay && patchbay->isActivated())
+		++m_patchbay_dirty;
+}
+
+
+// Whether we can close current patchbay.
+bool qpwgraph_form::patchbayQueryClose (void)
+{
+	bool ret = (m_patchbay_dirty > 0);
+	if (!ret)
+		return true;
+
+	switch (QMessageBox::warning(this,
+		tr("Warning"),
+		tr("The current file has been changed:\n\n%1\n\n"
+		"Do you want to save the changes?").arg(m_patchbay_path),
+		QMessageBox::Save |
+		QMessageBox::Discard |
+		QMessageBox::Cancel)) {
+	case QMessageBox::Save:
+		patchbaySave();
+		// Fall thru....
+	case QMessageBox::Discard:
+		break;
+	default: // Cancel.
+		ret = false;
+		break;
+	}
+
+	return ret;
 }
 
 
@@ -828,6 +1131,11 @@ void qpwgraph_form::hideEvent ( QHideEvent *event )
 
 void qpwgraph_form::closeEvent ( QCloseEvent *event )
 {
+	if (!patchbayQueryClose()) {
+		event->ignore();
+		return;
+	}
+
 	hide();
 #ifdef CONFIG_SYSTEM_TRAY
 	m_systray->updateContextMenu();
@@ -901,6 +1209,16 @@ void qpwgraph_form::restoreState (void)
 {
 	m_config->restoreState(this);
 
+	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+	if (patchbay) {
+		const bool is_activated = m_config->isPatchbayActivated();
+		const bool is_exclusive = m_config->isPatchbayExclusive();
+		m_ui.patchbayActivatedAction->setChecked(is_activated);
+		m_ui.patchbayExclusiveAction->setChecked(is_exclusive);
+		patchbay->setActivated(is_activated);
+		patchbay->setExclusive(is_exclusive);
+	}
+
 	m_ui.viewMenubarAction->setChecked(m_config->isMenubar());
 	m_ui.viewToolbarAction->setChecked(m_config->isToolbar());
 	m_ui.viewStatusbarAction->setChecked(m_config->isStatusbar());
@@ -961,6 +1279,9 @@ void qpwgraph_form::saveState (void)
 	m_config->setStatusbar(m_ui.StatusBar->isVisible());
 	m_config->setToolbar(m_ui.ToolBar->isVisible());
 	m_config->setMenubar(m_ui.MenuBar->isVisible());
+
+	m_config->setPatchbayExclusive(m_ui.patchbayExclusiveAction->isChecked());
+	m_config->setPatchbayActivated(m_ui.patchbayActivatedAction->isChecked());
 
 	m_config->saveState(this);
 }

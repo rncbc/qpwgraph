@@ -267,10 +267,10 @@ bool qpwgraph_patchbay::scan (void)
 		}
 	}
 
-	QHash<Item, qpwgraph_connect *>::Iterator iter3 = connects.begin();
-	const QHash<Item, qpwgraph_connect *>::Iterator& iter3_end = connects.end();
-	for (; iter3 != iter3_end; ++iter3) {
-		qpwgraph_connect *connect = iter3.value();
+	QHash<Item, qpwgraph_connect *>::ConstIterator iter2 = connects.constBegin();
+	const QHash<Item, qpwgraph_connect *>::ConstIterator& iter2_end = connects.constEnd();
+	for (; iter2 != iter2_end; ++iter2) {
+		qpwgraph_connect *connect = iter2.value();
 		if (connect)
 			m_canvas->emitDisconnected(connect->port1(), connect->port2());
 	}

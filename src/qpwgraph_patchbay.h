@@ -53,8 +53,8 @@ public:
 	bool isActivated() const
 		{ return m_activated; }
 
-	void setExclusive(bool activated)
-		{ m_activated = activated; }
+	void setExclusive(bool exclusive)
+		{ m_exclusive = exclusive; }
 	bool isExclusive() const
 		{ return m_exclusive; }
 
