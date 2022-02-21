@@ -26,6 +26,7 @@
 
 
 // Forward decls.
+class qpwgraph_application;
 class qpwgraph_config;
 
 class qpwgraph_sect;
@@ -61,6 +62,9 @@ public:
 
 	// Destructor.
 	~qpwgraph_form();
+
+	// Take care of command line options and arguments...
+	void apply_args(qpwgraph_application *app);
 
 protected slots:
 

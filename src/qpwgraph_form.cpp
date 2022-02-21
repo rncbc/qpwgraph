@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include "config.h"
+#include "qpwgraph.h"
 #include "qpwgraph_form.h"
 
 #include "qpwgraph_config.h"
@@ -426,6 +426,21 @@ qpwgraph_form::~qpwgraph_form (void)
 #endif
 
 	delete m_config;
+}
+
+
+// Take care of command line options and arguments...
+void qpwgraph_form::apply_args ( qpwgraph_application *app )
+{
+	if (app->isPatchbayActivated())
+		m_ui.patchbayActivatedAction->setChecked(true)
+		if (app->isPatchbayExclusive())
+			m_ui.patchbayExclusiveAction->setChecked(true)
+		if (!app->patchbayPath().isEmpty())
+			patchbayOpenFile(app->patchbayPath());
+	}
+
+	stabilize();
 }
 
 

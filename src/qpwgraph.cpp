@@ -47,6 +47,7 @@ qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 #ifdef CONFIG_SYSTEM_TRAY
 	, m_memory(nullptr), m_server(nullptr)
 #endif
+	, m_patchbay_activated(false), m_patchbay_exclusive(false)
 {
 	QApplication::setApplicationName(PROJECT_NAME);
 	QApplication::setApplicationDisplayName(PROJECT_DESCRIPTION);
@@ -83,17 +84,35 @@ qpwgraph_application::~qpwgraph_application (void)
 
 
 // Parse command line arguments.
-bool qpwgraph_application::parse_args (  )
+bool qpwgraph_application::parse_args ( const QStringList& args )
 {
-	const QStringList& args = QApplication::arguments();
-
 	QCommandLineParser parser;
 	parser.setApplicationDescription(
 		PROJECT_NAME " - " + QObject::tr(PROJECT_DESCRIPTION));
 
+	parser.addOption({{"a", "activated"},
+		QObject::tr("Activated patchbay.")});
+	parser.addOption({{"x", "exclusive"},
+		QObject::tr("Exclusive patchbay.")});
 	parser.addHelpOption();
 	parser.addVersionOption();
+	parser.addPositionalArgument("session-file",
+		QObject::tr("Patchbay file (.%1)")
+			.arg(QString(PROJECT_NAME).toLower()),
+		QObject::tr("[patchbay-file]"));
 	parser.process(args);
+
+	m_patchbay_activated = parser.isSet("activated");
+	m_patchbay_exclusive = parser.isSet("exclusive");
+
+	int nargs = 0;
+	m_patchbay_path.clear();
+	foreach	(const QString& arg, parser.positionalArguments()) {
+		if (nargs > 0)
+			m_patchbay_path += ' ';
+		m_patchbay_path += arg;
+		++nargs;
+	}
 
 	// Alright with argument parsing.
 	return true;
@@ -178,6 +197,10 @@ void qpwgraph_application::readyReadSlot (void)
 		const qint64 nread = socket->bytesAvailable();
 		if (nread > 0) {
 			const QByteArray data = socket->read(nread);
+			// Parse and apply passed command-line arguments...
+			qpwgraph_form *form = static_cast<qpwgraph_form *> (m_widget);
+			if (form && parse_args(QString(data).split(' ')))
+				form->apply_args(this);
 			// Just make it always shows up fine...
 			if (m_widget) {
 				m_widget->hide();
@@ -209,7 +232,7 @@ int main ( int argc, char *argv[] )
 
 	qpwgraph_application app(argc, argv);
 
-	if (!app.parse_args()) {
+	if (!app.parse_args(app.arguments())) {
 		app.quit();
 		return 1;
 	}
@@ -224,6 +247,7 @@ int main ( int argc, char *argv[] )
 
 	qpwgraph_form form;
 	app.setMainWidget(&form);
+	form.apply_args(&app);
 	form.show();
 
 	return app.exec();

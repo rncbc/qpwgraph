@@ -51,13 +51,21 @@ public:
 	~qpwgraph_application();
 
 	// Parse/help about command line arguments.
-	bool parse_args();
+	bool parse_args(const QStringList& args);
 
 	// Main application widget accessors.
 	void setMainWidget(QWidget *widget)
 		{ m_widget = widget; }
 	QWidget *mainWidget() const
 		{ return m_widget; }
+
+	// Parsed command-line options and arguments accessors.
+	const QString& patchbayPath() const
+		{ return m_patchbay_path; }
+	bool isPatchbayActivated() const
+		{ return m_patchbay_activated; }
+	bool isPatchbayExclusive() const
+		{ return m_patchbay_exclusive; }
 
 #ifdef CONFIG_SYSTEM_TRAY
 
@@ -82,6 +90,10 @@ private:
 	QSharedMemory *m_memory;
 	QLocalServer  *m_server;
 #endif
+	// Parsed command-line options and arguments.
+	QString m_patchbay_path;
+	bool    m_patchbay_activated;
+	bool    m_patchbay_exclusive;
 };
 
 
