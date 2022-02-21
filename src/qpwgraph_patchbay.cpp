@@ -63,6 +63,13 @@ void qpwgraph_patchbay::snap (void)
 {
 //	clear();
 
+	if (m_canvas == nullptr)
+		return;
+
+	QGraphicsScene *scene = m_canvas->scene();
+	if (scene == nullptr)
+		return;
+
 	foreach (QGraphicsItem *item, scene->items()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);

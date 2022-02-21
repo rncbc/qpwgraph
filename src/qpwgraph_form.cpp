@@ -433,12 +433,11 @@ qpwgraph_form::~qpwgraph_form (void)
 void qpwgraph_form::apply_args ( qpwgraph_application *app )
 {
 	if (app->isPatchbayActivated())
-		m_ui.patchbayActivatedAction->setChecked(true)
-		if (app->isPatchbayExclusive())
-			m_ui.patchbayExclusiveAction->setChecked(true)
-		if (!app->patchbayPath().isEmpty())
-			patchbayOpenFile(app->patchbayPath());
-	}
+		m_ui.patchbayActivatedAction->setChecked(true);
+	if (app->isPatchbayExclusive())
+		m_ui.patchbayExclusiveAction->setChecked(true);
+	if (!app->patchbayPath().isEmpty())
+		patchbayOpenFile(app->patchbayPath());
 
 	stabilize();
 }

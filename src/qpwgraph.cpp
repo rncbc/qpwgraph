@@ -96,7 +96,7 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 		QObject::tr("Exclusive patchbay.")});
 	parser.addHelpOption();
 	parser.addVersionOption();
-	parser.addPositionalArgument("session-file",
+	parser.addPositionalArgument("patchbay-file",
 		QObject::tr("Patchbay file (.%1)")
 			.arg(QString(PROJECT_NAME).toLower()),
 		QObject::tr("[patchbay-file]"));
