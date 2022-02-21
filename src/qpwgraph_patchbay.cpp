@@ -49,12 +49,43 @@
 // Clear all patchbay rules and cache.
 void qpwgraph_patchbay::clear (void)
 {
-	QHash<Item, Item *>::ConstIterator iter = m_items.constBegin();
-	const QHash<Item, Item *>::ConstIterator& iter_end = m_items.constEnd();
+	Items::ConstIterator iter = m_items.constBegin();
+	const Items::ConstIterator& iter_end = m_items.constEnd();
 	for ( ; iter != iter_end; ++iter)
 		delete iter.value();
 
 	m_items.clear();
+}
+
+
+// Snapshot of all current graph connections...
+void qpwgraph_patchbay::snap (void)
+{
+//	clear();
+
+	foreach (QGraphicsItem *item, scene->items()) {
+		if (item->type() == qpwgraph_connect::Type) {
+			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
+			if (connect) {
+				qpwgraph_port *port1 = connect->port1();
+				qpwgraph_port *port2 = connect->port2();
+				if (port1 && port2) {
+					qpwgraph_node *node1 = port1->portNode();
+					qpwgraph_node *node2 = port2->portNode();
+					if (node1 && node2) {
+						Item *item2 = new Item(
+							node1->nodeType(),
+							port1->portType(),
+							node1->nodeName(),
+							port1->portName(),
+							node2->nodeName(),
+							port2->portName());
+						m_items.insert(*item2, item2);
+					}
+				}
+			}
+		}
+	}
 }
 
 
@@ -200,8 +231,8 @@ bool qpwgraph_patchbay::scan (void)
 
 	QHash<Item, qpwgraph_connect *> connects;
 
-	QHash<Item, Item *>::ConstIterator iter = m_items.constBegin();
-	const QHash<Item, Item *>::ConstIterator& iter_end = m_items.constEnd();
+	Items::ConstIterator iter = m_items.constBegin();
+	const Items::ConstIterator& iter_end = m_items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		Item *item = iter.value();
 		qpwgraph_node *node1
@@ -298,8 +329,8 @@ void qpwgraph_patchbay::connectPorts ( qpwgraph_port *port1, qpwgraph_port *port
 			port1->portName(),
 			node2->nodeName(),
 			port2->portName());
-		QHash<Item, Item *>::ConstIterator iter = m_items.constFind(item);
-		const QHash<Item, Item *>::ConstIterator& iter_end = m_items.constEnd();
+		Items::ConstIterator iter = m_items.constFind(item);
+		const Items::ConstIterator& iter_end = m_items.constEnd();
 		if (iter == iter_end && connect) {
 			m_items.insert(item, new Item(item));
 		}

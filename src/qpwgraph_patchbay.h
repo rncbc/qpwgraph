@@ -61,6 +61,9 @@ public:
 	// Clear all patchbay rules and cache.
 	void clear();
 
+	// Snapshot of all current graph connections...
+	void snap();
+
 	// Patchbay rules file I/O methods.
 	bool load(const QString& filename);
 	bool save(const QString& filename) const;
@@ -100,6 +103,8 @@ public:
 		QString port2;
 	};
 
+	typedef QHash<Item, Item *> Items;
+
 protected:
 
 	// Node and port type to text helpers.
@@ -117,7 +122,7 @@ private:
 	bool m_activated;
 	bool m_exclusive;
 
-	QHash<Item, Item *> m_items;
+	Items m_items;
 };
 
 
