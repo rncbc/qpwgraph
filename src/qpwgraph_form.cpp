@@ -1074,8 +1074,8 @@ bool qpwgraph_form::patchbayQueryClose (void)
 
 	switch (QMessageBox::warning(this,
 		tr("Warning"),
-		tr("The current file has been changed:\n\n%1\n\n"
-		"Do you want to save the changes?").arg(m_patchbay_path),
+		tr("The current patchbay has been changed:\n\n\"%1\"\n\n"
+		"Do you want to save the changes?").arg(patchbayCurrentName()),
 		QMessageBox::Save |
 		QMessageBox::Discard |
 		QMessageBox::Cancel)) {
@@ -1304,6 +1304,9 @@ void qpwgraph_form::saveState (void)
 // Forcibly quit application.
 void qpwgraph_form::closeQuit (void)
 {
+	if (!patchbayQueryClose())
+		return;
+
 	saveState();
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
