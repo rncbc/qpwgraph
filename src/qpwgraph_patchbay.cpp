@@ -286,7 +286,7 @@ bool qpwgraph_patchbay::scan (void)
 				if (port3 == nullptr)
 					continue;
 				if (port3 != port2) {
-					qpwgraph_port *node3 = port3->portNode();
+					qpwgraph_node *node3 = port3->portNode();
 					if (node3 == nullptr)
 						continue;
 					const Item item2(
