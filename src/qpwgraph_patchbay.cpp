@@ -280,29 +280,29 @@ bool qpwgraph_patchbay::scan (void)
 				item->port_type);
 		if (port2 == nullptr)
 			continue;
-		if (!port1->findConnect(port2)) {
-			if (m_exclusive) {
-				foreach (qpwgraph_connect *connect, port1->connects()) {
-					if (connect->port2() != port2) {
-						port2 = connect->port2();
-						if (port2 == nullptr)
-							continue;
-						node2 = port2->portNode();
-						if (node2 == nullptr)
-							continue;
-						const Item item2(
-							node1->nodeType(),
-							port1->portType(),
-							node1->nodeName(),
-							port1->portName(),
-							node2->nodeName(),
-							port2->portName());
+		if (m_exclusive) {
+			foreach (qpwgraph_connect *connect, port1->connects()) {
+				qpwgraph_port *port3 = connect->port2();
+				if (port3 == nullptr)
+					continue;
+				if (port3 != port2) {
+					qpwgraph_port *node3 = port3->portNode();
+					if (node3 == nullptr)
+						continue;
+					const Item item2(
+						node1->nodeType(),
+						port1->portType(),
+						node1->nodeName(),
+						port1->portName(),
+						node3->nodeName(),
+						port3->portName());
+					if (m_items.constFind(item2) == iter_end)
 						connects.insert(item2, connect);
-					}
 				}
 			}
-			m_canvas->emitConnected(port1, port2);
 		}
+		if (!port1->findConnect(port2))
+			m_canvas->emitConnected(port1, port2);
 	}
 
 	QHash<Item, qpwgraph_connect *>::ConstIterator iter2 = connects.constBegin();
