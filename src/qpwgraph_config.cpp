@@ -40,9 +40,10 @@ static const char *ViewSortTypeKey  = "/SortType";
 static const char *ViewSortOrderKey = "/SortOrder";
 
 static const char *PatchbayGroup    = "/Patchbay";
-static const char *RecentFilesKey	= "/RecentFiles";
-static const char *ActivatedKey	    = "/Activated";
-static const char *ExclusiveKey	    = "/Exclusive";
+static const char *PathKey          = "/Path";
+static const char *ActivatedKey     = "/Activated";
+static const char *ExclusiveKey     = "/Exclusive";
+static const char *RecentFilesKey   = "/RecentFiles";
 
 
 //----------------------------------------------------------------------------
@@ -165,26 +166,14 @@ int qpwgraph_config::sortOrder (void) const
 }
 
 
-void qpwgraph_config::patchbayRecentFiles ( const QString& path )
+void qpwgraph_config::setPatchbayPath ( const QString& path )
 {
-	// Remove from list if already there (avoid duplicates)
-	if (m_patchbay_recentfiles.contains(path))
-		m_patchbay_recentfiles.removeAll(path);
-
-	// Put it to front...
-	m_patchbay_recentfiles.push_front(path);
-
-	// Time to keep the list under limits.
-	int nfiles = m_patchbay_recentfiles.count();
-	while (nfiles > 8) {
-		m_patchbay_recentfiles.pop_back();
-		--nfiles;
-	}
+	m_patchbay_path = path;
 }
 
-const QStringList& qpwgraph_config::patchbayRecentFiles (void) const
+const QString& qpwgraph_config::patchbayPath (void) const
 {
-	return m_patchbay_recentfiles;
+	return m_patchbay_path;
 }
 
 
@@ -210,6 +199,29 @@ int qpwgraph_config::isPatchbayExclusive (void) const
 }
 
 
+void qpwgraph_config::patchbayRecentFiles ( const QString& path )
+{
+	// Remove from list if already there (avoid duplicates)
+	if (m_patchbay_recentfiles.contains(path))
+		m_patchbay_recentfiles.removeAll(path);
+
+	// Put it to front...
+	m_patchbay_recentfiles.push_front(path);
+
+	// Time to keep the list under limits.
+	int nfiles = m_patchbay_recentfiles.count();
+	while (nfiles > 8) {
+		m_patchbay_recentfiles.pop_back();
+		--nfiles;
+	}
+}
+
+const QStringList& qpwgraph_config::patchbayRecentFiles (void) const
+{
+	return m_patchbay_recentfiles;
+}
+
+
 // Graph main-widget state methods.
 bool qpwgraph_config::restoreState ( QMainWindow *widget )
 {
@@ -217,9 +229,10 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 		return false;
 
 	m_settings->beginGroup(PatchbayGroup);
-	m_patchbay_recentfiles = m_settings->value(RecentFilesKey).toStringList();
+	m_patchbay_path = m_settings->value(PathKey).toString();
 	m_patchbay_activated = m_settings->value(ActivatedKey).toBool();
 	m_patchbay_exclusive = m_settings->value(ExclusiveKey).toBool();
+	m_patchbay_recentfiles = m_settings->value(RecentFilesKey).toStringList();
 	m_settings->endGroup();
 
 	m_settings->beginGroup(ViewGroup);
@@ -262,9 +275,10 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 		return false;
 
 	m_settings->beginGroup(PatchbayGroup);
-	m_settings->setValue(RecentFilesKey, m_patchbay_recentfiles);
+	m_settings->setValue(PathKey, m_patchbay_path);
 	m_settings->setValue(ActivatedKey, m_patchbay_activated);
 	m_settings->setValue(ExclusiveKey, m_patchbay_exclusive);
+	m_settings->setValue(RecentFilesKey, m_patchbay_recentfiles);
 	m_settings->endGroup();
 
 	m_settings->beginGroup(ViewGroup);

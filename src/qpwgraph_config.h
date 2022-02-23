@@ -71,14 +71,17 @@ public:
 	void setSortOrder(int sortorder);
 	int sortOrder() const;
 
-	void patchbayRecentFiles(const QString& path);
-	const QStringList& patchbayRecentFiles() const;
+	void setPatchbayPath(const QString& path);
+	const QString& patchbayPath() const;
 
 	void setPatchbayActivated(bool activated);
 	int isPatchbayActivated() const;
 
 	void setPatchbayExclusive(bool exclusive);
 	int isPatchbayExclusive() const;
+
+	void patchbayRecentFiles(const QString& path);
+	const QStringList& patchbayRecentFiles() const;
 
 	// Graph main-widget state methods.
 	bool restoreState(QMainWindow *widget);
@@ -98,9 +101,10 @@ private:
 	int         m_sorttype;
 	int         m_sortorder;
 
-	QStringList m_patchbay_recentfiles;
+	QString     m_patchbay_path;
 	bool        m_patchbay_activated;
 	bool        m_patchbay_exclusive;
+	QStringList m_patchbay_recentfiles;
 };
 
 

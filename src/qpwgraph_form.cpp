@@ -1277,6 +1277,11 @@ void qpwgraph_form::restoreState (void)
 	viewZoomRange(m_config->isZoomRange());
 
 	m_ui.graphCanvas->restoreState();
+
+	// Restore last open patchbay file...
+	const QString& path = m_config->patchbayPath();
+	if (!path.isEmpty())
+		patchbayOpenFile(path);
 }
 
 
@@ -1296,6 +1301,7 @@ void qpwgraph_form::saveState (void)
 
 	m_config->setPatchbayExclusive(m_ui.patchbayExclusiveAction->isChecked());
 	m_config->setPatchbayActivated(m_ui.patchbayActivatedAction->isChecked());
+	m_config->setPatchbayPath(m_patchbay_path);
 
 	m_config->saveState(this);
 }
