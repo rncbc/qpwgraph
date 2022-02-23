@@ -250,10 +250,10 @@
     <string>New</string>
    </property>
    <property name="toolTip">
-    <string>New file</string>
+    <string>New patchbay</string>
    </property>
    <property name="statusTip">
-    <string>New file</string>
+    <string>New patchbay</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
