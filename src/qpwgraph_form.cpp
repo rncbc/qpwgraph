@@ -450,8 +450,10 @@ void qpwgraph_form::patchbayNew (void)
 		return;
 
 	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
-	if (patchbay)
+	if (patchbay) {
 		patchbay->clear();
+		patchbay->snap();
+	}
 
 	m_patchbay_path.clear();
 	m_patchbay_dirty = 0;
@@ -1282,6 +1284,9 @@ void qpwgraph_form::restoreState (void)
 	const QString& path = m_config->patchbayPath();
 	if (!path.isEmpty())
 		patchbayOpenFile(path);
+	else
+	if (patchbay)
+		patchbay->snap(); // Simulate ppatchbayNew()!
 }
 
 

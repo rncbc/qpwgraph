@@ -169,10 +169,6 @@ bool qpwgraph_patchbay::save ( const QString& filename ) const
 	if (m_canvas == nullptr)
 		return false;
 
-	QGraphicsScene *scene = m_canvas->scene();
-	if (scene == nullptr)
-		return false;
-
 	QFileInfo fi(filename);
 	const char *root_name = "patchbay";
 	QDomDocument doc(root_name);
@@ -182,7 +178,9 @@ bool qpwgraph_patchbay::save ( const QString& filename ) const
 	doc.appendChild(eroot);
 
 	QDomElement eitems = doc.createElement("items");
-	foreach (QGraphicsItem *item, scene->items()) {
+#if 0//d--irect snapshot!
+	QGraphicsScene *scene = m_canvas->scene();
+	if (scene) foreach (QGraphicsItem *item, scene->items()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 			if (connect) {
@@ -209,6 +207,25 @@ bool qpwgraph_patchbay::save ( const QString& filename ) const
 			}
 		}
 	}
+#else
+	Items::ConstIterator iter = m_items.constBegin();
+	const Items::ConstIterator& iter_end = m_items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		Item *item = iter.value();
+		QDomElement eitem = doc.createElement("item");
+		eitem.setAttribute("node-type", textFromNodeType(item->node_type));
+		eitem.setAttribute("port-type", textFromPortType(item->port_type));
+		QDomElement eitem1 = doc.createElement("output");
+		eitem1.setAttribute("node", item->node1);
+		eitem1.setAttribute("port", item->port1);
+		eitem.appendChild(eitem1);
+		QDomElement eitem2 = doc.createElement("input");
+		eitem2.setAttribute("node", item->node2);
+		eitem2.setAttribute("port", item->port2);
+		eitem.appendChild(eitem2);
+		eitems.appendChild(eitem);
+	}
+#endif
 	eroot.appendChild(eitems);
 
 	QFile file(filename);
@@ -320,9 +337,6 @@ bool qpwgraph_patchbay::scan (void)
 // Update rules on demand.
 void qpwgraph_patchbay::connectPorts ( qpwgraph_port *port1, qpwgraph_port *port2, bool connect )
 {
-	if (!m_activated)
-		return;
-
 	if (port1 == nullptr || port2 == nullptr)
 		return;
 
