@@ -55,6 +55,8 @@ void qpwgraph_patchbay::clear (void)
 		delete iter.value();
 
 	m_items.clear();
+
+	m_dirty = 0;
 }
 
 
@@ -164,7 +166,7 @@ bool qpwgraph_patchbay::load ( const QString& filename )
 }
 
 
-bool qpwgraph_patchbay::save ( const QString& filename ) const
+bool qpwgraph_patchbay::save ( const QString& filename )
 {
 	if (m_canvas == nullptr)
 		return false;
@@ -235,6 +237,8 @@ bool qpwgraph_patchbay::save ( const QString& filename ) const
 	QTextStream ts(&file);
 	ts << doc.toString() << endl;
 	file.close();
+
+	m_dirty = 0;
 
 	return true;
 }
@@ -354,11 +358,13 @@ void qpwgraph_patchbay::connectPorts ( qpwgraph_port *port1, qpwgraph_port *port
 		const Items::ConstIterator& iter_end = m_items.constEnd();
 		if (iter == iter_end && connect) {
 			m_items.insert(item, new Item(item));
+			++m_dirty;
 		}
 		else
 		if (iter != iter_end && !connect) {
 			delete iter.value();
 			m_items.erase(iter);
+			++m_dirty;
 		}
 	}
 }

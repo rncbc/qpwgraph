@@ -129,6 +129,8 @@ protected slots:
 
 	void zoomValueChanged(int zoom_value);
 
+public slots:
+
 	void closeQuit();
 
 protected:
@@ -138,14 +140,14 @@ protected:
 	bool patchbaySaveFile(const QString& path);
 
 	// Get the current display file-name.
-	QString patchbayCurrentName() const;
+	QString patchbayFileName() const;
+
+	// Get the current default directory/path.
+	QString patchbayFileDir() const;
 
 	// Get default patchbay file extension/filter.
 	QString patchbayFileExt() const;
 	QString patchbayFileFilter() const;
-
-	// Make current patchbay dirty if activated.
-	void patchbayActivatedDirty();
 
 	// Whether we can close current patchbay.
 	bool patchbayQueryClose();
@@ -194,8 +196,8 @@ private:
 	QActionGroup *m_sort_type;
 	QActionGroup *m_sort_order;
 
+	QString m_patchbay_dir;
 	QString m_patchbay_path;
-	int     m_patchbay_dirty;
 	int     m_patchbay_untitled;
 
 	qpwgraph_systray *m_systray;

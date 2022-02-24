@@ -1,7 +1,7 @@
 // qpwgraph_systray.h
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,6 +31,7 @@
 
 
 // Forward decls.
+class qpwgraph_form;
 class QAction;
 
 
@@ -44,7 +45,7 @@ class qpwgraph_systray : public QSystemTrayIcon
 public:
 
 	// Constructor.
-	qpwgraph_systray(QWidget *widget);
+	qpwgraph_systray(qpwgraph_form *form);
 
 	// Update context menu.
 	void updateContextMenu();
@@ -56,13 +57,14 @@ protected slots:
 
 	// Handle menu actions.
 	void showHide();
-	void closeQuit();
 
 private:
 
-	QWidget *m_widget;
+	qpwgraph_form *m_form;
+
 	QAction *m_show;
 	QAction *m_quit;
+
 	QMenu    m_menu;
 };
 

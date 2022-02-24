@@ -41,8 +41,8 @@ class qpwgraph_patchbay
 public:
 
 	// Constructor.
-	qpwgraph_patchbay(qpwgraph_canvas *canvas)
-		: m_canvas(canvas), m_activated(false), m_exclusive(false) {}
+	qpwgraph_patchbay(qpwgraph_canvas *canvas) : m_canvas(canvas),
+		m_activated(false), m_exclusive(false), m_dirty(0) {}
 
 	// Destructor.
 	~qpwgraph_patchbay() { clear(); }
@@ -66,7 +66,7 @@ public:
 
 	// Patchbay rules file I/O methods.
 	bool load(const QString& filename);
-	bool save(const QString& filename) const;
+	bool save(const QString& filename);
 
 	// Execute and apply rules to graph.
 	bool scan();
@@ -105,6 +105,10 @@ public:
 
 	typedef QHash<Item, Item *> Items;
 
+	// Dirty status flag.
+	bool isDirty() const
+		{ return (m_dirty > 0); }
+
 protected:
 
 	// Node and port type to text helpers.
@@ -123,6 +127,8 @@ private:
 	bool m_exclusive;
 
 	Items m_items;
+
+	int m_dirty;
 };
 
 

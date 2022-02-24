@@ -40,6 +40,7 @@ static const char *ViewSortTypeKey  = "/SortType";
 static const char *ViewSortOrderKey = "/SortOrder";
 
 static const char *PatchbayGroup    = "/Patchbay";
+static const char *DirKey           = "/Dir";
 static const char *PathKey          = "/Path";
 static const char *ActivatedKey     = "/Activated";
 static const char *ExclusiveKey     = "/Exclusive";
@@ -166,6 +167,17 @@ int qpwgraph_config::sortOrder (void) const
 }
 
 
+void qpwgraph_config::setPatchbayDir ( const QString& dir )
+{
+	m_patchbay_dir = dir;
+}
+
+const QString& qpwgraph_config::patchbayDir (void) const
+{
+	return m_patchbay_dir;
+}
+
+
 void qpwgraph_config::setPatchbayPath ( const QString& path )
 {
 	m_patchbay_path = path;
@@ -229,6 +241,7 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 		return false;
 
 	m_settings->beginGroup(PatchbayGroup);
+	m_patchbay_dir = m_settings->value(DirKey).toString();
 	m_patchbay_path = m_settings->value(PathKey).toString();
 	m_patchbay_activated = m_settings->value(ActivatedKey).toBool();
 	m_patchbay_exclusive = m_settings->value(ExclusiveKey).toBool();
@@ -275,6 +288,7 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 		return false;
 
 	m_settings->beginGroup(PatchbayGroup);
+	m_settings->setValue(DirKey, m_patchbay_dir);
 	m_settings->setValue(PathKey, m_patchbay_path);
 	m_settings->setValue(ActivatedKey, m_patchbay_activated);
 	m_settings->setValue(ExclusiveKey, m_patchbay_exclusive);

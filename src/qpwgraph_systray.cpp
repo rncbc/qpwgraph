@@ -1,7 +1,7 @@
 // qpwgraph_systray.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,6 +24,8 @@
 
 #ifdef CONFIG_SYSTEM_TRAY
 
+#include "qpwgraph_form.h"
+
 #include <QWidget>
 #include <QAction>
 
@@ -34,15 +36,15 @@
 // qpwgraph_systray -- Custom system tray icon.
 
 // Constructor.
-qpwgraph_systray::qpwgraph_systray ( QWidget *widget )
-	: QSystemTrayIcon(widget), m_widget(widget)
+qpwgraph_systray::qpwgraph_systray ( qpwgraph_form *form )
+	: QSystemTrayIcon(form), m_form(form)
 {
 	// Set things as inherited...
-	QSystemTrayIcon::setIcon(m_widget->windowIcon());
-	QSystemTrayIcon::setToolTip(m_widget->windowTitle());
+	QSystemTrayIcon::setIcon(m_form->windowIcon());
+	QSystemTrayIcon::setToolTip(m_form->windowTitle());
 
 	m_show = m_menu.addAction(tr("Show/Hide"), this, SLOT(showHide()));
-	m_quit = m_menu.addAction(tr("Quit"), this, SLOT(closeQuit()));
+	m_quit = m_menu.addAction(tr("Quit"), m_form, SLOT(closeQuit()));
 
 	QSystemTrayIcon::setContextMenu(&m_menu);
 
@@ -57,7 +59,7 @@ qpwgraph_systray::qpwgraph_systray ( QWidget *widget )
 // Update context menu.
 void qpwgraph_systray::updateContextMenu (void)
 {
-	if (m_widget->isVisible() && !m_widget->isMinimized())
+	if (m_form->isVisible() && !m_form->isMinimized())
 		m_show->setText(tr("Hide"));
 	else
 		m_show->setText(tr("Show"));
@@ -83,27 +85,15 @@ void qpwgraph_systray::activated ( QSystemTrayIcon::ActivationReason reason )
 // Handle menu actions.
 void qpwgraph_systray::showHide (void)
 {
-	if (m_widget->isVisible() && !m_widget->isMinimized()) {
+	if (m_form->isVisible() && !m_form->isMinimized()) {
 		// Hide away from sight, totally...
-		m_widget->hide();
+		m_form->hide();
 	} else {
 		// Show normally.
-		m_widget->show();
-		m_widget->raise();
-		m_widget->activateWindow();
+		m_form->show();
+		m_form->raise();
+		m_form->activateWindow();
 	}
-}
-
-
-void qpwgraph_systray::closeQuit (void)
-{
-	m_widget->hide();
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-	QApplication::exit(0);
-#else
-	QApplication::quit();
-#endif
 }
 
 

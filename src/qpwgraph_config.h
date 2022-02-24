@@ -71,6 +71,9 @@ public:
 	void setSortOrder(int sortorder);
 	int sortOrder() const;
 
+	void setPatchbayDir(const QString& dir);
+	const QString& patchbayDir() const;
+
 	void setPatchbayPath(const QString& path);
 	const QString& patchbayPath() const;
 
@@ -101,6 +104,7 @@ private:
 	int         m_sorttype;
 	int         m_sortorder;
 
+	QString     m_patchbay_dir;
 	QString     m_patchbay_path;
 	bool        m_patchbay_activated;
 	bool        m_patchbay_exclusive;

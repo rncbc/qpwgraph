@@ -392,8 +392,17 @@ qpwgraph_form::qpwgraph_form (
 	updatePatchbayMenu();
 	updateViewColors();
 
-	m_patchbay_dirty = 0;
-	m_patchbay_untitled = 1;
+	// Restore last open patchbay file...
+	m_patchbay_untitled = 0;
+
+	const QString path(m_patchbay_path);
+	if (!path.isEmpty() && patchbayOpenFile(path)) {
+		--m_patchbay_untitled;
+	} else {
+		qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+		if (patchbay)
+			patchbay->snap(); // Simulate patchbayNew()!
+	}
 
 	stabilize();
 
@@ -456,7 +465,6 @@ void qpwgraph_form::patchbayNew (void)
 	}
 
 	m_patchbay_path.clear();
-	m_patchbay_dirty = 0;
 	++m_patchbay_untitled;
 
 	stabilize();
@@ -470,11 +478,15 @@ void qpwgraph_form::patchbayOpen (void)
 
 	const QString& path
 		= QFileDialog::getOpenFileName(this,
-			tr("Open Patchbay File"), m_patchbay_path, patchbayFileFilter());
+			tr("Open Patchbay File"),
+			patchbayFileDir(),
+			patchbayFileFilter());
+
 	if (path.isEmpty())
 		return;
 
 	patchbayOpenFile(path);
+
 	stabilize();
 }
 
@@ -485,10 +497,10 @@ void qpwgraph_form::updatePatchbayMenu (void)
 	m_ui.patchbayOpenRecentMenu->clear();
 	QStringListIterator iter(m_config->patchbayRecentFiles());
 	for (int i = 0; iter.hasNext(); ++i) {
-		const QString& path = iter.next();
-		if (QFileInfo(path).exists()) {
+		const QFileInfo info(iter.next());
+		if (info.exists()) {
 			QAction *action = m_ui.patchbayOpenRecentMenu->addAction(
-				QString("&%1 %2").arg(i + 1).arg(path),
+				QString("&%1 %2").arg(i + 1).arg(info.completeBaseName()),
 				this, SLOT(patchbayOpenRecent()));
 			action->setData(i);
 		}
@@ -536,7 +548,10 @@ void qpwgraph_form::patchbaySaveAs (void)
 {
 	const QString& path
 		= QFileDialog::getSaveFileName(this,
-			tr("Save Patchbay File"), m_patchbay_path, patchbayFileFilter());
+			tr("Save Patchbay File"),
+			patchbayFileDir(),
+			patchbayFileFilter());
+
 	if (path.isEmpty())
 		return;
 
@@ -839,7 +854,6 @@ void qpwgraph_form::connected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 	}
 #endif
 
-	patchbayActivatedDirty();
 	stabilize();
 }
 
@@ -860,7 +874,6 @@ void qpwgraph_form::disconnected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 	}
 #endif
 
-	patchbayActivatedDirty();
 	stabilize();
 }
 
@@ -919,13 +932,24 @@ void qpwgraph_form::refresh (void)
 // Graph selection change slot.
 void qpwgraph_form::stabilize (void)
 {
+	const qpwgraph_canvas *canvas
+		= m_ui.graphCanvas;
+	const qpwgraph_patchbay *patchbay
+		= canvas->patchbay();
+	const bool is_activated
+		= (patchbay && patchbay->isActivated());
+	const bool is_dirty
+		= (patchbay && patchbay->isDirty());
+
 	// Update window title.
-	QString title = patchbayCurrentName();
-	if (m_patchbay_dirty > 0)
+	QString title = patchbayFileName();
+	if (is_dirty)
 		title += ' ' + tr("[modified]");
 	setWindowTitle(title);
 
-	const qpwgraph_canvas *canvas = m_ui.graphCanvas;
+	m_ui.patchbayExclusiveAction->setEnabled(is_activated);
+	m_ui.patchbayScanAction->setEnabled(is_activated);
+	m_ui.patchbaySaveAction->setEnabled(is_dirty);
 
 	m_ui.graphConnectAction->setEnabled(canvas->canConnect());
 	m_ui.graphDisconnectAction->setEnabled(canvas->canDisconnect());
@@ -961,15 +985,6 @@ void qpwgraph_form::stabilize (void)
 	m_zoom_slider->setValue(zoom_value);
 	m_zoom_spinbox->blockSignals(is_spinbox_blocked);
 	m_zoom_slider->blockSignals(is_slider_blocked);
-
-	const qpwgraph_patchbay *patchbay = canvas->patchbay();
-	if (patchbay) {
-		const bool is_activated = patchbay->isActivated();
-		m_ui.patchbayExclusiveAction->setEnabled(is_activated);
-		m_ui.patchbayScanAction->setEnabled(is_activated);
-	}
-
-	m_ui.patchbaySaveAction->setEnabled(m_patchbay_dirty > 0);
 }
 
 
@@ -994,7 +1009,6 @@ bool qpwgraph_form::patchbayOpenFile ( const QString& path, bool clear )
 	if (clear) {
 		patchbay->clear();
 		m_patchbay_path.clear();
-		++m_patchbay_dirty;
 	}
 
 	if (!patchbay->load(path)) {
@@ -1005,8 +1019,9 @@ bool qpwgraph_form::patchbayOpenFile ( const QString& path, bool clear )
 	}
 
 	m_config->patchbayRecentFiles(path);
+
+	m_patchbay_dir = QFileInfo(path).absolutePath();
 	m_patchbay_path = path;
-	m_patchbay_dirty = 0;
 
 	patchbay->scan();
 	return true;
@@ -1027,24 +1042,34 @@ bool qpwgraph_form::patchbaySaveFile ( const QString& path )
 	}
 
 	m_config->patchbayRecentFiles(path);
+
+	m_patchbay_dir = QFileInfo(path).absolutePath();
 	m_patchbay_path = path;
-	m_patchbay_dirty = 0;
 
 	return true;
 }
 
 
 // Get the current display file-name.
-QString qpwgraph_form::patchbayCurrentName (void) const
+QString qpwgraph_form::patchbayFileName (void) const
 {
 	if (m_patchbay_path.isEmpty())
-		return tr("Untitled%1").arg(m_patchbay_untitled);
+		return tr("Untitled%1").arg(m_patchbay_untitled + 1);
 	else
 		return QFileInfo(m_patchbay_path).completeBaseName();
 }
 
 
-// Get default patchbay file extension/filter.
+// Get default patchbay file directory/extension/filter.
+QString qpwgraph_form::patchbayFileDir (void) const
+{
+	if (m_patchbay_path.isEmpty())
+		return m_patchbay_dir;
+	else
+		return m_patchbay_path;
+}
+
+
 QString qpwgraph_form::patchbayFileExt (void) const
 {
 	return QString(PROJECT_NAME).toLower();
@@ -1058,26 +1083,19 @@ QString qpwgraph_form::patchbayFileFilter (void) const
 }
 
 
-// Make current patchbay dirty if activated.
-void qpwgraph_form::patchbayActivatedDirty (void)
-{
-	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
-	if (patchbay && patchbay->isActivated())
-		++m_patchbay_dirty;
-}
-
-
 // Whether we can close current patchbay.
 bool qpwgraph_form::patchbayQueryClose (void)
 {
-	bool ret = (m_patchbay_dirty > 0);
+	const qpwgraph_patchbay *patchbay
+		= m_ui.graphCanvas->patchbay();
+	bool ret = (patchbay && patchbay->isDirty());
 	if (!ret)
 		return true;
 
 	switch (QMessageBox::warning(this,
 		tr("Warning"),
 		tr("The current patchbay has been changed:\n\n\"%1\"\n\n"
-		"Do you want to save the changes?").arg(patchbayCurrentName()),
+		"Do you want to save the changes?").arg(patchbayFileName()),
 		QMessageBox::Save |
 		QMessageBox::Discard |
 		QMessageBox::Cancel)) {
@@ -1147,17 +1165,17 @@ void qpwgraph_form::hideEvent ( QHideEvent *event )
 
 void qpwgraph_form::closeEvent ( QCloseEvent *event )
 {
-	if (!patchbayQueryClose()) {
-		event->ignore();
-		return;
-	}
-
-	hide();
 #ifdef CONFIG_SYSTEM_TRAY
+	hide();
 	m_systray->updateContextMenu();
 	event->ignore();
 #else
-	QMainWindow::closeEvent(event);
+	if (patchbayQueryClose()) {
+		hide();
+		QMainWindow::closeEvent(event);
+	} else {
+		event->ignore();
+	}
 #endif
 }
 
@@ -1280,13 +1298,9 @@ void qpwgraph_form::restoreState (void)
 
 	m_ui.graphCanvas->restoreState();
 
-	// Restore last open patchbay file...
-	const QString& path = m_config->patchbayPath();
-	if (!path.isEmpty())
-		patchbayOpenFile(path);
-	else
-	if (patchbay)
-		patchbay->snap(); // Simulate ppatchbayNew()!
+	// Restore last open patchbay directory and file-path...
+	m_patchbay_dir = m_config->patchbayDir();
+	m_patchbay_path = m_config->patchbayPath();
 }
 
 
@@ -1307,6 +1321,7 @@ void qpwgraph_form::saveState (void)
 	m_config->setPatchbayExclusive(m_ui.patchbayExclusiveAction->isChecked());
 	m_config->setPatchbayActivated(m_ui.patchbayActivatedAction->isChecked());
 	m_config->setPatchbayPath(m_patchbay_path);
+	m_config->setPatchbayDir(m_patchbay_dir);
 
 	m_config->saveState(this);
 }
@@ -1318,7 +1333,8 @@ void qpwgraph_form::closeQuit (void)
 	if (!patchbayQueryClose())
 		return;
 
-	saveState();
+	if (isVisible())
+		saveState();
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 	QApplication::exit(0);
