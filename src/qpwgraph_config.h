@@ -71,6 +71,9 @@ public:
 	void setSortOrder(int sortorder);
 	int sortOrder() const;
 
+	void setPatchbayToolbar(bool toolbar);
+	bool isPatchbayToolbar() const;
+
 	void setPatchbayDir(const QString& dir);
 	const QString& patchbayDir() const;
 
@@ -104,6 +107,7 @@ private:
 	int         m_sorttype;
 	int         m_sortorder;
 
+	bool        m_patchbay_toolbar;
 	QString     m_patchbay_dir;
 	QString     m_patchbay_path;
 	bool        m_patchbay_activated;

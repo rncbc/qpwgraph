@@ -108,7 +108,8 @@ protected slots:
 
 	// Main menu slots.
 	void viewMenubar(bool on);
-	void viewToolbar(bool on);
+	void viewGraphToolbar(bool on);
+	void viewPatchbayToolbar(bool on);
 	void viewStatusbar(bool on);
 
 	void viewTextBesideIcons(bool on);

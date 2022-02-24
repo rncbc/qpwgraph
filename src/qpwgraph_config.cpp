@@ -40,11 +40,12 @@ static const char *ViewSortTypeKey  = "/SortType";
 static const char *ViewSortOrderKey = "/SortOrder";
 
 static const char *PatchbayGroup    = "/Patchbay";
-static const char *DirKey           = "/Dir";
-static const char *PathKey          = "/Path";
-static const char *ActivatedKey     = "/Activated";
-static const char *ExclusiveKey     = "/Exclusive";
-static const char *RecentFilesKey   = "/RecentFiles";
+static const char *PatchbayDirKey   = "/Dir";
+static const char *PatchbayPathKey  = "/Path";
+static const char *PatchbayActivatedKey = "/Activated";
+static const char *PatchbayExclusiveKey = "/Exclusive";
+static const char *PatchbayRecentFilesKey = "/RecentFiles";
+static const char *PatchbayToolbarKey = "/Toolbar";
 
 
 //----------------------------------------------------------------------------
@@ -55,7 +56,10 @@ qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 	: m_settings(settings), m_owner(owner),
 		m_menubar(false), m_toolbar(false), m_statusbar(false),
 		m_texticons(false), m_zoomrange(false),
-		m_sorttype(0), m_sortorder(0)
+		m_sorttype(0), m_sortorder(0),
+		m_patchbay_toolbar(false),
+		m_patchbay_activated(false),
+		m_patchbay_exclusive(false)
 {
 }
 
@@ -167,6 +171,17 @@ int qpwgraph_config::sortOrder (void) const
 }
 
 
+void qpwgraph_config::setPatchbayToolbar ( bool toolbar )
+{
+	m_patchbay_toolbar = toolbar;
+}
+
+bool qpwgraph_config::isPatchbayToolbar (void) const
+{
+	return m_patchbay_toolbar;
+}
+
+
 void qpwgraph_config::setPatchbayDir ( const QString& dir )
 {
 	m_patchbay_dir = dir;
@@ -241,11 +256,12 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 		return false;
 
 	m_settings->beginGroup(PatchbayGroup);
-	m_patchbay_dir = m_settings->value(DirKey).toString();
-	m_patchbay_path = m_settings->value(PathKey).toString();
-	m_patchbay_activated = m_settings->value(ActivatedKey).toBool();
-	m_patchbay_exclusive = m_settings->value(ExclusiveKey).toBool();
-	m_patchbay_recentfiles = m_settings->value(RecentFilesKey).toStringList();
+	m_patchbay_toolbar = m_settings->value(PatchbayToolbarKey).toBool();
+	m_patchbay_dir = m_settings->value(PatchbayDirKey).toString();
+	m_patchbay_path = m_settings->value(PatchbayPathKey).toString();
+	m_patchbay_activated = m_settings->value(PatchbayActivatedKey).toBool();
+	m_patchbay_exclusive = m_settings->value(PatchbayExclusiveKey).toBool();
+	m_patchbay_recentfiles = m_settings->value(PatchbayRecentFilesKey).toStringList();
 	m_settings->endGroup();
 
 	m_settings->beginGroup(ViewGroup);
@@ -288,11 +304,12 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 		return false;
 
 	m_settings->beginGroup(PatchbayGroup);
-	m_settings->setValue(DirKey, m_patchbay_dir);
-	m_settings->setValue(PathKey, m_patchbay_path);
-	m_settings->setValue(ActivatedKey, m_patchbay_activated);
-	m_settings->setValue(ExclusiveKey, m_patchbay_exclusive);
-	m_settings->setValue(RecentFilesKey, m_patchbay_recentfiles);
+	m_settings->setValue(PatchbayToolbarKey, m_patchbay_toolbar);
+	m_settings->setValue(PatchbayDirKey, m_patchbay_dir);
+	m_settings->setValue(PatchbayPathKey, m_patchbay_path);
+	m_settings->setValue(PatchbayActivatedKey, m_patchbay_activated);
+	m_settings->setValue(PatchbayExclusiveKey, m_patchbay_exclusive);
+	m_settings->setValue(PatchbayRecentFilesKey, m_patchbay_recentfiles);
 	m_settings->endGroup();
 
 	m_settings->beginGroup(ViewGroup);

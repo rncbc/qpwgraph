@@ -129,9 +129,9 @@ qpwgraph_form::qpwgraph_form (
 	m_ui.editMenu->insertSeparator(before);
 
 	before = m_ui.viewCenterAction;
-	m_ui.ToolBar->insertAction(before, undo_action);
-	m_ui.ToolBar->insertAction(before, redo_action);
-	m_ui.ToolBar->insertSeparator(before);
+	m_ui.GraphToolbar->insertAction(before, undo_action);
+	m_ui.GraphToolbar->insertAction(before, redo_action);
+	m_ui.GraphToolbar->insertSeparator(before);
 
 	// Special zoom composite widget...
 	QWidget *zoom_widget = new QWidget();
@@ -271,9 +271,12 @@ qpwgraph_form::qpwgraph_form (
 	QObject::connect(m_ui.viewStatusbarAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewStatusbar(bool)));
-	QObject::connect(m_ui.viewToolbarAction,
+	QObject::connect(m_ui.viewGraphToolbarAction,
 		SIGNAL(triggered(bool)),
-		SLOT(viewToolbar(bool)));
+		SLOT(viewGraphToolbar(bool)));
+	QObject::connect(m_ui.viewPatchbayToolbarAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewPatchbayToolbar(bool)));
 
 	QObject::connect(m_ui.viewTextBesideIconsAction,
 		SIGNAL(triggered(bool)),
@@ -376,7 +379,10 @@ qpwgraph_form::qpwgraph_form (
 		SIGNAL(triggered(bool)),
 		SLOT(helpAboutQt()));
 
-	QObject::connect(m_ui.ToolBar,
+	QObject::connect(m_ui.GraphToolbar,
+		SIGNAL(orientationChanged(Qt::Orientation)),
+		SLOT(orientationChanged(Qt::Orientation)));
+	QObject::connect(m_ui.PatchbayToolbar,
 		SIGNAL(orientationChanged(Qt::Orientation)),
 		SLOT(orientationChanged(Qt::Orientation)));
 
@@ -607,9 +613,15 @@ void qpwgraph_form::viewMenubar ( bool on )
 }
 
 
-void qpwgraph_form::viewToolbar ( bool on )
+void qpwgraph_form::viewGraphToolbar ( bool on )
 {
-	m_ui.ToolBar->setVisible(on);
+	m_ui.GraphToolbar->setVisible(on);
+}
+
+
+void qpwgraph_form::viewPatchbayToolbar ( bool on )
+{
+	m_ui.PatchbayToolbar->setVisible(on);
 }
 
 
@@ -622,9 +634,11 @@ void qpwgraph_form::viewStatusbar ( bool on )
 void qpwgraph_form::viewTextBesideIcons ( bool on )
 {
 	if (on) {
-		m_ui.ToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		m_ui.GraphToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		m_ui.PatchbayToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	} else {
-		m_ui.ToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		m_ui.GraphToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		m_ui.PatchbayToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 	}
 }
 
@@ -992,9 +1006,11 @@ void qpwgraph_form::stabilize (void)
 void qpwgraph_form::orientationChanged ( Qt::Orientation orientation )
 {
 	if (m_config->isTextBesideIcons() && orientation == Qt::Horizontal) {
-		m_ui.ToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		m_ui.GraphToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		m_ui.PatchbayToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	} else {
-		m_ui.ToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		m_ui.GraphToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		m_ui.PatchbayToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 	}
 }
 
@@ -1254,7 +1270,8 @@ void qpwgraph_form::restoreState (void)
 	}
 
 	m_ui.viewMenubarAction->setChecked(m_config->isMenubar());
-	m_ui.viewToolbarAction->setChecked(m_config->isToolbar());
+	m_ui.viewGraphToolbarAction->setChecked(m_config->isToolbar());
+	m_ui.viewPatchbayToolbarAction->setChecked(m_config->isPatchbayToolbar());
 	m_ui.viewStatusbarAction->setChecked(m_config->isStatusbar());
 
 	m_ui.viewTextBesideIconsAction->setChecked(m_config->isTextBesideIcons());
@@ -1290,7 +1307,8 @@ void qpwgraph_form::restoreState (void)
 	}
 
 	viewMenubar(m_config->isMenubar());
-	viewToolbar(m_config->isToolbar());
+	viewGraphToolbar(m_config->isToolbar());
+	viewPatchbayToolbar(m_config->isPatchbayToolbar());
 	viewStatusbar(m_config->isStatusbar());
 
 	viewTextBesideIcons(m_config->isTextBesideIcons());
@@ -1315,7 +1333,8 @@ void qpwgraph_form::saveState (void)
 	m_config->setSortOrder(int(qpwgraph_port::sortOrder()));
 
 	m_config->setStatusbar(m_ui.StatusBar->isVisible());
-	m_config->setToolbar(m_ui.ToolBar->isVisible());
+	m_config->setToolbar(m_ui.GraphToolbar->isVisible());
+	m_config->setPatchbayToolbar(m_ui.PatchbayToolbar->isVisible());
 	m_config->setMenubar(m_ui.MenuBar->isVisible());
 
 	m_config->setPatchbayExclusive(m_ui.patchbayExclusiveAction->isChecked());
