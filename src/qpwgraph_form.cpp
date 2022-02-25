@@ -44,6 +44,7 @@
 #include <QToolButton>
 #include <QSlider>
 #include <QSpinBox>
+#include <QComboBox>
 
 #include <QColorDialog>
 
@@ -111,6 +112,12 @@ qpwgraph_form::qpwgraph_form (
 
 	m_ins = m_mids = m_outs = 0;
 
+	m_patchbay_names = new QComboBox(m_ui.patchbayToolbar);
+	m_patchbay_names->setEditable(false);
+	m_patchbay_names->setMinimumWidth(120);
+	m_patchbay_names->setMaximumWidth(240);
+	m_ui.patchbayToolbar->insertWidget(m_ui.patchbaySaveAction, m_patchbay_names);
+
 	QUndoStack *commands = m_ui.graphCanvas->commands();
 
 	QAction *undo_action = commands->createUndoAction(this, tr("&Undo"));
@@ -129,9 +136,9 @@ qpwgraph_form::qpwgraph_form (
 	m_ui.editMenu->insertSeparator(before);
 
 	before = m_ui.viewCenterAction;
-	m_ui.GraphToolbar->insertAction(before, undo_action);
-	m_ui.GraphToolbar->insertAction(before, redo_action);
-	m_ui.GraphToolbar->insertSeparator(before);
+	m_ui.graphToolbar->insertAction(before, undo_action);
+	m_ui.graphToolbar->insertAction(before, redo_action);
+	m_ui.graphToolbar->insertSeparator(before);
 
 	// Special zoom composite widget...
 	QWidget *zoom_widget = new QWidget();
@@ -166,6 +173,10 @@ qpwgraph_form::qpwgraph_form (
 
 	zoom_widget->setLayout(zoom_layout);
 	m_ui.StatusBar->addPermanentWidget(zoom_widget);
+
+	QObject::connect(m_patchbay_names,
+		SIGNAL(activated(int)),
+		SLOT(patchbayNameChanged(int)));
 
 	QObject::connect(m_zoom_spinbox,
 		SIGNAL(valueChanged(int)),
@@ -379,10 +390,10 @@ qpwgraph_form::qpwgraph_form (
 		SIGNAL(triggered(bool)),
 		SLOT(helpAboutQt()));
 
-	QObject::connect(m_ui.GraphToolbar,
+	QObject::connect(m_ui.graphToolbar,
 		SIGNAL(orientationChanged(Qt::Orientation)),
 		SLOT(orientationChanged(Qt::Orientation)));
-	QObject::connect(m_ui.PatchbayToolbar,
+	QObject::connect(m_ui.patchbayToolbar,
 		SIGNAL(orientationChanged(Qt::Orientation)),
 		SLOT(orientationChanged(Qt::Orientation)));
 
@@ -410,6 +421,8 @@ qpwgraph_form::qpwgraph_form (
 			patchbay->snap(); // Simulate patchbayNew()!
 	}
 
+	patchbayNamesUpdate();
+
 	stabilize();
 
 	// Make it ready :-)
@@ -429,6 +442,8 @@ qpwgraph_form::~qpwgraph_form (void)
 #ifdef CONFIG_SYSTEM_TRAY
 	delete m_systray;
 #endif
+
+//	delete m_patchbay_names;
 
 	delete m_sort_order;
 	delete m_sort_type;
@@ -454,6 +469,7 @@ void qpwgraph_form::apply_args ( qpwgraph_application *app )
 	if (!app->patchbayPath().isEmpty())
 		patchbayOpenFile(app->patchbayPath());
 
+	patchbayNamesUpdate();
 	stabilize();
 }
 
@@ -473,6 +489,7 @@ void qpwgraph_form::patchbayNew (void)
 	m_patchbay_path.clear();
 	++m_patchbay_untitled;
 
+	patchbayNamesUpdate();
 	stabilize();
 }
 
@@ -493,6 +510,7 @@ void qpwgraph_form::patchbayOpen (void)
 
 	patchbayOpenFile(path);
 
+	patchbayNamesUpdate();
 	stabilize();
 }
 
@@ -533,6 +551,7 @@ void qpwgraph_form::patchbayOpenRecent (void)
 		}
 	}
 
+	patchbayNamesUpdate();
 	stabilize();
 }
 
@@ -546,6 +565,7 @@ void qpwgraph_form::patchbaySave (void)
 
 	patchbaySaveFile(m_patchbay_path);
 
+	patchbayNamesUpdate();
 	stabilize();
 }
 
@@ -566,6 +586,7 @@ void qpwgraph_form::patchbaySaveAs (void)
 	else
 		patchbaySaveFile(path);
 
+	patchbayNamesUpdate();
 	stabilize();
 }
 
@@ -615,13 +636,13 @@ void qpwgraph_form::viewMenubar ( bool on )
 
 void qpwgraph_form::viewGraphToolbar ( bool on )
 {
-	m_ui.GraphToolbar->setVisible(on);
+	m_ui.graphToolbar->setVisible(on);
 }
 
 
 void qpwgraph_form::viewPatchbayToolbar ( bool on )
 {
-	m_ui.PatchbayToolbar->setVisible(on);
+	m_ui.patchbayToolbar->setVisible(on);
 }
 
 
@@ -634,11 +655,11 @@ void qpwgraph_form::viewStatusbar ( bool on )
 void qpwgraph_form::viewTextBesideIcons ( bool on )
 {
 	if (on) {
-		m_ui.GraphToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-		m_ui.PatchbayToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		m_ui.graphToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		m_ui.patchbayToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	} else {
-		m_ui.GraphToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-		m_ui.PatchbayToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		m_ui.graphToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		m_ui.patchbayToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 	}
 }
 
@@ -779,6 +800,20 @@ void qpwgraph_form::helpAboutQt (void)
 void qpwgraph_form::zoomValueChanged ( int zoom_value )
 {
 	m_ui.graphCanvas->setZoom(0.01 * qreal(zoom_value));
+}
+
+
+void qpwgraph_form::patchbayNameChanged ( int index )
+{
+	if (index > 0) {
+		const QString& path
+			= m_patchbay_names->itemData(index).toString();
+		if (!path.isEmpty())
+			patchbayOpenFile(path);
+	}
+
+	patchbayNamesUpdate();
+	stabilize();
 }
 
 
@@ -1101,6 +1136,28 @@ QString qpwgraph_form::patchbayFileFilter (void) const
 }
 
 
+
+// Update patchbay names combo-box (toolbar).
+void qpwgraph_form::patchbayNamesUpdate (void)
+{
+	const bool is_blocked
+		= m_patchbay_names->blockSignals(true);
+
+	m_patchbay_names->clear();
+	m_patchbay_names->addItem(patchbayFileName(), m_patchbay_path);
+	const QStringList& paths = m_config->patchbayRecentFiles();
+	foreach (const QString& path, paths) {
+		if (path == m_patchbay_path)
+			continue;
+		m_patchbay_names->addItem(QFileInfo(path).completeBaseName(), path);
+	}
+
+	m_patchbay_names->setCurrentIndex(0);
+
+	m_patchbay_names->blockSignals(is_blocked);
+}
+
+
 // Whether we can close current patchbay.
 bool qpwgraph_form::patchbayQueryClose (void)
 {
@@ -1335,8 +1392,8 @@ void qpwgraph_form::saveState (void)
 	m_config->setSortOrder(int(qpwgraph_port::sortOrder()));
 
 	m_config->setStatusbar(m_ui.StatusBar->isVisible());
-	m_config->setToolbar(m_ui.GraphToolbar->isVisible());
-	m_config->setPatchbayToolbar(m_ui.PatchbayToolbar->isVisible());
+	m_config->setToolbar(m_ui.graphToolbar->isVisible());
+	m_config->setPatchbayToolbar(m_ui.patchbayToolbar->isVisible());
 	m_config->setMenubar(m_ui.MenuBar->isVisible());
 
 	m_config->setPatchbayExclusive(m_ui.patchbayExclusiveAction->isChecked());

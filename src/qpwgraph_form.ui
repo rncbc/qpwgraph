@@ -174,7 +174,7 @@
    <addaction name="separator"/>
    <addaction name="helpMenu"/>
   </widget>
-  <widget class="QToolBar" name="GraphToolbar">
+  <widget class="QToolBar" name="graphToolbar">
    <property name="allowedAreas">
     <set>Qt::AllToolBarAreas</set>
    </property>
@@ -206,7 +206,7 @@
    <addaction name="separator"/>
    <addaction name="viewZoomRangeAction"/>
   </widget>
-  <widget class="QToolBar" name="PatchbayToolbar">
+  <widget class="QToolBar" name="patchbayToolbar">
    <property name="allowedAreas">
     <set>Qt::TopToolBarArea|Qt::BottomToolBarArea</set>
    </property>

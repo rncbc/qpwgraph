@@ -43,6 +43,7 @@ class QCloseEvent;
 
 class QSlider;
 class QSpinBox;
+class QComboBox;
 
 class QActionGroup;
 
@@ -130,6 +131,8 @@ protected slots:
 
 	void zoomValueChanged(int zoom_value);
 
+	void patchbayNameChanged(int index);
+
 public slots:
 
 	void closeQuit();
@@ -149,6 +152,9 @@ protected:
 	// Get default patchbay file extension/filter.
 	QString patchbayFileExt() const;
 	QString patchbayFileFilter() const;
+
+	// Update patchbay names combo-box (toolbar).
+	void patchbayNamesUpdate();
 
 	// Whether we can close current patchbay.
 	bool patchbayQueryClose();
@@ -200,6 +206,8 @@ private:
 	QString m_patchbay_dir;
 	QString m_patchbay_path;
 	int     m_patchbay_untitled;
+
+	QComboBox *m_patchbay_names;
 
 	qpwgraph_systray *m_systray;
 };
