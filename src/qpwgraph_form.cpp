@@ -1143,13 +1143,15 @@ void qpwgraph_form::patchbayNamesUpdate (void)
 	const bool is_blocked
 		= m_patchbay_names->blockSignals(true);
 
+	const QIcon icon(":/images/itemPatchbay.png");
 	m_patchbay_names->clear();
 	m_patchbay_names->addItem(patchbayFileName(), m_patchbay_path);
 	const QStringList& paths = m_config->patchbayRecentFiles();
 	foreach (const QString& path, paths) {
 		if (path == m_patchbay_path)
 			continue;
-		m_patchbay_names->addItem(QFileInfo(path).completeBaseName(), path);
+		m_patchbay_names->addItem(icon,
+			QFileInfo(path).completeBaseName(), path);
 	}
 
 	m_patchbay_names->setCurrentIndex(0);
