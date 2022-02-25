@@ -1005,12 +1005,14 @@ void qpwgraph_form::stabilize (void)
 // Tool-bar orientation change slot.
 void qpwgraph_form::orientationChanged ( Qt::Orientation orientation )
 {
+	QToolBar *toolbar = qobject_cast<QToolBar *> (sender());
+	if (toolbar == nullptr)
+		return;
+
 	if (m_config->isTextBesideIcons() && orientation == Qt::Horizontal) {
-		m_ui.GraphToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-		m_ui.PatchbayToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+		toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	} else {
-		m_ui.GraphToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-		m_ui.PatchbayToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+		toolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 	}
 }
 
