@@ -421,9 +421,7 @@ qpwgraph_form::qpwgraph_form (
 			patchbay->snap(); // Simulate patchbayNew()!
 	}
 
-	patchbayNamesUpdate();
-
-	stabilize();
+	updatePatchbayNames();
 
 	// Make it ready :-)
 	m_ui.StatusBar->showMessage(tr("Ready"), 3000);
@@ -469,8 +467,7 @@ void qpwgraph_form::apply_args ( qpwgraph_application *app )
 	if (!app->patchbayPath().isEmpty())
 		patchbayOpenFile(app->patchbayPath());
 
-	patchbayNamesUpdate();
-	stabilize();
+	updatePatchbayNames();
 }
 
 
@@ -489,8 +486,7 @@ void qpwgraph_form::patchbayNew (void)
 	m_patchbay_path.clear();
 	++m_patchbay_untitled;
 
-	patchbayNamesUpdate();
-	stabilize();
+	updatePatchbayNames();
 }
 
 
@@ -510,29 +506,7 @@ void qpwgraph_form::patchbayOpen (void)
 
 	patchbayOpenFile(path);
 
-	patchbayNamesUpdate();
-	stabilize();
-}
-
-
-void qpwgraph_form::updatePatchbayMenu (void)
-{
-	// Rebuild the recent files menu...
-	m_ui.patchbayOpenRecentMenu->clear();
-	QStringListIterator iter(m_config->patchbayRecentFiles());
-	for (int i = 0; iter.hasNext(); ++i) {
-		const QFileInfo info(iter.next());
-		if (info.exists()) {
-			QAction *action = m_ui.patchbayOpenRecentMenu->addAction(
-				QString("&%1 %2").arg(i + 1).arg(info.completeBaseName()),
-				this, SLOT(patchbayOpenRecent()));
-			action->setData(i);
-		}
-	}
-
-	// Settle as enabled?
-	m_ui.patchbayOpenRecentMenu->setEnabled(
-		!m_ui.patchbayOpenRecentMenu->isEmpty());
+	updatePatchbayNames();
 }
 
 
@@ -551,8 +525,7 @@ void qpwgraph_form::patchbayOpenRecent (void)
 		}
 	}
 
-	patchbayNamesUpdate();
-	stabilize();
+	updatePatchbayNames();
 }
 
 
@@ -565,8 +538,7 @@ void qpwgraph_form::patchbaySave (void)
 
 	patchbaySaveFile(m_patchbay_path);
 
-	patchbayNamesUpdate();
-	stabilize();
+	updatePatchbayNames();
 }
 
 
@@ -586,8 +558,7 @@ void qpwgraph_form::patchbaySaveAs (void)
 	else
 		patchbaySaveFile(path);
 
-	patchbayNamesUpdate();
-	stabilize();
+	updatePatchbayNames();
 }
 
 
@@ -812,8 +783,7 @@ void qpwgraph_form::patchbayNameChanged ( int index )
 			patchbayOpenFile(path);
 	}
 
-	patchbayNamesUpdate();
-	stabilize();
+	updatePatchbayNames();
 }
 
 
@@ -1137,29 +1107,6 @@ QString qpwgraph_form::patchbayFileFilter (void) const
 
 
 
-// Update patchbay names combo-box (toolbar).
-void qpwgraph_form::patchbayNamesUpdate (void)
-{
-	const bool is_blocked
-		= m_patchbay_names->blockSignals(true);
-
-	const QIcon icon(":/images/itemPatchbay.png");
-	m_patchbay_names->clear();
-	m_patchbay_names->addItem(patchbayFileName(), m_patchbay_path);
-	const QStringList& paths = m_config->patchbayRecentFiles();
-	foreach (const QString& path, paths) {
-		if (path == m_patchbay_path)
-			continue;
-		m_patchbay_names->addItem(icon,
-			QFileInfo(path).completeBaseName(), path);
-	}
-
-	m_patchbay_names->setCurrentIndex(0);
-
-	m_patchbay_names->blockSignals(is_blocked);
-}
-
-
 // Whether we can close current patchbay.
 bool qpwgraph_form::patchbayQueryClose (void)
 {
@@ -1283,6 +1230,53 @@ void qpwgraph_form::updateViewColors (void)
 #ifdef CONFIG_ALSA_MIDI
 	updateViewColorsAction(m_ui.viewColorsAlsaMidiAction);
 #endif
+}
+
+
+// Update patchbay recent files menu.
+void qpwgraph_form::updatePatchbayMenu (void)
+{
+	// Rebuild the recent files menu...
+	m_ui.patchbayOpenRecentMenu->clear();
+	QStringListIterator iter(m_config->patchbayRecentFiles());
+	for (int i = 0; iter.hasNext(); ++i) {
+		const QFileInfo info(iter.next());
+		if (info.exists()) {
+			QAction *action = m_ui.patchbayOpenRecentMenu->addAction(
+				QString("&%1 %2").arg(i + 1).arg(info.completeBaseName()),
+				this, SLOT(patchbayOpenRecent()));
+			action->setData(i);
+		}
+	}
+
+	// Settle as enabled?
+	m_ui.patchbayOpenRecentMenu->setEnabled(
+		!m_ui.patchbayOpenRecentMenu->isEmpty());
+}
+
+
+// Update patchbay names combo-box (toolbar).
+void qpwgraph_form::updatePatchbayNames (void)
+{
+	const bool is_blocked
+		= m_patchbay_names->blockSignals(true);
+
+	const QIcon icon(":/images/itemPatchbay.png");
+	m_patchbay_names->clear();
+	m_patchbay_names->addItem(icon,
+		patchbayFileName(), m_patchbay_path);
+	const QStringList& paths = m_config->patchbayRecentFiles();
+	foreach (const QString& path, paths) {
+		if (path == m_patchbay_path)
+			continue;
+		m_patchbay_names->addItem(icon,
+			QFileInfo(path).completeBaseName(), path);
+	}
+
+	m_patchbay_names->setCurrentIndex(0);
+	m_patchbay_names->blockSignals(is_blocked);
+
+	stabilize();
 }
 
 

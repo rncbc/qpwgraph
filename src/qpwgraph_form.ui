@@ -57,34 +57,32 @@
     <property name="title">
      <string>&amp;Graph</string>
     </property>
-    <widget class="QMenu" name="patchbayMenu">
-     <property name="title">
-      <string>&amp;Patchbay</string>
-     </property>
-     <widget class="QMenu" name="patchbayOpenRecentMenu">
-      <property name="title">
-       <string>Open &amp;Recent</string>
-      </property>
-     </widget>
-     <addaction name="patchbayNewAction"/>
-     <addaction name="separator"/>
-     <addaction name="patchbayOpenAction"/>
-     <addaction name="patchbayOpenRecentMenu"/>
-     <addaction name="separator"/>
-     <addaction name="patchbaySaveAction"/>
-     <addaction name="patchbaySaveAsAction"/>
-     <addaction name="separator"/>
-     <addaction name="patchbayActivatedAction"/>
-     <addaction name="patchbayExclusiveAction"/>
-     <addaction name="separator"/>
-     <addaction name="patchbayScanAction"/>
-    </widget>
     <addaction name="graphConnectAction"/>
     <addaction name="graphDisconnectAction"/>
     <addaction name="separator"/>
-    <addaction name="patchbayMenu"/>
-    <addaction name="separator"/>
     <addaction name="graphQuitAction"/>
+   </widget>
+   <widget class="QMenu" name="patchbayMenu">
+    <property name="title">
+     <string>&amp;Patchbay</string>
+    </property>
+    <widget class="QMenu" name="patchbayOpenRecentMenu">
+     <property name="title">
+      <string>Open &amp;Recent</string>
+     </property>
+    </widget>
+    <addaction name="patchbayNewAction"/>
+    <addaction name="separator"/>
+    <addaction name="patchbayOpenAction"/>
+    <addaction name="patchbayOpenRecentMenu"/>
+    <addaction name="separator"/>
+    <addaction name="patchbaySaveAction"/>
+    <addaction name="patchbaySaveAsAction"/>
+    <addaction name="separator"/>
+    <addaction name="patchbayActivatedAction"/>
+    <addaction name="patchbayExclusiveAction"/>
+    <addaction name="separator"/>
+    <addaction name="patchbayScanAction"/>
    </widget>
    <widget class="QMenu" name="editMenu">
     <property name="title">
@@ -169,6 +167,7 @@
     <addaction name="helpAboutQtAction"/>
    </widget>
    <addaction name="graphMenu"/>
+   <addaction name="patchbayMenu"/>
    <addaction name="editMenu"/>
    <addaction name="viewMenu"/>
    <addaction name="separator"/>

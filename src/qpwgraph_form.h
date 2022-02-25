@@ -94,8 +94,6 @@ protected slots:
 	void orientationChanged(Qt::Orientation orientation);
 
 	// Patchbay menu slots.
-	void updatePatchbayMenu();
-
 	void patchbayNew();
 	void patchbayOpen();
 	void patchbayOpenRecent();
@@ -133,6 +131,9 @@ protected slots:
 
 	void patchbayNameChanged(int index);
 
+	// Update patchbay recent files menu.
+	void updatePatchbayMenu();
+
 public slots:
 
 	void closeQuit();
@@ -153,9 +154,6 @@ protected:
 	QString patchbayFileExt() const;
 	QString patchbayFileFilter() const;
 
-	// Update patchbay names combo-box (toolbar).
-	void patchbayNamesUpdate();
-
 	// Whether we can close current patchbay.
 	bool patchbayQueryClose();
 
@@ -173,6 +171,9 @@ protected:
 	// Special port-type color method.
 	void updateViewColorsAction(QAction *action);
 	void updateViewColors();
+
+	// Update patchbay names combo-box (toolbar).
+	void updatePatchbayNames();
 
 	// Item sect predicate.
 	qpwgraph_sect *item_sect(qpwgraph_item *item) const;
