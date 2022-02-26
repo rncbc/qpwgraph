@@ -1,7 +1,7 @@
 qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
-GIT HEAD
+0.2.1  2022-02-26  Just a second beta.
 
 - Patchbay feature introduced: save connections to file; restore
   connections from file and maintain when activated; disconnect

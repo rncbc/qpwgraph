@@ -515,14 +515,10 @@ void qpwgraph_form::patchbayOpenRecent (void)
 	// Retrive filename index from action data...
 	QAction *action = qobject_cast<QAction *> (sender());
 	if (action) {
-		const int index = action->data().toInt();
-		if (index >= 0 && index < m_config->patchbayRecentFiles().count()) {
-			const QString path
-				= m_config->patchbayRecentFiles().at(index);
-			// Check if we can safely close the current file...
-			if (!path.isEmpty() && patchbayQueryClose())
-				patchbayOpenFile(path);
-		}
+		const QString& path = action->data().toString();
+		// Check if we can safely close the current file...
+		if (!path.isEmpty() && patchbayQueryClose())
+			patchbayOpenFile(path);
 	}
 
 	updatePatchbayNames();
@@ -779,7 +775,7 @@ void qpwgraph_form::patchbayNameChanged ( int index )
 	if (index > 0) {
 		const QString& path
 			= m_patchbay_names->itemData(index).toString();
-		if (!path.isEmpty())
+		if (!path.isEmpty() && patchbayQueryClose())
 			patchbayOpenFile(path);
 	}
 
@@ -1237,15 +1233,16 @@ void qpwgraph_form::updateViewColors (void)
 void qpwgraph_form::updatePatchbayMenu (void)
 {
 	// Rebuild the recent files menu...
+	const QIcon icon(":/images/itemPatchbay.png");
 	m_ui.patchbayOpenRecentMenu->clear();
 	QStringListIterator iter(m_config->patchbayRecentFiles());
 	for (int i = 0; iter.hasNext(); ++i) {
 		const QFileInfo info(iter.next());
 		if (info.exists()) {
-			QAction *action = m_ui.patchbayOpenRecentMenu->addAction(
+			QAction *action = m_ui.patchbayOpenRecentMenu->addAction(icon,
 				QString("&%1 %2").arg(i + 1).arg(info.completeBaseName()),
 				this, SLOT(patchbayOpenRecent()));
-			action->setData(i);
+			action->setData(info.absoluteFilePath());
 		}
 	}
 
