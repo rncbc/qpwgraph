@@ -4,6 +4,8 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Application ID changed from org.freedesktop.rncbc.qpwgraph to
+  org.rncbc.qpwgraph (affecting appdata/metainfo and mime/types).
 - Fixed system-tray to show the main window up when minimized.
 
 
