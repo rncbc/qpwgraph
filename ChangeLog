@@ -1,6 +1,12 @@
 qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
+
+GIT HEAD
+
+- Fixed system-tray to show the main window up when minimized.
+
+
 0.2.1  2022-02-26  Just a second beta.
 
 - Patchbay feature introduced: save connections to file; restore

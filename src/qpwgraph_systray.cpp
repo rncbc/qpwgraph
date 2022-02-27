@@ -90,7 +90,7 @@ void qpwgraph_systray::showHide (void)
 		m_form->hide();
 	} else {
 		// Show normally.
-		m_form->show();
+		m_form->showNormal();
 		m_form->raise();
 		m_form->activateWindow();
 	}
