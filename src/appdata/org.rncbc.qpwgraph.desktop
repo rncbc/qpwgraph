@@ -1,11 +1,12 @@
 [Desktop Entry]
 Name=qpwgraph
 Version=1.0
-GenericName=PipeWire Graph
+GenericName=PipeWire Graph/Patchbay
 Comment=qpwgraph is a PipeWire graph Qt GUI interface
 Exec=qpwgraph
 Icon=qpwgraph
 Categories=AudioVideo;Audio;Video;Midi;X-Alsa;X-PipeWire;Qt;
+MimeType=application/x-qpwgraph-patchbay;
 Keywords=PipeWire;MIDI;ALSA;
 Terminal=false
 Type=Application
