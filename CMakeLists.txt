@@ -53,6 +53,8 @@ endif ()
 
 include (GNUInstallDirs)
 
+# Enable Wayland support option.
+option (CONFIG_WAYLAND "Enable Wayland support (EXPERIMENTAL) (default=no)" 0)
 
 # Check for Qt...
 if (CONFIG_QT6)

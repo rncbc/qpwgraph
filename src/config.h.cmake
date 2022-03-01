@@ -27,3 +27,6 @@
 
 
 #endif // __CONFIG_H
+/* Define if Wayland is supported */
+#cmakedefine CONFIG_WAYLAND @CONFIG_WAYLAND@
+
