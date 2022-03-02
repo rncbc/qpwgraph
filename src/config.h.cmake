@@ -26,7 +26,8 @@
 #cmakedefine CONFIG_SYSTEM_TRAY @CONFIG_SYSTEM_TRAY@
 
 
-#endif // __CONFIG_H
 /* Define if Wayland is supported */
 #cmakedefine CONFIG_WAYLAND @CONFIG_WAYLAND@
+
+#endif // __CONFIG_H
 
