@@ -2,7 +2,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.2.2  2022-03-02  A thrice beta than before.
 
 - Application ID changed from org.freedesktop.rncbc.qpwgraph to
   org.rncbc.qpwgraph (affecting appdata/metainfo and mime/types).
