@@ -2,6 +2,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Main application icon is now presented in scalable format (SVG).
+
+
 0.2.2  2022-03-02  A thrice beta than before.
 
 - Application ID changed from org.freedesktop.rncbc.qpwgraph to

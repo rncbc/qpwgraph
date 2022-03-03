@@ -1,6 +1,7 @@
 <RCC version="1.0">
 	<qresource>
 		<file>images/qpwgraph.png</file>
+		<file>images/qpwgraph.svg</file>
 		<file>images/itemPipewire.png</file>
 		<file>images/itemAlsamidi.png</file>
 		<file>images/itemConnect.png</file>

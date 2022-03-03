@@ -34,7 +34,7 @@
    <string>qpwgraph</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qpwgraph.qrc">:/images/qpwgraph.png</iconset>
+   <iconset resource="qpwgraph.qrc">:/images/qpwgraph.svg</iconset>
   </property>
   <widget class="QWidget" name="MainCentralWidget">
    <layout class="QVBoxLayout">
