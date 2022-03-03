@@ -14,6 +14,7 @@
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -21,227 +22,54 @@
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs5088">
-    <filter
-       inkscape:label="Drop Shadow"
-       inkscape:menu="Bevels"
-       inkscape:menu-tooltip="Ridged border with inner bevel"
-       style="color-interpolation-filters:sRGB;"
-       id="filter949"
-       x="-0.45666668"
-       y="-0.49818183"
-       width="1.9133334"
-       height="1.9963637">
-      <feMorphology
-         radius="4.3"
-         in="SourceAlpha"
-         result="result91"
-         id="feMorphology935" />
-      <feComposite
-         operator="out"
-         in="SourceGraphic"
-         in2="result91"
-         id="feComposite937" />
-      <feGaussianBlur
-         result="result0"
-         stdDeviation="1.2"
-         id="feGaussianBlur939" />
-      <feDiffuseLighting
-         diffuseConstant="1"
-         id="feDiffuseLighting943">
-        <feDistantLight
-           elevation="66"
-           azimuth="225"
-           id="feDistantLight941" />
-      </feDiffuseLighting>
-      <feBlend
-         mode="multiply"
-         in2="SourceGraphic"
-         id="feBlend945" />
-      <feComposite
-         operator="in"
-         in2="SourceAlpha"
-         id="feComposite947"
-         result="fbSourceGraphic" />
-      <feColorMatrix
-         result="fbSourceGraphicAlpha"
-         in="fbSourceGraphic"
-         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
-         id="feColorMatrix951" />
-      <feMorphology
-         id="feMorphology953"
-         radius="4.3"
-         in="fbSourceGraphicAlpha"
-         result="result91" />
-      <feComposite
-         in2="result91"
-         id="feComposite955"
-         operator="out"
-         in="fbSourceGraphic" />
-      <feGaussianBlur
-         id="feGaussianBlur957"
-         result="result0"
-         stdDeviation="1.2" />
-      <feDiffuseLighting
-         id="feDiffuseLighting959"
-         diffuseConstant="1"
-         result="result92">
-        <feDistantLight
-           id="feDistantLight961"
-           elevation="66"
-           azimuth="225" />
-      </feDiffuseLighting>
-      <feBlend
-         in2="fbSourceGraphic"
-         id="feBlend963"
-         mode="multiply"
-         result="result93" />
-      <feComposite
-         in2="fbSourceGraphicAlpha"
-         id="feComposite965"
-         operator="in"
-         result="fbSourceGraphic" />
-      <feColorMatrix
-         result="fbSourceGraphicAlpha"
-         in="fbSourceGraphic"
-         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
-         id="feColorMatrix967" />
-      <feFlood
-         id="feFlood969"
-         flood-opacity="1"
-         flood-color="rgb(0,0,0)"
-         result="flood"
-         in="fbSourceGraphic" />
-      <feComposite
-         in2="fbSourceGraphic"
-         id="feComposite971"
-         in="flood"
-         operator="in"
-         result="composite1" />
-      <feGaussianBlur
-         id="feGaussianBlur973"
-         in="composite1"
-         stdDeviation="1"
-         result="blur" />
-      <feOffset
-         id="feOffset975"
-         dx="0"
-         dy="0"
-         result="offset" />
-      <feComposite
-         in2="offset"
-         id="feComposite977"
-         in="fbSourceGraphic"
-         operator="over"
-         result="fbSourceGraphic" />
-      <feColorMatrix
-         result="fbSourceGraphicAlpha"
-         in="fbSourceGraphic"
-         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
-         id="feColorMatrix979" />
-      <feFlood
-         id="feFlood981"
-         flood-opacity="1"
-         flood-color="rgb(0,0,0)"
-         result="flood"
-         in="fbSourceGraphic" />
-      <feComposite
-         in2="fbSourceGraphic"
-         id="feComposite983"
-         in="flood"
-         operator="in"
-         result="composite1" />
-      <feGaussianBlur
-         id="feGaussianBlur985"
-         in="composite1"
-         stdDeviation="1"
-         result="blur" />
-      <feOffset
-         id="feOffset987"
-         dx="0"
-         dy="0"
-         result="offset" />
-      <feComposite
-         in2="offset"
-         id="feComposite989"
-         in="fbSourceGraphic"
-         operator="over"
-         result="composite2" />
-    </filter>
-    <filter
-       inkscape:label="Drop Shadow"
-       inkscape:menu="Bevels"
-       inkscape:menu-tooltip="Ridged border with inner bevel"
-       style="color-interpolation-filters:sRGB;"
-       id="filter1265"
-       x="-0.18720001"
-       y="-0.21272737"
-       width="1.3944"
-       height="1.448182">
-      <feMorphology
-         radius="4.3"
-         in="SourceAlpha"
-         result="result91"
-         id="feMorphology1251" />
-      <feComposite
-         operator="out"
-         in="SourceGraphic"
-         in2="result91"
-         id="feComposite1253" />
-      <feGaussianBlur
-         result="result0"
-         stdDeviation="1.2"
-         id="feGaussianBlur1255" />
-      <feDiffuseLighting
-         diffuseConstant="1"
-         id="feDiffuseLighting1259">
-        <feDistantLight
-           elevation="66"
-           azimuth="225"
-           id="feDistantLight1257" />
-      </feDiffuseLighting>
-      <feBlend
-         mode="multiply"
-         in2="SourceGraphic"
-         id="feBlend1261" />
-      <feComposite
-         operator="in"
-         in2="SourceAlpha"
-         id="feComposite1263"
-         result="fbSourceGraphic" />
-      <feColorMatrix
-         result="fbSourceGraphicAlpha"
-         in="fbSourceGraphic"
-         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
-         id="feColorMatrix1286" />
-      <feFlood
-         id="feFlood1288"
-         flood-opacity="0.8"
-         flood-color="rgb(0,0,0)"
-         result="flood"
-         in="fbSourceGraphic" />
-      <feComposite
-         in2="fbSourceGraphic"
-         id="feComposite1290"
-         in="flood"
-         operator="in"
-         result="composite1" />
-      <feGaussianBlur
-         id="feGaussianBlur1292"
-         in="composite1"
-         stdDeviation="0.5"
-         result="blur" />
-      <feOffset
-         id="feOffset1294"
-         dx="0.5"
-         dy="0.5"
-         result="offset" />
-      <feComposite
-         in2="offset"
-         id="feComposite1296"
-         in="fbSourceGraphic"
-         operator="over"
-         result="composite2" />
-    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       id="BevelGradient1">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop854" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop856" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#BevelGradient1"
+       id="linearGradient860"
+       x1="26"
+       y1="26"
+       x2="6"
+       y2="6"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#BevelGradient1"
+       id="linearGradient14826"
+       x1="26"
+       y1="314.53333"
+       x2="10"
+       y2="298.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#BevelGradient1"
+       id="linearGradient15354"
+       x1="26"
+       y1="314.53333"
+       x2="16"
+       y2="304.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#BevelGradient1"
+       id="linearGradient866"
+       x1="16"
+       y1="304.53333"
+       x2="6"
+       y2="294.53333"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -251,10 +79,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="24.15625"
-     inkscape:cx="15.979301"
-     inkscape:cy="16"
+     inkscape:cx="16"
+     inkscape:cy="16.124191"
      inkscape:document-units="px"
-     inkscape:current-layer="g872"
+     inkscape:current-layer="g1430"
      showgrid="true"
      units="px"
      inkscape:pagecheckerboard="true"
@@ -278,7 +106,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -289,23 +116,181 @@
      transform="translate(0,-288.53333)">
     <g
        id="g872"
-       inkscape:label="Group 1">
+       inkscape:label="Group 1S"
+       style="display:inline">
       <path
-         style="display:inline;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;filter:url(#filter949)"
+         style="display:inline;fill:#000000;fill-opacity:0.2;fill-rule:evenodd;stroke:url(#linearGradient866);stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         d="m 5,294.03333 v 3 h 5 c 4.5,6 3.5,6.5 3.5,6.5 H 5 v 3 h 8.5 c 0,0 1,0.5 -3.5,6.5 H 5 v 3 h 6 c 9.5,-11 1.5,-11 11,0 h 6 v -3 h -5 c -4.5,-6 -3.5,-6.5 -3.5,-6.5 H 28 v -3 h -8.5 c 0,0 -1,-0.5 3.5,-6.5 h 5 v -3 h -6 c -9.5,11 -1.5,11 -11,0 z"
+         id="path837-3-3"
+         inkscape:connector-curvature="0"
+         inkscape:label="Connect 33S"
+         sodipodi:nodetypes="ccccccccccccccccccccccccc" />
+    </g>
+    <g
+       id="g1865"
+       inkscape:label="Group 1"
+       style="display:inline">
+      <path
+         style="display:inline;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
          d="M 4,5 V 8 H 9.5 C 14,14 13,14.5 13,14.5 H 4 v 3 h 9 c 0,0 1,0.5 -3.5,6.5 H 4 v 3 h 6.5 C 20,16 12,16 21.5,27 H 28 V 24 H 22.5 C 18,18 19,17.5 19,17.5 h 9 v -3 H 19 C 19,14.5 18,14 22.5,8 H 28 V 5 H 21.5 C 12,16 20,16 10.5,5 Z"
          transform="translate(0,288.53333)"
-         id="path837-3-3"
+         id="path1863"
          inkscape:connector-curvature="0"
          inkscape:label="Connect 33"
          sodipodi:nodetypes="ccccccccccccccccccccccccc" />
     </g>
     <g
+       id="g1430"
+       inkscape:label="Group 1B1"
+       style="display:inline;fill:none">
+      <path
+         style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient860);stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         d="m 4.5,5 v 3 h 5 C 14,14 13,14.5 13,14.5 H 4.5 v 3 H 13 c 0,0 1,0.5 -3.5,6.5 h -5 v 3 h 6 C 20,16 12,16 21.5,27 h 7 v -3 h -6 C 18,18 19,17.5 19,17.5 h 9.5 v -3 H 19 c 0,0 -1,-0.5 3.5,-6.5 h 6 V 5 h -7 C 12,16 20,16 10.5,5 Z"
+         id="path1428"
+         inkscape:connector-curvature="0"
+         inkscape:label="Connect 33B1"
+         sodipodi:nodetypes="ccccccccccccccccccccccccc"
+         transform="translate(0,288.53333)" />
+    </g>
+    <g
+       id="g2982"
+       inkscape:label="Group 1B2"
+       style="display:inline;fill:none">
+      <path
+         style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient14826);stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         d="m 4,293.53333 v 3 l 5.25,-0.25 c 4.5,6 3.5,6.5 3.5,6.5 l -8.75,0.25 v 3 l 8.75,-0.25 c 0,0 1,0.5 -3.5,6.5 l -5.25,0.25 v 3 l 6.25,-0.25 c 9.5,-11 1.5,-11 11,0 l 7.25,0.25 v -3 l -6.25,-0.25 c -4.5,-6 -3.5,-6.5 -3.5,-6.5 l 9.75,0.25 v -3 l -9.75,-0.25 c 0,0 -1,-0.5 3.5,-6.5 l 6.25,0.25 v -3 l -7.25,-0.25 c -9.5,11 -1.5,11 -11,0 z"
+         id="path2980"
+         inkscape:connector-curvature="0"
+         inkscape:label="Connect 33B2"
+         sodipodi:nodetypes="ccccccccccccccccccccccccc" />
+    </g>
+    <g
+       id="g854"
+       inkscape:label="Group 1B3"
+       style="display:inline;fill:none">
+      <path
+         style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient15354);stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         d="m 3.5,293.03333 v 3 H 9 c 4.5,6 3.5,6.5 3.5,6.5 h -9 v 3 h 9 c 0,0 1,0.5 -3.5,6.5 H 3.5 v 3 H 10 c 9.5,-11 1.5,-11 11,0 h 7 v -3 h -6 c -4.5,-6 -3.5,-6.5 -3.5,-6.5 H 28 v -3 h -9.5 c 0,0 -1,-0.5 3.5,-6.5 h 6 v -3 h -7 c -9.5,11 -1.5,11 -11,0 z"
+         id="path852"
+         inkscape:connector-curvature="0"
+         inkscape:label="Connect 33B3"
+         sodipodi:nodetypes="ccccccccccccccccccccccccc" />
+    </g>
+    <g
        id="g878"
+       inkscape:label="Group 2S2"
+       style="display:inline;fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2"
+       transform="matrix(1.2,0,0,1.2,-3.1,-60.806665)">
+      <ellipse
+         style="fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="path875-56"
+         cx="25.166666"
+         cy="312.44998"
+         inkscape:label="Co6"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="path875-3"
+         cx="25.166666"
+         cy="304.53333"
+         inkscape:label="Co5"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="path875-5"
+         cx="25.166666"
+         cy="296.61667"
+         inkscape:label="Co4"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="path875-7"
+         cx="6.8333335"
+         cy="312.44998"
+         inkscape:label="Co3"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="path875-6"
+         cx="6.8333335"
+         cy="304.53333"
+         inkscape:label="Co2"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="opacity:1;fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="path875"
+         cx="6.8333335"
+         cy="296.61667"
+         inkscape:label="Co1"
+         rx="1.5"
+         ry="1.4999952" />
+    </g>
+    <g
+       id="g1955"
+       inkscape:label="Group 2S1"
+       style="display:inline;fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-opacity:0.2"
+       transform="matrix(1.2,0,0,1.2,-3.2,-60.906665)">
+      <ellipse
+         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1943"
+         cx="25.166666"
+         cy="312.44998"
+         inkscape:label="Co6"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1945"
+         cx="25.166666"
+         cy="304.53333"
+         inkscape:label="Co5"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1947"
+         cx="25.166666"
+         cy="296.61667"
+         inkscape:label="Co4"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1949"
+         cx="6.8333335"
+         cy="312.44998"
+         inkscape:label="Co3"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1951"
+         cx="6.8333335"
+         cy="304.53333"
+         inkscape:label="Co2"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="opacity:1;fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1953"
+         cx="6.8333335"
+         cy="296.61667"
+         inkscape:label="Co1"
+         rx="1.5"
+         ry="1.4999952" />
+    </g>
+    <g
+       id="g1253"
        inkscape:label="Group 2"
-       style="filter:url(#filter1265)">
+       style="display:inline">
       <ellipse
          style="fill:none;stroke:#ffffff;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-         id="path875-56"
+         id="ellipse1241"
          cx="27"
          cy="314.03333"
          inkscape:label="Co6"
@@ -313,7 +298,7 @@
          ry="1.4999952" />
       <ellipse
          style="fill:none;stroke:#ffffff;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-         id="path875-3"
+         id="ellipse1243"
          cx="27"
          cy="304.53333"
          inkscape:label="Co5"
@@ -321,7 +306,7 @@
          ry="1.4999952" />
       <ellipse
          style="fill:none;stroke:#ffffff;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-         id="path875-5"
+         id="ellipse1245"
          cx="27"
          cy="295.03333"
          inkscape:label="Co4"
@@ -329,7 +314,7 @@
          ry="1.4999952" />
       <ellipse
          style="fill:none;stroke:#ffffff;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-         id="path875-7"
+         id="ellipse1247"
          cx="5"
          cy="314.03333"
          inkscape:label="Co3"
@@ -337,7 +322,7 @@
          ry="1.4999952" />
       <ellipse
          style="fill:none;stroke:#ffffff;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-         id="path875-6"
+         id="ellipse1249"
          cx="5"
          cy="304.53333"
          inkscape:label="Co2"
@@ -345,7 +330,7 @@
          ry="1.4999952" />
       <ellipse
          style="opacity:1;fill:none;stroke:#ffffff;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-         id="path875"
+         id="ellipse1251"
          cx="5"
          cy="295.03333"
          inkscape:label="Co1"
