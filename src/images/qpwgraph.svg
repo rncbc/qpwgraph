@@ -38,37 +38,37 @@
        inkscape:collect="always"
        xlink:href="#BevelGradient1"
        id="linearGradient860"
-       x1="26"
-       y1="26"
-       x2="6"
-       y2="6"
+       x1="28"
+       y1="28"
+       x2="4"
+       y2="4"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#BevelGradient1"
        id="linearGradient14826"
-       x1="26"
-       y1="314.53333"
-       x2="10"
-       y2="298.53333"
+       x1="28"
+       y1="316.53333"
+       x2="4"
+       y2="292.53333"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#BevelGradient1"
        id="linearGradient15354"
-       x1="26"
-       y1="314.53333"
-       x2="16"
-       y2="304.53333"
+       x1="28"
+       y1="316.53333"
+       x2="4"
+       y2="292.53333"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#BevelGradient1"
        id="linearGradient866"
-       x1="16"
-       y1="304.53333"
-       x2="6"
-       y2="294.53333"
+       x1="28"
+       y1="316.53333"
+       x2="4"
+       y2="292.53333"
        gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
@@ -78,11 +78,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="24.15625"
-     inkscape:cx="16"
-     inkscape:cy="16.124191"
+     inkscape:zoom="24.53125"
+     inkscape:cx="8.0713376"
+     inkscape:cy="16"
      inkscape:document-units="px"
-     inkscape:current-layer="g1430"
+     inkscape:current-layer="layer1"
      showgrid="true"
      units="px"
      inkscape:pagecheckerboard="true"
@@ -233,10 +233,10 @@
     <g
        id="g1955"
        inkscape:label="Group 2S1"
-       style="display:inline;fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-opacity:0.2"
+       style="display:inline;fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-opacity:0.40000001"
        transform="matrix(1.2,0,0,1.2,-3.2,-60.906665)">
       <ellipse
-         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
          id="ellipse1943"
          cx="25.166666"
          cy="312.44998"
@@ -244,7 +244,7 @@
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
          id="ellipse1945"
          cx="25.166666"
          cy="304.53333"
@@ -252,7 +252,7 @@
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
          id="ellipse1947"
          cx="25.166666"
          cy="296.61667"
@@ -260,7 +260,7 @@
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
          id="ellipse1949"
          cx="6.8333335"
          cy="312.44998"
@@ -268,7 +268,7 @@
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
          id="ellipse1951"
          cx="6.8333335"
          cy="304.53333"
@@ -276,7 +276,7 @@
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="opacity:1;fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         style="opacity:1;fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
          id="ellipse1953"
          cx="6.8333335"
          cy="296.61667"
