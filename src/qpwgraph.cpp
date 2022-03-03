@@ -51,7 +51,9 @@ qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 {
 	QApplication::setApplicationName(PROJECT_NAME);
 	QApplication::setApplicationDisplayName(PROJECT_DESCRIPTION);
-	QApplication::setDesktopFileName(QStringLiteral("org.rncbc.qpwgraph"));
+
+	QApplication::setDesktopFileName(
+		QString("org.rncbc.%1").arg(PROJECT_NAME));
 
 	QString version(PROJECT_VERSION);
 	version += '\n';
