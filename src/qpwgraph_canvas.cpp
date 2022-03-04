@@ -688,6 +688,7 @@ void qpwgraph_canvas::mouseReleaseEvent ( QMouseEvent *event )
 				}
 			}
 			// Done with the hovering connection...
+			m_connect->disconnect();
 			delete m_connect;
 			m_connect = nullptr;
 		}
@@ -1366,6 +1367,7 @@ void qpwgraph_canvas::clear (void)
 		m_selected.clear();
 	}
 	if (m_connect) {
+		m_connect->disconnect();
 		delete m_connect;
 		m_connect = nullptr;
 	}

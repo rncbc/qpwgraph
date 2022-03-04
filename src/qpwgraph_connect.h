@@ -54,6 +54,9 @@ public:
 	void setPort2(qpwgraph_port *port);
 	qpwgraph_port *port2() const;
 
+	// Active disconnection.
+	void disconnect();
+
 	// Path/shaper updaters.
 	void updatePathTo(const QPointF& pos);
 	void updatePath();

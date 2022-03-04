@@ -70,11 +70,6 @@ qpwgraph_connect::qpwgraph_connect (void)
 // Destructor.
 qpwgraph_connect::~qpwgraph_connect (void)
 {
-	if (m_port1)
-		m_port1->removeConnect(this);
-	if (m_port2)
-		m_port2->removeConnect(this);
-
 	// No actual need to destroy any children here...
 	//
 	//QGraphicsPathItem::setGraphicsEffect(nullptr);
@@ -121,6 +116,21 @@ void qpwgraph_connect::setPort2 ( qpwgraph_port *port )
 qpwgraph_port *qpwgraph_connect::port2 (void) const
 {
 	return m_port2;
+}
+
+
+// Active disconnection.
+void qpwgraph_connect::disconnect (void)
+{
+	if (m_port1) {
+		m_port1->removeConnect(this);
+		m_port1 = nullptr;
+	}
+
+	if (m_port2) {
+		m_port2->removeConnect(this);
+		m_port2 = nullptr;
+	}
 }
 
 

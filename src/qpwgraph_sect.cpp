@@ -59,8 +59,10 @@ void qpwgraph_sect::removeItem ( qpwgraph_item *item )
 {
 	if (item->type() == qpwgraph_connect::Type) {
 		qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
-		if (connect)
+		if (connect) {
+			connect->disconnect();
 			m_connects.removeAll(connect);
+		}
 	}
 
 	m_canvas->removeItem(item);
