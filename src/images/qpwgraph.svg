@@ -24,51 +24,231 @@
      id="defs5088">
     <linearGradient
        inkscape:collect="always"
-       id="BevelGradient1">
+       id="LinearGradient1">
       <stop
          style="stop-color:#000000;stop-opacity:1;"
          offset="0"
-         id="stop854" />
+         id="stop1145" />
       <stop
          style="stop-color:#000000;stop-opacity:0;"
          offset="1"
-         id="stop856" />
+         id="stop1147" />
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#BevelGradient1"
-       id="linearGradient860"
-       x1="28"
-       y1="28"
-       x2="4"
-       y2="4"
+       xlink:href="#LinearGradient1"
+       id="linearGradient1151"
+       x1="29.799999"
+       y1="29.799999"
+       x2="1.8"
+       y2="1.8"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#BevelGradient1"
-       id="linearGradient14826"
-       x1="28"
-       y1="316.53333"
-       x2="4"
-       y2="292.53333"
+       xlink:href="#LinearGradient1"
+       id="linearGradient1509"
+       x1="29.799999"
+       y1="29.799999"
+       x2="1.8"
+       y2="1.8"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#BevelGradient1"
-       id="linearGradient15354"
-       x1="28"
-       y1="316.53333"
-       x2="4"
-       y2="292.53333"
+       xlink:href="#LinearGradient1"
+       id="linearGradient2059"
+       x1="30"
+       y1="30"
+       x2="2"
+       y2="2"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#BevelGradient1"
-       id="linearGradient866"
-       x1="28"
-       y1="316.53333"
+       xlink:href="#LinearGradient1"
+       id="linearGradient2481"
+       x1="30"
+       y1="30"
+       x2="2"
+       y2="2"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient2775"
+       x1="30"
+       y1="30"
+       x2="2"
+       y2="2"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient3261"
+       x1="30"
+       y1="30"
+       x2="10"
+       y2="10"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient1537"
+       x1="6"
+       y1="296.53333"
        x2="4"
-       y2="292.53333"
+       y2="293.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient1539"
+       x1="6"
+       y1="306.03333"
+       x2="4"
+       y2="303.03333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient1541"
+       x1="6"
+       y1="315.53333"
+       x2="4"
+       y2="312.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient1543"
+       x1="28"
+       y1="296.53333"
+       x2="26"
+       y2="293.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient1545"
+       x1="28"
+       y1="306.03333"
+       x2="26"
+       y2="303.03333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient1547"
+       x1="28"
+       y1="315.53333"
+       x2="26"
+       y2="312.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient3219"
+       x1="4"
+       y1="293.53333"
+       x2="6"
+       y2="296.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient3221"
+       x1="4"
+       y1="303.03333"
+       x2="6"
+       y2="306.03333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient3223"
+       x1="4"
+       y1="312.53333"
+       x2="6"
+       y2="315.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient3225"
+       x1="26"
+       y1="293.53333"
+       x2="28"
+       y2="296.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient3227"
+       x1="26"
+       y1="303.03333"
+       x2="28"
+       y2="306.03333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient3229"
+       x1="26"
+       y1="312.53333"
+       x2="28"
+       y2="315.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient4867"
+       x1="6"
+       y1="296.53333"
+       x2="5"
+       y2="295.03333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient4869"
+       x1="6"
+       y1="306.03333"
+       x2="5"
+       y2="304.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient4871"
+       x1="6"
+       y1="315.53333"
+       x2="5"
+       y2="314.03333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient4873"
+       x1="28"
+       y1="296.53333"
+       x2="27"
+       y2="295.03333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient4875"
+       x1="28"
+       y1="306.03333"
+       x2="27"
+       y2="304.53333"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#LinearGradient1"
+       id="linearGradient4877"
+       x1="28"
+       y1="315.53333"
+       x2="27"
+       y2="314.03333"
        gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
@@ -79,10 +259,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="24.53125"
-     inkscape:cx="8.0713376"
+     inkscape:cx="14.30828"
      inkscape:cy="16"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g1059"
      showgrid="true"
      units="px"
      inkscape:pagecheckerboard="true"
@@ -115,16 +295,32 @@
      id="layer1"
      transform="translate(0,-288.53333)">
     <g
-       id="g872"
-       inkscape:label="Group 1S"
-       style="display:inline">
+       id="g1584"
+       inkscape:label="Group 1.2S"
+       style="display:inline"
+       transform="translate(0.2,0.2)">
       <path
-         style="display:inline;fill:#000000;fill-opacity:0.2;fill-rule:evenodd;stroke:url(#linearGradient866);stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         d="m 5,294.03333 v 3 h 5 c 4.5,6 3.5,6.5 3.5,6.5 H 5 v 3 h 8.5 c 0,0 1,0.5 -3.5,6.5 H 5 v 3 h 6 c 9.5,-11 1.5,-11 11,0 h 6 v -3 h -5 c -4.5,-6 -3.5,-6.5 -3.5,-6.5 H 28 v -3 h -8.5 c 0,0 -1,-0.5 3.5,-6.5 h 5 v -3 h -6 c -9.5,11 -1.5,11 -11,0 z"
-         id="path837-3-3"
+         style="display:inline;fill:none;fill-opacity:0.2;fill-rule:evenodd;stroke:url(#linearGradient1151);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         d="M 5.5,5 C 5.5,5 4,5 4,6.5 4,8 5.5,8 5.5,8 h 4 C 14,14 13,14.5 13,14.5 H 5.5 c 0,0 -1.5,0 -1.5,1.5 0,2 1.5,1.5 1.5,1.5 H 13 c 0,0 1,0.5 -3.5,6.5 h -4 C 5.5,24 4,24 4,25.5 4,27 5.5,27 5.5,27 h 5 C 20,16 12,16 21.5,27 h 5 c 0,0 1.5,0 1.5,-1.5 C 28,24 26.5,24 26.5,24 h -4 C 18,18 19,17.5 19,17.5 h 7.5 c 0,0 1.5,0 1.5,-1.5 0,-1.5 -1.5,-1.5 -1.5,-1.5 H 19 c 0,0 -1,-0.5 3.5,-6.5 h 4 C 26.5,8 28,8 28,6.5 28,5 26.5,5 26.5,5 h -5 C 12,16 20,16 10.5,5 Z"
+         transform="translate(0,288.53333)"
+         id="path1582"
          inkscape:connector-curvature="0"
-         inkscape:label="Connect 33S"
-         sodipodi:nodetypes="ccccccccccccccccccccccccc" />
+         inkscape:label="Connect 33"
+         sodipodi:nodetypes="csccccsccccsccccccccccccccscccc" />
+    </g>
+    <g
+       id="g1484"
+       inkscape:label="Group 1.1S"
+       style="display:inline"
+       transform="translate(0.2,0.2)">
+      <path
+         style="display:inline;fill:none;fill-opacity:0.2;fill-rule:evenodd;stroke:url(#linearGradient1509);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         d="M 5.5,5 C 5.5,5 4,5 4,6.5 4,8 5.5,8 5.5,8 h 4 C 14,14 13,14.5 13,14.5 H 5.5 c 0,0 -1.5,0 -1.5,1.5 0,2 1.5,1.5 1.5,1.5 H 13 c 0,0 1,0.5 -3.5,6.5 h -4 C 5.5,24 4,24 4,25.5 4,27 5.5,27 5.5,27 h 5 C 20,16 12,16 21.5,27 h 5 c 0,0 1.5,0 1.5,-1.5 C 28,24 26.5,24 26.5,24 h -4 C 18,18 19,17.5 19,17.5 h 7.5 c 0,0 1.5,0 1.5,-1.5 0,-1.5 -1.5,-1.5 -1.5,-1.5 H 19 c 0,0 -1,-0.5 3.5,-6.5 h 4 C 26.5,8 28,8 28,6.5 28,5 26.5,5 26.5,5 h -5 C 12,16 20,16 10.5,5 Z"
+         transform="translate(0,288.53333)"
+         id="path1482"
+         inkscape:connector-curvature="0"
+         inkscape:label="Connect 33"
+         sodipodi:nodetypes="csccccsccccsccccccccccccccscccc" />
     </g>
     <g
        id="g1865"
@@ -132,154 +328,222 @@
        style="display:inline">
       <path
          style="display:inline;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         d="M 4,5 V 8 H 9.5 C 14,14 13,14.5 13,14.5 H 4 v 3 h 9 c 0,0 1,0.5 -3.5,6.5 H 4 v 3 h 6.5 C 20,16 12,16 21.5,27 H 28 V 24 H 22.5 C 18,18 19,17.5 19,17.5 h 9 v -3 H 19 C 19,14.5 18,14 22.5,8 H 28 V 5 H 21.5 C 12,16 20,16 10.5,5 Z"
+         d="M 5.5,5 C 5.5,5 4,5 4,6.5 4,8 5.5,8 5.5,8 h 4 C 14,14 13,14.5 13,14.5 H 5.5 c 0,0 -1.5,0 -1.5,1.5 0,2 1.5,1.5 1.5,1.5 H 13 c 0,0 1,0.5 -3.5,6.5 h -4 C 5.5,24 4,24 4,25.5 4,27 5.5,27 5.5,27 h 5 C 20,16 12,16 21.5,27 h 5 c 0,0 1.5,0 1.5,-1.5 C 28,24 26.5,24 26.5,24 h -4 C 18,18 19,17.5 19,17.5 h 7.5 c 0,0 1.5,0 1.5,-1.5 0,-1.5 -1.5,-1.5 -1.5,-1.5 H 19 c 0,0 -1,-0.5 3.5,-6.5 h 4 C 26.5,8 28,8 28,6.5 28,5 26.5,5 26.5,5 h -5 C 12,16 20,16 10.5,5 Z"
          transform="translate(0,288.53333)"
          id="path1863"
          inkscape:connector-curvature="0"
          inkscape:label="Connect 33"
-         sodipodi:nodetypes="ccccccccccccccccccccccccc" />
+         sodipodi:nodetypes="csccccsccccsccccccccccccccscccc" />
     </g>
     <g
-       id="g1430"
-       inkscape:label="Group 1B1"
-       style="display:inline;fill:none">
+       id="g941"
+       inkscape:label="Group 1.1B"
+       style="display:inline">
       <path
-         style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient860);stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         d="m 4.5,5 v 3 h 5 C 14,14 13,14.5 13,14.5 H 4.5 v 3 H 13 c 0,0 1,0.5 -3.5,6.5 h -5 v 3 h 6 C 20,16 12,16 21.5,27 h 7 v -3 h -6 C 18,18 19,17.5 19,17.5 h 9.5 v -3 H 19 c 0,0 -1,-0.5 3.5,-6.5 h 6 V 5 h -7 C 12,16 20,16 10.5,5 Z"
-         id="path1428"
+         style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2059);stroke-width:0.6;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         d="M 5.5,5 C 5.5,5 4,5 4,6.5 4,8 5.5,8 5.5,8 h 4 C 14,14 13,14.5 13,14.5 H 5.5 c 0,0 -1.5,0 -1.5,1.5 0,2 1.5,1.5 1.5,1.5 H 13 c 0,0 1,0.5 -3.5,6.5 h -4 C 5.5,24 4,24 4,25.5 4,27 5.5,27 5.5,27 h 5 C 20,16 12,16 21.5,27 h 5 c 0,0 1.5,0 1.5,-1.5 C 28,24 26.5,24 26.5,24 h -4 C 18,18 19,17.5 19,17.5 h 7.5 c 0,0 1.5,0 1.5,-1.5 0,-1.5 -1.5,-1.5 -1.5,-1.5 H 19 c 0,0 -1,-0.5 3.5,-6.5 h 4 C 26.5,8 28,8 28,6.5 28,5 26.5,5 26.5,5 h -5 C 12,16 20,16 10.5,5 Z"
+         transform="translate(0,288.53333)"
+         id="path939"
          inkscape:connector-curvature="0"
-         inkscape:label="Connect 33B1"
-         sodipodi:nodetypes="ccccccccccccccccccccccccc"
-         transform="translate(0,288.53333)" />
+         inkscape:label="Connect 33"
+         sodipodi:nodetypes="csccccsccccsccccccccccccccscccc" />
     </g>
     <g
-       id="g2982"
-       inkscape:label="Group 1B2"
-       style="display:inline;fill:none">
+       id="g1005"
+       inkscape:label="Group 1.2B"
+       style="display:inline">
       <path
-         style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient14826);stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         d="m 4,293.53333 v 3 l 5.25,-0.25 c 4.5,6 3.5,6.5 3.5,6.5 l -8.75,0.25 v 3 l 8.75,-0.25 c 0,0 1,0.5 -3.5,6.5 l -5.25,0.25 v 3 l 6.25,-0.25 c 9.5,-11 1.5,-11 11,0 l 7.25,0.25 v -3 l -6.25,-0.25 c -4.5,-6 -3.5,-6.5 -3.5,-6.5 l 9.75,0.25 v -3 l -9.75,-0.25 c 0,0 -1,-0.5 3.5,-6.5 l 6.25,0.25 v -3 l -7.25,-0.25 c -9.5,11 -1.5,11 -11,0 z"
-         id="path2980"
+         style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2481);stroke-width:1;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         d="M 5.5,5 C 5.5,5 4,5 4,6.5 4,8 5.5,8 5.5,8 h 4 C 14,14 13,14.5 13,14.5 H 5.5 c 0,0 -1.5,0 -1.5,1.5 0,2 1.5,1.5 1.5,1.5 H 13 c 0,0 1,0.5 -3.5,6.5 h -4 C 5.5,24 4,24 4,25.5 4,27 5.5,27 5.5,27 h 5 C 20,16 12,16 21.5,27 h 5 c 0,0 1.5,0 1.5,-1.5 C 28,24 26.5,24 26.5,24 h -4 C 18,18 19,17.5 19,17.5 h 7.5 c 0,0 1.5,0 1.5,-1.5 0,-1.5 -1.5,-1.5 -1.5,-1.5 H 19 c 0,0 -1,-0.5 3.5,-6.5 h 4 C 26.5,8 28,8 28,6.5 28,5 26.5,5 26.5,5 h -5 C 12,16 20,16 10.5,5 Z"
+         transform="translate(0,288.53333)"
+         id="path1003"
          inkscape:connector-curvature="0"
-         inkscape:label="Connect 33B2"
-         sodipodi:nodetypes="ccccccccccccccccccccccccc" />
+         inkscape:label="Connect 33"
+         sodipodi:nodetypes="csccccsccccsccccccccccccccscccc" />
     </g>
     <g
-       id="g854"
-       inkscape:label="Group 1B3"
-       style="display:inline;fill:none">
+       id="g1009"
+       inkscape:label="Group 1.3B"
+       style="display:inline">
       <path
-         style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient15354);stroke-width:0.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         d="m 3.5,293.03333 v 3 H 9 c 4.5,6 3.5,6.5 3.5,6.5 h -9 v 3 h 9 c 0,0 1,0.5 -3.5,6.5 H 3.5 v 3 H 10 c 9.5,-11 1.5,-11 11,0 h 7 v -3 h -6 c -4.5,-6 -3.5,-6.5 -3.5,-6.5 H 28 v -3 h -9.5 c 0,0 -1,-0.5 3.5,-6.5 h 6 v -3 h -7 c -9.5,11 -1.5,11 -11,0 z"
-         id="path852"
+         style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient2775);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         d="M 5.5,5 C 5.5,5 4,5 4,6.5 4,8 5.5,8 5.5,8 h 4 C 14,14 13,14.5 13,14.5 H 5.5 c 0,0 -1.5,0 -1.5,1.5 0,2 1.5,1.5 1.5,1.5 H 13 c 0,0 1,0.5 -3.5,6.5 h -4 C 5.5,24 4,24 4,25.5 4,27 5.5,27 5.5,27 h 5 C 20,16 12,16 21.5,27 h 5 c 0,0 1.5,0 1.5,-1.5 C 28,24 26.5,24 26.5,24 h -4 C 18,18 19,17.5 19,17.5 h 7.5 c 0,0 1.5,0 1.5,-1.5 0,-1.5 -1.5,-1.5 -1.5,-1.5 H 19 c 0,0 -1,-0.5 3.5,-6.5 h 4 C 26.5,8 28,8 28,6.5 28,5 26.5,5 26.5,5 h -5 C 12,16 20,16 10.5,5 Z"
+         transform="translate(0,288.53333)"
+         id="path1007"
          inkscape:connector-curvature="0"
-         inkscape:label="Connect 33B3"
-         sodipodi:nodetypes="ccccccccccccccccccccccccc" />
+         inkscape:label="Connect 33"
+         sodipodi:nodetypes="csccccsccccsccccccccccccccscccc" />
     </g>
     <g
-       id="g878"
-       inkscape:label="Group 2S2"
-       style="display:inline;fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2"
-       transform="matrix(1.2,0,0,1.2,-3.1,-60.806665)">
+       id="g1059"
+       inkscape:label="Group 1.4B"
+       style="display:inline">
+      <path
+         style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:url(#linearGradient3261);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         d="M 5.5,5 C 5.5,5 4,5 4,6.5 4,8 5.5,8 5.5,8 h 4 C 14,14 13,14.5 13,14.5 H 5.5 c 0,0 -1.5,0 -1.5,1.5 0,2 1.5,1.5 1.5,1.5 H 13 c 0,0 1,0.5 -3.5,6.5 h -4 C 5.5,24 4,24 4,25.5 4,27 5.5,27 5.5,27 h 5 C 20,16 12,16 21.5,27 h 5 c 0,0 1.5,0 1.5,-1.5 C 28,24 26.5,24 26.5,24 h -4 C 18,18 19,17.5 19,17.5 h 7.5 c 0,0 1.5,0 1.5,-1.5 0,-1.5 -1.5,-1.5 -1.5,-1.5 H 19 c 0,0 -1,-0.5 3.5,-6.5 h 4 C 26.5,8 28,8 28,6.5 28,5 26.5,5 26.5,5 h -5 C 12,16 20,16 10.5,5 Z"
+         transform="translate(0,288.53333)"
+         id="path1057"
+         inkscape:connector-curvature="0"
+         inkscape:label="Connect 33"
+         sodipodi:nodetypes="csccccsccccsccccccccccccccscccc" />
+    </g>
+    <g
+       id="g1671"
+       inkscape:label="Group 2.3S"
+       style="display:inline"
+       transform="translate(0.1,0.1)">
       <ellipse
-         style="fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         id="path875-56"
-         cx="25.166666"
-         cy="312.44998"
+         style="fill:url(#linearGradient4877);fill-opacity:1;stroke:#000000;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1659"
+         cx="27"
+         cy="314.03333"
          inkscape:label="Co6"
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         id="path875-3"
-         cx="25.166666"
+         style="fill:url(#linearGradient4875);fill-opacity:1;stroke:#000000;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1661"
+         cx="27"
          cy="304.53333"
          inkscape:label="Co5"
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         id="path875-5"
-         cx="25.166666"
-         cy="296.61667"
+         style="fill:url(#linearGradient4873);fill-opacity:1;stroke:#000000;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1663"
+         cx="27"
+         cy="295.03333"
          inkscape:label="Co4"
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         id="path875-7"
-         cx="6.8333335"
-         cy="312.44998"
+         style="fill:url(#linearGradient4871);fill-opacity:1;stroke:#000000;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1665"
+         cx="5"
+         cy="314.03333"
          inkscape:label="Co3"
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         id="path875-6"
-         cx="6.8333335"
+         style="fill:url(#linearGradient4869);fill-opacity:1;stroke:#000000;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1667"
+         cx="5"
          cy="304.53333"
          inkscape:label="Co2"
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="opacity:1;fill:#000000;fill-opacity:0.4;stroke:#000000;stroke-width:1.66667;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
-         id="path875"
-         cx="6.8333335"
-         cy="296.61667"
+         style="opacity:1;fill:url(#linearGradient4867);fill-opacity:1;stroke:#000000;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1669"
+         cx="5"
+         cy="295.03333"
          inkscape:label="Co1"
          rx="1.5"
          ry="1.4999952" />
     </g>
     <g
-       id="g1955"
-       inkscape:label="Group 2S1"
-       style="display:inline;fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-opacity:0.40000001"
-       transform="matrix(1.2,0,0,1.2,-3.2,-60.906665)">
+       id="g1624"
+       inkscape:label="Group 2.2S"
+       style="display:inline"
+       transform="translate(0.1,0.1)">
       <ellipse
-         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
-         id="ellipse1943"
-         cx="25.166666"
-         cy="312.44998"
+         style="fill:url(#linearGradient3229);fill-opacity:1;stroke:#000000;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1612"
+         cx="27"
+         cy="314.03333"
          inkscape:label="Co6"
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
-         id="ellipse1945"
-         cx="25.166666"
+         style="fill:url(#linearGradient3227);fill-opacity:1;stroke:#000000;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1614"
+         cx="27"
          cy="304.53333"
          inkscape:label="Co5"
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
-         id="ellipse1947"
-         cx="25.166666"
-         cy="296.61667"
+         style="fill:url(#linearGradient3225);fill-opacity:1;stroke:#000000;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1616"
+         cx="27"
+         cy="295.03333"
          inkscape:label="Co4"
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
-         id="ellipse1949"
-         cx="6.8333335"
-         cy="312.44998"
+         style="fill:url(#linearGradient3223);fill-opacity:1;stroke:#000000;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1618"
+         cx="5"
+         cy="314.03333"
          inkscape:label="Co3"
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
-         id="ellipse1951"
-         cx="6.8333335"
+         style="fill:url(#linearGradient3221);fill-opacity:1;stroke:#000000;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1620"
+         cx="5"
          cy="304.53333"
          inkscape:label="Co2"
          rx="1.5"
          ry="1.4999952" />
       <ellipse
-         style="opacity:1;fill:#000000;fill-opacity:0.2;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.40000001;paint-order:stroke fill markers"
-         id="ellipse1953"
-         cx="6.8333335"
-         cy="296.61667"
+         style="opacity:1;fill:url(#linearGradient3219);fill-opacity:1;stroke:#000000;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.2;paint-order:stroke fill markers"
+         id="ellipse1622"
+         cx="5"
+         cy="295.03333"
+         inkscape:label="Co1"
+         rx="1.5"
+         ry="1.4999952" />
+    </g>
+    <g
+       id="g1368"
+       inkscape:label="Group 2.1S"
+       style="display:inline;fill:none;stroke:none">
+      <ellipse
+         style="fill:none;fill-opacity:0.2;stroke:url(#linearGradient1547);stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.195238;paint-order:stroke fill markers"
+         id="ellipse1356"
+         cx="27"
+         cy="314.03333"
+         inkscape:label="Co6"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:none;fill-opacity:0.2;stroke:url(#linearGradient1545);stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.195238;paint-order:stroke fill markers"
+         id="ellipse1358"
+         cx="27"
+         cy="304.53333"
+         inkscape:label="Co5"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:none;fill-opacity:0.2;stroke:url(#linearGradient1543);stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.195238;paint-order:stroke fill markers"
+         id="ellipse1360"
+         cx="27"
+         cy="295.03333"
+         inkscape:label="Co4"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:none;fill-opacity:0.2;stroke:url(#linearGradient1541);stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.195238;paint-order:stroke fill markers"
+         id="ellipse1362"
+         cx="5"
+         cy="314.03333"
+         inkscape:label="Co3"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="fill:none;fill-opacity:0.2;stroke:url(#linearGradient1539);stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.195238;paint-order:stroke fill markers"
+         id="ellipse1364"
+         cx="5"
+         cy="304.53333"
+         inkscape:label="Co2"
+         rx="1.5"
+         ry="1.4999952" />
+      <ellipse
+         style="opacity:1;fill:none;fill-opacity:0.2;stroke:url(#linearGradient1537);stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.195238;paint-order:stroke fill markers"
+         id="ellipse1366"
+         cx="5"
+         cy="295.03333"
          inkscape:label="Co1"
          rx="1.5"
          ry="1.4999952" />
