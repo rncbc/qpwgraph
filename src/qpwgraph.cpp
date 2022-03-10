@@ -47,7 +47,9 @@ qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 #ifdef CONFIG_SYSTEM_TRAY
 	, m_memory(nullptr), m_server(nullptr)
 #endif
-	, m_patchbay_activated(false), m_patchbay_exclusive(false)
+	, m_patchbay_activated(false)
+	, m_patchbay_exclusive(false)
+	, m_start_minimized(false)
 {
 	QApplication::setApplicationName(PROJECT_NAME);
 	QApplication::setApplicationDisplayName(PROJECT_DESCRIPTION);
@@ -97,6 +99,8 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 		QObject::tr("Activated patchbay.")});
 	parser.addOption({{"x", "exclusive"},
 		QObject::tr("Exclusive patchbay.")});
+	parser.addOption({{"m", "minimized"},
+		QObject::tr("Start minimized.")});
 	parser.addHelpOption();
 	parser.addVersionOption();
 	parser.addPositionalArgument("patchbay-file",
@@ -107,6 +111,7 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 
 	m_patchbay_activated = parser.isSet("activated");
 	m_patchbay_exclusive = parser.isSet("exclusive");
+	m_start_minimized = parser.isSet("minimized");
 
 	int nargs = 0;
 	m_patchbay_path.clear();
@@ -205,7 +210,7 @@ void qpwgraph_application::readyReadSlot (void)
 			if (form && parse_args(QString(data).split(' ')))
 				form->apply_args(this);
 			// Just make it always shows up fine...
-			if (m_widget) {
+			if (m_widget && !m_start_minimized) {
 				m_widget->hide();
 				m_widget->show();
 				m_widget->raise();
@@ -251,7 +256,9 @@ int main ( int argc, char *argv[] )
 	qpwgraph_form form;
 	app.setMainWidget(&form);
 	form.apply_args(&app);
-	form.show();
+
+	if (!app.isStartMinimized())
+		form.show();
 
 	return app.exec();
 }

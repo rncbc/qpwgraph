@@ -66,6 +66,8 @@ public:
 		{ return m_patchbay_activated; }
 	bool isPatchbayExclusive() const
 		{ return m_patchbay_exclusive; }
+	bool isStartMinimized() const
+		{ return m_start_minimized; }
 
 #ifdef CONFIG_SYSTEM_TRAY
 
@@ -94,6 +96,7 @@ private:
 	QString m_patchbay_path;
 	bool    m_patchbay_activated;
 	bool    m_patchbay_exclusive;
+	bool    m_start_minimized;
 };
 
 

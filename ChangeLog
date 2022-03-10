@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Added start minimized (-m, --minimized) command line option.
 - Main application icon is now presented in scalable format (SVG).
 
 
@@ -18,9 +19,9 @@ GIT HEAD
 
 - Patchbay feature introduced: save connections to file; restore
   connections from file and maintain when activated; disconnect
-  all others when activated in exclusive mode. (EXPERIMENTAL)
+  all others when activated in exclusive mode.
 - Migrated command line parsing to QCommandLineParser/Option
-  (Qt >= 5.2) (EXPERIMENTAL)
+  (Qt >= 5.2).
 
 
 0.2.0  2022-01-16  Enter first beta.

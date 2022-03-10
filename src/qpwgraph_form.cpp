@@ -468,6 +468,13 @@ void qpwgraph_form::apply_args ( qpwgraph_application *app )
 		patchbayOpenFile(app->patchbayPath());
 
 	updatePatchbayNames();
+
+	if (app->isStartMinimized())
+	#ifdef CONFIG_SYSTEM_TRAY
+		hide();
+	#else
+		showMinimized();
+	#endif
 }
 
 
