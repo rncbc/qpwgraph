@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Added a barebones man page to install procedure.
 - Added missing file code to desktop exec entry.
 
 

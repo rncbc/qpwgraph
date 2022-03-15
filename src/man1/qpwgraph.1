@@ -1,0 +1,41 @@
+.TH QPWGRAPH "1" "March 15, 2022"
+.SH NAME
+qpwgraph \- A PipeWire Graph Qt GUI Interface
+.SH SYNOPSIS
+.B qpwgraph
+[\fIoptions\fR] [\fIpatchbay-file\fR]
+.SH DESCRIPTION
+This manual page documents briefly the
+.B qpwgraph
+command.
+.PP
+\fBqpwgraph\fP is an is a graph manager dedicated to PipeWire (https://pipewire.org),
+using the Qt C++ framework (https://qt.io), based and pretty much like the same of
+QjackCtl(https://qjackctl.sourceforge.io).
+.PP
+Source code repository: https://gitlab.freedesktop.org/rncbc/qpwgraph
+.SH OPTIONS
+.HP
+\fB\-a\fR, \fB\-\-activated\fR
+.IP
+Activated patchbay.
+.HP
+\fB\-x\fR, \fB\-\-exclusive\fR
+.IP
+Exclusive patchbay.
+.HP
+\fB\-m\fR, \fB\-\-minimized\fR
+.IP
+Start minimized.
+.HP
+\fB\-h\fR, \fB\-\-help\fR
+.IP
+Show help about command line options
+.HP
+\fB\-v\fR, \fB\-\-version\fR
+.IP
+Show version information
+.SH FILES
+Configuration settings are stored in ~/.config/rncbc.org/qpwgraph.conf
+.SH AUTHOR
+qpwgraph was written by Rui Nuno Capela.
