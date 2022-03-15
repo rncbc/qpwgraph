@@ -2,6 +2,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Added missing file code to desktop exec entry.
+
+
 0.2.3  2022-03-12  A fourth beta release.
 
 - Added start minimized (-m, --minimized) command line option.
