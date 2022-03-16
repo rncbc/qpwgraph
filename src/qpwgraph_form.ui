@@ -207,7 +207,7 @@
   </widget>
   <widget class="QToolBar" name="patchbayToolbar">
    <property name="allowedAreas">
-    <set>Qt::TopToolBarArea|Qt::BottomToolBarArea</set>
+    <set>Qt::AllToolBarAreas</set>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>

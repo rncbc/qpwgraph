@@ -4,6 +4,8 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Allow the Patchbay toolbar to also have a vertical orientation,
+  on the left and right areas of the main window.
 - Added a barebones man page to install procedure.
 - Added missing file code to desktop exec entry.
 

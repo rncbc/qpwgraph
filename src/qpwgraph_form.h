@@ -209,6 +209,7 @@ private:
 	int     m_patchbay_untitled;
 
 	QComboBox *m_patchbay_names;
+	QAction   *m_patchbay_names_tool;
 
 	qpwgraph_systray *m_systray;
 };

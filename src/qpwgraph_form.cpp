@@ -116,7 +116,8 @@ qpwgraph_form::qpwgraph_form (
 	m_patchbay_names->setEditable(false);
 	m_patchbay_names->setMinimumWidth(120);
 	m_patchbay_names->setMaximumWidth(240);
-	m_ui.patchbayToolbar->insertWidget(m_ui.patchbaySaveAction, m_patchbay_names);
+	m_patchbay_names_tool = m_ui.patchbayToolbar->insertWidget(
+		m_ui.patchbaySaveAction, m_patchbay_names);
 
 	QUndoStack *commands = m_ui.graphCanvas->commands();
 
@@ -1016,6 +1017,9 @@ void qpwgraph_form::orientationChanged ( Qt::Orientation orientation )
 	QToolBar *toolbar = qobject_cast<QToolBar *> (sender());
 	if (toolbar == nullptr)
 		return;
+
+	if (toolbar == m_ui.patchbayToolbar && m_patchbay_names_tool)
+		m_patchbay_names_tool->setVisible(orientation == Qt::Horizontal);
 
 	if (m_config->isTextBesideIcons() && orientation == Qt::Horizontal) {
 		toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);

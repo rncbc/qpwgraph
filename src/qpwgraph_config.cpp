@@ -24,6 +24,7 @@
 #include <QSettings>
 
 #include <QMainWindow>
+#include <QFileInfo>
 
 
 // Local constants.
@@ -263,6 +264,12 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 	m_patchbay_exclusive = m_settings->value(PatchbayExclusiveKey).toBool();
 	m_patchbay_recentfiles = m_settings->value(PatchbayRecentFilesKey).toStringList();
 	m_settings->endGroup();
+
+	QMutableStringListIterator iter(m_patchbay_recentfiles);
+	while (iter.hasNext()) {
+		if (!QFileInfo(iter.next()).exists())
+			iter.remove();
+	}
 
 	m_settings->beginGroup(ViewGroup);
 	m_menubar = m_settings->value(ViewMenubarKey, true).toBool();
