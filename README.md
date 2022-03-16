@@ -1,5 +1,7 @@
 # qpwgraph
 
+![Screenshot](src/images/qpwgraph_screenshot-1.png "Screenshot")
+
 ## A PipeWire Graph Qt GUI Interface
 
   **qpwgraph** is a graph manager dedicated to [PipeWire](https://pipewire.org),
