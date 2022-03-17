@@ -60,8 +60,6 @@
     <addaction name="graphConnectAction"/>
     <addaction name="graphDisconnectAction"/>
     <addaction name="separator"/>
-    <addaction name="enableSystemTrayAction"/>
-    <addaction name="separator"/>
     <addaction name="graphQuitAction"/>
    </widget>
    <widget class="QMenu" name="patchbayMenu">
@@ -131,8 +129,6 @@
      <addaction name="viewColorsPipewireMidiAction"/>
      <addaction name="viewColorsPipewireVideoAction"/>
      <addaction name="viewColorsPipewireOtherAction"/>
-     <addaction name="separator"/>
-     <addaction name="viewColorsAlsaMidiAction"/>
      <addaction name="separator"/>
      <addaction name="viewColorsResetAction"/>
     </widget>
@@ -271,26 +267,6 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
-   </property>
-  </action>
-  <action name="enableSystemTrayAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;System Tray Icon</string>
-   </property>
-   <property name="iconText">
-    <string>System tray</string>
-   </property>
-   <property name="toolTip">
-    <string>System tray icon</string>
-   </property>
-   <property name="statusTip">
-    <string>Enable system tray icon</string>
-   </property>
-   <property name="shortcut">
-    <string/>
    </property>
   </action>
   <action name="patchbayNewAction">
@@ -731,7 +707,7 @@
     <iconset resource="qpwgraph.qrc">:/images/viewZoomRange.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Zoom Range</string>
+    <string>Zoom Rang&amp;e</string>
    </property>
    <property name="iconText">
     <string>Zoom Range</string>
@@ -816,7 +792,7 @@
   </action>
   <action name="viewColorsAlsaMidiAction">
    <property name="text">
-    <string>&amp;ALSA MIDI...</string>
+    <string>ALSA M&amp;IDI...</string>
    </property>
    <property name="iconText">
     <string>ALSA MIDI</string>
@@ -928,6 +904,26 @@
    </property>
    <property name="statusTip">
     <string>Descending sort order</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="helpSystemTrayAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Enable System Tray Icon</string>
+   </property>
+   <property name="iconText">
+    <string>System tray</string>
+   </property>
+   <property name="toolTip">
+    <string>System tray icon</string>
+   </property>
+   <property name="statusTip">
+    <string>Enable system tray icon</string>
    </property>
    <property name="shortcut">
     <string/>

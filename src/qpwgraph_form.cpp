@@ -120,6 +120,7 @@ qpwgraph_form::qpwgraph_form (
 		m_ui.patchbaySaveAction, m_patchbay_names);
 
 	m_systray = nullptr;
+	m_systray_closed = false;
 
 	QUndoStack *commands = m_ui.graphCanvas->commands();
 
@@ -232,13 +233,6 @@ qpwgraph_form::qpwgraph_form (
 	QObject::connect(m_ui.graphDisconnectAction,
 		SIGNAL(triggered(bool)),
 		m_ui.graphCanvas, SLOT(disconnectItems()));
-#ifdef CONFIG_SYSTEM_TRAY
-	QObject::connect(m_ui.enableSystemTrayAction,
-		SIGNAL(triggered(bool)),
-		SLOT(enableSystemTray(bool)));
-#else
-	m_ui.graphMenu->removeAction(m_ui.enableSystemTrayAction);
-#endif
 
 	QObject::connect(m_ui.patchbayMenu,
 		 SIGNAL(aboutToShow()),
@@ -333,8 +327,10 @@ qpwgraph_form::qpwgraph_form (
 	m_ui.viewColorsPipewireOtherAction->setData(qpwgraph_pipewire::otherPortType());
 #ifdef CONFIG_ALSA_MIDI
 	m_ui.viewColorsAlsaMidiAction->setData(qpwgraph_alsamidi::midiPortType());
-#else
-	m_ui.viewColorsMenu->removeAction(m_ui.viewColorsAlsaMidiAction);
+	m_ui.viewColorsMenu->insertAction(
+		m_ui.viewColorsResetAction, m_ui.viewColorsAlsaMidiAction);
+	m_ui.viewColorsMenu->insertSeparator(
+		m_ui.viewColorsResetAction);
 #endif
 
 	QObject::connect(m_ui.viewColorsPipewireAudioAction,
@@ -392,6 +388,16 @@ qpwgraph_form::qpwgraph_form (
 	QObject::connect(m_ui.viewSortDescendingAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewSortOrderAction()));
+
+#ifdef CONFIG_SYSTEM_TRAY
+	m_ui.helpMenu->insertAction(
+		m_ui.helpAboutAction, m_ui.helpSystemTrayAction);
+	m_ui.helpMenu->insertSeparator(
+		m_ui.helpAboutAction);
+	QObject::connect(m_ui.helpSystemTrayAction,
+		SIGNAL(triggered(bool)),
+		SLOT(helpSystemTray(bool)));
+#endif
 
 	QObject::connect(m_ui.helpAboutAction,
 		SIGNAL(triggered(bool)),
@@ -479,26 +485,6 @@ void qpwgraph_form::apply_args ( qpwgraph_application *app )
 	#else
 		showMinimized();
 	#endif
-}
-
-
-// System tray menu slots.
-void qpwgraph_form::enableSystemTray ( bool on )
-{
-#ifdef CONFIG_SYSTEM_TRAY
-	if (on && m_systray == nullptr) {
-		m_systray = new qpwgraph_systray(this);
-		m_systray->show();
-	}
-	else
-	if (!on && m_systray) {
-		m_systray->hide();
-		delete m_systray;
-		m_systray = nullptr;
-	}
-#else
-	(void) on;
-#endif
 }
 
 
@@ -748,6 +734,27 @@ void qpwgraph_form::viewSortOrderAction (void)
 	qpwgraph_port::setSortOrder(sort_order);
 
 	m_ui.graphCanvas->updateNodes();
+}
+
+
+void qpwgraph_form::helpSystemTray ( bool on )
+{
+#ifdef CONFIG_SYSTEM_TRAY
+	if (on && m_systray == nullptr) {
+		m_systray = new qpwgraph_systray(this);
+		m_systray->show();
+	}
+	else
+	if (!on && m_systray) {
+		m_systray->hide();
+		delete m_systray;
+		m_systray = nullptr;
+	}
+#else
+	(void) on;
+#endif
+
+	m_systray_closed = false;
 }
 
 
@@ -1223,16 +1230,19 @@ void qpwgraph_form::closeEvent ( QCloseEvent *event )
 {
 #ifdef CONFIG_SYSTEM_TRAY
 	if (m_systray) {
-		const QString& title
-			= tr("Information");
-		const QString& text
-			= tr("The program will keep running in the system tray.\n\n"
-				"To terminate the program, please choose \"Quit\"\n"
-				"in the main menu or the context menu of the system tray icon.");
-		if (QSystemTrayIcon::supportsMessages())
-			m_systray->showMessage(title, text, QSystemTrayIcon::Information);
-		else
-			QMessageBox::information(this, title, text);
+		if (!m_systray_closed) {
+			const QString& title
+				= tr("Information");
+			const QString& text
+				= tr("The program will keep running in the system tray.\n\n"
+					"To terminate the program, please choose \"Quit\"\n"
+					"in the main menu or the context menu of the system tray icon.");
+			if (QSystemTrayIcon::supportsMessages())
+				m_systray->showMessage(title, text, QSystemTrayIcon::Information);
+			else
+				QMessageBox::information(this, title, text);
+		}
+		m_systray_closed = true;
 		hide();
 		event->ignore();
 	}
@@ -1422,8 +1432,8 @@ void qpwgraph_form::restoreState (void)
 #ifdef CONFIG_SYSTEM_TRAY
 	const bool is_systray_enabled
 		= m_config->isSystemTrayEnabled();
-	m_ui.enableSystemTrayAction->setChecked(is_systray_enabled);
-	enableSystemTray(is_systray_enabled);
+	m_ui.helpSystemTrayAction->setChecked(is_systray_enabled);
+	helpSystemTray(is_systray_enabled);
 #endif
 }
 
@@ -1449,7 +1459,7 @@ void qpwgraph_form::saveState (void)
 	m_config->setPatchbayDir(m_patchbay_dir);
 
 #ifdef CONFIG_SYSTEM_TRAY
-	m_config->setSystemTrayEnabled(m_ui.enableSystemTrayAction->isChecked());
+	m_config->setSystemTrayEnabled(m_ui.helpSystemTrayAction->isChecked());
 #endif
 
 	m_config->saveState(this);

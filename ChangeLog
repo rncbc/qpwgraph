@@ -4,8 +4,8 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
-- Whether to enable the system-tray icon option added to main menu
-  (cf. Graph > System Tray Icon).
+- Whether to enable the system-tray icon option has been added to
+  main menu (cf. Help > System Tray Icon). (EXPERIMENTAL)
 - Allow the Patchbay toolbar to also have a vertical orientation,
   on the left and right areas of the main window.
 - Added a barebones man page to install procedure.

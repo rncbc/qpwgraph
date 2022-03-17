@@ -93,9 +93,6 @@ protected slots:
 	// Tool-bar orientation change slot.
 	void orientationChanged(Qt::Orientation orientation);
 
-	// System tray menu slots.
-	void enableSystemTray(bool on);
-
 	// Patchbay menu slots.
 	void patchbayNew();
 	void patchbayOpen();
@@ -126,6 +123,8 @@ protected slots:
 
 	void viewColorsAction();
 	void viewColorsReset();
+
+	void helpSystemTray(bool on);
 
 	void helpAbout();
 	void helpAboutQt();
@@ -215,6 +214,7 @@ private:
 	QAction   *m_patchbay_names_tool;
 
 	qpwgraph_systray *m_systray;
+	bool m_systray_closed;
 };
 
 
