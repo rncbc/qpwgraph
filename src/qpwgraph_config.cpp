@@ -19,6 +19,8 @@
 
 *****************************************************************************/
 
+#include "config.h"
+
 #include "qpwgraph_config.h"
 
 #include <QSettings>
@@ -48,6 +50,11 @@ static const char *PatchbayExclusiveKey = "/Exclusive";
 static const char *PatchbayRecentFilesKey = "/RecentFiles";
 static const char *PatchbayToolbarKey = "/Toolbar";
 
+#ifdef CONFIG_SYSTEM_TRAY
+static const char *SystemTrayGroup  = "/SystemTray";
+static const char *SystemTrayEnabledKey = "/Enabled";
+#endif
+
 
 //----------------------------------------------------------------------------
 // qpwgraph_config --  Canvas state memento.
@@ -60,7 +67,8 @@ qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 		m_sorttype(0), m_sortorder(0),
 		m_patchbay_toolbar(false),
 		m_patchbay_activated(false),
-		m_patchbay_exclusive(false)
+		m_patchbay_exclusive(false),
+		m_systray_enabled(false)
 {
 }
 
@@ -250,11 +258,28 @@ const QStringList& qpwgraph_config::patchbayRecentFiles (void) const
 }
 
 
+void qpwgraph_config::setSystemTrayEnabled ( bool enabled )
+{
+	m_systray_enabled = enabled;
+}
+
+bool qpwgraph_config::isSystemTrayEnabled (void) const
+{
+	return m_systray_enabled;
+}
+
+
 // Graph main-widget state methods.
 bool qpwgraph_config::restoreState ( QMainWindow *widget )
 {
 	if (m_settings == nullptr || widget == nullptr)
 		return false;
+
+#ifdef CONFIG_SYSTEM_TRAY
+	m_settings->beginGroup(SystemTrayGroup);
+	m_systray_enabled = m_settings->value(SystemTrayEnabledKey, true).toBool();
+	m_settings->endGroup();
+#endif
 
 	m_settings->beginGroup(PatchbayGroup);
 	m_patchbay_toolbar = m_settings->value(PatchbayToolbarKey).toBool();
@@ -309,6 +334,12 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 {
 	if (m_settings == nullptr || widget == nullptr)
 		return false;
+
+#ifdef CONFIG_SYSTEM_TRAY
+	m_settings->beginGroup(SystemTrayGroup);
+	m_settings->setValue(SystemTrayEnabledKey, m_systray_enabled);
+	m_settings->endGroup();
+#endif
 
 	m_settings->beginGroup(PatchbayGroup);
 	m_settings->setValue(PatchbayToolbarKey, m_patchbay_toolbar);

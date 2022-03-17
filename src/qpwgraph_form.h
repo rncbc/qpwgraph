@@ -93,6 +93,9 @@ protected slots:
 	// Tool-bar orientation change slot.
 	void orientationChanged(Qt::Orientation orientation);
 
+	// System tray menu slots.
+	void enableSystemTray(bool on);
+
 	// Patchbay menu slots.
 	void patchbayNew();
 	void patchbayOpen();

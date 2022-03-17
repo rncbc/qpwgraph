@@ -89,6 +89,9 @@ public:
 	void patchbayRecentFiles(const QString& path);
 	const QStringList& patchbayRecentFiles() const;
 
+	void setSystemTrayEnabled(bool enabled);
+	bool isSystemTrayEnabled() const;
+
 	// Graph main-widget state methods.
 	bool restoreState(QMainWindow *widget);
 	bool saveState(QMainWindow *widget) const;
@@ -113,6 +116,8 @@ private:
 	bool        m_patchbay_activated;
 	bool        m_patchbay_exclusive;
 	QStringList m_patchbay_recentfiles;
+
+	bool        m_systray_enabled;
 };
 
 

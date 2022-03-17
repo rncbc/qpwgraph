@@ -119,6 +119,8 @@ qpwgraph_form::qpwgraph_form (
 	m_patchbay_names_tool = m_ui.patchbayToolbar->insertWidget(
 		m_ui.patchbaySaveAction, m_patchbay_names);
 
+	m_systray = nullptr;
+
 	QUndoStack *commands = m_ui.graphCanvas->commands();
 
 	QAction *undo_action = commands->createUndoAction(this, tr("&Undo"));
@@ -230,6 +232,13 @@ qpwgraph_form::qpwgraph_form (
 	QObject::connect(m_ui.graphDisconnectAction,
 		SIGNAL(triggered(bool)),
 		m_ui.graphCanvas, SLOT(disconnectItems()));
+#ifdef CONFIG_SYSTEM_TRAY
+	QObject::connect(m_ui.enableSystemTrayAction,
+		SIGNAL(triggered(bool)),
+		SLOT(enableSystemTray(bool)));
+#else
+	m_ui.graphMenu->removeAction(m_ui.enableSystemTrayAction);
+#endif
 
 	QObject::connect(m_ui.patchbayMenu,
 		 SIGNAL(aboutToShow()),
@@ -398,13 +407,6 @@ qpwgraph_form::qpwgraph_form (
 		SIGNAL(orientationChanged(Qt::Orientation)),
 		SLOT(orientationChanged(Qt::Orientation)));
 
-#ifdef CONFIG_SYSTEM_TRAY
-	m_systray = new qpwgraph_systray(this);
-	m_systray->show();
-#else
-	m_systray = nullptr;
-#endif
-
 	restoreState();
 
 	updatePatchbayMenu();
@@ -439,7 +441,8 @@ qpwgraph_form::qpwgraph_form (
 qpwgraph_form::~qpwgraph_form (void)
 {
 #ifdef CONFIG_SYSTEM_TRAY
-	delete m_systray;
+	if (m_systray)
+		delete m_systray;
 #endif
 
 //	delete m_patchbay_names;
@@ -476,6 +479,26 @@ void qpwgraph_form::apply_args ( qpwgraph_application *app )
 	#else
 		showMinimized();
 	#endif
+}
+
+
+// System tray menu slots.
+void qpwgraph_form::enableSystemTray ( bool on )
+{
+#ifdef CONFIG_SYSTEM_TRAY
+	if (on && m_systray == nullptr) {
+		m_systray = new qpwgraph_systray(this);
+		m_systray->show();
+	}
+	else
+	if (!on && m_systray) {
+		m_systray->hide();
+		delete m_systray;
+		m_systray = nullptr;
+	}
+#else
+	(void) on;
+#endif
 }
 
 
@@ -1179,7 +1202,8 @@ void qpwgraph_form::showEvent ( QShowEvent *event )
 {
 	QMainWindow::showEvent(event);
 #ifdef CONFIG_SYSTEM_TRAY
-	m_systray->updateContextMenu();
+	if (m_systray)
+		m_systray->updateContextMenu();
 #endif
 }
 
@@ -1188,7 +1212,8 @@ void qpwgraph_form::hideEvent ( QHideEvent *event )
 {
 	QMainWindow::hideEvent(event);
 #ifdef CONFIG_SYSTEM_TRAY
-	m_systray->updateContextMenu();
+	if (m_systray)
+		m_systray->updateContextMenu();
 #endif
 	saveState();
 }
@@ -1197,17 +1222,28 @@ void qpwgraph_form::hideEvent ( QHideEvent *event )
 void qpwgraph_form::closeEvent ( QCloseEvent *event )
 {
 #ifdef CONFIG_SYSTEM_TRAY
-	hide();
-	m_systray->updateContextMenu();
-	event->ignore();
-#else
+	if (m_systray) {
+		const QString& title
+			= tr("Information");
+		const QString& text
+			= tr("The program will keep running in the system tray.\n\n"
+				"To terminate the program, please choose \"Quit\"\n"
+				"in the main menu or the context menu of the system tray icon.");
+		if (QSystemTrayIcon::supportsMessages())
+			m_systray->showMessage(title, text, QSystemTrayIcon::Information);
+		else
+			QMessageBox::information(this, title, text);
+		hide();
+		event->ignore();
+	}
+	else
+#endif
 	if (patchbayQueryClose()) {
 		hide();
 		QMainWindow::closeEvent(event);
 	} else {
 		event->ignore();
 	}
-#endif
 }
 
 
@@ -1382,6 +1418,13 @@ void qpwgraph_form::restoreState (void)
 	// Restore last open patchbay directory and file-path...
 	m_patchbay_dir = m_config->patchbayDir();
 	m_patchbay_path = m_config->patchbayPath();
+
+#ifdef CONFIG_SYSTEM_TRAY
+	const bool is_systray_enabled
+		= m_config->isSystemTrayEnabled();
+	m_ui.enableSystemTrayAction->setChecked(is_systray_enabled);
+	enableSystemTray(is_systray_enabled);
+#endif
 }
 
 
@@ -1404,6 +1447,10 @@ void qpwgraph_form::saveState (void)
 	m_config->setPatchbayActivated(m_ui.patchbayActivatedAction->isChecked());
 	m_config->setPatchbayPath(m_patchbay_path);
 	m_config->setPatchbayDir(m_patchbay_dir);
+
+#ifdef CONFIG_SYSTEM_TRAY
+	m_config->setSystemTrayEnabled(m_ui.enableSystemTrayAction->isChecked());
+#endif
 
 	m_config->saveState(this);
 }

@@ -60,6 +60,8 @@
     <addaction name="graphConnectAction"/>
     <addaction name="graphDisconnectAction"/>
     <addaction name="separator"/>
+    <addaction name="enableSystemTrayAction"/>
+    <addaction name="separator"/>
     <addaction name="graphQuitAction"/>
    </widget>
    <widget class="QMenu" name="patchbayMenu">
@@ -269,6 +271,26 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="enableSystemTrayAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;System Tray Icon</string>
+   </property>
+   <property name="iconText">
+    <string>System tray</string>
+   </property>
+   <property name="toolTip">
+    <string>System tray icon</string>
+   </property>
+   <property name="statusTip">
+    <string>Enable system tray icon</string>
+   </property>
+   <property name="shortcut">
+    <string/>
    </property>
   </action>
   <action name="patchbayNewAction">
