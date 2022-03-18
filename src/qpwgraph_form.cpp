@@ -1152,6 +1152,7 @@ bool qpwgraph_form::patchbayQueryClose (void)
 	const qpwgraph_patchbay *patchbay
 		= m_ui.graphCanvas->patchbay();
 	if (patchbay && patchbay->isDirty()) {
+		showNormal();
 		switch (QMessageBox::warning(this, title,
 			tr("The current patchbay has been changed:\n\n\"%1\"\n\n"
 			"Do you want to save the changes?").arg(patchbayFileName()),
@@ -1170,6 +1171,7 @@ bool qpwgraph_form::patchbayQueryClose (void)
 	}
 	else
 	if (patchbay && patchbay->isActivated()) {
+		showNormal();
 		ret = (QMessageBox::warning(this, title,
 			tr("A patchbay is currently activated:\n\n\"%1\"\n\n"
 			"Are you sure you want to quit?").arg(patchbayFileName()),
@@ -1183,7 +1185,7 @@ bool qpwgraph_form::patchbayQueryClose (void)
 // Context-menu event handler.
 void qpwgraph_form::contextMenuEvent ( QContextMenuEvent *event )
 {
-	//	m_ui.graphCanvas->clear();
+//	m_ui.graphCanvas->clear();
 
 	stabilize();
 
