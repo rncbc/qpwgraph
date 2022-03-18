@@ -1147,27 +1147,33 @@ QString qpwgraph_form::patchbayFileFilter (void) const
 // Whether we can close current patchbay.
 bool qpwgraph_form::patchbayQueryClose (void)
 {
+	bool ret = true;
+	const QString& title = tr("Warning");
 	const qpwgraph_patchbay *patchbay
 		= m_ui.graphCanvas->patchbay();
-	bool ret = (patchbay && patchbay->isDirty());
-	if (!ret)
-		return true;
-
-	switch (QMessageBox::warning(this,
-		tr("Warning"),
-		tr("The current patchbay has been changed:\n\n\"%1\"\n\n"
-		"Do you want to save the changes?").arg(patchbayFileName()),
-		QMessageBox::Save |
-		QMessageBox::Discard |
-		QMessageBox::Cancel)) {
-	case QMessageBox::Save:
-		patchbaySave();
+	if (patchbay && patchbay->isDirty()) {
+		switch (QMessageBox::warning(this, title,
+			tr("The current patchbay has been changed:\n\n\"%1\"\n\n"
+			"Do you want to save the changes?").arg(patchbayFileName()),
+			QMessageBox::Save |
+			QMessageBox::Discard |
+			QMessageBox::Cancel)) {
+		case QMessageBox::Save:
+			patchbaySave();
 		// Fall thru....
-	case QMessageBox::Discard:
-		break;
-	default: // Cancel.
-		ret = false;
-		break;
+		case QMessageBox::Discard:
+			break;
+		default: // Cancel.
+			ret = false;
+			break;
+		}
+	}
+	else
+	if (patchbay && patchbay->isActivated()) {
+		ret = (QMessageBox::warning(this, title,
+			tr("A patchbay is currently activated:\n\n\"%1\"\n\n"
+			"Are you sure you want to quit?").arg(patchbayFileName()),
+			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
 	}
 
 	return ret;
@@ -1177,7 +1183,7 @@ bool qpwgraph_form::patchbayQueryClose (void)
 // Context-menu event handler.
 void qpwgraph_form::contextMenuEvent ( QContextMenuEvent *event )
 {
-//	m_ui.graphCanvas->clear();
+	//	m_ui.graphCanvas->clear();
 
 	stabilize();
 
