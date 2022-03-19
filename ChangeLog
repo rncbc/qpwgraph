@@ -2,10 +2,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.2.4  2022-03-19  A fifth beta release.
 
 - Whether to enable the system-tray icon option has been added to
-  main menu (cf. Help > System Tray Icon). (EXPERIMENTAL)
+  main menu (cf. Help > System Tray Icon).
 - Allow the Patchbay toolbar to also have a vertical orientation,
   on the left and right areas of the main window.
 - Added a barebones man page to install procedure.
