@@ -40,7 +40,11 @@ qpwgraph_systray::qpwgraph_systray ( qpwgraph_form *form )
 	: QSystemTrayIcon(form), m_form(form)
 {
 	// Set things as inherited...
+#if QT_VERSION < QT_VERSION_CHECK(6, 1, 0)
+	QSystemTrayIcon::setIcon(QIcon(":/images/qpwgraph.png"));
+#else
 	QSystemTrayIcon::setIcon(m_form->windowIcon());
+#endif
 	QSystemTrayIcon::setToolTip(m_form->windowTitle());
 
 	m_show = m_menu.addAction(tr("Show/Hide"), this, SLOT(showHide()));
