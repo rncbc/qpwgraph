@@ -956,6 +956,11 @@ void qpwgraph_form::alsamidi_changed (void)
 // Pseudo-asyncronous timed refreshner.
 void qpwgraph_form::refresh (void)
 {
+	if (m_ui.graphCanvas->isBusy()) {
+		QTimer::singleShot(1200, this, SLOT(refresh()));
+		return;
+	}
+
 	int nchanged = 0;
 
 	if (m_pipewire_changed > 0) {

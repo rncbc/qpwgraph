@@ -101,6 +101,9 @@ public:
 	qpwgraph_node *findNode(
 		const QString& name, qpwgraph_item::Mode mode, uint type = 0) const;
 
+	// Whether it's in the middle of something...
+	bool isBusy() const;
+
 	// Port (dis)connections dispatcher.
 	void emitConnectPorts(
 		qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect);

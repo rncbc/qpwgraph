@@ -368,6 +368,13 @@ qpwgraph_node *qpwgraph_canvas::findNode (
 }
 
 
+// Whether it's in the middle of something...
+bool qpwgraph_canvas::isBusy (void) const
+{
+	return (m_connect != nullptr || m_edit_item != nullptr);
+}
+
+
 qpwgraph_node *qpwgraph_canvas::findNode (
 	const QString& name, qpwgraph_item::Mode mode, uint type ) const
 {
