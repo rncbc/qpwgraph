@@ -4,6 +4,8 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Prevent an graph refresh or update as much as possible while in
+  some canvas editing business (fixes issue #29). (EXPERIMENTAL)
 - Possibly fix a random segfault when rendering connection lines
   ahead of time (possibly mitigating issue #26). (EXPERIMENTAL)
 
