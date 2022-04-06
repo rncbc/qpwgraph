@@ -2,7 +2,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.2.5  2022-04-06  A sixth beta release.
 
 - Prevent an graph refresh or update as much as possible while in
   some canvas editing business (fixes issue #29). (EXPERIMENTAL)
