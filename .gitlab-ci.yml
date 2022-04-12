@@ -47,6 +47,7 @@ container_ubuntu:
       cmake
       qt5-qtbase-devel
       qt5-qttools-devel
+      qt5-qtsvg-devel
       alsa-lib-devel
       pipewire-devel
 
@@ -64,6 +65,7 @@ container_ubuntu:
       cmake
       qtbase5-dev
       qttools5-dev
+      libqt5svg5-dev
       libasound2-dev
       libpipewire-0.3-dev
 
