@@ -98,7 +98,7 @@ public:
 	// Special node finders.
 	qpwgraph_node *findNode(
 		uint id, qpwgraph_item::Mode mode, uint type = 0) const;
-	qpwgraph_node *findNode(
+	QList<qpwgraph_node *> findNodes(
 		const QString& name, qpwgraph_item::Mode mode, uint type = 0) const;
 
 	// Whether it's in the middle of something...
@@ -228,7 +228,7 @@ private:
 	bool              m_zoomrange;
 
 	qpwgraph_node::IdKeys   m_node_ids;
-	qpwgraph_node::NameKeys m_node_names;
+	qpwgraph_node::NodeKeys m_node_keys;
 	QList<qpwgraph_node *>  m_nodes;
 
 	QUndoStack *m_commands;

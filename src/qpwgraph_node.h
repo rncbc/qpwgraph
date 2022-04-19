@@ -79,7 +79,7 @@ public:
 
 	// Port finder (by id/name, mode and type)
 	qpwgraph_port *findPort(uint id, Mode mode, uint type = 0);
-	qpwgraph_port *findPort(const QString& name, Mode mode, uint type = 0);
+	QList<qpwgraph_port *> findPorts(const QString& name, Mode mode, uint type = 0);
 
 	// Port-list accessor.
 	const QList<qpwgraph_port *>& ports() const;
@@ -104,9 +104,13 @@ public:
 	{
 	public:
 		// Constructors.
+		NodeNameKey (const QString& name, Mode mode, uint type = 0)
+			: NameKey(name, mode, type) {}
 		NodeNameKey(qpwgraph_node *node)
 			: NameKey(node->nodeName(), node->nodeMode(), node->nodeType()) {}
 	};
+
+	typedef QMultiHash<NodeNameKey, qpwgraph_node *> NodeKeys;
 
 	// Rectangular editor extents.
 	QRectF editorRect() const;
@@ -134,7 +138,7 @@ private:
 	QGraphicsTextItem   *m_text;
 
 	qpwgraph_port::IdKeys   m_port_ids;
-	qpwgraph_port::NameKeys m_port_names;
+	qpwgraph_port::PortKeys m_port_keys;
 	QList<qpwgraph_port *>  m_ports;
 };
 

@@ -154,7 +154,7 @@ void qpwgraph_canvas::addItem ( qpwgraph_item *item )
 		if (node) {
 			m_nodes.append(node);
 			m_node_ids.insert(qpwgraph_node::NodeIdKey(node), node);
-			m_node_names.insert(qpwgraph_node::NodeNameKey(node), node);
+			m_node_keys.insert(qpwgraph_node::NodeNameKey(node), node);
 			if (!restoreNode(node))
 				emit added(node);
 		}
@@ -175,7 +175,7 @@ void qpwgraph_canvas::removeItem ( qpwgraph_item *item )
 		if (node && saveNode(node)) {
 			emit removed(node);
 			node->removePorts();
-			m_node_names.remove(qpwgraph_node::NodeNameKey(node));
+			m_node_keys.remove(qpwgraph_node::NodeNameKey(node));
 			m_node_ids.remove(qpwgraph_node::NodeIdKey(node));
 			m_nodes.removeAll(node);
 		}
@@ -348,7 +348,7 @@ void qpwgraph_canvas::clearNodes ( uint node_type )
 
 	foreach (qpwgraph_node *node, m_nodes) {
 		if (node->nodeType() == node_type) {
-			m_node_names.remove(qpwgraph_node::NodeNameKey(node));
+			m_node_keys.remove(qpwgraph_node::NodeNameKey(node));
 			m_node_ids.remove(qpwgraph_node::NodeIdKey(node));
 			m_nodes.removeAll(node);
 			nodes.append(node);
@@ -376,11 +376,10 @@ bool qpwgraph_canvas::isBusy (void) const
 }
 
 
-qpwgraph_node *qpwgraph_canvas::findNode (
+QList<qpwgraph_node *> qpwgraph_canvas::findNodes (
 	const QString& name, qpwgraph_item::Mode mode, uint type ) const
 {
-	return static_cast<qpwgraph_node *> (
-		m_node_names.value(qpwgraph_node::NameKey(name, mode, type), nullptr));
+	return m_node_keys.values(qpwgraph_node::NodeNameKey(name, mode, type));
 }
 
 

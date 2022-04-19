@@ -109,10 +109,14 @@ public:
 	class PortNameKey : public NameKey
 	{
 	public:
-		// Constructor.
+		// Constructors.
+		PortNameKey (const QString& name, Mode mode, uint type = 0)
+			: NameKey(name, mode, type) {}
 		PortNameKey(qpwgraph_port *port)
 			: NameKey(port->portName(), port->portMode(), port->portType()) {}
 	};
+
+	typedef QMultiHash<PortNameKey, qpwgraph_port *> PortKeys;
 
 	// Port sorting type.
 	enum SortType { PortName = 0, PortTitle, PortIndex };
