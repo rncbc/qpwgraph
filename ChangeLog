@@ -2,7 +2,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.2.6  2022-04-23  A seventh beta release.
 
 - Patchbay now treats multiple nodes and respective ports with
   the same name as one, applying the same rule. (EXPERIMENTAL)
