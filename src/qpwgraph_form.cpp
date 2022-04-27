@@ -95,7 +95,9 @@ qpwgraph_form::qpwgraph_form (
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 1, 0)
+	QMainWindow::setWindowIcon(QIcon(":/images/qpwgraph.png"));
+#endif
 	m_config = new qpwgraph_config("rncbc.org", "qpwgraph");
 
 	m_ui.graphCanvas->setSettings(m_config->settings());
