@@ -187,7 +187,7 @@ bool qpwgraph_application::setup (void)
 }
 
 
-// Local server conection slot.
+// Local server connection slot.
 void qpwgraph_application::newConnectionSlot (void)
 {
 	QLocalSocket *socket = m_server->nextPendingConnection();
