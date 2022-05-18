@@ -1092,7 +1092,11 @@ bool qpwgraph_canvas::restoreNode ( qpwgraph_node *node )
 	if (m_settings == nullptr || node == nullptr)
 		return false;
 
-	const QString& node_key = nodeKey(node);
+	// Assume node name-keys have been added before this...
+	//
+	const qpwgraph_node::NodeNameKey name_key(node);
+	const int n = m_node_keys.values(name_key).count();
+	const QString& node_key = nodeKey(node, n);
 
 	m_settings->beginGroup(NodeAliasesGroup);
 	const QString& node_title
@@ -1107,10 +1111,9 @@ bool qpwgraph_canvas::restoreNode ( qpwgraph_node *node )
 		= m_settings->value('/' + node_key).toPointF();
 	m_settings->endGroup();
 
-	if (node_pos.isNull())
-		return false;
+	if (!node_pos.isNull())
+		node->setPos(node_pos);
 
-	node->setPos(node_pos);
 	return true;
 }
 
@@ -1120,7 +1123,11 @@ bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 	if (m_settings == nullptr || node == nullptr)
 		return false;
 
-	const QString& node_key = nodeKey(node);
+	// Assume node name-keys are to be removed after this...
+	//
+	const qpwgraph_node::NodeNameKey name_key(node);
+	const int n = m_node_keys.values(name_key).count();
+	const QString& node_key = nodeKey(node, n);
 
 	m_settings->beginGroup(NodeAliasesGroup);
 	if (node->nodeName() != node->nodeTitle()) {
@@ -1216,21 +1223,29 @@ bool qpwgraph_canvas::saveState (void) const
 	if (m_settings == nullptr)
 		return false;
 
+	QList<qpwgraph_node *> nodes;
+
 	const QList<QGraphicsItem *> items(m_scene->items());
 	foreach (QGraphicsItem *item, items) {
 		if (item->type() == qpwgraph_node::Type) {
 			qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
-			if (node) {
-				const QString& node_key = nodeKey(node);
-				m_settings->beginGroup(NodePosGroup);
-				m_settings->setValue('/' + node_key, node->pos());
-				m_settings->endGroup();
-				m_settings->beginGroup(NodeAliasesGroup);
-				if (node->nodeName() != node->nodeTitle())
-					m_settings->setValue('/' + node_key, node->nodeTitle());
-				else
-					m_settings->remove('/' + node_key);
-				m_settings->endGroup();
+			if (node && !nodes.contains(node)) {
+				int n = 0;
+				const QList<qpwgraph_node *>& nodes2
+					= m_node_keys.values(qpwgraph_node::NodeNameKey(node));
+				foreach (qpwgraph_node *node2, nodes2) {
+					const QString& node2_key = nodeKey(node2, ++n);
+					m_settings->beginGroup(NodePosGroup);
+					m_settings->setValue('/' + node2_key, node2->pos());
+					m_settings->endGroup();
+					m_settings->beginGroup(NodeAliasesGroup);
+					if (node2->nodeName() != node2->nodeTitle())
+						m_settings->setValue('/' + node2_key, node2->nodeTitle());
+					else
+						m_settings->remove('/' + node2_key);
+					m_settings->endGroup();
+					nodes.append(node2);
+				}
 			}
 		}
 		else
@@ -1270,9 +1285,13 @@ bool qpwgraph_canvas::saveState (void) const
 
 
 // Graph node/port key helpers.
-QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node ) const
+QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node, int n ) const
 {
 	QString node_key = node->nodeName();
+	if (n > 1) {
+		node_key += '-';
+		node_key += QString::number(n - 1);
+	}
 
 	switch (node->nodeMode()) {
 	case qpwgraph_item::Input:
@@ -1289,7 +1308,7 @@ QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node ) const
 }
 
 
-QString qpwgraph_canvas::portKey ( qpwgraph_port *port ) const
+QString qpwgraph_canvas::portKey ( qpwgraph_port *port, int n ) const
 {
 	QString port_key;
 
@@ -1300,6 +1319,10 @@ QString qpwgraph_canvas::portKey ( qpwgraph_port *port ) const
 	port_key += node->nodeName();
 	port_key += ':';
 	port_key += port->portName();
+	if (n > 1) {
+		port_key += '-';
+		port_key += QString::number(n - 1);
+	}
 
 	switch (port->portMode()) {
 	case qpwgraph_item::Input:

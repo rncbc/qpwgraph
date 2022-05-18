@@ -2,18 +2,24 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Attempt to save and possibly restore different node positions and
+  aliases when forner original node name is non-unique. (EXPERIMENTAL)
+
+
 0.2.6  2022-04-23  A seventh beta release.
 
 - Patchbay now treats multiple nodes and respective ports with
-  the same name as one, applying the same rule. (EXPERIMENTAL)
+  the same name as one, applying the same rule.
 
 
 0.2.5  2022-04-06  A sixth beta release.
 
 - Prevent an graph refresh or update as much as possible while in
-  some canvas editing business (fixes issue #29). (EXPERIMENTAL)
+  some canvas editing business (fixes issue #29).
 - Possibly fix a random segfault when rendering connection lines
-  ahead of time (possibly mitigating issue #26). (EXPERIMENTAL)
+  ahead of time (possibly mitigating issue #26).
 
 
 0.2.4  2022-03-19  A fifth beta release.
