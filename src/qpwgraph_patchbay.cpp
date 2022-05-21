@@ -364,16 +364,14 @@ void qpwgraph_patchbay::connectPorts ( qpwgraph_port *port1, qpwgraph_port *port
 			port2->portName());
 		Items::ConstIterator iter = m_items.constFind(item);
 		const Items::ConstIterator& iter_end = m_items.constEnd();
-		if (iter == iter_end && connect) {
+		if (iter == iter_end && connect)
 			m_items.insert(item, new Item(item));
-			++m_dirty;
-		}
 		else
 		if (iter != iter_end && !connect) {
 			delete iter.value();
 			m_items.erase(iter);
-			++m_dirty;
 		}
+		++m_dirty;
 	}
 }
 
