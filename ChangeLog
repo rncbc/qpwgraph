@@ -2,12 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.3.0  2022-05-21  An eighth beta release.
 
 - Fixed document dirtiness (modified state) when making connections
-  and/or disconnections on a clear and new patchbay. (EXPERIMENTAL)
+  and/or disconnections on a clear and new patchbay.
 - Attempt to save and possibly restore different node positions and
-  aliases when forner original node name is non-unique. (EXPERIMENTAL)
+  aliases when forner original node name is non-unique.
 
 
 0.2.6  2022-04-23  A seventh beta release.
