@@ -246,7 +246,7 @@
     <string>Connect selected ports</string>
    </property>
    <property name="shortcut">
-    <string>Ins</string>
+    <string>Ctrl+C</string>
    </property>
   </action>
   <action name="graphDisconnectAction">
@@ -266,7 +266,7 @@
     <string>Disconnect selected ports</string>
    </property>
    <property name="shortcut">
-    <string>Del</string>
+    <string>Ctrl+D</string>
    </property>
   </action>
   <action name="patchbayNewAction">
@@ -488,7 +488,7 @@
     <string>Rename Item</string>
    </property>
    <property name="shortcut">
-    <string/>
+    <string>F2</string>
    </property>
   </action>
   <action name="viewMenubarAction">

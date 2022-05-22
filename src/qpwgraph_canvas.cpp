@@ -199,11 +199,17 @@ qpwgraph_item *qpwgraph_canvas::currentItem (void) const
 {
 	qpwgraph_item *item = m_item;
 
+	if (item && item->type() == qpwgraph_connect::Type)
+		item = nullptr;
+
 	if (item == nullptr) {
-		const QList<QGraphicsItem *>& list
-			= m_scene->selectedItems();
-		if (!list.isEmpty())
-			item = static_cast<qpwgraph_item *> (list.first());
+		foreach (QGraphicsItem *item2, m_scene->selectedItems()) {
+			if (item2->type() == qpwgraph_connect::Type)
+				continue;
+			item = static_cast<qpwgraph_item *> (item2);
+			if (item2->type() == qpwgraph_node::Type)
+				break;
+		}
 	}
 
 	return item;
@@ -989,6 +995,9 @@ void qpwgraph_canvas::renameItem (void)
 		}
 	}
 	else return;
+
+	m_selected_nodes = 0;
+	m_scene->clearSelection();
 
 	m_editor->show();
 	m_editor->setEnabled(true);
