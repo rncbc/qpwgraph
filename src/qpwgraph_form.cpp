@@ -1151,16 +1151,15 @@ QString qpwgraph_form::patchbayFileFilter (void) const
 
 
 
-// Whether we can close current patchbay.
+// Whether we can close/quit current patchbay.
 bool qpwgraph_form::patchbayQueryClose (void)
 {
 	bool ret = true;
-	const QString& title = tr("Warning");
 	const qpwgraph_patchbay *patchbay
 		= m_ui.graphCanvas->patchbay();
 	if (patchbay && patchbay->isDirty()) {
 		showNormal();
-		switch (QMessageBox::warning(this, title,
+		switch (QMessageBox::warning(this, tr("Warning"),
 			tr("The current patchbay has been changed:\n\n\"%1\"\n\n"
 			"Do you want to save the changes?").arg(patchbayFileName()),
 			QMessageBox::Save |
@@ -1176,10 +1175,22 @@ bool qpwgraph_form::patchbayQueryClose (void)
 			break;
 		}
 	}
-	else
+
+	return ret;
+}
+
+
+bool qpwgraph_form::patchbayQueryQuit (void)
+{
+	if (!patchbayQueryClose())
+		return false;
+
+	bool ret = true;
+	const qpwgraph_patchbay *patchbay
+		= m_ui.graphCanvas->patchbay();
 	if (patchbay && patchbay->isActivated()) {
 		showNormal();
-		ret = (QMessageBox::warning(this, title,
+		ret = (QMessageBox::warning(this, tr("Warning"),
 			tr("A patchbay is currently activated:\n\n\"%1\"\n\n"
 			"Are you sure you want to quit?").arg(patchbayFileName()),
 			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
@@ -1263,7 +1274,7 @@ void qpwgraph_form::closeEvent ( QCloseEvent *event )
 	}
 	else
 #endif
-	if (patchbayQueryClose()) {
+	if (patchbayQueryQuit()) {
 		hide();
 		QMainWindow::closeEvent(event);
 	} else {
@@ -1484,7 +1495,7 @@ void qpwgraph_form::saveState (void)
 // Forcibly quit application.
 void qpwgraph_form::closeQuit (void)
 {
-	if (!patchbayQueryClose())
+	if (!patchbayQueryQuit())
 		return;
 
 	if (isVisible())

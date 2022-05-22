@@ -2,6 +2,15 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Only ask to quit an activated patchbay when actually quitting
+  the application (not just closing a patchbay).
+- Graph/Connect and Disconnect keyboard shortcuts changed from
+  [Ins] and [Del], to [Ctrl+C] and [Ctrl+D] respectively; also
+  added [F2] as brand new keyboard shortcut for Edit/Rename...
+
+
 0.3.0  2022-05-21  An eighth beta release.
 
 - Fixed document dirtiness (modified state) when making connections

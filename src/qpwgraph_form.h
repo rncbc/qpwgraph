@@ -156,8 +156,9 @@ protected:
 	QString patchbayFileExt() const;
 	QString patchbayFileFilter() const;
 
-	// Whether we can close current patchbay.
+	// Whether we can close/quit current patchbay.
 	bool patchbayQueryClose();
+	bool patchbayQueryQuit();
 
 	// Context-menu event handler.
 	void contextMenuEvent(QContextMenuEvent *event);
