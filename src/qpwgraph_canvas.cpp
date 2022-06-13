@@ -1120,9 +1120,10 @@ bool qpwgraph_canvas::restoreNode ( qpwgraph_node *node )
 		= m_settings->value('/' + node_key).toPointF();
 	m_settings->endGroup();
 
-	if (!node_pos.isNull())
-		node->setPos(node_pos);
+	if (node_pos.isNull())
+		return false;
 
+	node->setPos(node_pos);
 	return true;
 }
 

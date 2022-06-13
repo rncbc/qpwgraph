@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+0.3.3  2022-06-13  A tenth beta release.
+
+- Fixed initial nodes layout positioning, now back to the former
+  spiraled away from the center.
+
+
 0.3.1  2022-05-29  A ninth beta release.
 
 - Only ask to quit an activated patchbay when actually quitting
@@ -16,7 +22,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 - Fixed document dirtiness (modified state) when making connections
   and/or disconnections on a clear and new patchbay.
 - Attempt to save and possibly restore different node positions and
-  aliases when forner original node name is non-unique.
+  aliases when former original node name is non-unique.
 
 
 0.2.6  2022-04-23  A seventh beta release.
