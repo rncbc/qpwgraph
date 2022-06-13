@@ -2,7 +2,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-0.3.3  2022-06-13  A tenth beta release.
+0.3.2  2022-06-13  A tenth beta release.
 
 - Fixed initial nodes layout positioning, now back to the former
   spiraled away from the center.
