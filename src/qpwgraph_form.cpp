@@ -229,6 +229,17 @@ qpwgraph_form::qpwgraph_form (
 	// shortcuts firmly attached...
 	addAction(m_ui.viewMenubarAction);
 
+	// HACK: Make old Ins/Del standard shortcuts
+	// for connect/disconnect available again...
+	QList<QKeySequence> shortcuts;
+	shortcuts.append(m_ui.graphConnectAction->shortcut());
+	shortcuts.append(QKeySequence("Ins"));
+	m_ui.graphConnectAction->setShortcuts(shortcuts);
+	shortcuts.clear();
+	shortcuts.append(m_ui.graphDisconnectAction->shortcut());
+	shortcuts.append(QKeySequence("Del"));
+	m_ui.graphDisconnectAction->setShortcuts(shortcuts);
+
 	QObject::connect(m_ui.graphConnectAction,
 		SIGNAL(triggered(bool)),
 		m_ui.graphCanvas, SLOT(connectItems()));
