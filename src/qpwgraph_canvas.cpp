@@ -65,7 +65,8 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 	: QGraphicsView(parent), m_state(DragNone), m_item(nullptr),
 		m_connect(nullptr), m_rubberband(nullptr),
 		m_zoom(1.0), m_zoomrange(false),
-		m_commands(nullptr), m_settings(nullptr), m_patchbay(nullptr),
+		m_commands(nullptr), m_settings(nullptr),
+		m_patchbay(nullptr), m_patchbay_edit(false),
 		m_selected_nodes(0), m_edit_item(nullptr),
 		m_editor(nullptr), m_edited(0)
 {
@@ -143,6 +144,79 @@ qpwgraph_patchbay *qpwgraph_canvas::patchbay (void) const
 }
 
 
+// Patchbay edit methods.
+void qpwgraph_canvas::setPatchbayEdit ( bool on )
+{
+	if (m_patchbay == nullptr)
+		return;
+
+	if ((!on && !m_patchbay_edit) ||
+		( on &&  m_patchbay_edit))
+		return;
+
+	foreach (QGraphicsItem *item, m_scene->items()) {
+		if (item->type() == qpwgraph_connect::Type) {
+			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
+			if (connect) {
+				connect->setAlpha(
+					on && !m_patchbay->findConnect(connect) ? 160 : 255);
+				connect->update();
+			}
+		}
+	}
+
+	m_patchbay_edit = on;
+}
+
+
+bool qpwgraph_canvas::isPatchbayEdit (void) const
+{
+	return (m_patchbay && m_patchbay_edit);
+}
+
+
+bool qpwgraph_canvas::canPatchbayPin (void) const
+{
+	if (m_patchbay == nullptr || !m_patchbay_edit)
+		return false;
+
+	// TODO: ?...
+	//
+	return false;
+}
+
+
+bool qpwgraph_canvas::canPatchbayUnpin (void) const
+{
+	if (m_patchbay == nullptr || !m_patchbay_edit)
+		return false;
+
+	// TODO: ?...
+	//
+	return false;
+}
+
+
+void qpwgraph_canvas::patchbayPin (void)
+{
+	if (m_patchbay == nullptr || !m_patchbay_edit)
+		return;
+
+	// TODO: ?...
+	//
+}
+
+
+void qpwgraph_canvas::patchbayUnpin (void)
+{
+	if (m_patchbay == nullptr || !m_patchbay_edit)
+		return;
+
+	// TODO: ?...
+	//
+}
+
+
 // Canvas methods.
 void qpwgraph_canvas::addItem ( qpwgraph_item *item )
 {
@@ -164,6 +238,14 @@ void qpwgraph_canvas::addItem ( qpwgraph_item *item )
 		qpwgraph_port *port = static_cast<qpwgraph_port *> (item);
 		if (port)
 			restorePort(port);
+	}
+	else
+	if (item->type() == qpwgraph_connect::Type) {
+		qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
+		if (connect) {
+			connect->setAlpha(m_patchbay_edit &&
+				m_patchbay && !m_patchbay->findConnect(connect) ? 180 : 255);
+		}
 	}
 }
 

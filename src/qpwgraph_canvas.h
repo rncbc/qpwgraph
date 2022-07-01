@@ -70,6 +70,16 @@ public:
 
 	qpwgraph_patchbay *patchbay() const;
 
+	// Patchbay edit methods.
+	void setPatchbayEdit(bool on);
+	bool isPatchbayEdit() const;
+
+	bool canPatchbayPin() const;
+	bool canPatchbayUnpin() const;
+
+	void patchbayPin();
+	void patchbayUnpin();
+
 	// Canvas methods.
 	void addItem(qpwgraph_item *item);
 	void removeItem(qpwgraph_item *item);
@@ -235,6 +245,7 @@ private:
 	QSettings  *m_settings;
 
 	qpwgraph_patchbay *m_patchbay;
+	bool m_patchbay_edit;
 
 	QList<QGraphicsItem *> m_selected;
 	int m_selected_nodes;

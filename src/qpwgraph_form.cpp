@@ -626,22 +626,24 @@ void qpwgraph_form::patchbayExclusive ( bool on )
 
 void qpwgraph_form::patchbayEdit ( bool on )
 {
-	// TODO: ?...
-	//
-	stabilize();}
+	m_ui.graphCanvas->setPatchbayEdit(on);
+
+	stabilize();
+}
 
 
 void qpwgraph_form::patchbayPin (void)
 {
-	// TODO: ?...
-	//
-	stabilize();}
+	m_ui.graphCanvas->patchbayPin();
+
+	stabilize();
+}
 
 
 void qpwgraph_form::patchbayUnpin (void)
 {
-	// TODO: ?...
-	//
+	m_ui.graphCanvas->patchbayUnpin();
+
 	stabilize();
 }
 
@@ -1043,8 +1045,6 @@ void qpwgraph_form::stabilize (void)
 		= (patchbay && patchbay->isActivated());
 	const bool is_dirty
 		= (patchbay && patchbay->isDirty());
-	const bool is_edit
-		= m_ui.patchbayEditAction->isChecked();
 
 	// Update window title.
 	QString title = patchbayFileName();
@@ -1055,8 +1055,9 @@ void qpwgraph_form::stabilize (void)
 	m_ui.patchbayExclusiveAction->setEnabled(is_activated);
 	m_ui.patchbayScanAction->setEnabled(is_activated);
 	m_ui.patchbaySaveAction->setEnabled(is_dirty);
-	m_ui.patchbayPinAction->setEnabled(is_edit);
-	m_ui.patchbayUnpinAction->setEnabled(is_edit);
+
+	m_ui.patchbayPinAction->setEnabled(canvas->canPatchbayPin());
+	m_ui.patchbayUnpinAction->setEnabled(canvas->canPatchbayUnpin());
 
 	m_ui.graphConnectAction->setEnabled(canvas->canConnect());
 	m_ui.graphDisconnectAction->setEnabled(canvas->canDisconnect());
@@ -1255,6 +1256,11 @@ void qpwgraph_form::contextMenuEvent ( QContextMenuEvent *event )
 	stabilize();
 
 	QMenu menu(this);
+	if (m_ui.graphCanvas->isPatchbayEdit()) {
+		menu.addAction(m_ui.patchbayPinAction);
+		menu.addAction(m_ui.patchbayUnpinAction);
+		menu.addSeparator();
+	}
 	menu.addAction(m_ui.graphConnectAction);
 	menu.addAction(m_ui.graphDisconnectAction);
 	menu.addSeparator();
