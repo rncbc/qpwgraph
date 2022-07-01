@@ -9,6 +9,9 @@
 		<file>images/itemPatchbay.png</file>
 		<file>images/itemActivate.png</file>
 		<file>images/itemExclusive.png</file>
+		<file>images/itemEdit.png</file>
+		<file>images/itemPin.png</file>
+		<file>images/itemUnpin.png</file>
 		<file>images/fileNew.png</file>
 		<file>images/fileOpen.png</file>
 		<file>images/fileSave.png</file>
