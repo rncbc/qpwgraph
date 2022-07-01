@@ -82,6 +82,10 @@
     <addaction name="patchbayActivatedAction"/>
     <addaction name="patchbayExclusiveAction"/>
     <addaction name="separator"/>
+    <addaction name="patchbayEditAction"/>
+    <addaction name="patchbayPinAction"/>
+    <addaction name="patchbayUnpinAction"/>
+    <addaction name="separator"/>
     <addaction name="patchbayScanAction"/>
    </widget>
    <widget class="QMenu" name="editMenu">
@@ -228,6 +232,10 @@
    <addaction name="separator"/>
    <addaction name="patchbayActivatedAction"/>
    <addaction name="patchbayExclusiveAction"/>
+   <addaction name="separator"/>
+   <addaction name="patchbayEditAction"/>
+   <addaction name="patchbayPinAction"/>
+   <addaction name="patchbayUnpinAction"/>
   </widget>
   <action name="graphConnectAction">
    <property name="icon">
@@ -384,6 +392,69 @@
    </property>
    <property name="statusTip">
     <string>Exclusive current patchbay</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="patchbayEditAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/itemEdit.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Edit</string>
+   </property>
+   <property name="iconText">
+    <string>Edit</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit patchbay</string>
+   </property>
+   <property name="statusTip">
+    <string>Edit current patchbay</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="patchbayPinAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/itemPin.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Pin</string>
+   </property>
+   <property name="iconText">
+    <string>Pin</string>
+   </property>
+   <property name="toolTip">
+    <string>Pin connection</string>
+   </property>
+   <property name="statusTip">
+    <string>Pin connection to current patchbay</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="patchbayUnpinAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/itemUnpin.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Unpin</string>
+   </property>
+   <property name="iconText">
+    <string>Unpin</string>
+   </property>
+   <property name="toolTip">
+    <string>Unpin connection</string>
+   </property>
+   <property name="statusTip">
+    <string>Unpin connection from current patchbay</string>
    </property>
    <property name="shortcut">
     <string/>

@@ -271,6 +271,16 @@ qpwgraph_form::qpwgraph_form (
 		SIGNAL(toggled(bool)),
 		SLOT(patchbayExclusive(bool)));
 
+	QObject::connect(m_ui.patchbayEditAction,
+		SIGNAL(toggled(bool)),
+		SLOT(patchbayEdit(bool)));
+	QObject::connect(m_ui.patchbayPinAction,
+		SIGNAL(triggered(bool)),
+		SLOT(patchbayPin()));
+	QObject::connect(m_ui.patchbayUnpinAction,
+		SIGNAL(triggered(bool)),
+		SLOT(patchbayUnpin()));
+
 	QObject::connect(m_ui.patchbayScanAction,
 		SIGNAL(triggered(bool)),
 		SLOT(patchbayScan()));
@@ -610,6 +620,28 @@ void qpwgraph_form::patchbayExclusive ( bool on )
 			patchbay->scan();
 	}
 
+	stabilize();
+}
+
+
+void qpwgraph_form::patchbayEdit ( bool on )
+{
+	// TODO: ?...
+	//
+	stabilize();}
+
+
+void qpwgraph_form::patchbayPin (void)
+{
+	// TODO: ?...
+	//
+	stabilize();}
+
+
+void qpwgraph_form::patchbayUnpin (void)
+{
+	// TODO: ?...
+	//
 	stabilize();
 }
 
@@ -1011,6 +1043,8 @@ void qpwgraph_form::stabilize (void)
 		= (patchbay && patchbay->isActivated());
 	const bool is_dirty
 		= (patchbay && patchbay->isDirty());
+	const bool is_edit
+		= m_ui.patchbayEditAction->isChecked();
 
 	// Update window title.
 	QString title = patchbayFileName();
@@ -1021,6 +1055,8 @@ void qpwgraph_form::stabilize (void)
 	m_ui.patchbayExclusiveAction->setEnabled(is_activated);
 	m_ui.patchbayScanAction->setEnabled(is_activated);
 	m_ui.patchbaySaveAction->setEnabled(is_dirty);
+	m_ui.patchbayPinAction->setEnabled(is_edit);
+	m_ui.patchbayUnpinAction->setEnabled(is_edit);
 
 	m_ui.graphConnectAction->setEnabled(canvas->canConnect());
 	m_ui.graphDisconnectAction->setEnabled(canvas->canDisconnect());
