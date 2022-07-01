@@ -70,6 +70,12 @@ public:
 	// Special port-type color business.
 	void updatePortTypeColors();
 
+	// Transparency option.
+	void setAlpha(int alpha)
+		{ m_alpha = alpha; }
+	int alpha() const
+		{ return m_alpha; }
+
 protected:
 
 	void paint(QPainter *painter,
@@ -84,6 +90,8 @@ private:
 	// Instance variables.
 	qpwgraph_port *m_port1;
 	qpwgraph_port *m_port2;
+
+	int m_alpha;
 };
 
 

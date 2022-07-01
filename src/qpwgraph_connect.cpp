@@ -42,7 +42,7 @@
 
 // Constructor.
 qpwgraph_connect::qpwgraph_connect (void)
-	: qpwgraph_item(nullptr), m_port1(nullptr), m_port2(nullptr)
+	: qpwgraph_item(nullptr), m_port1(nullptr), m_port2(nullptr), m_alpha(255)
 {
 	QGraphicsPathItem::setZValue(-1.0);
 
@@ -202,6 +202,7 @@ void qpwgraph_connect::paint ( QPainter *painter,
 		color = qpwgraph_item::foreground().lighter();
 	else
 		color = qpwgraph_item::foreground();
+	color.setAlpha(m_alpha);
 
 	const QPalette pal;
 	const bool is_darkest = (pal.base().color().value() < 24);

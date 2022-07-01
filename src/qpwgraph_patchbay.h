@@ -105,6 +105,9 @@ public:
 
 	typedef QHash<Item, Item *> Items;
 
+	// Find a connection rule.
+	Item *findConnect(qpwgraph_connect *connect) const;
+
 	// Dirty status flag.
 	bool isDirty() const
 		{ return (m_dirty > 0); }

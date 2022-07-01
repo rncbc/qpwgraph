@@ -180,7 +180,7 @@ bool qpwgraph_patchbay::save ( const QString& filename )
 	doc.appendChild(eroot);
 
 	QDomElement eitems = doc.createElement("items");
-#if 0//d--irect snapshot!
+#if 0//--direct snapshot!
 	QGraphicsScene *scene = m_canvas->scene();
 	if (scene) foreach (QGraphicsItem *item, scene->items()) {
 		if (item->type() == qpwgraph_connect::Type) {
@@ -373,6 +373,33 @@ void qpwgraph_patchbay::connectPorts ( qpwgraph_port *port1, qpwgraph_port *port
 		}
 		++m_dirty;
 	}
+}
+
+
+// Find a connection rule.
+qpwgraph_patchbay::Item *qpwgraph_patchbay::findConnect (
+	qpwgraph_connect *connect ) const
+{
+	Item *ret = nullptr;
+
+	qpwgraph_port *port1 = connect->port1();
+	qpwgraph_port *port2 = connect->port2();
+	if (port1 && port2) {
+		qpwgraph_node *node1 = port1->portNode();
+		qpwgraph_node *node2 = port2->portNode();
+		if (node1 && node2) {
+			const Item item(
+				node1->nodeType(),
+				port1->portType(),
+				node1->nodeName(),
+				port1->portName(),
+				node2->nodeName(),
+				port2->portName());
+			ret = m_items.value(item, nullptr);
+		}
+	}
+
+	return ret;
 }
 
 
