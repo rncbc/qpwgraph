@@ -42,7 +42,7 @@
 
 // Constructor.
 qpwgraph_connect::qpwgraph_connect (void)
-	: qpwgraph_item(nullptr), m_port1(nullptr), m_port2(nullptr), m_alpha(255)
+	: qpwgraph_item(nullptr), m_port1(nullptr), m_port2(nullptr), m_dimmed(false)
 {
 	QGraphicsPathItem::setZValue(-1.0);
 
@@ -202,12 +202,12 @@ void qpwgraph_connect::paint ( QPainter *painter,
 		color = qpwgraph_item::foreground().lighter();
 	else
 		color = qpwgraph_item::foreground();
-	color.setAlpha(m_alpha);
+	color.setAlpha(m_dimmed ? 160 : 255);
 
 	const QPalette pal;
 	const bool is_darkest = (pal.base().color().value() < 24);
 	QColor shadow_color = (is_darkest ? Qt::white : Qt::black);
-	shadow_color.setAlpha(80);
+	shadow_color.setAlpha(m_dimmed ? 40 : 80);
 
 	const QPainterPath& path
 		= QGraphicsPathItem::path();
@@ -291,6 +291,20 @@ void qpwgraph_connect::updatePortTypeColors (void)
 		qpwgraph_item::setForeground(color);
 		qpwgraph_item::setBackground(color);
 	}
+}
+
+
+	// Dim/transparency option.
+void qpwgraph_connect::setDimmed ( bool dimmed )
+{
+	m_dimmed = dimmed;
+
+	update();
+}
+
+int qpwgraph_connect::isDimmed (void) const
+{
+	return m_dimmed;
 }
 
 

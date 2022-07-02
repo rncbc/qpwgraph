@@ -72,7 +72,8 @@ public:
 	bool scan();
 
 	// Update rules on demand.
-	void connectPorts(qpwgraph_port *port1, qpwgraph_port *port2, bool connect);
+	bool connectPorts(qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect);
+	bool connect(qpwgraph_connect *connect, bool is_connect);
 
 	// Patchbay rule item.
 	struct Item
@@ -106,6 +107,7 @@ public:
 	typedef QHash<Item, Item *> Items;
 
 	// Find a connection rule.
+	Item *findConnectPorts(qpwgraph_port *port1, qpwgraph_port *port2) const;
 	Item *findConnect(qpwgraph_connect *connect) const;
 
 	// Dirty status flag.

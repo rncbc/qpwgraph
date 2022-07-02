@@ -157,11 +157,8 @@ void qpwgraph_canvas::setPatchbayEdit ( bool on )
 	foreach (QGraphicsItem *item, m_scene->items()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
-			if (connect) {
-				connect->setAlpha(
-					on && !m_patchbay->findConnect(connect) ? 160 : 255);
-				connect->update();
-			}
+			if (connect)
+				connect->setDimmed(on && !m_patchbay->findConnect(connect));
 		}
 	}
 
@@ -180,8 +177,14 @@ bool qpwgraph_canvas::canPatchbayPin (void) const
 	if (m_patchbay == nullptr || !m_patchbay_edit)
 		return false;
 
-	// TODO: ?...
-	//
+	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+		if (item->type() == qpwgraph_connect::Type) {
+			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
+			if (connect && !m_patchbay->findConnect(connect))
+				return true;
+		}
+	}
+
 	return false;
 }
 
@@ -191,8 +194,14 @@ bool qpwgraph_canvas::canPatchbayUnpin (void) const
 	if (m_patchbay == nullptr || !m_patchbay_edit)
 		return false;
 
-	// TODO: ?...
-	//
+	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+		if (item->type() == qpwgraph_connect::Type) {
+			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
+			if (connect && m_patchbay->findConnect(connect))
+				return true;
+		}
+	}
+
 	return false;
 }
 
@@ -202,8 +211,13 @@ void qpwgraph_canvas::patchbayPin (void)
 	if (m_patchbay == nullptr || !m_patchbay_edit)
 		return;
 
-	// TODO: ?...
-	//
+	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+		if (item->type() == qpwgraph_connect::Type) {
+			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
+			if (connect && m_patchbay->connect(connect, true))
+				connect->setDimmed(false);
+		}
+	}
 }
 
 
@@ -212,8 +226,13 @@ void qpwgraph_canvas::patchbayUnpin (void)
 	if (m_patchbay == nullptr || !m_patchbay_edit)
 		return;
 
-	// TODO: ?...
-	//
+	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+		if (item->type() == qpwgraph_connect::Type) {
+			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
+			if (connect && m_patchbay->connect(connect, false))
+				connect->setDimmed(true);
+		}
+	}
 }
 
 
@@ -243,8 +262,8 @@ void qpwgraph_canvas::addItem ( qpwgraph_item *item )
 	if (item->type() == qpwgraph_connect::Type) {
 		qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 		if (connect) {
-			connect->setAlpha(m_patchbay_edit &&
-				m_patchbay && !m_patchbay->findConnect(connect) ? 180 : 255);
+			connect->setDimmed(m_patchbay_edit &&
+				m_patchbay && !m_patchbay->findConnect(connect));
 		}
 	}
 }

@@ -347,10 +347,13 @@ bool qpwgraph_patchbay::scan (void)
 
 
 // Update rules on demand.
-void qpwgraph_patchbay::connectPorts ( qpwgraph_port *port1, qpwgraph_port *port2, bool connect )
+bool qpwgraph_patchbay::connectPorts (
+	qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect )
 {
 	if (port1 == nullptr || port2 == nullptr)
-		return;
+		return false;
+
+	bool ret = false;
 
 	qpwgraph_node *node1 = port1->portNode();
 	qpwgraph_node *node2 = port2->portNode();
@@ -364,26 +367,36 @@ void qpwgraph_patchbay::connectPorts ( qpwgraph_port *port1, qpwgraph_port *port
 			port2->portName());
 		Items::ConstIterator iter = m_items.constFind(item);
 		const Items::ConstIterator& iter_end = m_items.constEnd();
-		if (iter == iter_end && connect)
+		if (iter == iter_end && is_connect) {
 			m_items.insert(item, new Item(item));
+			ret = true;
+		}
 		else
-		if (iter != iter_end && !connect) {
+		if (iter != iter_end && !is_connect) {
 			delete iter.value();
 			m_items.erase(iter);
+			ret = true;
 		}
-		++m_dirty;
 	}
+
+	if (ret) ++m_dirty;
+
+	return ret;
+}
+
+
+bool qpwgraph_patchbay::connect ( qpwgraph_connect *connect, bool is_connect )
+{
+	return connectPorts(connect->port1(), connect->port2(), is_connect);
 }
 
 
 // Find a connection rule.
-qpwgraph_patchbay::Item *qpwgraph_patchbay::findConnect (
-	qpwgraph_connect *connect ) const
+qpwgraph_patchbay::Item *qpwgraph_patchbay::findConnectPorts (
+	qpwgraph_port *port1, qpwgraph_port *port2 ) const
 {
 	Item *ret = nullptr;
 
-	qpwgraph_port *port1 = connect->port1();
-	qpwgraph_port *port2 = connect->port2();
 	if (port1 && port2) {
 		qpwgraph_node *node1 = port1->portNode();
 		qpwgraph_node *node2 = port2->portNode();
@@ -400,6 +413,12 @@ qpwgraph_patchbay::Item *qpwgraph_patchbay::findConnect (
 	}
 
 	return ret;
+}
+
+qpwgraph_patchbay::Item *qpwgraph_patchbay::findConnect (
+	qpwgraph_connect *connect ) const
+{
+	return findConnectPorts(connect->port1(), connect->port2());
 }
 
 

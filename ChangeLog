@@ -4,6 +4,8 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Patchbay/Edit mode introduced: pinning and unpinning connections
+  to and from current patchbay is now implemented. (EXPERIMENTAL)
 - Original Graph/Connect and Disconnect keyboard shortcuts, [Ins]
   and [Del], are now added to the existing ones, respectively.
 

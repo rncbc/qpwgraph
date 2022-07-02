@@ -70,11 +70,9 @@ public:
 	// Special port-type color business.
 	void updatePortTypeColors();
 
-	// Transparency option.
-	void setAlpha(int alpha)
-		{ m_alpha = alpha; }
-	int alpha() const
-		{ return m_alpha; }
+	// Dim/transparency option.
+	void setDimmed(bool dimmed);
+	int isDimmed() const;
 
 protected:
 
@@ -91,7 +89,7 @@ private:
 	qpwgraph_port *m_port1;
 	qpwgraph_port *m_port2;
 
-	int m_alpha;
+	bool m_dimmed;
 };
 
 
