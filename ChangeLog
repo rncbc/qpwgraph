@@ -2,7 +2,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.3.3  2022-07-06  An eleventh beta release.
 
 - Patchbay/Edit mode introduced: pinning and unpinning connections
   to and from current patchbay is now implemented. (EXPERIMENTAL)
