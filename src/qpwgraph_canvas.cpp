@@ -154,21 +154,29 @@ void qpwgraph_canvas::setPatchbayEdit ( bool on )
 		( on &&  m_patchbay_edit))
 		return;
 
-	foreach (QGraphicsItem *item, m_scene->items()) {
-		if (item->type() == qpwgraph_connect::Type) {
-			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
-			if (connect)
-				connect->setDimmed(on && !m_patchbay->findConnect(connect));
-		}
-	}
-
 	m_patchbay_edit = on;
+
+	patchbayEdit();
 }
 
 
 bool qpwgraph_canvas::isPatchbayEdit (void) const
 {
 	return (m_patchbay && m_patchbay_edit);
+}
+
+
+void qpwgraph_canvas::patchbayEdit (void)
+{
+	foreach (QGraphicsItem *item, m_scene->items()) {
+		if (item->type() == qpwgraph_connect::Type) {
+			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
+			if (connect) {
+				connect->setDimmed(
+					m_patchbay_edit && !m_patchbay->findConnect(connect));
+			}
+		}
+	}
 }
 
 

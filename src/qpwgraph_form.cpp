@@ -526,6 +526,8 @@ void qpwgraph_form::patchbayNew (void)
 	m_patchbay_path.clear();
 	++m_patchbay_untitled;
 
+	m_ui.graphCanvas->patchbayEdit();
+
 	updatePatchbayNames();
 }
 
@@ -1137,6 +1139,8 @@ bool qpwgraph_form::patchbayOpenFile ( const QString& path, bool clear )
 
 	m_patchbay_dir = QFileInfo(path).absolutePath();
 	m_patchbay_path = path;
+
+	m_ui.graphCanvas->patchbayEdit();
 
 	patchbay->scan();
 	return true;

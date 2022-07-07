@@ -74,6 +74,8 @@ public:
 	void setPatchbayEdit(bool on);
 	bool isPatchbayEdit() const;
 
+	void patchbayEdit();
+
 	bool canPatchbayPin() const;
 	bool canPatchbayUnpin() const;
 
