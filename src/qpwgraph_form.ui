@@ -544,7 +544,7 @@
   </action>
   <action name="editRenameItemAction">
    <property name="icon">
-    <iconset resource="qpwgraph.qrc">:/images/editRename.png</iconset>
+    <iconset resource="qpwgraph.qrc">:/images/itemEdit.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Rename...</string>
