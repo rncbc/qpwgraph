@@ -134,6 +134,13 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 bool qpwgraph_application::setup (void)
 {
 	m_unique = QCoreApplication::applicationName();
+	QString uname = QString::fromUtf8(::getenv("USER"));
+	if (uname.isEmpty())
+		uname = QString::fromUtf8(::getenv("USERNAME"));
+	if (!uname.isEmpty()) {
+		m_unique += ':';
+		m_unique += uname;
+	}
 	m_unique += '@';
 	m_unique += QHostInfo::localHostName();
 #if defined(Q_OS_UNIX)

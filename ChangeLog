@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Add current system user-name to the singleton/unique application
+  instance identifier. (EXPERIMENTAL)
+
+
 0.3.4  2022-07-08  A twelfth beta release.
 
 - Fixed repainting of pinned/unpinned connections when switching
