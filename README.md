@@ -28,19 +28,19 @@
 
   On the source distribution top directory:
 
-  `  cmake [-DCMAKE_INSTALL_PREFIX=`_prefix_`] -B build`
-  `  cmake --build build [--parallel ` _Njobs_`]`
+    cmake [-DCMAKE_INSTALL_PREFIX=<prefix>] -B build
+    cmake --build build [--parallel <Njobs>]
 
   After successful build you may test run it immedialy as follows:
 
-  ` build/src/qpwgraph`
+    build/src/qpwgraph
 
   If you may install it permanently, then run, optionally as root:
 
-  ` [sudo] cmake --install build`
+    [sudo] cmake --install build
 
+  Note that the default installation path (\<_prefix_\>) is `/usr/local` .
 
-  Note that the default installation path _prefix_ is `/usr/local` .
 
   Enjoy.
 
