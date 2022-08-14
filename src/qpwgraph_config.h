@@ -81,10 +81,13 @@ public:
 	const QString& patchbayPath() const;
 
 	void setPatchbayActivated(bool activated);
-	int isPatchbayActivated() const;
+	bool isPatchbayActivated() const;
 
 	void setPatchbayExclusive(bool exclusive);
-	int isPatchbayExclusive() const;
+	bool isPatchbayExclusive() const;
+
+	void setPatchbayAutoPin(bool exclusive);
+	bool isPatchbayAutoPin() const;
 
 	void patchbayRecentFiles(const QString& path);
 	const QStringList& patchbayRecentFiles() const;
@@ -115,6 +118,7 @@ private:
 	QString     m_patchbay_path;
 	bool        m_patchbay_activated;
 	bool        m_patchbay_exclusive;
+	bool        m_patchbay_autopin;
 	QStringList m_patchbay_recentfiles;
 
 	bool        m_systray_enabled;

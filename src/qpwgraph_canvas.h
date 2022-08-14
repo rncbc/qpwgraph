@@ -70,7 +70,11 @@ public:
 
 	qpwgraph_patchbay *patchbay() const;
 
-	// Patchbay edit methods.
+	// Patchbay auto-pin accessors.
+	void setPatchbayAutoPin(bool on);
+	bool isPatchbayAutoPin() const;
+
+	// Patchbay edit-mode accessors.
 	void setPatchbayEdit(bool on);
 	bool isPatchbayEdit() const;
 
@@ -248,6 +252,7 @@ private:
 
 	qpwgraph_patchbay *m_patchbay;
 	bool m_patchbay_edit;
+	bool m_patchbay_autopin;
 
 	QList<QGraphicsItem *> m_selected;
 	int m_selected_nodes;

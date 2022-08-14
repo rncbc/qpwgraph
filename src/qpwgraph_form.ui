@@ -82,6 +82,8 @@
     <addaction name="patchbayActivatedAction"/>
     <addaction name="patchbayExclusiveAction"/>
     <addaction name="separator"/>
+    <addaction name="patchbayAutoPinAction"/>
+    <addaction name="separator"/>
     <addaction name="patchbayEditAction"/>
     <addaction name="patchbayPinAction"/>
     <addaction name="patchbayUnpinAction"/>
@@ -392,6 +394,23 @@
    </property>
    <property name="statusTip">
     <string>Exclusive current patchbay</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="patchbayAutoPinAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Au&amp;to Pin</string>
+   </property>
+   <property name="toolTip">
+    <string>Auto pin connections</string>
+   </property>
+   <property name="statusTip">
+    <string>Auto pin connections to current patchbay</string>
    </property>
    <property name="shortcut">
     <string/>

@@ -103,6 +103,8 @@ protected slots:
 	void patchbayActivated(bool on);
 	void patchbayExclusive(bool on);
 
+	void patchbayAutoPin(bool on);
+
 	void patchbayEdit(bool on);
 	void patchbayPin();
 	void patchbayUnpin();

@@ -65,8 +65,8 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 	: QGraphicsView(parent), m_state(DragNone), m_item(nullptr),
 		m_connect(nullptr), m_rubberband(nullptr),
 		m_zoom(1.0), m_zoomrange(false),
-		m_commands(nullptr), m_settings(nullptr),
-		m_patchbay(nullptr), m_patchbay_edit(false),
+		m_commands(nullptr), m_settings(nullptr), m_patchbay(nullptr),
+		m_patchbay_edit(false), m_patchbay_autopin(true),
 		m_selected_nodes(0), m_edit_item(nullptr),
 		m_editor(nullptr), m_edited(0)
 {
@@ -144,7 +144,20 @@ qpwgraph_patchbay *qpwgraph_canvas::patchbay (void) const
 }
 
 
-// Patchbay edit methods.
+// Patchbay auto-pin accessors.
+void qpwgraph_canvas::setPatchbayAutoPin ( bool on )
+{
+	m_patchbay_autopin = on;
+}
+
+
+bool qpwgraph_canvas::isPatchbayAutoPin (void) const
+{
+	return m_patchbay_autopin;
+}
+
+
+// Patchbay edit-mode accessors.
 void qpwgraph_canvas::setPatchbayEdit ( bool on )
 {
 	if (m_patchbay == nullptr)
@@ -502,7 +515,7 @@ QList<qpwgraph_node *> qpwgraph_canvas::findNodes (
 void qpwgraph_canvas::emitConnectPorts (
 	qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect )
 {
-	if (m_patchbay)
+	if (m_patchbay && (m_patchbay_autopin || !is_connect))
 		m_patchbay->connectPorts(port1, port2, is_connect);
 
 	if (is_connect)
