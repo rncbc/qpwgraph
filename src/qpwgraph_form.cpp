@@ -285,10 +285,6 @@ qpwgraph_form::qpwgraph_form (
 		SIGNAL(triggered(bool)),
 		SLOT(patchbayUnpin()));
 
-	QObject::connect(m_ui.patchbayScanAction,
-		SIGNAL(triggered(bool)),
-		SLOT(patchbayScan()));
-
 	QObject::connect(m_ui.graphQuitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(closeQuit()));
@@ -630,14 +626,6 @@ void qpwgraph_form::patchbayExclusive ( bool on )
 }
 
 
-void qpwgraph_form::patchbayAutoPin ( bool on )
-{
-	m_ui.graphCanvas->setPatchbayAutoPin(on);
-
-	stabilize();
-}
-
-
 void qpwgraph_form::patchbayEdit ( bool on )
 {
 	m_ui.graphCanvas->setPatchbayEdit(on);
@@ -662,11 +650,9 @@ void qpwgraph_form::patchbayUnpin (void)
 }
 
 
-void qpwgraph_form::patchbayScan (void)
+void qpwgraph_form::patchbayAutoPin ( bool on )
 {
-	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
-	if (patchbay)
-		patchbay->scan();
+	m_ui.graphCanvas->setPatchbayAutoPin(on);
 
 	stabilize();
 }
@@ -1040,8 +1026,10 @@ void qpwgraph_form::refresh (void)
 #endif
 
 	if (nchanged > 0) {
-		patchbayScan();
-	//	stabilize();
+		qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+		if (patchbay)
+			patchbay->scan();
+		stabilize();
 	}
 
 	QTimer::singleShot(300, this, SLOT(refresh()));
@@ -1067,7 +1055,6 @@ void qpwgraph_form::stabilize (void)
 	setWindowTitle(title);
 
 	m_ui.patchbayExclusiveAction->setEnabled(is_activated);
-	m_ui.patchbayScanAction->setEnabled(is_activated);
 	m_ui.patchbaySaveAction->setEnabled(is_dirty);
 
 	m_ui.patchbayPinAction->setEnabled(canvas->canPatchbayPin());

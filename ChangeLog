@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Patchbay/Scan menu command removed as redundand. (EXPERIMENTAL)
 - Added Patchbay/Auto Pin connections option (issue #56). (EXPERIMENTAL)
 - Add current system user-name to the singleton/unique application
   instance identifier. (EXPERIMENTAL)
