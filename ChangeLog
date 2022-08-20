@@ -2,12 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.3.5  2022-08-20  A thirteenth beta release.
 
-- Patchbay/Scan menu command removed as redundand. (EXPERIMENTAL)
-- Added Patchbay/Auto Pin connections option (issue #56). (EXPERIMENTAL)
+- Patchbay/Scan menu command removed as redundand.
+- Added Patchbay/Auto Pin connections option (issue #56).
 - Add current system user-name to the singleton/unique application
-  instance identifier. (EXPERIMENTAL)
+  instance identifier.
 
 
 0.3.4  2022-07-08  A twelfth beta release.
