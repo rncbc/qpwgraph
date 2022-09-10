@@ -67,8 +67,8 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 		m_zoom(1.0), m_zoomrange(false),
 		m_commands(nullptr), m_settings(nullptr), m_patchbay(nullptr),
 		m_patchbay_edit(false), m_patchbay_autopin(true),
-		m_selected_nodes(0), m_edit_item(nullptr),
-		m_editor(nullptr), m_edited(0)
+		m_selected_nodes(0), m_repel_overlapping_nodes(false),
+		m_edit_item(nullptr), m_editor(nullptr), m_edited(0)
 {
 	m_scene = new QGraphicsScene();
 
@@ -1570,6 +1570,93 @@ void qpwgraph_canvas::editingFinished (void)
 		m_editor->hide();
 		m_edited = 0;
 	}
+}
+
+
+// Repel overlapping nodes...
+void qpwgraph_canvas::setRepelOverlappingNodes ( bool on )
+{
+	m_repel_overlapping_nodes = on;
+}
+
+
+bool qpwgraph_canvas::isRepelOverlappingNodes (void) const
+{
+	return m_repel_overlapping_nodes;
+}
+
+
+void qpwgraph_canvas::repelOverlappingNodes (
+	qpwgraph_node *node, qpwgraph_move_command *move_command )
+{
+	const qreal MIN_NODE_GAP = 8.0f;
+
+	node->setMarked(true);
+
+	QRectF rect1 = node->sceneBoundingRect();
+	rect1.adjust(
+		-2.0 * MIN_NODE_GAP, -MIN_NODE_GAP,
+		+2.0 * MIN_NODE_GAP, +MIN_NODE_GAP);
+
+	foreach (qpwgraph_node *node2, m_nodes) {
+		if (node2->isMarked())
+			continue;
+		const QPointF& pos1
+			= node2->pos();
+		QPointF pos2 = pos1;
+		const QRectF& rect2
+			= node2->sceneBoundingRect();
+		const QRectF& recti
+			= rect2.intersected(rect1);
+		if (!recti.isNull()) {
+			const QPointF delta
+				= rect2.center() - rect1.center();
+			if (recti.width() < (1.5 * recti.height())) {
+				qreal dx = recti.width();
+				if (recti.width() >= rect1.width() ||
+					recti.width() >= rect2.width()) {
+					if (delta.x() < 0.0)
+						dx += qAbs(rect2.right() - rect1.right());
+					else
+						dx += qAbs(rect2.left() - rect1.left());
+				}
+				if (delta.x() < 0.0)
+					pos2.setX(pos1.x() - dx);
+				else
+					pos2.setX(pos1.x() + dx);
+			} else {
+				qreal dy = recti.height();
+				if (recti.height() >= rect1.height() ||
+					recti.height() >= rect2.height()) {
+					if (delta.y() < 0.0)
+						dy += qAbs(rect2.bottom() - rect1.bottom());
+					else
+						dy += qAbs(rect2.top() - rect1.top());
+				}
+				if (delta.y() < 0.0)
+					pos2.setY(pos1.y() - dy);
+				else
+					pos2.setY(pos1.y() + dy);
+			}
+			// Repel this node...
+			node2->setPos(pos2);
+			// Add this node for undo/redo...
+			if (move_command)
+				move_command->addItem(node2, pos1, pos2);
+			// Repel this node neighbors, if any...
+			repelOverlappingNodes(node2, move_command);
+		}
+	}
+
+	node->setMarked(false);
+}
+
+
+void qpwgraph_canvas::repelOverlappingNodesAll (
+	qpwgraph_move_command *move_command )
+{
+	foreach (qpwgraph_node *node, m_nodes)
+		repelOverlappingNodes(node, move_command);
 }
 
 

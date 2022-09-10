@@ -123,6 +123,7 @@ public:
 	// Port (dis)connections dispatcher.
 	void emitConnectPorts(
 		qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect);
+
 	// Port (dis)connections notifiers.
 	void emitConnected(qpwgraph_port *port1, qpwgraph_port *port2);
 	void emitDisconnected(qpwgraph_port *port1, qpwgraph_port *port2);
@@ -133,6 +134,14 @@ public:
 	// Graph canvas state methods.
 	bool restoreState();
 	bool saveState() const;
+
+	// Repel overlapping nodes...
+	void setRepelOverlappingNodes(bool on);
+	bool isRepelOverlappingNodes() const;
+	void repelOverlappingNodes(qpwgraph_node *node,
+		qpwgraph_move_command *move_command = nullptr);
+	void repelOverlappingNodesAll(
+		qpwgraph_move_command *move_command = nullptr);
 
 	// Graph colors management.
 	void setPortTypeColor(uint port_type, const QColor& color);
@@ -256,6 +265,8 @@ private:
 
 	QList<QGraphicsItem *> m_selected;
 	int m_selected_nodes;
+
+	bool m_repel_overlapping_nodes;
 
 	// Graph port colors.
 	QHash<uint, QColor> m_port_colors;

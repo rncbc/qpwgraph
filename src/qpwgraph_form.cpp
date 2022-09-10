@@ -114,6 +114,8 @@ qpwgraph_form::qpwgraph_form (
 
 	m_ins = m_mids = m_outs = 0;
 
+	m_repel_overlapping_nodes = 0;
+
 	m_patchbay_names = new QComboBox(m_ui.patchbayToolbar);
 	m_patchbay_names->setEditable(false);
 	m_patchbay_names->setMinimumWidth(120);
@@ -343,6 +345,10 @@ qpwgraph_form::qpwgraph_form (
 	QObject::connect(m_ui.viewZoomRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomRange(bool)));
+
+	QObject::connect(m_ui.viewRepelOverlappingNodesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewRepelOverlappingNodes(bool)));
 
 	m_ui.viewColorsPipewireAudioAction->setData(qpwgraph_pipewire::audioPortType());
 	m_ui.viewColorsPipewireMidiAction->setData(qpwgraph_pipewire::midiPortType());
@@ -710,6 +716,9 @@ void qpwgraph_form::viewRefresh (void)
 	pipewire_changed();
 	alsamidi_changed();
 
+	if (m_ui.graphCanvas->isRepelOverlappingNodes())
+		++m_repel_overlapping_nodes; // fake nodes added!
+
 	refresh();
 }
 
@@ -781,6 +790,13 @@ void qpwgraph_form::viewSortOrderAction (void)
 	qpwgraph_port::setSortOrder(sort_order);
 
 	m_ui.graphCanvas->updateNodes();
+}
+
+
+void qpwgraph_form::viewRepelOverlappingNodes ( bool on )
+{
+	m_ui.graphCanvas->setRepelOverlappingNodes(on);
+	if (on) ++m_repel_overlapping_nodes;
 }
 
 
@@ -913,6 +929,9 @@ void qpwgraph_form::added ( qpwgraph_node *node )
 
 	node->setPos(x, y);
 
+	if (m_ui.graphCanvas->isRepelOverlappingNodes())
+		++m_repel_overlapping_nodes;
+
 	stabilize();
 }
 
@@ -1029,6 +1048,12 @@ void qpwgraph_form::refresh (void)
 		qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
 		if (patchbay)
 			patchbay->scan();
+		stabilize();
+	}
+	else
+	if (m_repel_overlapping_nodes > 0) {
+		m_repel_overlapping_nodes = 0;
+		m_ui.graphCanvas->repelOverlappingNodesAll();
 		stabilize();
 	}
 
@@ -1470,6 +1495,7 @@ void qpwgraph_form::restoreState (void)
 
 	m_ui.viewTextBesideIconsAction->setChecked(m_config->isTextBesideIcons());
 	m_ui.viewZoomRangeAction->setChecked(m_config->isZoomRange());
+	m_ui.viewRepelOverlappingNodesAction->setChecked(m_config->isRepelOverlappingNodes());
 
 	const qpwgraph_port::SortType sort_type
 		= qpwgraph_port::SortType(m_config->sortType());
@@ -1507,6 +1533,7 @@ void qpwgraph_form::restoreState (void)
 
 	viewTextBesideIcons(m_config->isTextBesideIcons());
 	viewZoomRange(m_config->isZoomRange());
+	viewRepelOverlappingNodes(m_config->isRepelOverlappingNodes());
 
 	m_ui.graphCanvas->restoreState();
 
@@ -1532,6 +1559,7 @@ void qpwgraph_form::saveState (void)
 	m_config->setZoomRange(m_ui.viewZoomRangeAction->isChecked());
 	m_config->setSortType(int(qpwgraph_port::sortType()));
 	m_config->setSortOrder(int(qpwgraph_port::sortOrder()));
+	m_config->setRepelOverlappingNodes(m_ui.viewRepelOverlappingNodesAction->isChecked());
 
 	m_config->setStatusbar(m_ui.StatusBar->isVisible());
 	m_config->setToolbar(m_ui.graphToolbar->isVisible());

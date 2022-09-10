@@ -71,6 +71,9 @@ public:
 	void setSortOrder(int sortorder);
 	int sortOrder() const;
 
+	void setRepelOverlappingNodes(bool repelnodes);
+	bool isRepelOverlappingNodes() const;
+
 	void setPatchbayToolbar(bool toolbar);
 	bool isPatchbayToolbar() const;
 
@@ -86,7 +89,7 @@ public:
 	void setPatchbayExclusive(bool exclusive);
 	bool isPatchbayExclusive() const;
 
-	void setPatchbayAutoPin(bool exclusive);
+	void setPatchbayAutoPin(bool autopin);
 	bool isPatchbayAutoPin() const;
 
 	void patchbayRecentFiles(const QString& path);
@@ -112,6 +115,8 @@ private:
 	bool        m_zoomrange;
 	int         m_sorttype;
 	int         m_sortorder;
+
+	bool        m_repelnodes;
 
 	bool        m_patchbay_toolbar;
 	QString     m_patchbay_dir;

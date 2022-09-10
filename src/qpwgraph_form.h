@@ -128,6 +128,8 @@ protected slots:
 	void viewColorsAction();
 	void viewColorsReset();
 
+	void viewRepelOverlappingNodes(bool on);
+
 	void helpSystemTray(bool on);
 
 	void helpAbout();
@@ -204,6 +206,8 @@ private:
 	int m_alsamidi_changed;
 
 	int m_ins, m_mids, m_outs;
+
+	int m_repel_overlapping_nodes;
 
 	QSlider  *m_zoom_slider;
 	QSpinBox *m_zoom_spinbox;

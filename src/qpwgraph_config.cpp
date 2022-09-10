@@ -41,6 +41,7 @@ static const char *ViewTextBesideIconsKey = "/TextBesideIcons";
 static const char *ViewZoomRangeKey = "/ZoomRange";
 static const char *ViewSortTypeKey  = "/SortType";
 static const char *ViewSortOrderKey = "/SortOrder";
+static const char *ViewRepelOverlappingNodesKey = "/RepelOverlappingNodes";
 
 static const char *PatchbayGroup    = "/Patchbay";
 static const char *PatchbayDirKey   = "/Dir";
@@ -182,6 +183,18 @@ int qpwgraph_config::sortOrder (void) const
 }
 
 
+void qpwgraph_config::setRepelOverlappingNodes ( bool repelnodes )
+{
+	m_repelnodes = repelnodes;
+}
+
+
+bool qpwgraph_config::isRepelOverlappingNodes (void) const
+{
+	return m_repelnodes;
+}
+
+
 void qpwgraph_config::setPatchbayToolbar ( bool toolbar )
 {
 	m_patchbay_toolbar = toolbar;
@@ -318,6 +331,7 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 	m_zoomrange = m_settings->value(ViewZoomRangeKey, false).toBool();
 	m_sorttype  = m_settings->value(ViewSortTypeKey, 0).toInt();
 	m_sortorder = m_settings->value(ViewSortOrderKey, 0).toInt();
+	m_repelnodes = m_settings->value(ViewRepelOverlappingNodesKey, false).toBool();
 	m_settings->endGroup();
 
 	m_settings->beginGroup(GeometryGroup);
@@ -373,6 +387,7 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 	m_settings->setValue(ViewZoomRangeKey, m_zoomrange);
 	m_settings->setValue(ViewSortTypeKey, m_sorttype);
 	m_settings->setValue(ViewSortOrderKey, m_sortorder);
+	m_settings->setValue(ViewRepelOverlappingNodesKey, m_repelnodes);
 	m_settings->endGroup();
 
 	m_settings->beginGroup(GeometryGroup);

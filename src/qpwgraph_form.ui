@@ -160,6 +160,8 @@
     <addaction name="viewZoomMenu"/>
     <addaction name="viewZoomRangeAction"/>
     <addaction name="separator"/>
+    <addaction name="viewRepelOverlappingNodesAction"/>
+    <addaction name="separator"/>
     <addaction name="viewRefreshAction"/>
    </widget>
    <widget class="QMenu" name="helpMenu">
@@ -979,6 +981,26 @@
    </property>
    <property name="statusTip">
     <string>Descending sort order</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewRepelOverlappingNodesAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Repel &amp;Overlapping Nodes</string>
+   </property>
+   <property name="iconText">
+    <string>Repel nodes</string>
+   </property>
+   <property name="toolTip">
+    <string>Repel overlapping nodes</string>
+   </property>
+   <property name="statusTip">
+    <string>Repel overlapping nodes</string>
    </property>
    <property name="shortcut">
     <string/>

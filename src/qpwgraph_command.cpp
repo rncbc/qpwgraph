@@ -123,17 +123,26 @@ bool qpwgraph_connect_command::execute ( bool is_undo )
 // Constructor.
 qpwgraph_move_command::qpwgraph_move_command ( qpwgraph_canvas *canvas,
 	const QList<qpwgraph_node *>& nodes, const QPointF& pos1, const QPointF& pos2,
-	qpwgraph_command *parent ) : qpwgraph_command(canvas, parent),
-		m_pos1(pos1), m_pos2(pos2), m_nexec(0)
+	qpwgraph_command *parent ) : qpwgraph_command(canvas, parent), m_nexec(0)
 {
 	qpwgraph_command::setText(QObject::tr("Move"));
+
+	const QPointF delta = (pos1 - pos2);
 
 	foreach (qpwgraph_node *node, nodes) {
 		Item *item = new Item;
 		item->node_id   = node->nodeId();
 		item->node_mode = node->nodeMode();
 		item->node_type = node->nodeType();
-		m_items.append(item);
+		const QPointF& pos = node->pos();
+		item->node_pos1 = pos + delta;
+		item->node_pos2 = pos;
+		m_items.insert(node, item);
+	}
+
+	if (canvas && canvas->isRepelOverlappingNodes()) {
+		foreach (qpwgraph_node *node, nodes)
+			canvas->repelOverlappingNodes(node, this);
 	}
 }
 
@@ -146,6 +155,26 @@ qpwgraph_move_command::~qpwgraph_move_command (void)
 }
 
 
+// Add/replace (an already moved) node position for undo/redo...
+void qpwgraph_move_command::addItem ( qpwgraph_node *node, const QPointF& pos1, const QPointF& pos2 )
+{
+	Item *item = m_items.value(node, nullptr);
+	if (item) {
+	//	item->node_pos1 = pos1;
+		item->node_pos2 = pos2;//node->pos();
+	} else {
+		item = new Item;
+		item->node_id   = node->nodeId();
+		item->node_mode = node->nodeMode();
+		item->node_type = node->nodeType();
+		item->node_pos1 = pos1;
+		item->node_pos2 = pos2;//node->pos();
+		m_items.insert(node, item);
+	}
+}
+
+
+
 // Command executive method.
 bool qpwgraph_move_command::execute ( bool /* is_undo */ )
 {
@@ -154,18 +183,20 @@ bool qpwgraph_move_command::execute ( bool /* is_undo */ )
 		return false;
 
 	if (++m_nexec > 1) {
-		const QPointF delta = (m_pos2 - m_pos1);
-		foreach (Item *item, m_items) {
-			qpwgraph_node *node = canvas->findNode(
-				item->node_id, item->node_mode, item->node_type);
-			if (node)
-				node->setPos(node->pos() + delta);
+		foreach (qpwgraph_node *key, m_items.keys()) {
+			Item *item = m_items.value(key, nullptr);
+			if (item) {
+				qpwgraph_node *node = canvas->findNode(
+					item->node_id, item->node_mode, item->node_type);
+				if (node) {
+					const QPointF pos1 = item->node_pos1;
+					node->setPos(pos1);
+					item->node_pos1 = item->node_pos2;
+					item->node_pos2 = pos1;
+				}
+			}
 		}
 	}
-
-	QPointF pos2 = m_pos2;
-	m_pos2 = m_pos1;
-	m_pos1 = pos2;
 
 	return true;
 }

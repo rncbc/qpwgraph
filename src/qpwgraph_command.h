@@ -152,6 +152,9 @@ public:
 	// Destructor.
 	~qpwgraph_move_command();
 
+	// Add/replace (an already moved) node position for undo/redo...
+	void addItem(qpwgraph_node *node, const QPointF& pos1, const QPointF& pos2);
+
 protected:
 
 	// Command item descriptor
@@ -160,6 +163,8 @@ protected:
 		uint node_id;
 		qpwgraph_item::Mode node_mode;
 		uint node_type;
+		QPointF node_pos1;
+		QPointF node_pos2;
 	};
 
 	// Command executive method.
@@ -168,10 +173,7 @@ protected:
 private:
 
 	// Command arguments.
-	QList<Item *> m_items;
-
-	QPointF m_pos1;
-	QPointF m_pos2;
+	QHash<qpwgraph_node *, Item *> m_items;
 
 	int m_nexec;
 };
