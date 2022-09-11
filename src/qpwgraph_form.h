@@ -71,6 +71,7 @@ protected slots:
 
 	// Node life-cycle slots
 	void added(qpwgraph_node *node);
+	void updated(qpwgraph_node *node);
 	void removed(qpwgraph_node *node);
 
 	// Port (dis)connection slots.

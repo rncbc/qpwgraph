@@ -269,7 +269,9 @@ void qpwgraph_canvas::addItem ( qpwgraph_item *item )
 			m_nodes.append(node);
 			m_node_ids.insert(qpwgraph_node::NodeIdKey(node), node);
 			m_node_keys.insert(qpwgraph_node::NodeNameKey(node), node);
-			if (!restoreNode(node))
+			if (restoreNode(node))
+				emit updated(node);
+			else
 				emit added(node);
 		}
 	}

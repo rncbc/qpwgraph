@@ -209,6 +209,9 @@ qpwgraph_form::qpwgraph_form (
 		SIGNAL(added(qpwgraph_node *)),
 		SLOT(added(qpwgraph_node *)));
 	QObject::connect(m_ui.graphCanvas,
+		SIGNAL(updated(qpwgraph_node *)),
+		SLOT(updated(qpwgraph_node *)));
+	QObject::connect(m_ui.graphCanvas,
 		SIGNAL(removed(qpwgraph_node *)),
 		SLOT(removed(qpwgraph_node *)));
 
@@ -929,10 +932,14 @@ void qpwgraph_form::added ( qpwgraph_node *node )
 
 	node->setPos(x, y);
 
+	updated(node);
+}
+
+
+void qpwgraph_form::updated ( qpwgraph_node */*node*/ )
+{
 	if (m_ui.graphCanvas->isRepelOverlappingNodes())
 		++m_repel_overlapping_nodes;
-
-	stabilize();
 }
 
 
