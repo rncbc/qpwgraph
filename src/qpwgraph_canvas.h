@@ -139,7 +139,8 @@ public:
 	void setRepelOverlappingNodes(bool on);
 	bool isRepelOverlappingNodes() const;
 	void repelOverlappingNodes(qpwgraph_node *node,
-		qpwgraph_move_command *move_command = nullptr);
+		qpwgraph_move_command *move_command = nullptr,
+		const QPointF& delta = QPointF());
 	void repelOverlappingNodesAll(
 		qpwgraph_move_command *move_command = nullptr);
 

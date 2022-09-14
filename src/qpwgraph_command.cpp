@@ -156,7 +156,8 @@ qpwgraph_move_command::~qpwgraph_move_command (void)
 
 
 // Add/replace (an already moved) node position for undo/redo...
-void qpwgraph_move_command::addItem ( qpwgraph_node *node, const QPointF& pos1, const QPointF& pos2 )
+void qpwgraph_move_command::addItem (
+	qpwgraph_node *node, const QPointF& pos1, const QPointF& pos2 )
 {
 	Item *item = m_items.value(node, nullptr);
 	if (item) {
