@@ -2,9 +2,9 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.3.6  2022-09-24  An early-autumn'22 release.
 
-- View / Repel Overlapping Nodes option added. (EXPERIMENTAL)
+- View / Repel Overlapping Nodes option added.
 
 
 0.3.5  2022-08-20  A thirteenth beta release.
