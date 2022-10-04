@@ -1,0 +1,25 @@
+Source: qpwgraph
+Section: contrib/sound
+Priority: extra
+Maintainer: Rui Nuno Capela <rncbc@rncbc.org>
+Build-Depends: debhelper (>= 11), cmake, pkg-config,
+  build-essential, g++ (>= 8), g++-11 | g++-10 | g++-9 | g++-8,
+  qt6-base-dev (>= 6.1) | qtbase5-dev (>= 5.1),
+  qt6-base-dev-tools (>= 6.1) | qtbase5-dev-tools (>= 5.1),
+  qt6-tools-dev (>= 6.1) | qttools5-dev (>= 5.1),
+  qt6-tools-dev-tools (>= 6.1) | qttools5-dev-tools (>= 5.1),
+  qt6-l10n-tools (>= 6.1)  | base-files (<< 12),
+  libqt6svg6-dev | libqt5svg5-dev, libgl-dev,
+  libasound2-dev, libpipewire-0.3-dev
+Standards-Version: 3.9.7
+
+Package: qpwgraph
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},
+  libqt6svg6 (>= 6.1) | libqt5svg5 (>= 5.1),
+  qt6-qpa-plugins | base-files (<< 12)
+Description: A PipeWire Graph Qt GUI Interface
+  qpwgraph is a graph manager dedicated to PipeWire (https://pipewire.org),
+  using the Qt C++ framework (https://qt.io), based and pretty much like the
+  same of QjackCtl (https://qjackctl.sourceforge.io).
+

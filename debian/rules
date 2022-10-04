@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+
+export CXX_MAJOR_VERSION = $(shell g++ -dumpversion)
+export CXX = $(shell \
+	[ $(CXX_MAJOR_VERSION) -lt 8 ] && \
+	  echo "/usr/bin/g++-8" || \
+	  echo "/usr/bin/g++")
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	# Add here commands to configure the package.
+	CXX=$(CXX) \
+	cmake -DCMAKE_INSTALL_PREFIX=/usr -DCONFIG_ALSA_MIDI=ON .
+	# --- end custom part for configure
