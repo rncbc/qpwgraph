@@ -27,6 +27,8 @@
 #include "qpwgraph_pipewire.h"
 #include "qpwgraph_alsamidi.h"
 
+#include "qpwgraph_connect.h"
+
 #include "qpwgraph_patchbay.h"
 #include "qpwgraph_systray.h"
 
@@ -221,6 +223,10 @@ qpwgraph_form::qpwgraph_form (
 	QObject::connect(m_ui.graphCanvas,
 		SIGNAL(disconnected(qpwgraph_port *, qpwgraph_port *)),
 		SLOT(disconnected(qpwgraph_port *, qpwgraph_port *)));
+
+	QObject::connect(m_ui.graphCanvas,
+		SIGNAL(connected(qpwgraph_connect *)),
+		SLOT(connected(qpwgraph_connect *)));
 
 	QObject::connect(m_ui.graphCanvas,
 		SIGNAL(renamed(qpwgraph_item *, const QString&)),
@@ -1001,6 +1007,26 @@ void qpwgraph_form::disconnected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 #endif
 
 	stabilize();
+}
+
+
+void qpwgraph_form::connected ( qpwgraph_connect *connect )
+{
+	qpwgraph_port *port1 = connect->port1();
+	if (port1 == nullptr)
+		return;
+
+	if (qpwgraph_pipewire::isPortType(port1->portType())) {
+		if (m_pipewire)
+			m_pipewire->addItem(connect, false);
+	}
+#ifdef CONFIG_ALSA_MIDI
+	else
+	if (qpwgraph_alsamidi::isPortType(port1->portType())) {
+		if (m_alsamidi)
+			m_alsamidi->addItem(connect, false);
+	}
+#endif
 }
 
 

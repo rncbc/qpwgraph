@@ -485,7 +485,7 @@ void qpwgraph_pipewire::changedNotify (void)
 
 // PipeWire port (dis)connection.
 void qpwgraph_pipewire::connectPorts (
-	qpwgraph_port *port1, qpwgraph_port *port2, bool connect )
+	qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect )
 {
 	if (m_data == nullptr)
 		return;
@@ -514,7 +514,7 @@ void qpwgraph_pipewire::connectPorts (
 		return;
 	}
 
-	if (!connect) {
+	if (!is_connect) {
 		// Disconnect ports...
 		foreach (Link *link, p1->port_links) {
 			if ((link->port1_id == p1->id) &&
@@ -656,7 +656,7 @@ bool qpwgraph_pipewire::findNodePort (
 
 	if (add_new && *port == nullptr && *node) {
 		*port = (*node)->addPort(port_id, p->port_name, port_mode, port_type);
-		(*port)->updatePortTypeColors(canvas());
+		(*port)->updatePortTypeColors(qpwgraph_sect::canvas());
 		qpwgraph_sect::addItem(*port);
 	}
 

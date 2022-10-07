@@ -35,6 +35,7 @@ class qpwgraph_alsamidi;
 
 class qpwgraph_item;
 class qpwgraph_port;
+class qpwgraph_connect;
 
 class qpwgraph_systray;
 
@@ -77,6 +78,8 @@ protected slots:
 	// Port (dis)connection slots.
 	void connected(qpwgraph_port *port1, qpwgraph_port *port2);
 	void disconnected(qpwgraph_port *port1, qpwgraph_port *port2);
+
+	void connected(qpwgraph_connect *connect);
 
 	// Item renaming slot.
 	void renamed(qpwgraph_item *item, const QString& name);

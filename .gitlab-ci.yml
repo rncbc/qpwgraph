@@ -37,8 +37,8 @@ container_ubuntu:
 .fedora:
   variables:
     # Update this tag when you want to trigger a rebuild
-    FDO_DISTRIBUTION_TAG: '2022-04-12.0'
-    FDO_DISTRIBUTION_VERSION: '35'
+    FDO_DISTRIBUTION_TAG: '2022-10-14.1'
+    FDO_DISTRIBUTION_VERSION: '36'
     FDO_DISTRIBUTION_PACKAGES: >-
       gcc
       gcc-c++
@@ -54,8 +54,8 @@ container_ubuntu:
 .ubuntu:
   variables:
     # Update this tag when you want to trigger a rebuild
-    FDO_DISTRIBUTION_TAG: '2022-04-12.0'
-    FDO_DISTRIBUTION_VERSION: '21.10'
+    FDO_DISTRIBUTION_TAG: '2022-10-14.1'
+    FDO_DISTRIBUTION_VERSION: '22.04'
     FDO_DISTRIBUTION_PACKAGES: >-
       debhelper-compat
       gcc
@@ -74,7 +74,6 @@ container_ubuntu:
     - echo "Building application..."
     - cmake -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/usr/local
             -DCONFIG_QT6=OFF
-            -DCONFIG_ALSA_MIDI=ON
             -B build
     - cmake --build build
     - cmake --install build

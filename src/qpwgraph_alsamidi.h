@@ -57,7 +57,7 @@ public:
 	void close();
 
 	// ALSA port (dis)connection.
-	void connectPorts(qpwgraph_port *port1, qpwgraph_port *port2, bool connect);
+	void connectPorts(qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect);
 
 	// ALSA graph updaters.
 	void updateItems();

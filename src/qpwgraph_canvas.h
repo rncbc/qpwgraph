@@ -167,6 +167,8 @@ signals:
 	void connected(qpwgraph_port *port1, qpwgraph_port *port2);
 	void disconnected(qpwgraph_port *port1, qpwgraph_port *port2);
 
+	void connected(qpwgraph_connect *connect);
+
 	// Generic change notification.
 	void changed();
 

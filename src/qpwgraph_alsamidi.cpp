@@ -144,7 +144,7 @@ void qpwgraph_alsamidi::changedNotify (void)
 
 // ALSA port (dis)connection.
 void qpwgraph_alsamidi::connectPorts (
-	qpwgraph_port *port1, qpwgraph_port *port2, bool connect )
+	qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect )
 {
 	if (m_seq == nullptr)
 		return;
@@ -172,7 +172,7 @@ void qpwgraph_alsamidi::connectPorts (
 
 #ifdef CONFIG_DEBUG
 	qDebug("qpwgraph_alsamidi::connectPorts(%d:%d, %d:%d, %d)",
-		client_id1, port_id1, client_id2, port_id2, connect);
+		client_id1, port_id1, client_id2, port_id2, is_connect);
 #endif
 
 	snd_seq_port_subscribe_t *seq_subs;
@@ -188,7 +188,7 @@ void qpwgraph_alsamidi::connectPorts (
 	seq_addr.port = port_id2;
 	snd_seq_port_subscribe_set_dest(seq_subs, &seq_addr);
 
-	if (connect) {
+	if (is_connect) {
 		snd_seq_subscribe_port(m_seq, seq_subs);
 	} else {
 		snd_seq_unsubscribe_port(m_seq, seq_subs);
@@ -282,7 +282,7 @@ bool qpwgraph_alsamidi::findClientPort (
 
 	if (add_new && *port == nullptr && *node) {
 		*port = (*node)->addPort(port_id, port_name, port_mode, port_type);
-		(*port)->updatePortTypeColors(canvas());
+		(*port)->updatePortTypeColors(qpwgraph_sect::canvas());
 		qpwgraph_sect::addItem(*port);
 	}
 

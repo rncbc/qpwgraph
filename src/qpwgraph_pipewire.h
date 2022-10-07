@@ -53,7 +53,7 @@ public:
 	void changedNotify();
 
 	// PipeWire port (dis)connection.
-	void connectPorts(qpwgraph_port *port1, qpwgraph_port *port2, bool connect);
+	void connectPorts(qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect);
 
 	// PipeWire graph updaters.
 	void updateItems();

@@ -24,7 +24,7 @@
 
 #include <QUndoCommand>
 
-#include <qpwgraph_node.h>
+#include "qpwgraph_node.h"
 
 
 // Forward decls.

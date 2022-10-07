@@ -2,6 +2,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Make up visual immediate feedback connectlons. (EXPERIMENTAL)
+
+
 0.3.6  2022-09-24  An early-autumn'22 release.
 
 - View / Repel Overlapping Nodes option added.

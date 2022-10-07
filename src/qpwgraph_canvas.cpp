@@ -568,12 +568,13 @@ qpwgraph_item *qpwgraph_canvas::itemAt ( const QPointF& pos ) const
 void qpwgraph_canvas::connectPorts (
 	qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect )
 {
+#if 0 // Sure the sect will check to this instead...?
 	const bool is_connected // already connected?
 		= (port1->findConnect(port2) != nullptr);
 	if (( is_connect &&  is_connected) ||
 		(!is_connect && !is_connected))
 		return;
-
+#endif
 	if (port1->isOutput()) {
 		m_commands->push(
 			new qpwgraph_connect_command(this, port1, port2, is_connect));
@@ -808,9 +809,11 @@ void qpwgraph_canvas::mouseReleaseEvent ( QMouseEvent *event )
 					&& port1->portType() == port2->portType()
 					&& port1->findConnect(port2) == nullptr) {
 					port2->setSelected(true);
-				#if 0 // Sure the sect will commit to this instead...
+				#if 1 // Sure the sect will commit to this instead...?
 					m_connect->setPort2(port2);
+					m_connect->updatePortTypeColors();
 					m_connect->updatePathTo(port2->portPos());
+					emit connected(m_connect);
 					m_connect = nullptr;
 					++m_selected_nodes;
 				#else
@@ -825,9 +828,11 @@ void qpwgraph_canvas::mouseReleaseEvent ( QMouseEvent *event )
 				}
 			}
 			// Done with the hovering connection...
-			m_connect->disconnect();
-			delete m_connect;
-			m_connect = nullptr;
+			if (m_connect) {
+				m_connect->disconnect();
+				delete m_connect;
+				m_connect = nullptr;
+			}
 		}
 		// Maybe some node(s) were moved...
 		if (m_item && m_item->type() == qpwgraph_node::Type) {

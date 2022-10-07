@@ -1,7 +1,7 @@
 // qpwgraph_sect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,9 +43,10 @@ qpwgraph_canvas *qpwgraph_sect::canvas (void) const
 
 
 // Generic sect/graph methods.
-void qpwgraph_sect::addItem ( qpwgraph_item *item )
+void qpwgraph_sect::addItem ( qpwgraph_item *item, bool is_new )
 {
-	m_canvas->addItem(item);
+	if (is_new)
+		m_canvas->addItem(item);
 
 	if (item->type() == qpwgraph_connect::Type) {
 		qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
