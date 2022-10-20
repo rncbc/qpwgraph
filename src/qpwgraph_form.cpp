@@ -1111,6 +1111,9 @@ void qpwgraph_form::stabilize (void)
 	if (is_dirty)
 		title += ' ' + tr("[modified]");
 	setWindowTitle(title);
+#ifdef CONFIG_SYSTEM_TRAY
+	if (m_systray) m_systray->setToolTip(title);
+#endif
 
 	m_ui.patchbayExclusiveAction->setEnabled(is_activated);
 	m_ui.patchbaySaveAction->setEnabled(is_dirty);

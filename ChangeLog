@@ -4,6 +4,8 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Fixed the system-tray icon tooltip to always reflect current
+  main window title, usually the current patchbay name.
 - Make up visual immediate feedback connectlons. (EXPERIMENTAL)
 
 
