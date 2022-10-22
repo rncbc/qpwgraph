@@ -2,11 +2,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.3.7  2022-10-22  An autumn'22 release.
 
 - Fixed the system-tray icon tooltip to always reflect current
   main window title, usually the current patchbay name.
-- Make up visual immediate feedback connectlons. (EXPERIMENTAL)
+- Make up visual immediate feedback connectlons.
 
 
 0.3.6  2022-09-24  An early-autumn'22 release.
