@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Allow middle mouse button for grabbing and dragging the canvas.
+  (issue #63) (EXPERIMENTAL)
+
+
 0.3.7  2022-10-22  An autumn'22 release.
 
 - Fixed the system-tray icon tooltip to always reflect current

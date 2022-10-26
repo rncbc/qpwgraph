@@ -34,6 +34,7 @@
 
 #include <QGraphicsProxyWidget>
 #include <QLineEdit>
+#include <QScrollBar>
 
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -596,14 +597,16 @@ void qpwgraph_canvas::mousePressEvent ( QMouseEvent *event )
 	if (item && item->type() >= QGraphicsItem::UserType)
 		m_item = static_cast<qpwgraph_item *> (item);
 
-	if (event->button() == Qt::LeftButton)
+	if (event->button() == Qt::LeftButton ||
+		event->button() == Qt::MiddleButton)
 		m_state = DragStart;
 
 	if (m_state == DragStart && m_item == nullptr
-		&& (event->modifiers() & Qt::ControlModifier)
+		&& (((event->button() == Qt::LeftButton)
+		  && (event->modifiers() & Qt::ControlModifier))
+		  || (event->button() == Qt::MiddleButton))
 		&& m_scene->selectedItems().isEmpty()) {
-		QGraphicsView::setDragMode(QGraphicsView::ScrollHandDrag);
-		QGraphicsView::mousePressEvent(event);
+		QGraphicsView::setCursor(Qt::ClosedHandCursor);
 		m_state = DragScroll;
 	}
 }
@@ -758,9 +761,16 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 			m_connect->setZValue(zval);
 		}
 		break;
-	case DragScroll:
+	case DragScroll: {
+		QScrollBar *hbar = QGraphicsView::horizontalScrollBar();
+		QScrollBar *vbar = QGraphicsView::verticalScrollBar();
+		const QPoint delta = (pos - m_pos).toPoint();
+		hbar->setValue(hbar->value() - delta.x());
+		vbar->setValue(vbar->value() - delta.y());
+		m_pos = pos;
+		break;
+	}
 	default:
-		QGraphicsView::mouseMoveEvent(event);
 		break;
 	}
 
@@ -865,8 +875,6 @@ void qpwgraph_canvas::mouseReleaseEvent ( QMouseEvent *event )
 		break;
 	case DragScroll:
 	default:
-		QGraphicsView::mouseReleaseEvent(event);
-		QGraphicsView::setDragMode(QGraphicsView::NoDrag);
 		break;
 	}
 
