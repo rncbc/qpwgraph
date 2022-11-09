@@ -1,5 +1,5 @@
 #
-# spec file for package qmidinet
+# spec file for package qpwgraph
 #
 # Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 #
