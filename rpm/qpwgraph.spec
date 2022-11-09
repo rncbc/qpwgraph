@@ -84,7 +84,6 @@ BuildRequires:	alsa-lib-devel
 %else
 BuildRequires:	alsa-devel
 %endif
-%endif
 BuildRequires:	pipewire-devel
 
 %if %{defined fedora}
