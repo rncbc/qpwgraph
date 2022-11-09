@@ -54,36 +54,36 @@ BuildRequires:	gcc-c++ >= 8
 BuildRequires:	gcc8-c++ >= 8
 %define CXX		/usr/bin/g++-8
 %endif
-%if %{defined fedora}
+BuildRequires:	cmake >= 3.15
 %if 0%{qt_major_version} == 6
-BuildRequires:	qt6-qtbase-devel >= 6.1
-BuildRequires:	qt6-qttools-devel
-BuildRequires:	qt6-qtwayland-devel
-BuildRequires:	qt6-qtsvg-devel
-BuildRequires:	qt6-linguist
+%if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
+BuildRequires:	qtbase6-static >= 6.1
+BuildRequires:	qttools6-static
+BuildRequires:	qttranslations6-static
+BuildRequires:	qtsvg6-static
 %else
-BuildRequires:	qt5-qtbase-devel >= 5.1
-BuildRequires:	qt5-qttools-devel
-BuildRequires:	qt5-qtwayland-devel
-BuildRequires:	qt5-qtsvg-devel
-BuildRequires:	qt5-linguist
+BuildRequires:	cmake(Qt6LinguistTools)
+BuildRequires:	pkgconfig(Qt6Core)
+BuildRequires:	pkgconfig(Qt6Gui)
+BuildRequires:	pkgconfig(Qt6Widgets)
+BuildRequires:	pkgconfig(Qt6Svg)
+BuildRequires:	pkgconfig(Qt6Xml)
+BuildRequires:	pkgconfig(Qt6Network)
 %endif
+%else
+BuildRequires:	cmake(Qt5LinguistTools)
+BuildRequires:	pkgconfig(Qt5Core)
+BuildRequires:	pkgconfig(Qt5Gui)
+BuildRequires:	pkgconfig(Qt5Widgets)
+BuildRequires:	pkgconfig(Qt5Svg)
+BuildRequires:	pkgconfig(Qt5Xml)
+BuildRequires:	pkgconfig(Qt5Network)
+%endif
+%if %{defined fedora}
 BuildRequires:	alsa-lib-devel
 %else
-%if 0%{qt_major_version} == 6
-BuildRequires:	qt6-base-devel >= 6.1
-BuildRequires:	qt6-tools-devel
-BuildRequires:	qt6-wayland-devel
-BuildRequires:	qt6-svg-devel
-BuildRequires:	qt6-linguist-devel
-%else
-BuildRequires:	libqt5-qtbase-devel >= 5.1
-BuildRequires:	libqt5-qttools-devel
-BuildRequires:	libqt5-qtwayland-devel
-BuildRequires:	libqt5-qtsvg-devel
-BuildRequires:	libqt5-linguist-devel
-%endif
 BuildRequires:	alsa-devel
+%endif
 %endif
 BuildRequires:	pipewire-devel
 
