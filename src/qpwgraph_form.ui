@@ -991,7 +991,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Repel &amp;Overlapping Nodes</string>
+    <string>Repel O&amp;verlapping Nodes</string>
    </property>
    <property name="iconText">
     <string>Repel nodes</string>
