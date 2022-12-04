@@ -150,12 +150,19 @@ void qpwgraph_connect::updatePathTo ( const QPointF& pos )
 
 	qpwgraph_node *node1 = m_port1->portNode();
 	const QRectF& rect1 = node1->itemRect();
+	const qreal h1 = 0.5 * rect1.height();
+	const qreal dh = pos0.y() - node1->scenePos().y() - h1;
 	const qreal dx = pos3_4.x() - pos1_2.x();
-	const qreal dy = pos0.y() - node1->scenePos().y() - 0.5 * rect1.height();
-	const qreal y_max = rect1.height() + rect1.width();
-	const qreal y_min = qMin(y_max, qAbs(dx));
-	const qreal x_offset = (dx > 0.0 ? 0.5 : 1.5) * y_min;
-	const qreal y_offset = (dx > 0.0 ? 0.0 : (dy > 0.0 ? +y_min : -y_min));
+	const qreal x_max = rect1.width() + h1;
+	const qreal x_min = qMin(x_max, qAbs(dx));
+	const qreal x_offset = (dx > 0.0 ? 0.5 : 1.0) * x_min;
+#if 0//Old "weird-outsider" connection line curves...
+	const qreal y_offset = (dx > 0.0 ? 0.0 : (dh > 0.0 ? +x_min : -x_min));
+#else//New "normal-insider" connection line curves...
+	const qreal h2 = 2.0 * m_port1->itemRect().height();
+	const qreal dy = qAbs(pos3_4.y() - pos1_2.y()) - h2;
+	const qreal y_offset = (dx > 0.0 || dy > 0.0 ? 0.0 : (dh > 0.0 ? +h2 : -h2));
+#endif
 
 	const QPointF pos2(pos1.x() + x_offset, pos1.y() + y_offset);
 	const QPointF pos3(pos4.x() - x_offset, pos4.y() + y_offset);
