@@ -159,9 +159,9 @@ void qpwgraph_connect::updatePathTo ( const QPointF& pos )
 #if 0//Old "weird-outsider" connection line curves...
 	const qreal y_offset = (dx > 0.0 ? 0.0 : (dh > 0.0 ? +x_min : -x_min));
 #else//New "normal-insider" connection line curves...
-	const qreal h2 = 2.0 * m_port1->itemRect().height();
-	const qreal dy = qAbs(pos3_4.y() - pos1_2.y()) - h2;
-	const qreal y_offset = (dx > 0.0 || dy > 0.0 ? 0.0 : (dh > 0.0 ? +h2 : -h2));
+	const qreal h2 = m_port1->itemRect().height();
+	const qreal dy = qAbs(pos3_4.y() - pos1_2.y());
+	const qreal y_offset = (dx > -h2 || dy > h2 ? 0.0 : (dh > 0.0 ? +h2 : -h2));
 #endif
 
 	const QPointF pos2(pos1.x() + x_offset, pos1.y() + y_offset);
