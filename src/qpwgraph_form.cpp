@@ -1315,7 +1315,7 @@ bool qpwgraph_form::patchbayQueryQuit (void)
 // Context-menu event handler.
 void qpwgraph_form::contextMenuEvent ( QContextMenuEvent *event )
 {
-//	m_ui.graphCanvas->clear();
+	m_ui.graphCanvas->clear();
 
 	stabilize();
 
