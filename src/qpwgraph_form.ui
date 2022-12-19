@@ -161,6 +161,7 @@
     <addaction name="viewZoomRangeAction"/>
     <addaction name="separator"/>
     <addaction name="viewRepelOverlappingNodesAction"/>
+    <addaction name="viewConnectThroughNodesAction"/>
     <addaction name="separator"/>
     <addaction name="viewRefreshAction"/>
    </widget>
@@ -1001,6 +1002,26 @@
    </property>
    <property name="statusTip">
     <string>Repel overlapping nodes</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewConnectThroughNodesAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Connect Thro&amp;ugh Nodes</string>
+   </property>
+   <property name="iconText">
+    <string>Connect Through Nodes</string>
+   </property>
+   <property name="toolTip">
+    <string>Connect through nodes</string>
+   </property>
+   <property name="statusTip">
+    <string>Whether to draw connectors through or around nodes</string>
    </property>
    <property name="shortcut">
     <string/>

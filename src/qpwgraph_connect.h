@@ -74,6 +74,10 @@ public:
 	void setDimmed(bool dimmed);
 	int isDimmed() const;
 
+	// Connector curve draw style (through vs. around nodes)
+	static void setConnectThroughNodes(bool on);
+	static bool isConnectThroughNodes();
+
 protected:
 
 	void paint(QPainter *painter,
@@ -90,6 +94,9 @@ private:
 	qpwgraph_port *m_port2;
 
 	bool m_dimmed;
+
+	// Connector curve draw style (through vs. around nodes)
+	static bool g_connect_through_nodes;
 };
 
 

@@ -198,6 +198,9 @@ public slots:
 	// Update all nodes.
 	void updateNodes();
 
+	// Update all connectors.
+	void updateConnects();
+
 protected slots:
 
 	// Rename item slots.

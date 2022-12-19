@@ -74,6 +74,9 @@ public:
 	void setRepelOverlappingNodes(bool repelnodes);
 	bool isRepelOverlappingNodes() const;
 
+	void setConnectThroughNodes(bool cthrunodes);
+	bool isConnectThroughNodes() const;
+
 	void setPatchbayToolbar(bool toolbar);
 	bool isPatchbayToolbar() const;
 
@@ -117,6 +120,7 @@ private:
 	int         m_sortorder;
 
 	bool        m_repelnodes;
+	bool        m_cthrunodes;
 
 	bool        m_patchbay_toolbar;
 	QString     m_patchbay_dir;

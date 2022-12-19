@@ -358,6 +358,9 @@ qpwgraph_form::qpwgraph_form (
 	QObject::connect(m_ui.viewRepelOverlappingNodesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRepelOverlappingNodes(bool)));
+	QObject::connect(m_ui.viewConnectThroughNodesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewConnectThroughNodes(bool)));
 
 	m_ui.viewColorsPipewireAudioAction->setData(qpwgraph_pipewire::audioPortType());
 	m_ui.viewColorsPipewireMidiAction->setData(qpwgraph_pipewire::midiPortType());
@@ -806,6 +809,13 @@ void qpwgraph_form::viewRepelOverlappingNodes ( bool on )
 {
 	m_ui.graphCanvas->setRepelOverlappingNodes(on);
 	if (on) ++m_repel_overlapping_nodes;
+}
+
+
+void qpwgraph_form::viewConnectThroughNodes ( bool on )
+{
+	qpwgraph_connect::setConnectThroughNodes(on);
+	m_ui.graphCanvas->updateConnects();
 }
 
 
@@ -1532,6 +1542,7 @@ void qpwgraph_form::restoreState (void)
 	m_ui.viewTextBesideIconsAction->setChecked(m_config->isTextBesideIcons());
 	m_ui.viewZoomRangeAction->setChecked(m_config->isZoomRange());
 	m_ui.viewRepelOverlappingNodesAction->setChecked(m_config->isRepelOverlappingNodes());
+	m_ui.viewConnectThroughNodesAction->setChecked(m_config->isConnectThroughNodes());
 
 	const qpwgraph_port::SortType sort_type
 		= qpwgraph_port::SortType(m_config->sortType());
@@ -1570,6 +1581,7 @@ void qpwgraph_form::restoreState (void)
 	viewTextBesideIcons(m_config->isTextBesideIcons());
 	viewZoomRange(m_config->isZoomRange());
 	viewRepelOverlappingNodes(m_config->isRepelOverlappingNodes());
+	viewConnectThroughNodes(m_config->isConnectThroughNodes());
 
 	m_ui.graphCanvas->restoreState();
 
@@ -1596,6 +1608,7 @@ void qpwgraph_form::saveState (void)
 	m_config->setSortType(int(qpwgraph_port::sortType()));
 	m_config->setSortOrder(int(qpwgraph_port::sortOrder()));
 	m_config->setRepelOverlappingNodes(m_ui.viewRepelOverlappingNodesAction->isChecked());
+	m_config->setConnectThroughNodes(m_ui.viewConnectThroughNodesAction->isChecked());
 
 	m_config->setStatusbar(m_ui.StatusBar->isVisible());
 	m_config->setToolbar(m_ui.graphToolbar->isVisible());

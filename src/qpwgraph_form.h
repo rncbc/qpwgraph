@@ -133,6 +133,7 @@ protected slots:
 	void viewColorsReset();
 
 	void viewRepelOverlappingNodes(bool on);
+	void viewConnectThroughNodes(bool on);
 
 	void helpSystemTray(bool on);
 

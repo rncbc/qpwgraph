@@ -156,13 +156,17 @@ void qpwgraph_connect::updatePathTo ( const QPointF& pos )
 	const qreal x_max = rect1.width() + h1;
 	const qreal x_min = qMin(x_max, qAbs(dx));
 	const qreal x_offset = (dx > 0.0 ? 0.5 : 1.0) * x_min;
-#if 0//Old "weird-outsider" connection line curves...
-	const qreal y_offset = (dx > 0.0 ? 0.0 : (dh > 0.0 ? +x_min : -x_min));
-#else//New "normal-insider" connection line curves...
-	const qreal h2 = m_port1->itemRect().height();
-	const qreal dy = qAbs(pos3_4.y() - pos1_2.y());
-	const qreal y_offset = (dx > -h2 || dy > h2 ? 0.0 : (dh > 0.0 ? +h2 : -h2));
-#endif
+
+	qreal y_offset = 0.0;
+	if (g_connect_through_nodes) {
+		// New "normal" connection line curves (inside/through nodes)...
+		const qreal h2 = m_port1->itemRect().height();
+		const qreal dy = qAbs(pos3_4.y() - pos1_2.y());
+		y_offset = (dx > -h2 || dy > h2 ? 0.0 : (dh > 0.0 ? +h2 : -h2));
+	} else {
+		// Old "weird" connection line curves (outside/around nodes)...
+		y_offset = (dx > 0.0 ? 0.0 : (dh > 0.0 ? +x_min : -x_min));
+	}
 
 	const QPointF pos2(pos1.x() + x_offset, pos1.y() + y_offset);
 	const QPointF pos3(pos4.x() - x_offset, pos4.y() + y_offset);
@@ -312,6 +316,21 @@ void qpwgraph_connect::setDimmed ( bool dimmed )
 int qpwgraph_connect::isDimmed (void) const
 {
 	return m_dimmed;
+}
+
+
+// Connector curve draw style (through vs. around nodes)
+//
+bool qpwgraph_connect::g_connect_through_nodes = false;
+
+void qpwgraph_connect::setConnectThroughNodes ( bool on )
+{
+	g_connect_through_nodes = on;
+}
+
+bool qpwgraph_connect::isConnectThroughNodes (void)
+{
+	return g_connect_through_nodes;
 }
 
 

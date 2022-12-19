@@ -1204,6 +1204,19 @@ void qpwgraph_canvas::updateNodes (void)
 }
 
 
+// Update all connectors.
+void qpwgraph_canvas::updateConnects (void)
+{
+	foreach (QGraphicsItem *item, m_scene->items()) {
+		if (item->type() == qpwgraph_connect::Type) {
+			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
+			if (connect)
+				connect->updatePath();
+		}
+	}
+}
+
+
 // Zoom in rectangle range.
 void qpwgraph_canvas::zoomFitRange ( const QRectF& range_rect )
 {
