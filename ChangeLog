@@ -2,11 +2,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.3.9  2022-12-27  An end-of-year'22 release
 
 - Whether to draw connectors through or around nodes is now an
   user preference option (cf. View > Connect Through Nodes).
-  (GL issue #55) (EXPERIMENTAL)
 
 
 0.3.8  2022-11-19  A mid-autumn'22 release.
