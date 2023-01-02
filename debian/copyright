@@ -7,7 +7,7 @@ Upstream Author: Rui Nuno Capela <rncbc@rncbc.org>
 
 Copyright:
 
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
 License:
 
@@ -28,6 +28,6 @@ License:
 On Debian systems, the complete text of the GNU General
 Public License can be found in `/usr/share/common-licenses/GPL'.
 
-The Debian packaging is (C) 2021-2022, Rui Nuno Capela <rncbc@rncbc.org> and
+The Debian packaging is (C) 2021-2023, Rui Nuno Capela <rncbc@rncbc.org> and
 is licensed under the GPL, see above.
 
