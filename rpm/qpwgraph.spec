@@ -48,7 +48,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	glibc-devel
 BuildRequires:	gcc-c++
 BuildRequires:	cmake >= 3.15
-%if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
+%if 0%{?sle_version} >= 150200 && 0%{?is_opensuse}
 BuildRequires:	gcc10 >= 10
 BuildRequires:	gcc10-c++ >= 10
 %define _GCC	/usr/bin/gcc-10
