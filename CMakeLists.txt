@@ -51,6 +51,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 else ()
   set (CONFIG_DEBUG 0)
   set (CONFIG_BUILD_TYPE "release")
+  set (CMAKE_BUILD_TYPE "Release")
 endif ()
 
 
