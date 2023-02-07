@@ -1,7 +1,7 @@
 // qpwgraph_canvas.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -40,6 +40,9 @@
 #include <QWheelEvent>
 #include <QKeyEvent>
 
+#include <QGestureEvent>
+#include <QPinchGesture>
+
 #include <algorithm>
 
 #include <cmath>
@@ -65,7 +68,7 @@ static const char *PortAliasesGroup = "/GraphPortAliases";
 qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 	: QGraphicsView(parent), m_state(DragNone), m_item(nullptr),
 		m_connect(nullptr), m_rubberband(nullptr),
-		m_zoom(1.0), m_zoomrange(false),
+		m_zoom(1.0), m_zoomrange(false), m_gesture(false),
 		m_commands(nullptr), m_settings(nullptr), m_patchbay(nullptr),
 		m_patchbay_edit(false), m_patchbay_autopin(true),
 		m_selected_nodes(0), m_repel_overlapping_nodes(false),
@@ -95,6 +98,8 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 	QObject::connect(m_editor,
 		SIGNAL(editingFinished()),
 		SLOT(editingFinished()));
+
+	QGraphicsView::grabGesture(Qt::PinchGesture);
 
 	m_editor->setEnabled(false);
 	m_editor->hide();
@@ -589,6 +594,9 @@ void qpwgraph_canvas::connectPorts (
 // Mouse event handlers.
 void qpwgraph_canvas::mousePressEvent ( QMouseEvent *event )
 {
+	if (m_gesture)
+		return;
+
 	m_state = DragNone;
 	m_item = nullptr;
 	m_pos = QGraphicsView::mapToScene(event->pos());
@@ -614,6 +622,9 @@ void qpwgraph_canvas::mousePressEvent ( QMouseEvent *event )
 
 void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 {
+	if (m_gesture)
+		return;
+
 	int nchanged = 0;
 
 	QPointF pos = QGraphicsView::mapToScene(event->pos());
@@ -781,6 +792,9 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 
 void qpwgraph_canvas::mouseReleaseEvent ( QMouseEvent *event )
 {
+	if (m_gesture)
+		return;
+
 	int nchanged = 0;
 
 	switch (m_state) {
@@ -1689,6 +1703,50 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 {
 	foreach (qpwgraph_node *node, m_nodes)
 		repelOverlappingNodes(node, move_command);
+}
+
+
+// Gesture event handlers.
+//
+bool qpwgraph_canvas::event ( QEvent *event )
+{
+	if (event->type() == QEvent::Gesture)
+		return gestureEvent(static_cast<QGestureEvent *> (event));
+	else
+		return QGraphicsView::event(event);
+}
+
+
+bool qpwgraph_canvas::gestureEvent ( QGestureEvent *event )
+{
+	if (QGesture *pinch = event->gesture(Qt::PinchGesture))
+		pinchGesture(static_cast<QPinchGesture *> (pinch));
+
+	return true;
+}
+
+
+void qpwgraph_canvas::pinchGesture ( QPinchGesture *pinch )
+{
+	switch (pinch->state()) {
+	case Qt::GestureStarted: {
+		const qreal scale_factor = zoom();
+		pinch->setScaleFactor(scale_factor);
+		pinch->setLastScaleFactor(scale_factor);
+		pinch->setTotalScaleFactor(scale_factor);
+		m_gesture = true;
+		break;
+	}
+	case Qt::GestureFinished:
+		m_gesture = false;
+		// Fall thru...
+	case Qt::GestureUpdated:
+		if (pinch->changeFlags() & QPinchGesture::ScaleFactorChanged)
+			setZoom(pinch->totalScaleFactor());
+		// Fall thru...
+	default:
+		break;
+	}
 }
 
 

@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Introducing touch pinch-gesture for zooming. (EXPERIMENTAL)
 - Bumping copyright headers to the brand new year.
 
 

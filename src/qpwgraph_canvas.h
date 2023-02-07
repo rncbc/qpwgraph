@@ -1,7 +1,7 @@
 // qpwgraph_canvas.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,6 +42,9 @@ class QLineEdit;
 class QMouseEvent;
 class QWheelEvent;
 class QKeyEvent;
+
+class QGestureEvent;
+class QPinchGesture;
 
 class qpwgraph_patchbay;
 
@@ -227,6 +230,11 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *event);
 
+	// Gesture event handlers.
+	bool event(QEvent *event);
+	bool gestureEvent(QGestureEvent *event);
+	void pinchGesture(QPinchGesture *pinch);
+
 	// Graph node/port key helpers.
 	QString nodeKey(qpwgraph_node *node, int n = 0) const;
 	QString portKey(qpwgraph_port *port, int n = 0) const;
@@ -258,6 +266,7 @@ private:
 	QRubberBand      *m_rubberband;
 	qreal             m_zoom;
 	bool              m_zoomrange;
+	bool              m_gesture;
 
 	qpwgraph_node::IdKeys   m_node_ids;
 	qpwgraph_node::NodeKeys m_node_keys;
