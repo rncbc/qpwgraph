@@ -849,10 +849,26 @@ void qpwgraph_form::helpAbout (void)
 	static const QString copyright
 		= "Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.";
 
-	QString text = "<p>\n";
-	text += "<b>" + title + " - " + subtitle + "</b><br />\n";
+	QStringList list;
+#ifdef CONFIG_DEBUG
+	list << tr("Debugging option enabled.");
+#endif
+#ifndef CONFIG_ALSA_MIDI
+	list << tr("ALSA MIDI support disabled.");
+#endif
+#ifndef CONFIG_SYSTEM_TRAY
+	list << tr("System-tray icon support disabled.");
+#endif
+
+	QString text = "<h1>" + title + "</h1>\n";
+	text += "<p>" + subtitle + "<br />\n";
 	text += "<br />\n";
 	text += tr("Version") + ": <b>" + version + "</b><br />\n";
+	if (!list.isEmpty()) {
+		text += "<small><font color=\"red\">";
+		text += list.join("<br />\n");
+		text += "</font></small>\n";
+	}
 	text += "<br />\n";
 	text += tr("Using: Qt %1").arg(qVersion());
 #if defined(QT_STATIC)
