@@ -1,7 +1,7 @@
 // qpwgraph_pipewire.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,6 +81,7 @@ public:
 	// PipeWire client data struct access.
 	//
 	struct Data;
+	struct Proxy;
 	struct Object;
 	struct Node;
 	struct Port;

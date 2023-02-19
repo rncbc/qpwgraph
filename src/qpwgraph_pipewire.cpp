@@ -1,7 +1,7 @@
 // qpwgraph_pipewire.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,18 +38,58 @@
 
 
 //----------------------------------------------------------------------------
+// qpwgraph_pipewire icon cache.
+
+
+static
+QIcon qpwgraph_icon ( const QString& name )
+{
+	static QHash<QString, QIcon> icon_cache;
+
+	QIcon icon = icon_cache.value(name);
+	if (icon.isNull()) {
+		if (name.at(0) == ':')
+			icon = QIcon(name);
+		else
+			icon = QIcon::fromTheme(name);
+		if (!icon.isNull())
+			icon_cache.insert(name, icon);
+	}
+
+	return icon;
+}
+
+
+//----------------------------------------------------------------------------
 // qpwgraph_pipewire::Data -- PipeWire graph data structs.
+
+struct qpwgraph_pipewire::Proxy
+{
+	qpwgraph_pipewire *pw;
+	struct pw_proxy *proxy;
+	void *info;
+	pw_destroy_t destroy;
+	struct spa_hook proxy_listener;
+	struct spa_hook object_listener;
+	int pending_seq;
+	struct spa_list pending_link;
+};
 
 struct qpwgraph_pipewire::Object
 {
 	enum Type { Node, Port, Link };
 
-	Object(uint oid, Type otype) : id(oid), type(otype) {}
+	Object(uint oid, Type otype) : id(oid), type(otype), p(nullptr) {}
 
-	virtual ~Object() {}
+	virtual ~Object() { destroy_proxy(); }
+
+	void create_proxy(qpwgraph_pipewire *pw);
+	void destroy_proxy ();
 
 	uint id;
 	Type type;
+
+	Proxy *p;
 };
 
 struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
@@ -67,6 +107,8 @@ struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
 	qpwgraph_item::Mode node_mode;
 	Types node_types;
 	QList<qpwgraph_pipewire::Port *> node_ports;
+	QIcon node_icon;
+	bool node_ready;
 };
 
 struct qpwgraph_pipewire::Port : public qpwgraph_pipewire::Object
@@ -109,10 +151,232 @@ struct qpwgraph_pipewire::Data
 	struct spa_hook registry_listener;
 
 	int pending_seq;
+	struct spa_list pending;
 	int last_seq;
 	int last_res;
 	bool error;
 };
+
+
+// sync-methods...
+static
+void qpwgraph_add_pending ( qpwgraph_pipewire::Proxy *p )
+{
+	qpwgraph_pipewire *pw = p->pw;
+	qpwgraph_pipewire::Data *pd = pw->data();
+	if (p->pending_seq == 0)
+		spa_list_append(&pd->pending, &p->pending_link);
+	p->pending_seq = pw_core_sync(pd->core, 0, p->pending_seq);
+}
+
+static
+void qpwgraph_remove_pending ( qpwgraph_pipewire::Proxy *p )
+{
+	if (p->pending_seq != 0) {
+		spa_list_remove(&p->pending_link);
+		p->pending_seq = 0;
+	}
+}
+// sync-methods.
+
+
+// node-events...
+static
+void qpwgraph_node_event_info ( void *data, const struct pw_node_info *info )
+{
+	qpwgraph_pipewire::Object *object
+		= static_cast<qpwgraph_pipewire::Object *> (data);
+	if (object && object->p) {
+		info = pw_node_info_update((struct pw_node_info *)object->p->info, info);
+		object->p->info = (void *)info;
+		// Add media.name to node name, settle node icon, if any...
+		if (object->p->info) {
+			qpwgraph_pipewire::Node *node
+				= static_cast<qpwgraph_pipewire::Node *> (object);
+			if (node && !node->node_ready) {
+				QIcon node_icon;
+				const char *icon_name
+					= spa_dict_lookup(info->props, PW_KEY_APP_ICON_NAME);
+				if (icon_name && ::strlen(icon_name) > 0)
+					node_icon = qpwgraph_icon(icon_name);
+				if (node_icon.isNull()) {
+					const char *client_api
+						= spa_dict_lookup(info->props, PW_KEY_CLIENT_API);
+					if (client_api && ::strlen(client_api) > 0) {
+						if (::strcmp(client_api, "jack") == 0 ||
+							::strcmp(client_api, "pipewire-jack") == 0)
+							node_icon = qpwgraph_icon(":images/itemJack.png");
+						else
+						if (::strcmp(client_api, "pulse") == 0 ||
+							::strcmp(client_api, "pipewire-pulse") == 0)
+							node_icon = qpwgraph_icon(":images/itemPulse.png");
+					}
+				}
+				if (!node_icon.isNull())
+					node->node_icon = node_icon;
+				const char *media_name
+					= spa_dict_lookup(info->props, PW_KEY_MEDIA_NAME);
+				if (media_name && ::strlen(media_name) > 0) {
+					QString& node_name = node->node_name;
+					node_name += ' ';
+					node_name += '[';
+					node_name += media_name;
+					node_name += ']';
+				}
+				node->node_ready = true;
+			}
+		}
+	}
+}
+
+static
+const struct pw_node_events qpwgraph_node_events = {
+	.version = PW_VERSION_NODE_EVENTS,
+	.info = qpwgraph_node_event_info,
+};
+// node-events.
+
+
+// port-events...
+static
+void qpwgraph_port_event_info ( void *data, const struct pw_port_info *info )
+{
+	qpwgraph_pipewire::Object *object
+		= static_cast<qpwgraph_pipewire::Object *> (data);
+	if (object && object->p) {
+		info = pw_port_info_update((struct pw_port_info *)object->p->info, info);
+		object->p->info = (void *)info;
+	}
+}
+
+static
+const struct pw_port_events qpwgraph_port_events = {
+	.version = PW_VERSION_PORT_EVENTS,
+	.info = qpwgraph_port_event_info,
+};
+// port-events.
+
+
+// link-events...
+static
+void qpwgraph_link_event_info ( void *data, const struct pw_link_info *info )
+{
+	qpwgraph_pipewire::Object *object
+		= static_cast<qpwgraph_pipewire::Object *> (data);
+	if (object && object->p) {
+		info = pw_link_info_update((struct pw_link_info *)object->p->info, info);
+		object->p->info = (void *)info;
+	}
+}
+
+static
+const struct pw_link_events qpwgraph_link_events = {
+	.version = PW_VERSION_LINK_EVENTS,
+	.info = qpwgraph_link_event_info,
+};
+// link-events.
+
+
+// proxy-events...
+static void
+qpwgraph_proxy_removed ( void *data )
+{
+	qpwgraph_pipewire::Object *object
+		= static_cast<qpwgraph_pipewire::Object *> (data);
+	if (object && object->p && object->p->proxy) {
+		struct pw_proxy *proxy = object->p->proxy;
+		object->p->proxy = nullptr;
+		pw_proxy_destroy(proxy);
+	}
+}
+
+static void
+qpwgraph_proxy_destroy ( void *data )
+{
+	qpwgraph_pipewire::Object *object
+		= static_cast<qpwgraph_pipewire::Object *> (data);
+	if (object)
+		object->destroy_proxy();
+}
+
+static
+const struct pw_proxy_events qpwgraph_proxy_events = {
+	.version = PW_VERSION_PROXY_EVENTS,
+	.destroy = qpwgraph_proxy_destroy,
+	.removed = qpwgraph_proxy_removed,
+};
+// proxy-events.
+
+// proxy-methods...
+void qpwgraph_pipewire::Object::create_proxy ( qpwgraph_pipewire *pw )
+{
+	if (p) return;
+
+	const char *proxy_type = nullptr;
+	uint32_t version = 0;
+	pw_destroy_t destroy = nullptr;
+	const void *events = nullptr;
+
+	switch (type) {
+	case Node:
+		proxy_type = PW_TYPE_INTERFACE_Node;
+		version = PW_VERSION_NODE;
+		destroy = (pw_destroy_t) pw_node_info_free;
+		events = &qpwgraph_node_events;
+		break;
+	case Port:
+		proxy_type = PW_TYPE_INTERFACE_Port;
+		version = PW_VERSION_PORT;
+		destroy = (pw_destroy_t) pw_port_info_free;
+		events = &qpwgraph_port_events;
+		break;
+	case Link:
+		proxy_type = PW_TYPE_INTERFACE_Link;
+		version = PW_VERSION_LINK;
+		destroy = (pw_destroy_t) pw_link_info_free;
+		events = &qpwgraph_link_events;
+		break;
+	}
+
+	struct pw_proxy *proxy = (struct pw_proxy *)pw_registry_bind(
+		pw->data()->registry, id, proxy_type, version, sizeof(Proxy));
+	if (proxy)
+		p = (Proxy *)pw_proxy_get_user_data(proxy);
+	if (p) {
+		p->pw = pw;
+		p->proxy = proxy;
+		p->destroy = destroy;
+		p->pending_seq = 0;
+		pw_proxy_add_object_listener(proxy,
+			&p->object_listener, events, this);
+		pw_proxy_add_listener(proxy,
+			&p->proxy_listener, &qpwgraph_proxy_events, this);
+	}
+}
+
+void qpwgraph_pipewire::Object::destroy_proxy (void)
+{
+	if (p == nullptr)
+		return;
+
+	spa_hook_remove(&p->object_listener);
+	spa_hook_remove(&p->proxy_listener);
+
+	qpwgraph_remove_pending(p);
+
+	if (p->info && p->destroy) {
+		p->destroy(p->info);
+		p->info = nullptr;
+	}
+
+	if (p->proxy) {
+		pw_proxy_destroy(p->proxy);
+		p->proxy = nullptr;
+	}
+
+	p = nullptr;
+}
+// proxy-methods.
 
 
 // registry-events...
@@ -125,13 +389,13 @@ void qpwgraph_registry_event_global (
 	uint32_t version,
 	const struct spa_dict *props )
 {
+	if (props == nullptr)
+		return;
+
 	qpwgraph_pipewire *pw = static_cast<qpwgraph_pipewire *> (data);
 #ifdef CONFIG_DEBUG
 	qDebug("qpwgraph_registry_event_global[%p]: id:%u type:%s/%u", pw, id, type, version);
 #endif
-
-	if (props == nullptr)
-		return;
 
 	int nchanged = 0;
 
@@ -182,7 +446,6 @@ void qpwgraph_registry_event_global (
 	}
 	else
 	if (::strcmp(type, PW_TYPE_INTERFACE_Port) == 0) {
-		// TODO: ?...
 		const char *str = spa_dict_lookup(props, PW_KEY_NODE_ID);
 		const uint node_id = (str ? uint(::atoi(str)) : 0);
 		QString port_name;
@@ -271,6 +534,12 @@ void qpwgraph_core_event_done ( void *data, uint32_t id, int seq )
 #ifdef CONFIG_DEBUG
 	qDebug("qpwgraph_core_event_done[%p]: id:%u seq:%d", pd, id, seq);
 #endif
+
+	struct qpwgraph_pipewire::Proxy *p, *q;
+	spa_list_for_each_safe(p, q, &pd->pending, pending_link) {
+		if (p->pending_seq == seq)
+			qpwgraph_remove_pending(p);
+	}
 
 	if (id == PW_ID_CORE) {
 		pd->last_seq = seq;
@@ -381,6 +650,7 @@ bool qpwgraph_pipewire::open (void)
 
 	m_data = new Data;
 	spa_zero(*m_data);
+	spa_list_init(&m_data->pending);
 
 	m_data->loop = pw_thread_loop_new("qpwgraph_thread_loop", nullptr);
 	if (m_data->loop == nullptr) {
@@ -445,11 +715,15 @@ void qpwgraph_pipewire::close (void)
 	if (m_data->loop)
 		pw_thread_loop_stop(m_data->loop);
 
-	if (m_data->registry)
+	if (m_data->registry) {
+		spa_hook_remove(&m_data->registry_listener);
 		pw_proxy_destroy((struct pw_proxy*)m_data->registry);
+	}
 
-	if (m_data->core)
+	if (m_data->core) {
+		spa_hook_remove(&m_data->core_listener);
 		pw_core_disconnect(m_data->core);
+	}
 
 	if (m_data->context)
 		pw_context_destroy(m_data->context);
@@ -620,6 +894,8 @@ bool qpwgraph_pipewire::findNodePort (
 	Node *n = findNode(node_id);
 	if (n == nullptr)
 		return false;
+	if (!n->node_ready)
+		return false;
 
 	Port *p = findPort(port_id);
 	if (p == nullptr)
@@ -650,7 +926,7 @@ bool qpwgraph_pipewire::findNodePort (
 
 	if (add_new && *node == nullptr) {
 		*node = new qpwgraph_node(node_id, n->node_name, node_mode, node_type);
-		(*node)->setNodeIcon(QIcon(":/images/itemPipewire.png"));
+		(*node)->setNodeIcon(n->node_icon);
 		qpwgraph_sect::addItem(*node);
 	}
 
@@ -667,14 +943,13 @@ bool qpwgraph_pipewire::findNodePort (
 // PipeWire graph updaters.
 void qpwgraph_pipewire::updateItems (void)
 {
-	QMutexLocker locker(&g_mutex);
-
 	if (m_data == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qpwgraph_pipewire::updateItems()");
 #endif
+	QMutexLocker locker(&g_mutex);
 
 	// 0. Check for core errors...
 	//
@@ -691,6 +966,8 @@ void qpwgraph_pipewire::updateItems (void)
 		if (object->type != Object::Node)
 			continue;
 		Node *n1 = static_cast<Node *> (object);
+		if (!n1->node_ready)
+			continue;
 		foreach (const Port *p1, n1->node_ports) {
 			const qpwgraph_item::Mode port_mode1
 				= p1->port_mode;
@@ -746,14 +1023,13 @@ void qpwgraph_pipewire::updateItems (void)
 
 void qpwgraph_pipewire::clearItems (void)
 {
-	QMutexLocker locker(&g_mutex);
-
 	if (m_data == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qpwgraph_pipewire::clearItems()");
 #endif
+	QMutexLocker locker(&g_mutex);
 
 	// Clean-up all items...
 	//
@@ -811,6 +1087,8 @@ qpwgraph_pipewire::Object *qpwgraph_pipewire::findObject ( uint id ) const
 
 void qpwgraph_pipewire::addObject ( uint id, Object *object )
 {
+	object->create_proxy(this);
+
 	m_objectids.insert(id, object);
 	m_objects.append(object);
 }
@@ -863,6 +1141,8 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	node->node_name = node_name;
 	node->node_mode = node_mode;
 	node->node_types = Node::Types(node_types);
+	node->node_icon = qpwgraph_icon(":/images/itemPipewire.png");
+	node->node_ready = false;
 
 	addObject(node_id, node);
 
