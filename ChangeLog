@@ -4,6 +4,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Node names now have the "media.name" property as a bracketed
+  suffix; when given and applicable. (EXPERIMENTAL) 
+- Node icons now reflecting their proper application/theme icons
+  or else, a bland and generic default taken from the "client.api"
+  property (eg. "pw", "jack" or "pulse"). (EXPERIMENTAL)
 - Introducing touch pinch-gesture for zooming. (EXPERIMENTAL)
 - Bumping copyright headers to the brand new year.
 
