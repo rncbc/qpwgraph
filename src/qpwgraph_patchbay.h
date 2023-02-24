@@ -1,7 +1,7 @@
 // qpraph1_patchbay.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,6 +22,8 @@
 #ifndef __qpwgraph_patchbay_h
 #define __qpwgraph_patchbay_h
 
+#include "qpwgraph_item.h"
+
 #include <QString>
 #include <QList>
 #include <QHash>
@@ -31,6 +33,7 @@
 class qpwgraph_canvas;
 class qpwgraph_connect;
 class qpwgraph_port;
+class qpwgraph_node;
 
 
 //----------------------------------------------------------------------------
@@ -115,6 +118,10 @@ public:
 		{ return (m_dirty > 0); }
 
 protected:
+
+	// Get existing nodes alternatives;
+	QList<qpwgraph_node *> findNodesEx(
+		const QString& name, qpwgraph_item::Mode mode, uint type) const;
 
 	// Node and port type to text helpers.
 	static uint nodeTypeFromText(const QString& text);
