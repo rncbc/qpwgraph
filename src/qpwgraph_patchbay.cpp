@@ -264,12 +264,12 @@ bool qpwgraph_patchbay::scan (void)
 	for ( ; iter != iter_end; ++iter) {
 		Item *item = iter.value();
 		QList<qpwgraph_node *> nodes1
-			= findNodesEx(
+			= m_canvas->findNodes(
 				item->node1,
 				qpwgraph_item::Output,
 				item->node_type);
 		if (nodes1.isEmpty())
-			nodes1 = findNodesEx(
+			nodes1 = m_canvas->findNodes(
 				item->node1,
 				qpwgraph_item::Duplex,
 				item->node_type);
@@ -285,12 +285,12 @@ bool qpwgraph_patchbay::scan (void)
 				continue;
 			foreach (qpwgraph_port *port1, ports1) {
 				QList<qpwgraph_node *> nodes2
-					= findNodesEx(
+					= m_canvas->findNodes(
 						item->node2,
 						qpwgraph_item::Input,
 						item->node_type);
 				if (nodes2.isEmpty())
-					nodes2 = findNodesEx(
+					nodes2 = m_canvas->findNodes(
 						item->node2,
 						qpwgraph_item::Duplex,
 						item->node_type);
@@ -430,22 +430,6 @@ void qpwgraph_patchbay::addItem ( Item *item )
 		delete item2;
 
 	m_items.insert(*item, item);
-}
-
-
-// Get existing nodes alternatives.
-QList<qpwgraph_node *> qpwgraph_patchbay::findNodesEx (
-	const QString& name, qpwgraph_item::Mode mode, uint type ) const
-{
-	QList<qpwgraph_node *> ret = m_canvas->findNodes(name, mode, type);
-
-	if (ret.isEmpty() && type == qpwgraph_pipewire::nodeType()) {
-		QString name2 = name;
-		if (name2.remove(QRegularExpression(" \\[.+\\]$")) != name)
-			ret = m_canvas->findNodes(name2, mode, type);
-	}
-
-	return ret;
 }
 
 

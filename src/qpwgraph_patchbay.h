@@ -122,10 +122,6 @@ protected:
 	// Add a new patchbay rule item.
 	void addItem(Item *item);
 
-	// Get existing nodes alternatives.
-	QList<qpwgraph_node *> findNodesEx(
-		const QString& name, qpwgraph_item::Mode mode, uint type) const;
-
 	// Node and port type to text helpers.
 	static uint nodeTypeFromText(const QString& text);
 	static const char *textFromNodeType(uint node_type);
@@ -151,10 +147,8 @@ inline uint qHash ( const qpwgraph_patchbay::Item& item )
 {
 	return qHash(item.node_type)
 		 ^ qHash(item.port_type)
-		 ^ qHash(item.node1)
-		 ^ qHash(item.port1)
-		 ^ qHash(item.node2)
-		 ^ qHash(item.port2);
+		 ^ qHash(item.node1 + item.port1)
+		 ^ qHash(item.node2 + item.port2);
 }
 
 
