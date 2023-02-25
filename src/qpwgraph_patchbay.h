@@ -119,7 +119,10 @@ public:
 
 protected:
 
-	// Get existing nodes alternatives;
+	// Add a new patchbay rule item.
+	void addItem(Item *item);
+
+	// Get existing nodes alternatives.
 	QList<qpwgraph_node *> findNodesEx(
 		const QString& name, qpwgraph_item::Mode mode, uint type) const;
 

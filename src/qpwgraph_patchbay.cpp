@@ -84,14 +84,13 @@ void qpwgraph_patchbay::snap (void)
 					qpwgraph_node *node1 = port1->portNode();
 					qpwgraph_node *node2 = port2->portNode();
 					if (node1 && node2) {
-						Item *item2 = new Item(
+						addItem(new Item(
 							node1->nodeType(),
 							port1->portType(),
 							node1->nodeName(),
 							port1->portName(),
 							node2->nodeName(),
-							port2->portName());
-						m_items.insert(*item2, item2);
+							port2->portName()));
 					}
 				}
 			}
@@ -154,10 +153,9 @@ bool qpwgraph_patchbay::load ( const QString& filename )
 					if (node_type > 0 && port_type > 0
 						&& !node1.isEmpty() && !port1.isEmpty()
 						&& !node2.isEmpty() && !port2.isEmpty()) {
-						Item *item = new Item(
+						addItem(new Item(
 							node_type, port_type,
-							node1, port1, node2, port2);
-						m_items.insert(*item, item);
+							node1, port1, node2, port2));
 					}
 				}
 			}
@@ -424,7 +422,18 @@ qpwgraph_patchbay::Item *qpwgraph_patchbay::findConnect (
 }
 
 
-// Get existing nodes alternatives;
+// Add a new patchbay rule item.
+void qpwgraph_patchbay::addItem ( Item *item )
+{
+	Item *item2 = m_items.value(*item, nullptr);
+	if (item2)
+		delete item2;
+
+	m_items.insert(*item, item);
+}
+
+
+// Get existing nodes alternatives.
 QList<qpwgraph_node *> qpwgraph_patchbay::findNodesEx (
 	const QString& name, qpwgraph_item::Mode mode, uint type ) const
 {
