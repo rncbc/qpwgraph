@@ -2,7 +2,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.4.0  2023-02-25  A mid-winter'23 release.
 
 - Node names now have the "media.name" property as a bracketed
   suffix; when given and applicable. (EXPERIMENTAL) 
