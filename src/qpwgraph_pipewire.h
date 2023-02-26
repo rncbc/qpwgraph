@@ -95,6 +95,9 @@ public:
 	void removeObject(uint id);
 	void clearObjects();
 
+	void addObjectEx(uint id, Object *object);
+	void removeObjectEx(uint id);
+
 	// Node methods....
 	Node *findNode(uint node_id) const;
 	Node *createNode(

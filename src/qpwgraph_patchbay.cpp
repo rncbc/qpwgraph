@@ -35,8 +35,6 @@
 #include <QTextStream>
 #include <QFileInfo>
 
-#include <QRegularExpression>
-
 
 // Deprecated QTextStreamFunctions/Qt namespaces workaround.
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)

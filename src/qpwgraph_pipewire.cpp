@@ -512,7 +512,7 @@ void qpwgraph_registry_event_global_remove ( void *data, uint32_t id )
 	qDebug("qpwgraph_registry_event_global_remove[%p]: id:%u", pw, id);
 #endif
 
-	pw->removeObject(id);
+	pw->removeObjectEx(id);
 	pw->changedNotify();
 }
 
@@ -705,12 +705,12 @@ bool qpwgraph_pipewire::open (void)
 
 void qpwgraph_pipewire::close (void)
 {
+	if (m_data == nullptr)
+		return;
+
 	QMutexLocker locker(&g_mutex);
 
 	clearObjects();
-
-	if (m_data == nullptr)
-		return;
 
 	if (m_data->loop)
 		pw_thread_loop_stop(m_data->loop);
@@ -1096,7 +1096,7 @@ void qpwgraph_pipewire::addObject ( uint id, Object *object )
 
 void qpwgraph_pipewire::removeObject ( uint id )
 {
-	Object *object = m_objectids.value(id, nullptr);
+	Object *object = findObject(id);
 	if (object == nullptr)
 		return;
 
@@ -1122,6 +1122,30 @@ void qpwgraph_pipewire::clearObjects (void)
 }
 
 
+void qpwgraph_pipewire::removeObjectEx ( uint id )
+{
+	const bool locked
+		= g_mutex.tryLock();
+
+	removeObject(id);
+
+	if (locked)
+		g_mutex.unlock();
+}
+
+
+void qpwgraph_pipewire::addObjectEx ( uint id, Object *object )
+{
+	const bool locked
+		= g_mutex.tryLock();
+
+	addObject(id, object);
+
+	if (locked)
+		g_mutex.unlock();
+}
+
+
 // Node methods.
 //
 qpwgraph_pipewire::Node *qpwgraph_pipewire::findNode ( uint node_id ) const
@@ -1144,7 +1168,7 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	node->node_icon = qpwgraph_icon(":/images/itemPipewire.png");
 	node->node_ready = false;
 
-	addObject(node_id, node);
+	addObjectEx(node_id, node);
 
 	return node;
 }
@@ -1191,7 +1215,7 @@ qpwgraph_pipewire::Port *qpwgraph_pipewire::createPort (
 
 	node->node_ports.append(port);
 
-	addObject(port_id, port);
+	addObjectEx(port_id, port);
 
 	return port;
 }
@@ -1243,7 +1267,7 @@ qpwgraph_pipewire::Link *qpwgraph_pipewire::createLink (
 
 	port1->port_links.append(link);
 
-	addObject(link_id, link);
+	addObjectEx(link_id, link);
 
 	return link;
 }

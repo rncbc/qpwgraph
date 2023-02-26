@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Fixed a possible crash when several PW objects (nodes and ports)
+  are created and destroyed in fast succession. (EXPERIMENTAL)
+
+
 0.4.0  2023-02-25  A mid-winter'23 release.
 
 - Node names now have the "media.name" property as a bracketed
