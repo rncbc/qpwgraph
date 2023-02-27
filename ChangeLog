@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Attempt to make port labels as short as possible. (EXPERIMENTAL)
 - Fixed a possible crash when several PW objects (nodes and ports)
   are created and destroyed in fast succession. (EXPERIMENTAL)
 
