@@ -199,6 +199,8 @@ void qpwgraph_node_event_info ( void *data, const struct pw_node_info *info )
 					= spa_dict_lookup(info->props, PW_KEY_APP_ICON_NAME);
 				if (icon_name && ::strlen(icon_name) > 0)
 					node_icon = qpwgraph_icon(icon_name);
+				if (node_icon.isNull())
+					node_icon = qpwgraph_icon(node->node_name.toLower());
 				if (node_icon.isNull()) {
 					const char *client_api
 						= spa_dict_lookup(info->props, PW_KEY_CLIENT_API);
@@ -559,8 +561,9 @@ void qpwgraph_core_event_error (
 #endif
 
 	if (id == PW_ID_CORE) {
-		pd->error = true;
 		pd->last_res = res;
+		if (res == -EPIPE)
+			pd->error = true;
 	}
 
 	pw_thread_loop_signal(pd->loop, false);
