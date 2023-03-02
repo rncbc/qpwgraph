@@ -236,8 +236,8 @@ protected:
 	void pinchGesture(QPinchGesture *pinch);
 
 	// Graph node/port key helpers.
-	QString nodeKey(qpwgraph_node *node) const;
-	QString portKey(qpwgraph_port *port) const;
+	QString nodeKey(qpwgraph_node *node, int n = 0) const;
+	QString portKey(qpwgraph_port *port, int n = 0) const;
 
 	// Zoom in rectangle range.
 	void zoomFitRange(const QRectF& range_rect);
