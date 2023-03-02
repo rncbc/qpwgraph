@@ -1,7 +1,7 @@
 // qpwgraph_node.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@
 qpwgraph_node::qpwgraph_node (
 	uint id, const QString& name, qpwgraph_item::Mode mode, uint type )
 	: qpwgraph_item(nullptr),
-		m_id(id), m_name(name), m_mode(mode), m_type(type)
+		m_id(id), m_name(name), m_mode(mode), m_type(type), m_tag(0)
 {
 	QGraphicsPathItem::setZValue(0.0);
 
@@ -178,6 +178,18 @@ void qpwgraph_node::setNodeTitle ( const QString& title )
 QString qpwgraph_node::nodeTitle (void) const
 {
 	return m_title;	// m_text->toPlainText();
+}
+
+
+void qpwgraph_node::setNodeTag ( uint tag )
+{
+	m_tag = tag;
+}
+
+
+uint qpwgraph_node::nodeTag (void) const
+{
+	return m_tag;
 }
 
 

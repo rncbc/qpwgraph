@@ -1,7 +1,7 @@
 // qpwgraph_node.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -68,6 +68,9 @@ public:
 	void setNodeTitle(const QString& title);
 	QString nodeTitle() const;
 
+	void setNodeTag(uint tag);
+	uint nodeTag() const;
+
 	// Port-list methods.
 	qpwgraph_port *addPort(uint id, const QString& name, Mode mode, int type = 0);
 
@@ -133,6 +136,8 @@ private:
 	QIcon   m_icon;
 
 	QString m_title;
+
+	uint    m_tag;
 
 	QGraphicsPixmapItem *m_pixmap;
 	QGraphicsTextItem   *m_text;
