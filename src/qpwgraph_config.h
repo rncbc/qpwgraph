@@ -101,6 +101,9 @@ public:
 	void setSystemTrayEnabled(bool enabled);
 	bool isSystemTrayEnabled() const;
 
+	void setSystemTrayMinimized(bool minimized);
+	bool isSystemTrayMinimized() const;
+
 	// Graph main-widget state methods.
 	bool restoreState(QMainWindow *widget);
 	bool saveState(QMainWindow *widget) const;
@@ -131,6 +134,7 @@ private:
 	QStringList m_patchbay_recentfiles;
 
 	bool        m_systray_enabled;
+	bool        m_systray_minimized;
 };
 
 

@@ -48,6 +48,8 @@ class QComboBox;
 
 class QActionGroup;
 
+class QSessionManager;
+
 
 //----------------------------------------------------------------------------
 // qpwgraph_form -- UI wrapper form.
@@ -150,6 +152,8 @@ protected slots:
 public slots:
 
 	void closeQuit();
+
+	void commitData(QSessionManager& sm);
 
 protected:
 

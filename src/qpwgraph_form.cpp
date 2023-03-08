@@ -55,6 +55,8 @@
 #include <QResizeEvent>
 #include <QCloseEvent>
 
+#include <QSessionManager>
+
 #include <cmath>
 
 
@@ -520,12 +522,23 @@ void qpwgraph_form::apply_args ( qpwgraph_application *app )
 
 	updatePatchbayNames();
 
-	if (app->isStartMinimized())
+	bool start_minimized = app->isStartMinimized();
+#ifdef CONFIG_SYSTEM_TRAY
+	if (!start_minimized &&	app->isSessionRestored())
+		start_minimized = m_config->isSystemTrayMinimized();
+#endif
+	if (start_minimized) {
 	#ifdef CONFIG_SYSTEM_TRAY
-		hide();
+		if (m_systray)
+			hide();
+		else
+			showMinimized();
 	#else
 		showMinimized();
 	#endif
+	} else {
+		show();
+	}
 }
 
 
@@ -1658,6 +1671,18 @@ void qpwgraph_form::closeQuit (void)
 	QApplication::exit(0);
 #else
 	QApplication::quit();
+#endif
+}
+
+
+// Session management handler (eg. logoff)
+void qpwgraph_form::commitData ( QSessionManager& sm )
+{
+	sm.release();
+
+#ifdef CONFIG_SYSTEM_TRAY
+	if (m_systray)
+		m_config->setSystemTrayMinimized(!isVisible() && !isMinimized());
 #endif
 }
 

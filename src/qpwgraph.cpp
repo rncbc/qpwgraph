@@ -1,7 +1,7 @@
 // qpwgraph.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -264,8 +264,11 @@ int main ( int argc, char *argv[] )
 	app.setMainWidget(&form);
 	form.apply_args(&app);
 
-	if (!app.isStartMinimized())
-		form.show();
+	// Setup session manager shutdown (eg. logoff)...
+	QObject::connect(
+		&app, SIGNAL(commitDataRequest(QSessionManager&)),
+		&form, SLOT(commitData(QSessionManager&)),
+		Qt::DirectConnection);
 
 	return app.exec();
 }

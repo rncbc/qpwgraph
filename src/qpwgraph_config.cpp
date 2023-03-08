@@ -56,6 +56,7 @@ static const char *PatchbayToolbarKey = "/Toolbar";
 #ifdef CONFIG_SYSTEM_TRAY
 static const char *SystemTrayGroup  = "/SystemTray";
 static const char *SystemTrayEnabledKey = "/Enabled";
+static const char *SystemTrayMinimizedKey = "/Minimized";
 #endif
 
 
@@ -74,7 +75,8 @@ qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 		m_patchbay_activated(false),
 		m_patchbay_exclusive(false),
 		m_patchbay_autopin(true),
-		m_systray_enabled(true)
+		m_systray_enabled(true),
+		m_systray_minimized(false)
 {
 }
 
@@ -310,6 +312,17 @@ bool qpwgraph_config::isSystemTrayEnabled (void) const
 }
 
 
+void qpwgraph_config::setSystemTrayMinimized ( bool minimized )
+{
+	m_systray_minimized = minimized;
+}
+
+bool qpwgraph_config::isSystemTrayMinimized (void) const
+{
+	return m_systray_minimized;
+}
+
+
 // Graph main-widget state methods.
 bool qpwgraph_config::restoreState ( QMainWindow *widget )
 {
@@ -319,6 +332,7 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 #ifdef CONFIG_SYSTEM_TRAY
 	m_settings->beginGroup(SystemTrayGroup);
 	m_systray_enabled = m_settings->value(SystemTrayEnabledKey, true).toBool();
+	m_systray_minimized = m_settings->value(SystemTrayMinimizedKey, true).toBool();
 	m_settings->endGroup();
 #endif
 
@@ -382,6 +396,7 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 #ifdef CONFIG_SYSTEM_TRAY
 	m_settings->beginGroup(SystemTrayGroup);
 	m_settings->setValue(SystemTrayEnabledKey, m_systray_enabled);
+	m_settings->setValue(SystemTrayMinimizedKey, m_systray_minimized);
 	m_settings->endGroup();
 #endif
 
