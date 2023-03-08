@@ -523,16 +523,16 @@ void qpwgraph_form::apply_args ( qpwgraph_application *app )
 	updatePatchbayNames();
 
 	bool start_minimized = app->isStartMinimized();
-#ifdef CONFIG_SYSTEM_TRAY
 	if (!start_minimized &&	app->isSessionRestored())
-		start_minimized = m_config->isSystemTrayMinimized();
-#endif
+		start_minimized = m_config->isSessionStartMinimized();
 	if (start_minimized) {
 	#ifdef CONFIG_SYSTEM_TRAY
-		if (m_systray)
+		if (m_systray) {
 			hide();
-		else
+			m_systray_closed = true;
+		} else {
 			showMinimized();
+		}
 	#else
 		showMinimized();
 	#endif
@@ -1680,10 +1680,7 @@ void qpwgraph_form::commitData ( QSessionManager& sm )
 {
 	sm.release();
 
-#ifdef CONFIG_SYSTEM_TRAY
-	if (m_systray)
-		m_config->setSystemTrayMinimized(!isVisible() && !isMinimized());
-#endif
+	m_config->setSessionStartMinimized(!isVisible() && !isMinimized());
 }
 
 

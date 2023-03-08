@@ -56,8 +56,10 @@ static const char *PatchbayToolbarKey = "/Toolbar";
 #ifdef CONFIG_SYSTEM_TRAY
 static const char *SystemTrayGroup  = "/SystemTray";
 static const char *SystemTrayEnabledKey = "/Enabled";
-static const char *SystemTrayMinimizedKey = "/Minimized";
 #endif
+
+static const char *SessionGroup = "/Session";
+static const char *SessionStartMinimizedKey = "/StartMinimized";
 
 
 //----------------------------------------------------------------------------
@@ -75,8 +77,7 @@ qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 		m_patchbay_activated(false),
 		m_patchbay_exclusive(false),
 		m_patchbay_autopin(true),
-		m_systray_enabled(true),
-		m_systray_minimized(false)
+		m_systray_enabled(true)
 {
 }
 
@@ -312,14 +313,23 @@ bool qpwgraph_config::isSystemTrayEnabled (void) const
 }
 
 
-void qpwgraph_config::setSystemTrayMinimized ( bool minimized )
+void qpwgraph_config::setSessionStartMinimized ( bool start_minimized )
 {
-	m_systray_minimized = minimized;
+	m_settings->beginGroup(SessionGroup);
+	m_settings->setValue(SessionStartMinimizedKey, start_minimized);
+	m_settings->endGroup();
+
+	m_settings->sync();
 }
 
-bool qpwgraph_config::isSystemTrayMinimized (void) const
+bool qpwgraph_config::isSessionStartMinimized (void) const
 {
-	return m_systray_minimized;
+	m_settings->beginGroup(SessionGroup);
+	const bool start_minimized
+		= m_settings->value(SessionStartMinimizedKey, false).toBool();
+	m_settings->endGroup();
+
+	return start_minimized;
 }
 
 
@@ -332,7 +342,6 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 #ifdef CONFIG_SYSTEM_TRAY
 	m_settings->beginGroup(SystemTrayGroup);
 	m_systray_enabled = m_settings->value(SystemTrayEnabledKey, true).toBool();
-	m_systray_minimized = m_settings->value(SystemTrayMinimizedKey, true).toBool();
 	m_settings->endGroup();
 #endif
 
@@ -396,7 +405,6 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 #ifdef CONFIG_SYSTEM_TRAY
 	m_settings->beginGroup(SystemTrayGroup);
 	m_settings->setValue(SystemTrayEnabledKey, m_systray_enabled);
-	m_settings->setValue(SystemTrayMinimizedKey, m_systray_minimized);
 	m_settings->endGroup();
 #endif
 
