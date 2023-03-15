@@ -2,8 +2,9 @@
 #
 workflow:
   rules:
-    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
-    - when: never
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'push'
 
 stages:
   - container
@@ -37,7 +38,7 @@ container_ubuntu:
 .fedora:
   variables:
     # Update this tag when you want to trigger a rebuild
-    FDO_DISTRIBUTION_TAG: '2023-02-27.0'
+    FDO_DISTRIBUTION_TAG: '2023-03-15.0'
     FDO_DISTRIBUTION_VERSION: '37'
     FDO_DISTRIBUTION_PACKAGES: >-
       gcc
@@ -54,7 +55,7 @@ container_ubuntu:
 .ubuntu:
   variables:
     # Update this tag when you want to trigger a rebuild
-    FDO_DISTRIBUTION_TAG: '2023-02-27.0'
+    FDO_DISTRIBUTION_TAG: '2023-03-15.0'
     FDO_DISTRIBUTION_VERSION: '22.10'
     FDO_DISTRIBUTION_PACKAGES: >-
       debhelper-compat
