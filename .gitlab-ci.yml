@@ -2,7 +2,7 @@
 #
 workflow:
   rules:
-    - if: $CI_COMMIT_BRANCH != "main"
+    - if: $CI_COMMIT_BRANCH == "main"
     - when: never
 
 stages:
