@@ -4,6 +4,8 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Soft incremental bounds constraints now imposed to all new and
+  old nodes positioning. (EXPERIMENTAL)
 - Attempt to auto-start minimized to system-tray icon, if enabled,
   when restoring a desktop session (eg. after logout, shutdown or
   restart). (EXPERIMENTAL)

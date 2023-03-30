@@ -159,6 +159,9 @@ public:
 	// Clear all state.
 	void clear();
 
+	// Snap into position helper.
+	QPointF snapPos(qreal x, qreal y) const;
+
 signals:
 
 	// Node factory notifications.
@@ -251,6 +254,13 @@ protected:
 
 	// Renaming editor position and size updater.
 	void updateEditorGeometry();
+
+	// Bounding margins/limits...
+	const QRectF& boundingRect(bool reset = false);
+	void boundingPos(QPointF& pos);
+
+	// Snap into position helper.
+	void snapPos(QPointF& pos) const;
 
 private:
 

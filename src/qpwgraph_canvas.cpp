@@ -665,10 +665,8 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 						++nchanged;
 					}
 					// Original node position (for move command)...
-					QPointF pos1 = m_pos;
-					pos1.setX(4.0 * ::round(0.25 * pos1.x()));
-					pos1.setY(4.0 * ::round(0.25 * pos1.y()));
-					m_pos1 = pos1;
+					m_pos1 = m_pos;
+					snapPos(m_pos1);
 				}
 				else m_item = nullptr;
 			}
@@ -678,19 +676,12 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 				m_rubberband = new QRubberBand(QRubberBand::Rectangle, this);
 			}
 			// Set allowed auto-scroll margins/limits...
-			const QRect& rect = QGraphicsView::rect();
-			const qreal mx = 0.5f * rect.width();
-			const qreal my = 0.5f * rect.height();
-			m_rect1 = m_scene->itemsBoundingRect()
-				.marginsAdded(QMarginsF(mx, my, mx, my));
+			boundingRect(true);
 		}
 		break;
 	case DragMove:
 		// Allow auto-scroll only if within allowed margins/limits...
-		if (!m_rect1.contains(pos)) {
-			pos.setX(qBound(m_rect1.left(), pos.x(), m_rect1.right()));
-			pos.setY(qBound(m_rect1.top(),  pos.y(), m_rect1.bottom()));
-		}
+		boundingPos(pos);
 		QGraphicsView::ensureVisible(QRectF(pos, QSizeF(2, 2)), 8, 8);
 		// Move new connection line...
 		if (m_connect)
@@ -742,8 +733,7 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 		}
 		// Move current selected nodes...
 		if (m_item && m_item->type() == qpwgraph_node::Type) {
-			pos.setX(4.0 * ::round(0.25 * pos.x()));
-			pos.setY(4.0 * ::round(0.25 * pos.y()));
+			snapPos(pos);
 			const QPointF delta = (pos - m_pos);
 			foreach (QGraphicsItem *item, m_scene->selectedItems()) {
 				if (item->type() == qpwgraph_node::Type) {
@@ -1280,12 +1270,13 @@ bool qpwgraph_canvas::restoreNode ( qpwgraph_node *node )
 		node->setNodeTitle(node_title);
 
 	m_settings->beginGroup(NodePosGroup);
-	const QPointF& node_pos
-		= m_settings->value('/' + node_key).toPointF();
+	QPointF node_pos = m_settings->value('/' + node_key).toPointF();
 	m_settings->endGroup();
 
 	if (node_pos.isNull())
 		return false;
+
+	boundingPos(node_pos);
 
 	node->setPos(node_pos);
 	return true;
@@ -1747,6 +1738,49 @@ void qpwgraph_canvas::pinchGesture ( QPinchGesture *pinch )
 	default:
 		break;
 	}
+}
+
+
+// Bounding margins/limits...
+//
+const QRectF& qpwgraph_canvas::boundingRect ( bool reset )
+{
+	if (m_rect1.isNull() || reset) {
+		const QRect& rect = QGraphicsView::rect();
+		const qreal mx = qMax(0.33 * rect.width(),  800.0);
+		const qreal my = qMax(0.33 * rect.height(), 600.0);
+		m_rect1 = m_scene->sceneRect() // or itemsBoundingRect() ?
+			.marginsAdded(QMarginsF(mx, my, mx, my));
+	}
+
+	return m_rect1;
+}
+
+
+void qpwgraph_canvas::boundingPos ( QPointF& pos )
+{
+	const QRectF& rect = boundingRect();
+	if (!rect.contains(pos)) {
+		pos.setX(qBound(rect.left(), pos.x(), rect.right()));
+		pos.setY(qBound(rect.top(),  pos.y(), rect.bottom()));
+	}
+}
+
+
+// Snap into position helpers.
+//
+void qpwgraph_canvas::snapPos ( QPointF& pos ) const
+{
+	pos.setX(4.0 * ::round(0.25 * pos.x()));
+	pos.setY(4.0 * ::round(0.25 * pos.y()));
+}
+
+
+QPointF qpwgraph_canvas::snapPos ( qreal x, qreal y ) const
+{
+	QPointF pos(x, y);
+	snapPos(pos);
+	return pos;
 }
 
 

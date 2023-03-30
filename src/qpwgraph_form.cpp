@@ -972,10 +972,10 @@ void qpwgraph_form::added ( qpwgraph_node *node )
 		break;
 	}}
 
-	x = 4.0 * ::round(0.25 * (x - qreal(::rand() & 0x1f)));
-	y = 4.0 * ::round(0.25 * (y - qreal(::rand() & 0x1f)));
+	x -= qreal(::rand() & 0x1f);
+	y -= qreal(::rand() & 0x1f);
 
-	node->setPos(x, y);
+	node->setPos(canvas->snapPos(x, y));
 
 	updated(node);
 }
