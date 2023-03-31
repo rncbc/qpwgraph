@@ -1369,13 +1369,12 @@ bool qpwgraph_canvas::restoreState (void)
 	m_settings->endGroup();
 
 	m_settings->beginGroup(CanvasGroup);
-	m_settings->setValue(CanvasRectKey, m_scene->itemsBoundingRect());
-	const QRectF& rect = m_settings->value(CanvasRectKey).toRectF();
+	m_rect1 = m_settings->value(CanvasRectKey).toRectF();
 	const qreal zoom = m_settings->value(CanvasZoomKey, 1.0).toReal();
 	m_settings->endGroup();
 
-	if (rect.isValid())
-		QGraphicsView::setSceneRect(rect);
+	if (m_rect1.isValid())
+		QGraphicsView::setSceneRect(m_rect1);
 
 	setZoom(zoom);
 
@@ -1430,7 +1429,7 @@ bool qpwgraph_canvas::saveState (void) const
 
 	m_settings->beginGroup(CanvasGroup);
 	m_settings->setValue(CanvasZoomKey, zoom());
-	m_settings->setValue(CanvasRectKey, QGraphicsView::sceneRect());
+	m_settings->setValue(CanvasRectKey, m_scene->itemsBoundingRect());
 	m_settings->endGroup();
 
 	m_settings->beginGroup(ColorsGroup);
