@@ -1369,12 +1369,12 @@ bool qpwgraph_canvas::restoreState (void)
 	m_settings->endGroup();
 
 	m_settings->beginGroup(CanvasGroup);
-	m_rect1 = m_settings->value(CanvasRectKey).toRectF();
+	const QRectF& rect = m_settings->value(CanvasRectKey).toRectF();
 	const qreal zoom = m_settings->value(CanvasZoomKey, 1.0).toReal();
 	m_settings->endGroup();
 
-	if (m_rect1.isValid())
-		QGraphicsView::setSceneRect(m_rect1);
+	if (rect.isValid())
+		m_rect1 = rect; // QGraphicsView::setSceneRect(rect);
 
 	setZoom(zoom);
 
@@ -1429,7 +1429,7 @@ bool qpwgraph_canvas::saveState (void) const
 
 	m_settings->beginGroup(CanvasGroup);
 	m_settings->setValue(CanvasZoomKey, zoom());
-	m_settings->setValue(CanvasRectKey, m_scene->itemsBoundingRect());
+	m_settings->setValue(CanvasRectKey, m_rect1);
 	m_settings->endGroup();
 
 	m_settings->beginGroup(ColorsGroup);
@@ -1746,8 +1746,8 @@ const QRectF& qpwgraph_canvas::boundingRect ( bool reset )
 {
 	if (!m_rect1.isValid() || reset) {
 		const QRect& rect = QGraphicsView::rect();
-		const qreal mx = 0.5 * rect.width();
-		const qreal my = 0.5 * rect.height();
+		const qreal mx = 0.33 * rect.width();
+		const qreal my = 0.33 * rect.height();
 		m_rect1 = m_scene->itemsBoundingRect()
 			.marginsAdded(QMarginsF(mx, my, mx, my));
 	}
