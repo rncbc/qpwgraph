@@ -1744,7 +1744,7 @@ void qpwgraph_canvas::pinchGesture ( QPinchGesture *pinch )
 //
 const QRectF& qpwgraph_canvas::boundingRect ( bool reset )
 {
-	if (m_rect1.isNull() || reset) {
+	if (!m_rect1.isValid() || reset) {
 		const QRect& rect = QGraphicsView::rect();
 		const qreal mx = 0.5 * rect.width();
 		const qreal my = 0.5 * rect.height();
