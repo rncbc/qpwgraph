@@ -2,30 +2,30 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.4.2  2023-04-02  An early-spring'23 release.
 
 - Soft incremental bounds constraints now imposed to all new and
-  old nodes positioning. (EXPERIMENTAL)
+  old nodes positioning.
 - Attempt to auto-start minimized to system-tray icon, if enabled,
   when restoring a desktop session (eg. after logout, shutdown or
-  restart). (EXPERIMENTAL)
+  restart).
 
 
 0.4.1  2023-03-03  A late-winter'23 release.
 
-- Attempt to make port labels as short as possible. (EXPERIMENTAL)
+- Attempt to make port labels as short as possible.
 - Fixed a possible crash when several PW objects (nodes and ports)
-  are created and destroyed in fast succession. (EXPERIMENTAL)
+  are created and destroyed in fast succession.
 
 
 0.4.0  2023-02-25  A mid-winter'23 release.
 
 - Node names now have the "media.name" property as a bracketed
-  suffix; when given and applicable. (EXPERIMENTAL) 
+  suffix; when given and applicable.
 - Node icons now reflecting their proper application/theme icons
   or else, a bland and generic default taken from the "client.api"
-  property (eg. "pw", "jack" or "pulse"). (EXPERIMENTAL)
-- Introducing touch pinch-gesture for zooming. (EXPERIMENTAL)
+  property (eg. "pw", "jack" or "pulse").
+- Introducing touch pinch-gesture for zooming.
 - Bumping copyright headers to the brand new year.
 
 
