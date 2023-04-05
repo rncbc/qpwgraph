@@ -2,6 +2,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Prepping into the next development cycle (with Qt >= 6.5).
+
+
 0.4.2  2023-04-02  An early-spring'23 release.
 
 - Soft incremental bounds constraints now imposed to all new and
