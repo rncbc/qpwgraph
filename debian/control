@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 11), cmake, pkg-config,
   qt6-tools-dev (>= 6.1) | qttools5-dev (>= 5.1),
   qt6-tools-dev-tools (>= 6.1) | qttools5-dev-tools (>= 5.1),
   qt6-l10n-tools (>= 6.1)  | base-files (<< 12),
-  libqt6svg6-dev | libqt5svg5-dev, libgl-dev,
+  qt6-svg-dev | libqt6svg6-dev | libqt5svg5-dev, libgl-dev,
   libasound2-dev, libpipewire-0.3-dev
 Standards-Version: 3.9.7
 
