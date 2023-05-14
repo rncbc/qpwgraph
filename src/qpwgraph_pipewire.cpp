@@ -917,8 +917,8 @@ bool qpwgraph_pipewire::findNodePort (
 	if (*node == nullptr) {
 		const uint port_flags = p->port_flags;
 		const uint port_flags_mask
-			= (Port::Physical | Port::Terminal);
-		if ((port_flags & port_flags_mask) != port_flags_mask) {
+			= (Port::Physical | Port::Terminal | Port::Monitor);
+		if ((port_flags & port_flags_mask) == 0) {
 			node_mode = qpwgraph_item::Duplex;
 			*node = qpwgraph_sect::findNode(node_id, node_mode, node_type);
 		}
