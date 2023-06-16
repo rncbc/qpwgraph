@@ -2,9 +2,9 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.4.3  2023-06-17  A late-spring'23 release.
 
-- Split devices for capture/monitor and playback ports. (issue #70)
+- Split devices for capture/monitor and playback ports.
 
 
 0.4.2  2023-04-02  An early-spring'23 release.
