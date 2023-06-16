@@ -144,11 +144,13 @@ bool qpwgraph_application::setup (void)
 	m_unique += '@';
 	m_unique += QHostInfo::localHostName();
 #if defined(Q_OS_UNIX)
-	m_memory = new QSharedMemory(m_unique);
+	m_memory = new QSharedMemory();
+	m_memory->setNativeKey(m_unique);
 	m_memory->attach();
 	delete m_memory;
 #endif
-	m_memory = new QSharedMemory(m_unique);
+	m_memory = new QSharedMemory();
+	m_memory->setNativeKey(m_unique);
 	bool is_server = false;
 	const qint64 pid = QCoreApplication::applicationPid();
 	struct Data { qint64 pid; };
