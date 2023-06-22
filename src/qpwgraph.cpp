@@ -31,6 +31,9 @@
 
 #ifdef CONFIG_SYSTEM_TRAY
 #include <QSharedMemory>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+#include <QNativeIpcKey>
+#endif
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QHostInfo>
@@ -143,10 +146,13 @@ bool qpwgraph_application::setup (void)
 	}
 	m_unique += '@';
 	m_unique += QHostInfo::localHostName();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+	const QNativeIpcKey native_key
+		= QSharedMemory::legacyNativeKey(m_unique);
+#endif
 #if defined(Q_OS_UNIX)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
-	m_memory = new QSharedMemory();
-	m_memory->setNativeKey(m_unique);
+	m_memory = new QSharedMemory(native_key);
 #else
 	m_memory = new QSharedMemory(m_unique);
 #endif
@@ -154,12 +160,10 @@ bool qpwgraph_application::setup (void)
 	delete m_memory;
 #endif
 #if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
-	m_memory = new QSharedMemory();
-	m_memory->setNativeKey(m_unique);
+	m_memory = new QSharedMemory(native_key);
 #else
 	m_memory = new QSharedMemory(m_unique);
 #endif
-	m_memory->attach();
 	bool is_server = false;
 	const qint64 pid = QCoreApplication::applicationPid();
 	struct Data { qint64 pid; };
@@ -228,7 +232,7 @@ void qpwgraph_application::readyReadSlot (void)
 			if (form && parse_args(QString(data).split(' ')))
 				form->apply_args(this);
 			// Just make it always shows up fine...
-			if (m_widget && !m_start_minimized) {
+			if (m_widget) {
 				m_widget->hide();
 				m_widget->show();
 				m_widget->raise();
