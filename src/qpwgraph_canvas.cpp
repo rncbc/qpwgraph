@@ -523,6 +523,12 @@ QList<qpwgraph_node *> qpwgraph_canvas::findNodes (
 void qpwgraph_canvas::emitConnectPorts (
 	qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect )
 {
+	if (m_patchbay_edit && !m_patchbay_autopin && is_connect) {
+		qpwgraph_connect *connect = port1->findConnect(port2);
+		if (connect)
+			connect->setDimmed(true);
+	}
+
 	if (m_patchbay && (m_patchbay_autopin || !is_connect))
 		m_patchbay->connectPorts(port1, port2, is_connect);
 

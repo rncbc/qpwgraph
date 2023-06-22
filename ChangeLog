@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Fixed the dimming of new connections when Patchbay/Edit mode is on
+  and Patchbay/Auto Pin is off (issue #77).
+
+
 0.4.4  2023-06-18  A late-spring'23 regression.
 
 - Split devices for capture/monitor and playback ports. (REGRESSION)
