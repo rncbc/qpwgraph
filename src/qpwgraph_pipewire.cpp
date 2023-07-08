@@ -96,7 +96,7 @@ struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
 {
 	Node (uint node_id) : Object(node_id, Type::Node) {}
 
-	enum Types {
+	enum NodeType {
 		None  = 0,
 		Audio = 1,
 		Video = 2,
@@ -105,7 +105,7 @@ struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
 
 	QString node_name;
 	qpwgraph_item::Mode node_mode;
-	Types node_types;
+	NodeType node_type;
 	QList<qpwgraph_pipewire::Port *> node_ports;
 	QIcon node_icon;
 	bool node_ready;
@@ -463,7 +463,7 @@ void qpwgraph_registry_event_global (
 		if (str)
 			port_type = qpwgraph_item::itemType(str);
 		else
-		if (n && n->node_types == qpwgraph_pipewire::Node::Video)
+		if (n && n->node_type == qpwgraph_pipewire::Node::Video)
 			port_type = qpwgraph_pipewire::videoPortType();
 		qpwgraph_item::Mode port_mode = qpwgraph_item::None;
 		str = spa_dict_lookup(props, PW_KEY_PORT_DIRECTION);
@@ -928,7 +928,18 @@ bool qpwgraph_pipewire::findNodePort (
 		*port = (*node)->findPort(port_id, port_mode, port_type);
 
 	if (add_new && *node == nullptr) {
-		*node = new qpwgraph_node(node_id, n->node_name, node_mode, node_type);
+		QString node_name = n->node_name;
+		if ((p->port_flags & Port::Physical) == Port::None) {
+			if (p->port_flags & Port::Monitor) {
+				node_name += ' ';
+				node_name += "[Monitor]";
+			}
+			if (p->port_flags & Port::Control) {
+				node_name += ' ';
+				node_name += "[Control]";
+			}
+		}
+		*node = new qpwgraph_node(node_id, node_name, node_mode, node_type);
 		(*node)->setNodeIcon(n->node_icon);
 		qpwgraph_sect::addItem(*node);
 	}
@@ -1162,12 +1173,12 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	uint node_id,
 	const QString& node_name,
 	qpwgraph_item::Mode node_mode,
-	uint node_types )
+	uint node_type )
 {
 	Node *node = new Node(node_id);
 	node->node_name = node_name;
 	node->node_mode = node_mode;
-	node->node_types = Node::Types(node_types);
+	node->node_type = Node::NodeType(node_type);
 	node->node_icon = qpwgraph_icon(":/images/itemPipewire.png");
 	node->node_ready = false;
 

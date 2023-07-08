@@ -104,7 +104,7 @@ public:
 		uint node_id,
 		const QString& node_name,
 		qpwgraph_item::Mode node_mode,
-		uint node_types);
+		uint node_type);
 	void destroyNode(Node *node);
 
 	// Port methods....

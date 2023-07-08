@@ -4,6 +4,9 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Split non-physical terminal device nodes for monitor and control
+  ports, adding the suffix "[Monitor]" and/or "[Control]" resp. to
+  the node name. (EXPERIMENTAL)
 - Fixed the dimming of new connections when Patchbay/Edit mode is on
   and Patchbay/Auto Pin is off (issue #77).
 
