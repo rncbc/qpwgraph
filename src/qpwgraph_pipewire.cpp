@@ -167,6 +167,7 @@ void qpwgraph_add_pending ( qpwgraph_pipewire::Proxy *p )
 	if (p->pending_seq == 0)
 		spa_list_append(&pd->pending, &p->pending_link);
 	p->pending_seq = pw_core_sync(pd->core, 0, p->pending_seq);
+	pd->pending_seq = p->pending_seq;
 }
 
 static
@@ -190,7 +191,7 @@ void qpwgraph_node_event_info ( void *data, const struct pw_node_info *info )
 		info = pw_node_info_update((struct pw_node_info *)object->p->info, info);
 		object->p->info = (void *)info;
 		// Add media.name to node name, settle node icon, if any...
-		if (object->p->info) {
+		if (info && (info->change_mask & PW_NODE_CHANGE_MASK_PROPS)) {
 			qpwgraph_pipewire::Node *node
 				= static_cast<qpwgraph_pipewire::Node *> (object);
 			if (node && !node->node_ready) {
@@ -654,6 +655,7 @@ bool qpwgraph_pipewire::open (void)
 	m_data = new Data;
 	spa_zero(*m_data);
 	spa_list_init(&m_data->pending);
+	m_data->pending_seq = 0;
 
 	m_data->loop = pw_thread_loop_new("qpwgraph_thread_loop", nullptr);
 	if (m_data->loop == nullptr) {
