@@ -120,6 +120,8 @@ public:
 	QList<qpwgraph_node *> findNodes(
 		const QString& name, qpwgraph_item::Mode mode, uint type = 0) const;
 
+	void releaseNode(qpwgraph_node *node);
+
 	// Whether it's in the middle of something...
 	bool isBusy() const;
 
@@ -241,6 +243,9 @@ protected:
 	// Graph node/port key helpers.
 	QString nodeKey(qpwgraph_node *node, int n = 0) const;
 	QString portKey(qpwgraph_port *port, int n = 0) const;
+
+	void addNodeKeys(qpwgraph_node *node);
+	void removeNodeKeys(qpwgraph_node *node);
 
 	// Zoom in rectangle range.
 	void zoomFitRange(const QRectF& range_rect);

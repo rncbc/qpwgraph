@@ -108,6 +108,8 @@ struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
 	NodeType node_type;
 	QList<qpwgraph_pipewire::Port *> node_ports;
 	QIcon node_icon;
+	QString media_name;
+	bool node_changed;
 	bool node_ready;
 };
 
@@ -190,11 +192,11 @@ void qpwgraph_node_event_info ( void *data, const struct pw_node_info *info )
 	if (object && object->p) {
 		info = pw_node_info_update((struct pw_node_info *)object->p->info, info);
 		object->p->info = (void *)info;
-		// Add media.name to node name, settle node icon, if any...
+		// Get node icon and media.name, if any...
 		if (info && (info->change_mask & PW_NODE_CHANGE_MASK_PROPS)) {
 			qpwgraph_pipewire::Node *node
 				= static_cast<qpwgraph_pipewire::Node *> (object);
-			if (node && !node->node_ready) {
+			if (node) {
 				QIcon node_icon;
 				const char *icon_name
 					= spa_dict_lookup(info->props, PW_KEY_APP_ICON_NAME);
@@ -207,26 +209,26 @@ void qpwgraph_node_event_info ( void *data, const struct pw_node_info *info )
 						= spa_dict_lookup(info->props, PW_KEY_CLIENT_API);
 					if (client_api && ::strlen(client_api) > 0) {
 						if (::strcmp(client_api, "jack") == 0 ||
-							::strcmp(client_api, "pipewire-jack") == 0)
+							::strcmp(client_api, "pipewire-jack") == 0) {
 							node_icon = qpwgraph_icon(":images/itemJack.png");
+						}
 						else
 						if (::strcmp(client_api, "pulse") == 0 ||
-							::strcmp(client_api, "pipewire-pulse") == 0)
+							::strcmp(client_api, "pipewire-pulse") == 0) {
 							node_icon = qpwgraph_icon(":images/itemPulse.png");
+						}
 					}
 				}
 				if (!node_icon.isNull())
 					node->node_icon = node_icon;
 				const char *media_name
 					= spa_dict_lookup(info->props, PW_KEY_MEDIA_NAME);
-				if (media_name && ::strlen(media_name) > 0) {
-					QString& node_name = node->node_name;
-					node_name += ' ';
-					node_name += '[';
-					node_name += media_name;
-					node_name += ']';
-				}
+				if (media_name && ::strlen(media_name) > 0)
+					node->media_name = media_name;
+				node->node_changed = true;
 				node->node_ready = true;
+				if (object->p->pw)
+					object->p->pw->changedNotify();
 			}
 		}
 	}
@@ -926,6 +928,11 @@ bool qpwgraph_pipewire::findNodePort (
 		}
 	}
 
+	if (*node && n->node_changed) {
+		canvas()->releaseNode(*node);
+		*node = nullptr;
+	}
+
 	if (*node)
 		*port = (*node)->findPort(port_id, port_mode, port_type);
 
@@ -940,9 +947,16 @@ bool qpwgraph_pipewire::findNodePort (
 				node_name += ' ';
 				node_name += "[Control]";
 			}
+			if (!n->media_name.isEmpty()) {
+				node_name += ' ';
+				node_name += '[';
+				node_name += n->media_name;
+				node_name += ']';
+			}
 		}
 		*node = new qpwgraph_node(node_id, node_name, node_mode, node_type);
 		(*node)->setNodeIcon(n->node_icon);
+		n->node_changed = false;
 		qpwgraph_sect::addItem(*node);
 	}
 
@@ -1182,6 +1196,7 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	node->node_mode = node_mode;
 	node->node_type = Node::NodeType(node_type);
 	node->node_icon = qpwgraph_icon(":/images/itemPipewire.png");
+	node->node_changed = false;
 	node->node_ready = false;
 
 	addObjectEx(node_id, node);

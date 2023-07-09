@@ -273,8 +273,7 @@ void qpwgraph_canvas::addItem ( qpwgraph_item *item )
 		qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
 		if (node) {
 			m_nodes.append(node);
-			m_node_ids.insert(qpwgraph_node::NodeIdKey(node), node);
-			m_node_keys.insert(qpwgraph_node::NodeNameKey(node), node);
+			addNodeKeys(node);
 			if (restoreNode(node))
 				emit updated(node);
 			else
@@ -305,10 +304,10 @@ void qpwgraph_canvas::removeItem ( qpwgraph_item *item )
 		if (node && saveNode(node)) {
 			emit removed(node);
 			node->removePorts();
-			m_node_keys.remove(qpwgraph_node::NodeNameKey(node));
-			m_node_ids.remove(qpwgraph_node::NodeIdKey(node));
-			m_nodes.removeAll(node);
+			removeNodeKeys(node);
 		}
+		if (node)
+			m_nodes.removeAll(node);
 	}
 	else
 	if (item->type() == qpwgraph_port::Type) {
@@ -516,6 +515,14 @@ QList<qpwgraph_node *> qpwgraph_canvas::findNodes (
 	const QString& name, qpwgraph_item::Mode mode, uint type ) const
 {
 	return m_node_keys.values(qpwgraph_node::NodeNameKey(name, mode, type));
+}
+
+
+void qpwgraph_canvas::releaseNode ( qpwgraph_node *node )
+{
+	removeNodeKeys(node);
+
+	node->setMarked(false);
 }
 
 
@@ -1298,6 +1305,9 @@ bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 	//
 	const qpwgraph_node::NodeNameKey name_key(node);
 	const int n = m_node_keys.values(name_key).count();
+	if (n < 1)
+		return false;
+
 	const QString& node_key = nodeKey(node, n);
 
 	m_settings->beginGroup(NodeAliasesGroup);
@@ -1506,6 +1516,20 @@ QString qpwgraph_canvas::portKey ( qpwgraph_port *port, int n ) const
 	}
 
 	return port_key;
+}
+
+
+void qpwgraph_canvas::addNodeKeys ( qpwgraph_node *node )
+{
+	m_node_ids.insert(qpwgraph_node::NodeIdKey(node), node);
+	m_node_keys.insert(qpwgraph_node::NodeNameKey(node), node);
+}
+
+
+void qpwgraph_canvas::removeNodeKeys ( qpwgraph_node *node )
+{
+	m_node_keys.remove(qpwgraph_node::NodeNameKey(node));
+	m_node_ids.remove(qpwgraph_node::NodeIdKey(node));
 }
 
 
