@@ -2,13 +2,13 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.4.5  2023-07-10  A summer'23 release.
 
 - Split non-physical terminal device nodes for monitor and control
   ports, adding the suffix "[Monitor]" and/or "[Control]" resp. to
-  the node name. (EXPERIMENTAL)
+  the node name.
 - Fixed the dimming of new connections when Patchbay/Edit mode is on
-  and Patchbay/Auto Pin is off (issue #77).
+  and Patchbay/Auto Pin is off.
 
 
 0.4.4  2023-06-18  A late-spring'23 regression.
