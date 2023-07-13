@@ -626,9 +626,6 @@ const struct pw_proxy_events qpwgraph_link_proxy_events = {
 //----------------------------------------------------------------------------
 // qpwgraph_pipewire -- PipeWire graph driver
 
-QMutex qpwgraph_pipewire::g_mutex;
-
-
 // Constructor.
 qpwgraph_pipewire::qpwgraph_pipewire ( qpwgraph_canvas *canvas )
 	: qpwgraph_sect(canvas), m_data(nullptr)
@@ -650,7 +647,7 @@ qpwgraph_pipewire::~qpwgraph_pipewire (void)
 // Client methods.
 bool qpwgraph_pipewire::open (void)
 {
-	QMutexLocker locker(&g_mutex);
+	QMutexLocker locker1(&m_mutex1);
 
 	pw_init(nullptr, nullptr);
 
@@ -715,7 +712,7 @@ void qpwgraph_pipewire::close (void)
 	if (m_data == nullptr)
 		return;
 
-	QMutexLocker locker(&g_mutex);
+	QMutexLocker locker1(&m_mutex1);
 
 	clearObjects();
 
@@ -780,7 +777,7 @@ void qpwgraph_pipewire::connectPorts (
 	if (node1 == nullptr || node2 == nullptr)
 		return;
 
-	QMutexLocker locker(&g_mutex);
+	QMutexLocker locker1(&m_mutex1);
 
 	pw_thread_loop_lock(m_data->loop);
 
@@ -979,7 +976,8 @@ void qpwgraph_pipewire::updateItems (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qpwgraph_pipewire::updateItems()");
 #endif
-	QMutexLocker locker(&g_mutex);
+	QMutexLocker locker1(&m_mutex1);
+	QMutexLocker locker2(&m_mutex2);
 
 	// 0. Check for core errors...
 	//
@@ -1059,7 +1057,7 @@ void qpwgraph_pipewire::clearItems (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qpwgraph_pipewire::clearItems()");
 #endif
-	QMutexLocker locker(&g_mutex);
+	QMutexLocker locker1(&m_mutex1);
 
 	// Clean-up all items...
 	//
@@ -1154,25 +1152,17 @@ void qpwgraph_pipewire::clearObjects (void)
 
 void qpwgraph_pipewire::removeObjectEx ( uint id )
 {
-	const bool locked
-		= g_mutex.tryLock();
+	QMutexLocker locker2(&m_mutex2);
 
 	removeObject(id);
-
-	if (locked)
-		g_mutex.unlock();
 }
 
 
 void qpwgraph_pipewire::addObjectEx ( uint id, Object *object )
 {
-	const bool locked
-		= g_mutex.tryLock();
+	QMutexLocker locker2(&m_mutex2);
 
 	addObject(id, object);
-
-	if (locked)
-		g_mutex.unlock();
 }
 
 

@@ -2,6 +2,13 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Fixed the main pipewire registry thread-safety, into a two-level
+  critical section, hopefully preventing the race-conditions that
+  are the suspected cause to some rare crashes. (EXPERIMENTAL)
+
+
 0.4.5  2023-07-10  A summer'23 release.
 
 - Split non-physical terminal device nodes for monitor and control

@@ -148,7 +148,8 @@ private:
 	QList<Object *> m_objects;
 
 	// Callback sanity mutex.
-	static QMutex g_mutex;
+	QMutex m_mutex1;
+	QMutex m_mutex2;
 };
 
 
