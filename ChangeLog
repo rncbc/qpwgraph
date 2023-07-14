@@ -4,7 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
-- Fixed the main pipewire registry thread-safety, into a two-level
+- Fixed the main PipeWire registry thread-safety, into a two-level
   critical section, hopefully preventing the race-conditions that
   are the suspected cause to some rare crashes. (EXPERIMENTAL)
 

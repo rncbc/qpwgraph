@@ -305,9 +305,8 @@ void qpwgraph_canvas::removeItem ( qpwgraph_item *item )
 			emit removed(node);
 			node->removePorts();
 			removeNodeKeys(node);
-		}
-		if (node)
 			m_nodes.removeAll(node);
+		}
 	}
 	else
 	if (item->type() == qpwgraph_port::Type) {
@@ -1305,9 +1304,6 @@ bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 	//
 	const qpwgraph_node::NodeNameKey name_key(node);
 	const int n = m_node_keys.values(name_key).count();
-	if (n < 1)
-		return false;
-
 	const QString& node_key = nodeKey(node, n);
 
 	m_settings->beginGroup(NodeAliasesGroup);
