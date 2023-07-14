@@ -133,6 +133,8 @@ public:
 		uint m_type;
 	};
 
+	typedef QHash<IdKey, qpwgraph_item *> NameKeys;
+
 	// Item-type hash (static)
 	static uint itemType(const QByteArray& type_name);
 

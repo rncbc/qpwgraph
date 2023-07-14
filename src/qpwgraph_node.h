@@ -99,6 +99,8 @@ public:
 			: IdKey(node->nodeId(), node->nodeMode(), node->nodeType()) {}
 	};
 
+	typedef QMultiHash<IdKey, qpwgraph_node *> NodeIds;
+
 	// Node hash key (by name).
 	class NodeNameKey : public NameKey
 	{
@@ -110,7 +112,7 @@ public:
 			: NameKey(node->nodeName(), node->nodeMode(), node->nodeType()) {}
 	};
 
-	typedef QMultiHash<NodeNameKey, qpwgraph_node *> NodeKeys;
+	typedef QMultiHash<NodeNameKey, qpwgraph_node *> NodeNames;
 
 	// Rectangular editor extents.
 	QRectF editorRect() const;

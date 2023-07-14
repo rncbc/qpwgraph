@@ -232,7 +232,7 @@ void qpwgraph_application::readyReadSlot (void)
 			if (form && parse_args(QString(data).split(' ')))
 				form->apply_args(this);
 			// Just make it always shows up fine...
-			if (m_widget) {
+			if (m_widget && !m_start_minimized) {
 				m_widget->hide();
 				m_widget->show();
 				m_widget->raise();

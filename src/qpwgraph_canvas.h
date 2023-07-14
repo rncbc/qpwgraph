@@ -283,9 +283,9 @@ private:
 	bool              m_zoomrange;
 	bool              m_gesture;
 
-	qpwgraph_node::IdKeys   m_node_ids;
-	qpwgraph_node::NodeKeys m_node_keys;
-	QList<qpwgraph_node *>  m_nodes;
+	qpwgraph_node::NodeIds   m_node_ids;
+	qpwgraph_node::NodeNames m_node_names;
+	QList<qpwgraph_node *>   m_nodes;
 
 	QUndoStack *m_commands;
 	QSettings  *m_settings;
