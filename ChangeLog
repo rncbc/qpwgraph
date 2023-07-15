@@ -2,15 +2,15 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.5.0  2023-07-16  Yet another summer'23 release.
 
 - Completely refactored the internal PipeWire node registry logic,
   just to have unique node names, as seen fit to purpose to solve
   an old undefined behavior to positioning and Patchbay persistence
-  of multiple nodes with the very same and exact name. (EXPERIMENTAL)
+  of multiple nodes with the very same and exact name.
 - Fixed the main PipeWire registry thread-safety, into a two-level
   critical section, hopefully preventing the race-conditions that
-  are the suspected cause to some rare crashes. (EXPERIMENTAL)
+  are the suspected cause to some rare crashes.
 
 
 0.4.5  2023-07-10  A summer'23 release.

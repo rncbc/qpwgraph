@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.15)
 
 project(qpwgraph
-  VERSION 0.4.6
+  VERSION 0.5.0
   DESCRIPTION "A PipeWire Graph Qt GUI Interface"
   HOMEPAGE_URL "https://gitlab.freedesktop.org/rncbc/qpwgraph"
   LANGUAGES C CXX)
