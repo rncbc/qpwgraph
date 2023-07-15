@@ -497,8 +497,14 @@ void qpwgraph_canvas::clearNodes ( uint node_type )
 qpwgraph_node *qpwgraph_canvas::findNode (
 	uint id, qpwgraph_item::Mode mode, uint type ) const
 {
-	return static_cast<qpwgraph_node *> (
-		m_node_ids.value(qpwgraph_node::IdKey(id, mode, type), nullptr));
+	return m_node_ids.value(qpwgraph_item::IdKey(id, mode, type), nullptr);
+}
+
+
+qpwgraph_node *qpwgraph_canvas::findNode (
+	const QString& name, qpwgraph_item::Mode mode, uint type ) const
+{
+	return m_node_names.value(qpwgraph_node::NodeNameKey(name, mode, type), nullptr);
 }
 
 
@@ -507,13 +513,6 @@ bool qpwgraph_canvas::isBusy (void) const
 {
 	return (m_state != DragNone || m_connect   != nullptr
 		||  m_item  != nullptr  || m_edit_item != nullptr);
-}
-
-
-QList<qpwgraph_node *> qpwgraph_canvas::findNodes (
-	const QString& name, qpwgraph_item::Mode mode, uint type ) const
-{
-	return m_node_names.values(qpwgraph_node::NodeNameKey(name, mode, type));
 }
 
 
@@ -1267,11 +1266,7 @@ bool qpwgraph_canvas::restoreNode ( qpwgraph_node *node )
 	if (m_settings == nullptr || node == nullptr)
 		return false;
 
-	// Assume node name-keys have been added before this...
-	//
-	const qpwgraph_node::NodeNameKey name_key(node);
-	const int n = m_node_names.values(name_key).count();
-	const QString& node_key = nodeKey(node, n);
+	const QString& node_key = nodeKey(node);
 
 	m_settings->beginGroup(NodeAliasesGroup);
 	const QString& node_title
@@ -1300,11 +1295,7 @@ bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 	if (m_settings == nullptr || node == nullptr)
 		return false;
 
-	// Assume node name-keys are to be removed after this...
-	//
-	const qpwgraph_node::NodeNameKey name_key(node);
-	const int n = m_node_names.values(name_key).count();
-	const QString& node_key = nodeKey(node, n);
+	const QString& node_key = nodeKey(node);
 
 	m_settings->beginGroup(NodeAliasesGroup);
 	if (node->nodeName() != node->nodeTitle()) {
@@ -1406,22 +1397,17 @@ bool qpwgraph_canvas::saveState (void) const
 		if (item->type() == qpwgraph_node::Type) {
 			qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
 			if (node && !nodes.contains(node)) {
-				int n = 0;
-				const QList<qpwgraph_node *>& nodes2
-					= m_node_names.values(qpwgraph_node::NodeNameKey(node));
-				foreach (qpwgraph_node *node2, nodes2) {
-					const QString& node2_key = nodeKey(node2, ++n);
-					m_settings->beginGroup(NodePosGroup);
-					m_settings->setValue('/' + node2_key, node2->pos());
-					m_settings->endGroup();
-					m_settings->beginGroup(NodeAliasesGroup);
-					if (node2->nodeName() != node2->nodeTitle())
-						m_settings->setValue('/' + node2_key, node2->nodeTitle());
-					else
-						m_settings->remove('/' + node2_key);
-					m_settings->endGroup();
-					nodes.append(node2);
-				}
+				const QString& node_key = nodeKey(node);
+				m_settings->beginGroup(NodePosGroup);
+				m_settings->setValue('/' + node_key, node->pos());
+				m_settings->endGroup();
+				m_settings->beginGroup(NodeAliasesGroup);
+				if (node->nodeName() != node->nodeTitle())
+					m_settings->setValue('/' + node_key, node->nodeTitle());
+				else
+					m_settings->remove('/' + node_key);
+				m_settings->endGroup();
+				nodes.append(node);
 			}
 		}
 		else
@@ -1461,13 +1447,9 @@ bool qpwgraph_canvas::saveState (void) const
 
 
 // Graph node/port key helpers.
-QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node, int n ) const
+QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node ) const
 {
 	QString node_key = node->nodeName();
-	if (n > 1) {
-		node_key += '-';
-		node_key += QString::number(n - 1);
-	}
 
 	switch (node->nodeMode()) {
 	case qpwgraph_item::Input:
@@ -1484,7 +1466,7 @@ QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node, int n ) const
 }
 
 
-QString qpwgraph_canvas::portKey ( qpwgraph_port *port, int n ) const
+QString qpwgraph_canvas::portKey ( qpwgraph_port *port ) const
 {
 	QString port_key;
 
@@ -1495,10 +1477,6 @@ QString qpwgraph_canvas::portKey ( qpwgraph_port *port, int n ) const
 	port_key += node->nodeName();
 	port_key += ':';
 	port_key += port->portName();
-	if (n > 1) {
-		port_key += '-';
-		port_key += QString::number(n - 1);
-	}
 
 	switch (port->portMode()) {
 	case qpwgraph_item::Input:

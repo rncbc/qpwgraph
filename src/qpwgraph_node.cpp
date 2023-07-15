@@ -1,7 +1,7 @@
 // qpwgraph_node.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -189,7 +189,7 @@ qpwgraph_port *qpwgraph_node::addPort (
 
 	m_ports.append(port);
 	m_port_ids.insert(qpwgraph_port::PortIdKey(port), port);
-	m_port_keys.insert(qpwgraph_port::PortNameKey(port), port);
+	m_port_names.insert(qpwgraph_port::PortNameKey(port), port);
 
 	updatePath();
 
@@ -213,7 +213,7 @@ qpwgraph_port *qpwgraph_node::addOutputPort (
 
 void qpwgraph_node::removePort ( qpwgraph_port *port )
 {
-	m_port_keys.remove(qpwgraph_port::PortNameKey(port));
+	m_port_names.remove(qpwgraph_port::PortNameKey(port));
 	m_port_ids.remove(qpwgraph_port::PortIdKey(port));
 	m_ports.removeAll(port);
 
@@ -231,7 +231,7 @@ void qpwgraph_node::removePorts (void)
 	//qDeleteAll(m_ports);
 	m_ports.clear();
 	m_port_ids.clear();
-	m_port_keys.clear();
+	m_port_names.clear();
 }
 
 
@@ -239,15 +239,14 @@ void qpwgraph_node::removePorts (void)
 qpwgraph_port *qpwgraph_node::findPort (
 	uint id, qpwgraph_item::Mode mode, uint type )
 {
-	return static_cast<qpwgraph_port *> (
-		m_port_ids.value(qpwgraph_port::IdKey(id, mode, type), nullptr));
+	return m_port_ids.value(qpwgraph_port::PortIdKey(id, mode, type), nullptr);
 }
 
 
-QList<qpwgraph_port *> qpwgraph_node::findPorts (
+qpwgraph_port *qpwgraph_node::findPort (
 	const QString& name, qpwgraph_item::Mode mode, uint type )
 {
-	return m_port_keys.values(qpwgraph_port::PortNameKey(name, mode, type));
+	return m_port_names.value(qpwgraph_port::PortNameKey(name, mode, type), nullptr);
 }
 
 

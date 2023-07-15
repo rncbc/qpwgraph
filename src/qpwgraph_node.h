@@ -1,7 +1,7 @@
 // qpwgraph_node.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -79,7 +79,7 @@ public:
 
 	// Port finder (by id/name, mode and type)
 	qpwgraph_port *findPort(uint id, Mode mode, uint type = 0);
-	QList<qpwgraph_port *> findPorts(const QString& name, Mode mode, uint type = 0);
+	qpwgraph_port *findPort(const QString& name, Mode mode, uint type = 0);
 
 	// Port-list accessor.
 	const QList<qpwgraph_port *>& ports() const;
@@ -139,9 +139,9 @@ private:
 	QGraphicsPixmapItem *m_pixmap;
 	QGraphicsTextItem   *m_text;
 
-	qpwgraph_port::IdKeys   m_port_ids;
-	qpwgraph_port::PortKeys m_port_keys;
-	QList<qpwgraph_port *>  m_ports;
+	qpwgraph_port::PortIds   m_port_ids;
+	qpwgraph_port::PortNames m_port_names;
+	QList<qpwgraph_port *>   m_ports;
 };
 
 

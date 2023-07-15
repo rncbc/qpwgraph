@@ -27,7 +27,7 @@
 #include <pipewire/pipewire.h>
 
 #include <QMutexLocker>
-
+#include <QMultiHash>
 #include <QTimer>
 
 
@@ -103,6 +103,30 @@ struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
 		Midi  = 4
 	};
 
+	struct NameKey
+	{
+		NameKey (Node *node)
+			: node_name(node->node_name),
+				node_mode(node->node_mode),
+				node_type(node->node_type) {}
+
+		NameKey (const NameKey& key)
+			: node_name(key.node_name),
+				node_mode(key.node_mode),
+				node_type(key.node_type) {}
+
+		bool operator== (const NameKey& key) const
+		{
+			return node_type == key.node_type
+				&& node_mode == key.node_mode
+				&& node_name == key.node_name;
+		}
+
+		QString node_name;
+		qpwgraph_item::Mode node_mode;
+		uint node_type;
+	};
+
 	QString node_name;
 	qpwgraph_item::Mode node_mode;
 	NodeType node_type;
@@ -111,6 +135,7 @@ struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
 	QString media_name;
 	bool node_changed;
 	bool node_ready;
+	uint name_num;
 };
 
 struct qpwgraph_pipewire::Port : public qpwgraph_pipewire::Object
@@ -157,7 +182,16 @@ struct qpwgraph_pipewire::Data
 	int last_seq;
 	int last_res;
 	bool error;
+
+	typedef QMultiHash<Node::NameKey, uint> NodeNames;
+
+	NodeNames node_names;
 };
+
+inline uint qHash ( const qpwgraph_pipewire::Node::NameKey& key )
+{
+	return qHash(key.node_name) ^ qHash(uint(key.node_mode)) ^ qHash(key.node_type);
+}
 
 
 // sync-methods...
@@ -943,6 +977,10 @@ bool qpwgraph_pipewire::findNodePort (
 	if (add_new && *node == nullptr) {
 		QString node_name = n->node_name;
 		if ((p->port_flags & Port::Physical) == Port::None) {
+			if (n->name_num > 0) {
+				node_name += '-';
+				node_name += QString::number(n->name_num);
+			}
 			if (p->port_flags & Port::Monitor) {
 				node_name += ' ';
 				node_name += "[Monitor]";
@@ -1195,6 +1233,14 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	node->node_icon = qpwgraph_icon(":/images/itemPipewire.png");
 	node->node_changed = false;
 	node->node_ready = false;
+	node->name_num = 0;
+
+	const Node::NameKey name_key(node);
+	Data::NodeNames::Iterator name_iter
+		= m_data->node_names.find(name_key, node->name_num);
+	while (name_iter != m_data->node_names.end())
+		name_iter = m_data->node_names.find(name_key, ++(node->name_num));
+	m_data->node_names.insert(name_key, node->name_num);
 
 	addObjectEx(node_id, node);
 
@@ -1204,6 +1250,8 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 
 void qpwgraph_pipewire::destroyNode ( Node *node )
 {
+	m_data->node_names.remove(Node::NameKey(node), node->name_num);
+
 	foreach (const Port *port, node->node_ports)
 		removeObject(port->id);
 

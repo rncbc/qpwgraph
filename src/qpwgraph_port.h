@@ -101,9 +101,13 @@ public:
 	{
 	public:
 		// Constructor.
+		PortIdKey (uint id, Mode mode, uint type = 0)
+			: IdKey(id, mode, type) {}
 		PortIdKey(qpwgraph_port *port)
 			: IdKey(port->portId(), port->portMode(), port->portType()) {}
 	};
+
+	typedef QHash<PortIdKey, qpwgraph_port *> PortIds;
 
 	// Port hash/map key (by name).
 	class PortNameKey : public NameKey
@@ -116,7 +120,7 @@ public:
 			: NameKey(port->portName(), port->portMode(), port->portType()) {}
 	};
 
-	typedef QMultiHash<PortNameKey, qpwgraph_port *> PortKeys;
+	typedef QHash<PortNameKey, qpwgraph_port *> PortNames;
 
 	// Port sorting type.
 	enum SortType { PortName = 0, PortTitle, PortIndex };
