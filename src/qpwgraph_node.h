@@ -65,8 +65,12 @@ public:
 	void setNodeIcon(const QIcon& icon);
 	const QIcon& nodeIcon() const;
 
+	void setNodeLabel(const QString& label);
+	const QString& nodeLabel() const;
+	QString nodeNameLabel() const;
+
 	void setNodeTitle(const QString& title);
-	QString nodeTitle() const;
+	const QString& nodeTitle() const;
 
 	// Port-list methods.
 	qpwgraph_port *addPort(uint id, const QString& name, Mode mode, int type = 0);
@@ -133,7 +137,7 @@ private:
 	uint    m_type;
 
 	QIcon   m_icon;
-
+	QString m_label;
 	QString m_title;
 
 	QGraphicsPixmapItem *m_pixmap;

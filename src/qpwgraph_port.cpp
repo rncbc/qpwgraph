@@ -59,9 +59,7 @@ qpwgraph_port::qpwgraph_port ( qpwgraph_node *node, uint id,
 
 	QGraphicsPathItem::setAcceptHoverEvents(true);
 
-	QGraphicsPathItem::setToolTip(m_name);
-
-	setPortTitle(m_name);
+	setPortTitle(QString());
 }
 
 
@@ -93,7 +91,7 @@ void qpwgraph_port::setPortName ( const QString& name )
 {
 	m_name = name;
 
-	QGraphicsPathItem::setToolTip(m_name);
+	QGraphicsPathItem::setToolTip(portNameLabel());
 }
 
 
@@ -139,8 +137,39 @@ uint qpwgraph_port::portType (void) const
 }
 
 
+void qpwgraph_port::setPortLabel ( const QString& label )
+{
+	m_label = label;
+
+	setPortTitle(QString()); // reset title.
+}
+
+
+const QString& qpwgraph_port::portLabel (void) const
+{
+	return m_label;
+}
+
+
+QString qpwgraph_port::portNameLabel (void) const
+{
+	QString label = m_name;
+
+	if (!m_label.isEmpty()) {
+		label += ' ';
+		label += '[';
+		label += m_label;
+		label += ']';
+	}
+
+	return label;
+}
+
+
 void qpwgraph_port::setPortTitle ( const QString& title )
 {
+	QGraphicsPathItem::setToolTip(portNameLabel());
+
 	m_title = (title.isEmpty() ? m_name : title);
 
 	static const int MAX_TITLE_LENGTH = 29;

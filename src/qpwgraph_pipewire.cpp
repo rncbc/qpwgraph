@@ -259,13 +259,6 @@ void qpwgraph_node_event_info ( void *data, const struct pw_node_info *info )
 					= spa_dict_lookup(info->props, PW_KEY_MEDIA_NAME);
 				if (media_name && ::strlen(media_name) > 0)
 					node->media_name = media_name;
-				const char *media_role
-					= spa_dict_lookup(info->props, PW_KEY_MEDIA_ROLE);
-				if (media_role && ::strlen(media_role) > 0
-					&& (::strcmp(media_role, "Music") == 0 ||
-						::strcmp(media_role, "Movie") == 0)) {
-					node->media_name = media_role;
-				}
 				node->node_changed = true;
 				node->node_ready = true;
 				if (object->p->pw)
@@ -989,15 +982,10 @@ bool qpwgraph_pipewire::findNodePort (
 				node_name += ' ';
 				node_name += "[Control]";
 			}
-			if (!n->media_name.isEmpty()) {
-				node_name += ' ';
-				node_name += '[';
-				node_name += n->media_name;
-				node_name += ']';
-			}
 		}
 		*node = new qpwgraph_node(node_id, node_name, node_mode, node_type);
 		(*node)->setNodeIcon(n->node_icon);
+		(*node)->setNodeLabel(n->media_name);
 		n->node_changed = false;
 		qpwgraph_sect::addItem(*node);
 	}

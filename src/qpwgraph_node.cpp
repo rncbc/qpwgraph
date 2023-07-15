@@ -69,8 +69,7 @@ qpwgraph_node::qpwgraph_node (
 	QGraphicsPathItem::setFlag(QGraphicsItem::ItemIsMovable);
 	QGraphicsPathItem::setFlag(QGraphicsItem::ItemIsSelectable);
 
-	QGraphicsPathItem::setToolTip(m_name);
-	setNodeTitle(m_name);
+	setNodeTitle(QString());
 
 	const bool is_darkest = (base_value < 24);
 	QColor shadow_color = (is_darkest ? Qt::white : Qt::black);
@@ -110,7 +109,7 @@ void qpwgraph_node::setNodeName ( const QString& name )
 {
 	m_name = name;
 
-	QGraphicsPathItem::setToolTip(m_name);
+	QGraphicsPathItem::setToolTip(nodeNameLabel());
 }
 
 
@@ -158,11 +157,43 @@ const QIcon& qpwgraph_node::nodeIcon (void) const
 }
 
 
+void qpwgraph_node::setNodeLabel ( const QString& label )
+{
+	m_label = label;
+
+	setNodeTitle(QString()); // reset title.
+}
+
+
+const QString& qpwgraph_node::nodeLabel (void) const
+{
+	return m_label;
+}
+
+
+QString qpwgraph_node::nodeNameLabel (void) const
+{
+	QString label = m_name;
+
+	if (!m_label.isEmpty()) {
+		label += ' ';
+		label += '[';
+		label += m_label;
+		label += ']';
+	}
+
+	return label;
+}
+
+
 void qpwgraph_node::setNodeTitle ( const QString& title )
 {
+	const QString& name_label = nodeNameLabel();
+	QGraphicsPathItem::setToolTip(name_label);
+
 	const QFont& font = m_text->font();
 	m_text->setFont(QFont(font.family(), font.pointSize(), QFont::Bold));
-	m_title = (title.isEmpty() ? m_name : title);
+	m_title = (title.isEmpty() ? name_label : title);
 
 	static const int MAX_TITLE_LENGTH = 29;
 	static const QString ellipsis(3, '.');
@@ -175,9 +206,9 @@ void qpwgraph_node::setNodeTitle ( const QString& title )
 }
 
 
-QString qpwgraph_node::nodeTitle (void) const
+const QString& qpwgraph_node::nodeTitle (void) const
 {
-	return m_title;	// m_text->toPlainText();
+	return m_title;
 }
 
 

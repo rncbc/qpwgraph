@@ -1298,7 +1298,7 @@ bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 	const QString& node_key = nodeKey(node);
 
 	m_settings->beginGroup(NodeAliasesGroup);
-	if (node->nodeName() != node->nodeTitle()) {
+	if (node->nodeNameLabel() != node->nodeTitle()) {
 		m_settings->setValue('/' + node_key, node->nodeTitle());
 	} else {
 		m_settings->remove('/' + node_key);
@@ -1341,7 +1341,7 @@ bool qpwgraph_canvas::savePort ( qpwgraph_port *port ) const
 	const QString& port_key = portKey(port);
 
 	m_settings->beginGroup(PortAliasesGroup);
-	if (port->portName() != port->portTitle())
+	if (port->portNameLabel() != port->portTitle())
 		m_settings->setValue('/' + port_key, port->portTitle());
 	else
 		m_settings->remove('/' + port_key);
