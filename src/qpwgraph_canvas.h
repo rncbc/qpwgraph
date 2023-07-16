@@ -49,6 +49,10 @@ class QPinchGesture;
 class qpwgraph_patchbay;
 
 
+// Define if cleanup of legacy node names is needed (v0.5.0)...
+#define CONFIG_CLEANUP_NODE_NAMES 1
+
+
 //----------------------------------------------------------------------------
 // qpwgraph_canvas -- Canvas graphics scene/view.
 
@@ -164,6 +168,10 @@ public:
 	// Snap into position helper.
 	QPointF snapPos(qreal x, qreal y) const;
 
+#ifdef CONFIG_CLEANUP_NODE_NAMES
+	static bool cleanupNodeName(QString& name);
+#endif
+
 signals:
 
 	// Node factory notifications.
@@ -266,6 +274,10 @@ protected:
 
 	// Snap into position helper.
 	void snapPos(QPointF& pos) const;
+
+#ifdef CONFIG_CLEANUP_NODE_NAMES
+	void cleanupNodeNames(const char *group);
+#endif
 
 private:
 

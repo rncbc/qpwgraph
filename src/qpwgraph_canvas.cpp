@@ -1356,6 +1356,10 @@ bool qpwgraph_canvas::restoreState (void)
 	if (m_settings == nullptr)
 		return false;
 
+#ifdef CONFIG_CLEANUP_NODE_NAMES
+	cleanupNodeNames(NodePosGroup);
+	cleanupNodeNames(NodeAliasesGroup);
+#endif
 	m_settings->beginGroup(ColorsGroup);
 	const QRegularExpression rx("^0x");
 	QStringListIterator key(m_settings->childKeys());
@@ -1785,6 +1789,71 @@ QPointF qpwgraph_canvas::snapPos ( qreal x, qreal y ) const
 	snapPos(pos);
 	return pos;
 }
+
+
+#ifdef CONFIG_CLEANUP_NODE_NAMES
+
+void qpwgraph_canvas::cleanupNodeNames ( const char *group )
+{
+	bool cleanup = false;
+
+	m_settings->beginGroup("/CleanupNodeNames");
+	cleanup = m_settings->value(group).toBool();
+	if (!cleanup)
+		m_settings->setValue(group, true);
+	m_settings->endGroup();
+
+	if (cleanup)
+		return;
+
+	m_settings->beginGroup(group);
+	const QRegularExpression rx("\\-([0-9]+).*$");
+	QHash<QString, QVariant> keys;
+	QStringListIterator iter(m_settings->childKeys());
+	while (iter.hasNext()) {
+		const QString& key = iter.next();
+		const QVariant& value = m_settings->value(key);
+		QString key2 = key;
+		if (cleanupNodeName(key2)) {
+			int n = 0;
+			if (keys.find(key2) != keys.end()) {
+				const QRegularExpressionMatch mx = rx.match(key2);
+				if (mx.hasMatch()) {
+					n = mx.captured(1).toInt();
+					key2.remove(rx);
+				}
+				QString key3;
+				do { key3 = key2 + '-' + QString::number(++n); }
+				while (keys.find(key3) != keys.end());
+				key2 = key3;
+			}
+			if (n == 0) {
+				keys.insert(key2, value);
+				m_settings->setValue(key2, value);
+			}
+			m_settings->remove(key);
+		} else {
+			keys.insert(key, value);
+		}
+	}
+	m_settings->endGroup();
+}
+
+
+bool qpwgraph_canvas::cleanupNodeName ( QString& name )
+{
+	const QRegularExpression rx("^.+( \\[.+\\])[^ ]*$");
+	const QRegularExpressionMatch& mx = rx.match(name);
+	if (mx.hasMatch()) {
+		name.remove(mx.captured(1));
+		return true;
+	} else {
+		return false;
+	}
+}
+
+#endif//CONFIG_CLEANUP_NODE_NAMES
+
 
 
 // end of qpwgraph_canvas.cpp

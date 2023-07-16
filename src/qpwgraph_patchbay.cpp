@@ -121,6 +121,10 @@ bool qpwgraph_patchbay::load ( const QString& filename )
 		QDomElement eroot = nroot.toElement();
 		if (eroot.isNull())
 			continue;
+	#ifdef CONFIG_CLEANUP_NODE_NAMES
+		const bool cleanup
+			= (eroot.attribute("version") < "0.5.0");
+	#endif
 		if (eroot.tagName() == "items") {
 			for (QDomNode nitem = eroot.firstChild();
 				!nitem.isNull();
@@ -148,6 +152,14 @@ bool qpwgraph_patchbay::load ( const QString& filename )
 							port2 = eitem2.attribute("port");
 						}
 					}
+				#ifdef CONFIG_CLEANUP_NODE_NAMES
+					if (cleanup) { // FIXME: Cleanup legacy node names...
+						if (qpwgraph_canvas::cleanupNodeName(node1))
+							++m_dirty;
+						if (qpwgraph_canvas::cleanupNodeName(node2))
+							++m_dirty;
+					}
+				#endif
 					if (node_type > 0 && port_type > 0
 						&& !node1.isEmpty() && !port1.isEmpty()
 						&& !node2.isEmpty() && !port2.isEmpty()) {
@@ -178,36 +190,6 @@ bool qpwgraph_patchbay::save ( const QString& filename )
 	doc.appendChild(eroot);
 
 	QDomElement eitems = doc.createElement("items");
-#if 0//--direct snapshot!
-	QGraphicsScene *scene = m_canvas->scene();
-	if (scene) foreach (QGraphicsItem *item, scene->items()) {
-		if (item->type() == qpwgraph_connect::Type) {
-			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
-			if (connect) {
-				qpwgraph_port *port1 = connect->port1();
-				qpwgraph_port *port2 = connect->port2();
-				if (port1 && port2) {
-					qpwgraph_node *node1 = port1->portNode();
-					qpwgraph_node *node2 = port2->portNode();
-					if (node1 && node2) {
-						QDomElement eitem = doc.createElement("item");
-						eitem.setAttribute("node-type", textFromNodeType(node1->nodeType()));
-						eitem.setAttribute("port-type", textFromPortType(port1->portType()));
-						QDomElement eitem1 = doc.createElement("output");
-						eitem1.setAttribute("node", node1->nodeName());
-						eitem1.setAttribute("port", port1->portName());
-						eitem.appendChild(eitem1);
-						QDomElement eitem2 = doc.createElement("input");
-						eitem2.setAttribute("node", node2->nodeName());
-						eitem2.setAttribute("port", port2->portName());
-						eitem.appendChild(eitem2);
-						eitems.appendChild(eitem);
-					}
-				}
-			}
-		}
-	}
-#else
 	Items::ConstIterator iter = m_items.constBegin();
 	const Items::ConstIterator& iter_end = m_items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
@@ -225,7 +207,6 @@ bool qpwgraph_patchbay::save ( const QString& filename )
 		eitem.appendChild(eitem2);
 		eitems.appendChild(eitem);
 	}
-#endif
 	eroot.appendChild(eitems);
 
 	QFile file(filename);
