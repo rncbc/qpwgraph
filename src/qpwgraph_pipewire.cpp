@@ -185,7 +185,7 @@ struct qpwgraph_pipewire::Data
 
 	typedef QMultiHash<Node::NameKey, uint> NodeNames;
 
-	NodeNames node_names;
+	NodeNames *node_names;
 };
 
 inline uint qHash ( const qpwgraph_pipewire::Node::NameKey& key )
@@ -690,6 +690,8 @@ bool qpwgraph_pipewire::open (void)
 	spa_list_init(&m_data->pending);
 	m_data->pending_seq = 0;
 
+	m_data->node_names = new Data::NodeNames;
+
 	m_data->loop = pw_thread_loop_new("qpwgraph_thread_loop", nullptr);
 	if (m_data->loop == nullptr) {
 		qDebug("pw_thread_loop_new: Can't create thread loop.");
@@ -768,6 +770,9 @@ void qpwgraph_pipewire::close (void)
 
 	if (m_data->loop)
 		pw_thread_loop_destroy(m_data->loop);
+
+	if (m_data->node_names)
+		delete m_data->node_names;
 
 	delete m_data;
 	m_data = nullptr;
@@ -1223,12 +1228,17 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	node->node_ready = false;
 	node->name_num = 0;
 
-	const Node::NameKey name_key(node);
-	Data::NodeNames::Iterator name_iter
-		= m_data->node_names.find(name_key, node->name_num);
-	while (name_iter != m_data->node_names.end())
-		name_iter = m_data->node_names.find(name_key, ++(node->name_num));
-	m_data->node_names.insert(name_key, node->name_num);
+	Data::NodeNames *node_names = nullptr;
+	if (m_data)
+		node_names = m_data->node_names;
+	if (node_names) {
+		const Node::NameKey name_key(node);
+		Data::NodeNames::Iterator name_iter
+			= node_names->find(name_key, node->name_num);
+		while (name_iter != node_names->end())
+			name_iter = node_names->find(name_key, ++(node->name_num));
+		node_names->insert(name_key, node->name_num);
+	}
 
 	addObjectEx(node_id, node);
 
@@ -1238,7 +1248,11 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 
 void qpwgraph_pipewire::destroyNode ( Node *node )
 {
-	m_data->node_names.remove(Node::NameKey(node), node->name_num);
+	Data::NodeNames *node_names = nullptr;
+	if (m_data)
+		node_names = m_data->node_names;
+	if (node_names)
+		node_names->remove(Node::NameKey(node), node->name_num);
 
 	foreach (const Port *port, node->node_ports)
 		removeObject(port->id);
