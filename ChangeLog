@@ -2,6 +2,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+0.5.1  2023-07-17  A summer'23 hot-fix release.
+
+- Fixed segfault on initialization that was affecting Qt5 builds.
+
+
 0.5.0  2023-07-16  Yet another summer'23 release.
 
 - Completely refactored the internal PipeWire node registry logic,
