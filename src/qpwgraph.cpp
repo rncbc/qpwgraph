@@ -149,19 +149,13 @@ bool qpwgraph_application::setup (void)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
 	const QNativeIpcKey native_key
 		= QSharedMemory::legacyNativeKey(m_unique);
-#endif
-#if defined(Q_OS_UNIX)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
 	m_memory = new QSharedMemory(native_key);
 #else
+#if defined(Q_OS_UNIX)
 	m_memory = new QSharedMemory(m_unique);
-#endif
 	m_memory->attach();
 	delete m_memory;
 #endif
-#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
-	m_memory = new QSharedMemory(native_key);
-#else
 	m_memory = new QSharedMemory(m_unique);
 #endif
 	bool is_server = false;
@@ -233,8 +227,7 @@ void qpwgraph_application::readyReadSlot (void)
 				form->apply_args(this);
 			// Just make it always shows up fine...
 			if (m_widget && !m_start_minimized) {
-				m_widget->hide();
-				m_widget->show();
+				m_widget->showNormal();
 				m_widget->raise();
 				m_widget->activateWindow();
 			}
