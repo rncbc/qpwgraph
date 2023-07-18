@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Click-dragging with the mouse middle-button is for panning only,
+  not to start a selection anymore. (cf. issue #76) (EXPERIMENTAL)
+
+
 0.5.1  2023-07-17  A summer'23 hot-fix release.
 
 - Fixed segfault on initialization that was affecting Qt5 builds.

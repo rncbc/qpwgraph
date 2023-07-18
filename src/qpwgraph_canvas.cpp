@@ -612,15 +612,12 @@ void qpwgraph_canvas::mousePressEvent ( QMouseEvent *event )
 	m_item = nullptr;
 	m_pos = QGraphicsView::mapToScene(event->pos());
 
-	qpwgraph_item *item = itemAt(m_pos);
-	if (item && item->type() >= QGraphicsItem::UserType)
-		m_item = static_cast<qpwgraph_item *> (item);
-
-	if (event->button() == Qt::LeftButton ||
-		event->button() == Qt::MiddleButton)
+	if (event->button() == Qt::LeftButton) {
+		m_item = itemAt(m_pos);
 		m_state = DragStart;
+	}
 
-	if (m_state == DragStart && m_item == nullptr
+	if (m_item == nullptr
 		&& (((event->button() == Qt::LeftButton)
 		  && (event->modifiers() & Qt::ControlModifier))
 		  || (event->button() == Qt::MiddleButton))
