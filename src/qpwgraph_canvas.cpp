@@ -937,7 +937,7 @@ void qpwgraph_canvas::mouseDoubleClickEvent ( QMouseEvent *event )
 
 void qpwgraph_canvas::wheelEvent ( QWheelEvent *event )
 {
-/*	if (event->modifiers() & Qt::ControlModifier) {
+	if (event->modifiers() & Qt::ControlModifier) {
 		const int delta
 		#if QT_VERSION < 0x050000
 			= event->delta();
@@ -946,7 +946,7 @@ void qpwgraph_canvas::wheelEvent ( QWheelEvent *event )
 		#endif
 		setZoom(zoom() + qreal(delta) / 1200.0);
 	}
-	else QGraphicsView::wheelEvent(event); */
+	else QGraphicsView::wheelEvent(event);
 }
 
 
