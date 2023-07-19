@@ -622,7 +622,18 @@ void qpwgraph_canvas::mousePressEvent ( QMouseEvent *event )
 		  && (event->modifiers() & Qt::ControlModifier))
 		  || (event->button() == Qt::MiddleButton))
 		&& m_scene->selectedItems().isEmpty()) {
-		QGraphicsView::setCursor(Qt::ClosedHandCursor);
+	#if 1//NEW_DRAG_SCROLL_MODE
+		// HACK: When about to drag-scroll,
+		// always fake a left-button press...
+		QGraphicsView::setDragMode(ScrollHandDrag);
+		QMouseEvent event2(event->type(),
+			event->position(), event->globalPosition(),
+			Qt::LeftButton, Qt::LeftButton,
+			event->modifiers() | Qt::ControlModifier);
+		QGraphicsView::mousePressEvent(&event2);
+	#else
+		QGraphicsView::setCursor(Qt::ClosedHandCursor)
+	#endif
 		m_state = DragScroll;
 	}
 }
@@ -771,12 +782,16 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 		}
 		break;
 	case DragScroll: {
+	#if 1//NEW_DRAG_SCROLL_MODE
+		QGraphicsView::mouseMoveEvent(event);
+	#else
 		QScrollBar *hbar = QGraphicsView::horizontalScrollBar();
 		QScrollBar *vbar = QGraphicsView::verticalScrollBar();
 		const QPoint delta = (pos - m_pos).toPoint();
 		hbar->setValue(hbar->value() - delta.x());
 		vbar->setValue(vbar->value() - delta.y());
 		m_pos = pos;
+	#endif
 		break;
 	}
 	default:
@@ -890,6 +905,12 @@ void qpwgraph_canvas::mouseReleaseEvent ( QMouseEvent *event )
 		break;
 	}
 
+#if 1//NEW_DRAG_SCROLL_MODE
+	if (QGraphicsView::dragMode() == ScrollHandDrag) {
+		QGraphicsView::mouseReleaseEvent(event);
+		QGraphicsView::setDragMode(NoDrag);
+	}
+#endif
 	m_state = DragNone;
 	m_item = nullptr;
 
@@ -916,7 +937,7 @@ void qpwgraph_canvas::mouseDoubleClickEvent ( QMouseEvent *event )
 
 void qpwgraph_canvas::wheelEvent ( QWheelEvent *event )
 {
-	if (event->modifiers() & Qt::ControlModifier) {
+/*	if (event->modifiers() & Qt::ControlModifier) {
 		const int delta
 		#if QT_VERSION < 0x050000
 			= event->delta();
@@ -925,7 +946,7 @@ void qpwgraph_canvas::wheelEvent ( QWheelEvent *event )
 		#endif
 		setZoom(zoom() + qreal(delta) / 1200.0);
 	}
-	else QGraphicsView::wheelEvent(event);
+	else QGraphicsView::wheelEvent(event); */
 }
 
 
