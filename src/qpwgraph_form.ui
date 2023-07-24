@@ -495,7 +495,7 @@
     <string>Quit this application program</string>
    </property>
    <property name="shortcut">
-    <string/>
+    <string>Ctrl+Q</string>
    </property>
   </action>
   <action name="editSelectAllAction">
