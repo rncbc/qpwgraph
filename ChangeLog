@@ -8,6 +8,7 @@ GIT HEAD
   lot smoother, hopefully. (cf. issue #83) (EXPERIMENTAL)
 - Click-dragging with the mouse middle-button is for panning only,
   not to start a selection anymore. (cf. issue #76) (EXPERIMENTAL)
+- Add Ctrl+Q to Quit action
 
 
 0.5.1  2023-07-17  A summer'23 hot-fix release.
