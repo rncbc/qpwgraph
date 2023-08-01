@@ -248,11 +248,6 @@ int main ( int argc, char *argv[] )
 #if defined(Q_OS_LINUX) && !defined(CONFIG_WAYLAND)
 	::setenv("QT_QPA_PLATFORM", "xcb", 0);
 #endif
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-	QGuiApplication::setHighDpiScaleFactorRoundingPolicy(
-		Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);
-#endif
-
 	qpwgraph_application app(argc, argv);
 
 	if (!app.parse_args(app.arguments())) {
