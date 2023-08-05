@@ -2,12 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.5.2  2023-08-05  A high-summer'23 release.
 
 - Ctrl+left or middle-button click-dragging for panning, is now a
-  lot smoother, hopefully. (cf. issue #83) (EXPERIMENTAL)
+  lot smoother, hopefully.
 - Click-dragging with the mouse middle-button is for panning only,
-  not to start a selection anymore. (cf. issue #76) (EXPERIMENTAL)
+  not to start a selection anymore.
 - Add Ctrl+Q to Quit action
 
 

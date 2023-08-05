@@ -1,3 +1,9 @@
+qpwgraph (0.5.2-30.1) unstable; urgency=low
+
+  * A high-summer'23 release.
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Sat,  5 Aug 2023 16:00:00 +0100
+
 qpwgraph (0.5.1-29.1) unstable; urgency=low
 
   * A summer'23 hot-fix release.
