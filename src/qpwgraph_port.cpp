@@ -168,9 +168,10 @@ QString qpwgraph_port::portNameLabel (void) const
 
 void qpwgraph_port::setPortTitle ( const QString& title )
 {
-	QGraphicsPathItem::setToolTip(portNameLabel());
+	const QString& name_label = portNameLabel();
+	QGraphicsPathItem::setToolTip(name_label);
 
-	m_title = (title.isEmpty() ? m_name : title);
+	m_title = (title.isEmpty() ? name_label : title);
 
 	static const int MAX_TITLE_LENGTH = 29;
 	static const QString ellipsis(3, '.');

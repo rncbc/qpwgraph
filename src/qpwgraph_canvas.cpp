@@ -1428,7 +1428,7 @@ bool qpwgraph_canvas::saveState (void) const
 				m_settings->setValue('/' + node_key, node->pos());
 				m_settings->endGroup();
 				m_settings->beginGroup(NodeAliasesGroup);
-				if (node->nodeName() != node->nodeTitle())
+				if (node->nodeNameLabel() != node->nodeTitle())
 					m_settings->setValue('/' + node_key, node->nodeTitle());
 				else
 					m_settings->remove('/' + node_key);
