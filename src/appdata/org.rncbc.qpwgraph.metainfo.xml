@@ -7,9 +7,9 @@
  <name>qpwgraph</name>
  <summary>A PipeWire Graph Qt GUI Interface</summary>
  <description>
-  <p>qpwgraph is a graph manager dedicated to PipeWire (https://pipewire.org),
-  using the Qt C++ framework (https://qt.io), based and pretty much like the
-  same of QjackCtl (https://qjackctl.sourceforge.io).</p>
+  <p>qpwgraph is a graph manager dedicated to PipeWire (https\://pipewire.org),
+  using the Qt C++ framework (https\://qt.io), based and pretty much like the
+  same of QjackCtl (https\://qjackctl.sourceforge.io).</p>
  </description>
  <launchable type="desktop-id">org.rncbc.qpwgraph.desktop</launchable>
  <provides>
@@ -18,11 +18,11 @@
  <screenshots>
   <screenshot type="default">
    <image>https://gitlab.freedesktop.org/rncbc/qpwgraph/-/raw/main/src/images/qpwgraph_screenshot-1.png</image>
-   <caption>The main screenshot showing the application in action</caption>
+   <caption>The main application window in action</caption>
   </screenshot>
   <screenshot>
    <image>https://gitlab.freedesktop.org/rncbc/qpwgraph/-/raw/main/src/images/qpwgraph.svg</image>
-   <caption>The official system tray icon showing the application in action</caption>
+   <caption>The official system tray icon</caption>
   </screenshot>
  </screenshots>
  <keywords>
