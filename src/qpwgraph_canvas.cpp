@@ -1442,7 +1442,7 @@ bool qpwgraph_canvas::saveState (void) const
 			if (port) {
 				const QString& port_key = portKey(port);
 				m_settings->beginGroup(PortAliasesGroup);
-				if (port && port->portName() != port->portTitle())
+				if (port && port->portNameLabel() != port->portTitle())
 					m_settings->setValue('/' + port_key, port->portTitle());
 				else
 					m_settings->remove('/' + port_key);
