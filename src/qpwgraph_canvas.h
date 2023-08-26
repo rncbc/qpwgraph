@@ -50,7 +50,7 @@ class qpwgraph_patchbay;
 
 
 // Define if cleanup of legacy node names is needed (v0.5.0)...
-#define CONFIG_CLEANUP_NODE_NAMES 1
+#undef CONFIG_CLEANUP_NODE_NAMES
 
 
 //----------------------------------------------------------------------------
