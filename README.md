@@ -54,3 +54,8 @@
 ## Copyright
 
   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+
+## Documentation
+
+  [How To Use The Patchbay](docs/qpwgraph_patchbay-user_manual.md)
+
