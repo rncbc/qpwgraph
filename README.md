@@ -1,6 +1,6 @@
 # qpwgraph - A PipeWire Graph Qt GUI Interface
 
-![Screenshot](src/images/qpwgraph_screenshot-1.png "Screenshot")
+![Screenshot](src/images/qpwgraph_screenshot-1.png)
 
   **qpwgraph** is a graph manager dedicated to [PipeWire](https://pipewire.org),
   using the [Qt C++ framework](https://qt.io), based and pretty much like the
@@ -44,18 +44,17 @@
 
   Enjoy.
 
+## Documentation
+
+  [How To Use The Patchbay](docs/qpwgraph_patchbay-user_manual.md)
+
 ## License
 
   **qpwgraph** is free, open-source software, distributed under the terms of
   the GNU General Public License ([GPL](https://www.gnu.org/copyleft/gpl.html))
   version 2 or later.
 
-
 ## Copyright
 
   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
-
-## Documentation
-
-  [How To Use The Patchbay](docs/qpwgraph_patchbay-user_manual.md)
 

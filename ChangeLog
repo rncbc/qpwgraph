@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Added user contributed documentation: How To Use The Patchbay.
+- Fix condition for saving node name aliases. (EXPERIMENTAL)
+
+
 0.5.2  2023-08-05  A high-summer'23 release.
 
 - Ctrl+left or middle-button click-dragging for panning, is now a
