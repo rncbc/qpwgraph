@@ -2,10 +2,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.5.3  2023-09-08  An end-of-summer'23 release.
 
 - Added user contributed documentation: How To Use The Patchbay.
-- Fix condition for saving node name aliases. (EXPERIMENTAL)
+- Fix condition for saving node name aliases.
 
 
 0.5.2  2023-08-05  A high-summer'23 release.
