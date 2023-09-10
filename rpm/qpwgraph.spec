@@ -83,12 +83,8 @@ BuildRequires:	pkgconfig(Qt5Svg)
 BuildRequires:	pkgconfig(Qt5Xml)
 BuildRequires:	pkgconfig(Qt5Network)
 %endif
-%if %{defined fedora}
-BuildRequires:	alsa-lib-devel
-%else
-BuildRequires:	alsa-devel
-%endif
-BuildRequires:	pipewire-devel
+BuildRequires:	pkgconfig(alsa)
+BuildRequires:	pkgconfig(libpipewire-0.3)
 
 %if %{defined fedora}
 BuildRequires:	liblilv-0-0 libsratom-0-0 libsord-0-0 libserd-0-0
