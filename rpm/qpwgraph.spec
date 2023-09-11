@@ -86,10 +86,6 @@ BuildRequires:	pkgconfig(Qt5Network)
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(libpipewire-0.3)
 
-%if %{defined fedora}
-BuildRequires:	liblilv-0-0 libsratom-0-0 libsord-0-0 libserd-0-0
-%endif
-
 %description
 qpwgraph is a graph manager dedicated for PipeWire (https://pipewire.org),
 using the Qt C++ framework (https://qt.io), based and pretty much like the
