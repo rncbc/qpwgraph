@@ -78,15 +78,7 @@ qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 qpwgraph_application::~qpwgraph_application (void)
 {
 #ifdef CONFIG_SYSTEM_TRAY
-	if (m_server) {
-		m_server->close();
-		delete m_server;
-		m_server = nullptr;
-	}
-	if (m_memory) {
-		delete m_memory;
-		m_memory = nullptr;
-	}
+	clearServer();
 #endif
 }
 
@@ -134,8 +126,10 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 
 // Check if another instance is running,
 // and raise its proper main widget...
-bool qpwgraph_application::setup (void)
+bool qpwgraph_application::setupServer (void)
 {
+	clearServer();
+
 	m_unique = QCoreApplication::applicationName();
 	QString uname = QString::fromUtf8(::getenv("USER"));
 	if (uname.isEmpty())
@@ -203,6 +197,24 @@ bool qpwgraph_application::setup (void)
 }
 
 
+// Local server/shmem cleanup.
+void qpwgraph_application::clearServer (void)
+{
+	if (m_server) {
+		m_server->close();
+		delete m_server;
+		m_server = nullptr;
+	}
+
+	if (m_memory) {
+		delete m_memory;
+		m_memory = nullptr;
+	}
+
+	m_unique.clear();
+}
+
+
 // Local server connection slot.
 void qpwgraph_application::newConnectionSlot (void)
 {
@@ -231,6 +243,8 @@ void qpwgraph_application::readyReadSlot (void)
 				m_widget->raise();
 				m_widget->activateWindow();
 			}
+			// Reset server...
+			setupServer();
 		}
 	}
 }
@@ -257,7 +271,7 @@ int main ( int argc, char *argv[] )
 
 #ifdef CONFIG_SYSTEM_TRAY
 	// Have another instance running?
-	if (!app.setup()) {
+	if (!app.setupServer()) {
 		app.quit();
 		return 2;
 	}

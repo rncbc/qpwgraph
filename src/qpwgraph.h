@@ -73,13 +73,18 @@ public:
 
 	// Check if another instance is running,
 	// and raise its proper main widget...
-	bool setup();
+	bool setupServer();
 
 protected slots:
 
 	// Local server slots.
 	void newConnectionSlot();
 	void readyReadSlot();
+
+protected:
+
+	// Local server/shmem setup/cleanup.
+	void clearServer();
 
 #endif
 
