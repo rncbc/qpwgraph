@@ -4,6 +4,8 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Added deactivated (-d, --deactivated) and non-exclusive patchbay
+  (-n, --nonexclusive) command line options. (GH #27) (EXPERIMENTAL)
 - Fixed unique/single instance support (Qt >= 6.6).
 
 

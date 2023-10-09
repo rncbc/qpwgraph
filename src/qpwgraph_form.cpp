@@ -513,10 +513,11 @@ qpwgraph_form::~qpwgraph_form (void)
 // Take care of command line options and arguments...
 void qpwgraph_form::apply_args ( qpwgraph_application *app )
 {
-	if (app->isPatchbayActivated())
-		m_ui.patchbayActivatedAction->setChecked(true);
-	if (app->isPatchbayExclusive())
-		m_ui.patchbayExclusiveAction->setChecked(true);
+	if (app->isPatchbayActivatedSet())
+		m_ui.patchbayActivatedAction->setChecked(app->isPatchbayActivated());
+	if (app->isPatchbayExclusiveSet())
+		m_ui.patchbayExclusiveAction->setChecked(app->isPatchbayExclusive());
+
 	if (!app->patchbayPath().isEmpty())
 		patchbayOpenFile(app->patchbayPath());
 

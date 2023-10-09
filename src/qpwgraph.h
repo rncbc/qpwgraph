@@ -62,10 +62,14 @@ public:
 	// Parsed command-line options and arguments accessors.
 	const QString& patchbayPath() const
 		{ return m_patchbay_path; }
+	bool isPatchbayActivatedSet() const
+		{ return m_patchbay_activated >= 0; }
+	bool isPatchbayExclusiveSet() const
+		{ return m_patchbay_exclusive >= 0; }
 	bool isPatchbayActivated() const
-		{ return m_patchbay_activated; }
+		{ return m_patchbay_activated > 0; }
 	bool isPatchbayExclusive() const
-		{ return m_patchbay_exclusive; }
+		{ return m_patchbay_exclusive > 0; }
 	bool isStartMinimized() const
 		{ return m_start_minimized; }
 
@@ -99,8 +103,8 @@ private:
 #endif
 	// Parsed command-line options and arguments.
 	QString m_patchbay_path;
-	bool    m_patchbay_activated;
-	bool    m_patchbay_exclusive;
+	int     m_patchbay_activated;
+	int     m_patchbay_exclusive;
 	bool    m_start_minimized;
 };
 

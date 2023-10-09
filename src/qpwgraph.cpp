@@ -50,8 +50,8 @@ qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 #ifdef CONFIG_SYSTEM_TRAY
 	, m_memory(nullptr), m_server(nullptr)
 #endif
-	, m_patchbay_activated(false)
-	, m_patchbay_exclusive(false)
+	, m_patchbay_activated(-1)
+	, m_patchbay_exclusive(-1)
 	, m_start_minimized(false)
 {
 	QApplication::setApplicationName(PROJECT_NAME);
@@ -90,11 +90,21 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 	parser.setApplicationDescription(
 		PROJECT_NAME " - " + QObject::tr(PROJECT_DESCRIPTION));
 
-	parser.addOption({{"a", "activated"},
+	const QString s_activated    = "activated";
+	const QString s_deactivated  = "de" + s_activated;
+	const QString s_exclusive    = "exclusive";
+	const QString s_nonexclusive = "non" + s_exclusive;
+	const QString s_minimized    = "minimized";
+
+	parser.addOption({{"a", s_activated},
 		QObject::tr("Activated patchbay.")});
-	parser.addOption({{"x", "exclusive"},
+	parser.addOption({{"d", s_deactivated},
+		QObject::tr("Deactivated patchbay.")});
+	parser.addOption({{"x", s_exclusive},
 		QObject::tr("Exclusive patchbay.")});
-	parser.addOption({{"m", "minimized"},
+	parser.addOption({{"n", s_nonexclusive},
+		QObject::tr("Non-exclusive patchbay.")});
+	parser.addOption({{"m", s_minimized},
 		QObject::tr("Start minimized.")});
 	parser.addHelpOption();
 	parser.addVersionOption();
@@ -104,9 +114,19 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 		QObject::tr("[patchbay-file]"));
 	parser.process(args);
 
-	m_patchbay_activated = parser.isSet("activated");
-	m_patchbay_exclusive = parser.isSet("exclusive");
-	m_start_minimized = parser.isSet("minimized");
+	if (parser.isSet(s_activated))
+		m_patchbay_activated = 1;
+	else
+	if (parser.isSet(s_deactivated))
+		m_patchbay_activated = 0;
+
+	if (parser.isSet(s_exclusive))
+		m_patchbay_exclusive = 1;
+	else
+	if (parser.isSet(s_nonexclusive))
+		m_patchbay_exclusive = 0;
+
+	m_start_minimized = parser.isSet(s_minimized);
 
 	int nargs = 0;
 	m_patchbay_path.clear();
