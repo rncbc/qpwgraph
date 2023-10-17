@@ -61,10 +61,10 @@ BuildRequires:	gcc-c++ >= 10
 %endif
 %if 0%{qt_major_version} == 6
 %if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
-BuildRequires:	qtbase6-static >= 6.1
-BuildRequires:	qttools6-static
-BuildRequires:	qttranslations6-static
-BuildRequires:	qtsvg6-static
+BuildRequires:	qtbase6.6-static >= 6.6
+BuildRequires:	qttools6.6-static
+BuildRequires:	qttranslations6.6-static
+BuildRequires:	qtsvg6.6-static
 %else
 BuildRequires:	cmake(Qt6LinguistTools)
 BuildRequires:	pkgconfig(Qt6Core)
