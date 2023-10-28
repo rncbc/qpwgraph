@@ -1,7 +1,7 @@
 // qpwgraph_sect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -75,7 +75,7 @@ void qpwgraph_sect::resetItems ( uint node_type )
 {
 	const QList<qpwgraph_connect *> connects(m_connects);
 
-	foreach (qpwgraph_connect *connect, connects) {
+	for (qpwgraph_connect *connect : connects) {
 		if (connect->isMarked()) {
 			connect->setMarked(false);
 		} else {

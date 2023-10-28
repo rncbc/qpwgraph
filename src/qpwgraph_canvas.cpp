@@ -187,7 +187,7 @@ bool qpwgraph_canvas::isPatchbayEdit (void) const
 
 void qpwgraph_canvas::patchbayEdit (void)
 {
-	foreach (QGraphicsItem *item, m_scene->items()) {
+	for (QGraphicsItem *item : m_scene->items()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 			if (connect) {
@@ -204,7 +204,7 @@ bool qpwgraph_canvas::canPatchbayPin (void) const
 	if (m_patchbay == nullptr || !m_patchbay_edit)
 		return false;
 
-	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+	for (QGraphicsItem *item : m_scene->selectedItems()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 			if (connect && !m_patchbay->findConnect(connect))
@@ -221,7 +221,7 @@ bool qpwgraph_canvas::canPatchbayUnpin (void) const
 	if (m_patchbay == nullptr || !m_patchbay_edit)
 		return false;
 
-	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+	for (QGraphicsItem *item : m_scene->selectedItems()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 			if (connect && m_patchbay->findConnect(connect))
@@ -238,7 +238,7 @@ void qpwgraph_canvas::patchbayPin (void)
 	if (m_patchbay == nullptr || !m_patchbay_edit)
 		return;
 
-	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+	for (QGraphicsItem *item : m_scene->selectedItems()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 			if (connect && m_patchbay->connect(connect, true))
@@ -253,7 +253,7 @@ void qpwgraph_canvas::patchbayUnpin (void)
 	if (m_patchbay == nullptr || !m_patchbay_edit)
 		return;
 
-	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+	for (QGraphicsItem *item : m_scene->selectedItems()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 			if (connect && m_patchbay->connect(connect, false))
@@ -331,7 +331,7 @@ qpwgraph_item *qpwgraph_canvas::currentItem (void) const
 		item = nullptr;
 
 	if (item == nullptr) {
-		foreach (QGraphicsItem *item2, m_scene->selectedItems()) {
+		for (QGraphicsItem *item2 : m_scene->selectedItems()) {
 			if (item2->type() == qpwgraph_connect::Type)
 				continue;
 			item = static_cast<qpwgraph_item *> (item2);
@@ -350,7 +350,7 @@ bool qpwgraph_canvas::canConnect (void) const
 	int nins = 0;
 	int nouts = 0;
 
-	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+	for (QGraphicsItem *item : m_scene->selectedItems()) {
 		if (item->type() == qpwgraph_node::Type) {
 			qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
 			if (node) {
@@ -382,13 +382,13 @@ bool qpwgraph_canvas::canConnect (void) const
 
 bool qpwgraph_canvas::canDisconnect (void) const
 {
-	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+	for (QGraphicsItem *item : m_scene->selectedItems()) {
 		switch (item->type()) {
 		case qpwgraph_connect::Type:
 			return true;
 		case qpwgraph_node::Type: {
 			qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
-			foreach (qpwgraph_port *port, node->ports()) {
+			for (qpwgraph_port *port : node->ports()) {
 				if (!port->connects().isEmpty())
 					return true;
 			}
@@ -460,7 +460,7 @@ void qpwgraph_canvas::resetNodes ( uint node_type )
 {
 	QList<qpwgraph_node *> nodes;
 
-	foreach (qpwgraph_node *node, m_nodes) {
+	for (qpwgraph_node *node : m_nodes) {
 		if (node->nodeType() == node_type) {
 			if (node->isMarked()) {
 				node->resetMarkedPorts();
@@ -480,7 +480,7 @@ void qpwgraph_canvas::clearNodes ( uint node_type )
 {
 	QList<qpwgraph_node *> nodes;
 
-	foreach (qpwgraph_node *node, m_nodes) {
+	for (qpwgraph_node *node : m_nodes) {
 		if (node->nodeType() == node_type) {
 			m_node_names.remove(qpwgraph_node::NodeNameKey(node), node);
 			m_node_ids.remove(qpwgraph_node::NodeIdKey(node), node);
@@ -572,7 +572,7 @@ qpwgraph_item *qpwgraph_canvas::itemAt ( const QPointF& pos ) const
 	const QList<QGraphicsItem *>& items
 		= m_scene->items(QRectF(pos - QPointF(2, 2), QSizeF(5, 5)));
 
-	foreach (QGraphicsItem *item, items) {
+	for (QGraphicsItem *item : items) {
 		if (item->type() >= QGraphicsItem::UserType)
 			return static_cast<qpwgraph_item *> (item);
 	}
@@ -719,7 +719,7 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 			if (!m_zoomrange) {
 				if (event->modifiers()
 					& (Qt::ControlModifier | Qt::ShiftModifier)) {
-					foreach (QGraphicsItem *item, m_selected) {
+					for (QGraphicsItem *item : m_selected) {
 						item->setSelected(!item->isSelected());
 						++nchanged;
 					}
@@ -730,7 +730,7 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 					++nchanged;
 				}
 				const QRectF range_rect(m_pos, pos);
-				foreach (QGraphicsItem *item,
+				for (QGraphicsItem *item :
 						m_scene->items(range_rect.normalized())) {
 					if (item->type() >= QGraphicsItem::UserType) {
 						if (item->type() != qpwgraph_node::Type)
@@ -758,7 +758,7 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 		if (m_item && m_item->type() == qpwgraph_node::Type) {
 			snapPos(pos);
 			const QPointF delta = (pos - m_pos);
-			foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+			for (QGraphicsItem *item : m_scene->selectedItems()) {
 				if (item->type() == qpwgraph_node::Type) {
 					qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
 					if (node)
@@ -880,7 +880,7 @@ void qpwgraph_canvas::mouseReleaseEvent ( QMouseEvent *event )
 			const QPointF& pos
 				= QGraphicsView::mapToScene(event->pos());
 			QList<qpwgraph_node *> nodes;
-			foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+			for (QGraphicsItem *item : m_scene->selectedItems()) {
 				if (item->type() == qpwgraph_node::Type) {
 					qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
 					if (node)
@@ -971,7 +971,7 @@ void qpwgraph_canvas::connectItems (void)
 	QList<qpwgraph_port *> outs;
 	QList<qpwgraph_port *> ins;
 
-	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+	for (QGraphicsItem *item : m_scene->selectedItems()) {
 		if (item->type() == qpwgraph_port::Type) {
 			qpwgraph_port *port = static_cast<qpwgraph_port *> (item);
 			if (port) {
@@ -1033,7 +1033,7 @@ void qpwgraph_canvas::disconnectItems (void)
 	QList<qpwgraph_connect *> connects;
 	QList<qpwgraph_node *> nodes;
 
-	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+	for (QGraphicsItem *item : m_scene->selectedItems()) {
 		switch (item->type()) {
 		case qpwgraph_connect::Type: {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
@@ -1050,9 +1050,9 @@ void qpwgraph_canvas::disconnectItems (void)
 	}
 
 	if (connects.isEmpty()) {
-		foreach (qpwgraph_node *node, nodes) {
-			foreach (qpwgraph_port *port, node->ports()) {
-				foreach (qpwgraph_connect *connect, port->connects()) {
+		for (qpwgraph_node *node : nodes) {
+			for (qpwgraph_port *port : node->ports()) {
+				for (qpwgraph_connect *connect : port->connects()) {
 					if (!connects.contains(connect))
 						connects.append(connect);
 				}
@@ -1070,7 +1070,7 @@ void qpwgraph_canvas::disconnectItems (void)
 
 	m_commands->beginMacro(tr("Disconnect"));
 
-	foreach (qpwgraph_connect *connect, connects) {
+	for (qpwgraph_connect *connect : connects) {
 		// Submit command; notify eventual observers...
 		qpwgraph_port *port1 = connect->port1();
 		qpwgraph_port *port2 = connect->port2();
@@ -1085,7 +1085,7 @@ void qpwgraph_canvas::disconnectItems (void)
 // Select actions.
 void qpwgraph_canvas::selectAll (void)
 {
-	foreach (QGraphicsItem *item, m_scene->items()) {
+	for (QGraphicsItem *item : m_scene->items()) {
 		if (item->type() == qpwgraph_node::Type)
 			item->setSelected(true);
 		else
@@ -1107,7 +1107,7 @@ void qpwgraph_canvas::selectNone (void)
 
 void qpwgraph_canvas::selectInvert (void)
 {
-	foreach (QGraphicsItem *item, m_scene->items()) {
+	for (QGraphicsItem *item : m_scene->items()) {
 		if (item->type() == qpwgraph_node::Type)
 			item->setSelected(!item->isSelected());
 		else
@@ -1231,7 +1231,7 @@ void qpwgraph_canvas::zoomReset (void)
 // Update all nodes.
 void qpwgraph_canvas::updateNodes (void)
 {
-	foreach (QGraphicsItem *item, m_scene->items()) {
+	for (QGraphicsItem *item : m_scene->items()) {
 		if (item->type() == qpwgraph_node::Type) {
 			qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
 			if (node)
@@ -1244,7 +1244,7 @@ void qpwgraph_canvas::updateNodes (void)
 // Update all connectors.
 void qpwgraph_canvas::updateConnects (void)
 {
-	foreach (QGraphicsItem *item, m_scene->items()) {
+	for (QGraphicsItem *item : m_scene->items()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 			if (connect)
@@ -1419,7 +1419,7 @@ bool qpwgraph_canvas::saveState (void) const
 	QList<qpwgraph_node *> nodes;
 
 	const QList<QGraphicsItem *> items(m_scene->items());
-	foreach (QGraphicsItem *item, items) {
+	for (QGraphicsItem *item : items) {
 		if (item->type() == qpwgraph_node::Type) {
 			qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
 			if (node && !nodes.contains(node)) {
@@ -1549,7 +1549,7 @@ const QColor& qpwgraph_canvas::portTypeColor ( uint port_type )
 
 void qpwgraph_canvas::updatePortTypeColors ( uint port_type )
 {
-	foreach (QGraphicsItem *item, m_scene->items()) {
+	for (QGraphicsItem *item : m_scene->items()) {
 		if (item->type() == qpwgraph_port::Type) {
 			qpwgraph_port *port = static_cast<qpwgraph_port *> (item);
 			if (port && (0 >= port_type || port->portType() == port_type)) {
@@ -1660,7 +1660,7 @@ void qpwgraph_canvas::repelOverlappingNodes ( qpwgraph_node *node,
 		-2.0 * MIN_NODE_GAP, -MIN_NODE_GAP,
 		+2.0 * MIN_NODE_GAP, +MIN_NODE_GAP);
 
-	foreach (qpwgraph_node *node2, m_nodes) {
+	for (qpwgraph_node *node2 : m_nodes) {
 		if (node2->isMarked())
 			continue;
 		const QPointF& pos1
@@ -1721,7 +1721,7 @@ void qpwgraph_canvas::repelOverlappingNodes ( qpwgraph_node *node,
 void qpwgraph_canvas::repelOverlappingNodesAll (
 	qpwgraph_move_command *move_command )
 {
-	foreach (qpwgraph_node *node, m_nodes)
+	for (qpwgraph_node *node : m_nodes)
 		repelOverlappingNodes(node, move_command);
 }
 

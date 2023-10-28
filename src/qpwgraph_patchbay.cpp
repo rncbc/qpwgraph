@@ -72,7 +72,7 @@ void qpwgraph_patchbay::snap (void)
 	if (scene == nullptr)
 		return;
 
-	foreach (QGraphicsItem *item, scene->items()) {
+	for (QGraphicsItem *item : scene->items()) {
 		if (item->type() == qpwgraph_connect::Type) {
 			qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 			if (connect) {
@@ -281,7 +281,7 @@ bool qpwgraph_patchbay::scan (void)
 		if (port2 == nullptr)
 			continue;
 		if (m_exclusive) {
-			foreach (qpwgraph_connect *connect, port1->connects()) {
+			for (qpwgraph_connect *connect : port1->connects()) {
 				qpwgraph_port *port3 = connect->port2();
 				if (port3 == nullptr)
 					continue;

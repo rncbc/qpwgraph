@@ -833,7 +833,7 @@ void qpwgraph_pipewire::connectPorts (
 
 	if (!is_connect) {
 		// Disconnect ports...
-		foreach (Link *link, p1->port_links) {
+		for (Link *link : p1->port_links) {
 			if ((link->port1_id == p1->id) &&
 				(link->port2_id == p2->id)) {
 				pw_registry_destroy(m_data->registry, link->id);
@@ -1028,13 +1028,13 @@ void qpwgraph_pipewire::updateItems (void)
 	//
 	QList<qpwgraph_port *> ports;
 
-	foreach (Object *object, m_objects) {
+	for (Object *object : m_objects) {
 		if (object->type != Object::Node)
 			continue;
 		Node *n1 = static_cast<Node *> (object);
 		if (!n1->node_ready)
 			continue;
-		foreach (const Port *p1, n1->node_ports) {
+		for (const Port *p1 : n1->node_ports) {
 			const qpwgraph_item::Mode port_mode1
 				= p1->port_mode;
 			qpwgraph_node *node1 = nullptr;
@@ -1052,11 +1052,11 @@ void qpwgraph_pipewire::updateItems (void)
 
 	// 2. Links inventory...
 	//
-	foreach (qpwgraph_port *port1, ports) {
+	for (qpwgraph_port *port1 : ports) {
 		Port *p1 = findPort(port1->portId());
 		if (p1 == nullptr)
 			continue;
-		foreach (const Link *link, p1->port_links) {
+		for (const Link *link : p1->port_links) {
 			Port *p2 = findPort(link->port2_id);
 			if (p2 == nullptr)
 				continue;
@@ -1254,7 +1254,7 @@ void qpwgraph_pipewire::destroyNode ( Node *node )
 	if (node_names)
 		node_names->remove(Node::NameKey(node), node->name_num);
 
-	foreach (const Port *port, node->node_ports)
+	for (const Port *port : node->node_ports)
 		removeObject(port->id);
 
 	node->node_ports.clear();
@@ -1305,7 +1305,7 @@ void qpwgraph_pipewire::destroyPort ( Port *port )
 	if (node == nullptr)
 		return;
 
-	foreach (const Link *link, port->port_links)
+	for (const Link *link : port->port_links)
 		removeObject(link->id);
 
 	port->port_links.clear();

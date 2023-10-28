@@ -1,7 +1,7 @@
 // qpwgraph_command.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -129,7 +129,7 @@ qpwgraph_move_command::qpwgraph_move_command ( qpwgraph_canvas *canvas,
 
 	const QPointF delta = (pos1 - pos2);
 
-	foreach (qpwgraph_node *node, nodes) {
+	for (qpwgraph_node *node : nodes) {
 		Item *item = new Item;
 		item->node_id   = node->nodeId();
 		item->node_mode = node->nodeMode();
@@ -141,7 +141,7 @@ qpwgraph_move_command::qpwgraph_move_command ( qpwgraph_canvas *canvas,
 	}
 
 	if (canvas && canvas->isRepelOverlappingNodes()) {
-		foreach (qpwgraph_node *node, nodes)
+		for (qpwgraph_node *node : nodes)
 			canvas->repelOverlappingNodes(node, this);
 	}
 }
@@ -184,7 +184,7 @@ bool qpwgraph_move_command::execute ( bool /* is_undo */ )
 		return false;
 
 	if (++m_nexec > 1) {
-		foreach (qpwgraph_node *key, m_items.keys()) {
+		for (qpwgraph_node *key : m_items.keys()) {
 			Item *item = m_items.value(key, nullptr);
 			if (item) {
 				qpwgraph_node *node = canvas->findNode(

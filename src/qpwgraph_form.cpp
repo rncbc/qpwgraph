@@ -1503,7 +1503,7 @@ void qpwgraph_form::updatePatchbayNames (void)
 	m_patchbay_names->addItem(icon,
 		patchbayFileName(), m_patchbay_path);
 	const QStringList& paths = m_config->patchbayRecentFiles();
-	foreach (const QString& path, paths) {
+	for (const QString& path : paths) {
 		if (path == m_patchbay_path)
 			continue;
 		m_patchbay_names->addItem(icon,
