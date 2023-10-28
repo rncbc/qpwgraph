@@ -15,9 +15,9 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-%define name	qpwgraph
-%define version	0.5.3
-%define release	31.1
+%define name    qpwgraph
+%define version 0.5.3
+%define release 31.1
 
 %define _prefix	/usr
 
