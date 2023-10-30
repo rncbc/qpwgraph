@@ -89,7 +89,7 @@ public:
 	const QList<qpwgraph_port *>& ports() const;
 
 	// Reset port markings, destroy if unmarked.
-	void resetMarkedPorts();
+	void resetPorts();
 
 	// Path/shape updater.
 	void updatePath();

@@ -463,7 +463,7 @@ void qpwgraph_canvas::resetNodes ( uint node_type )
 	for (qpwgraph_node *node : m_nodes) {
 		if (node->nodeType() == node_type) {
 			if (node->isMarked()) {
-				node->resetMarkedPorts();
+				node->resetPorts();
 				node->setMarked(false);
 			} else {
 				removeItem(node);
@@ -501,10 +501,24 @@ qpwgraph_node *qpwgraph_canvas::findNode (
 }
 
 
-qpwgraph_node *qpwgraph_canvas::findNode (
+QList<qpwgraph_node *> qpwgraph_canvas::findNodes (
+	const qpwgraph_node::NodeNameKey& name_key ) const
+{
+	struct CompareNodeId {
+		bool operator()(qpwgraph_node *node1, qpwgraph_node *node2) const
+			{ return (node1->nodeId() < node2->nodeId()); }
+	};
+
+	QList<qpwgraph_node *> nodes = m_node_names.values(name_key);
+	std::sort(nodes.begin(), nodes.end(), CompareNodeId());
+	return nodes;
+}
+
+
+QList<qpwgraph_node *> qpwgraph_canvas::findNodes (
 	const QString& name, qpwgraph_item::Mode mode, uint type ) const
 {
-	return m_node_names.value(qpwgraph_node::NodeNameKey(name, mode, type), nullptr);
+	return findNodes(qpwgraph_node::NodeNameKey(name, mode, type));
 }
 
 
@@ -1288,7 +1302,11 @@ bool qpwgraph_canvas::restoreNode ( qpwgraph_node *node )
 	if (m_settings == nullptr || node == nullptr)
 		return false;
 
-	const QString& node_key = nodeKey(node);
+	// Assume node name-keys have been added before this...
+	//
+	const qpwgraph_node::NodeNameKey name_key(node);
+	const int n = m_node_names.values(name_key).count();
+	const QString& node_key = nodeKey(node, n);
 
 	m_settings->beginGroup(NodeAliasesGroup);
 	const QString& node_title
@@ -1317,7 +1335,14 @@ bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 	if (m_settings == nullptr || node == nullptr)
 		return false;
 
-	const QString& node_key = nodeKey(node);
+	// Assume node name-keys are to be removed after this...
+	//
+	const qpwgraph_node::NodeNameKey name_key(node);
+	const int n = m_node_names.values(name_key).count();
+	if (n < 1)
+		return false;
+
+	const QString& node_key = nodeKey(node, n);
 
 	m_settings->beginGroup(NodeAliasesGroup);
 	if (node->nodeNameLabel() != node->nodeTitle()) {
@@ -1423,17 +1448,22 @@ bool qpwgraph_canvas::saveState (void) const
 		if (item->type() == qpwgraph_node::Type) {
 			qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
 			if (node && !nodes.contains(node)) {
-				const QString& node_key = nodeKey(node);
-				m_settings->beginGroup(NodePosGroup);
-				m_settings->setValue('/' + node_key, node->pos());
-				m_settings->endGroup();
-				m_settings->beginGroup(NodeAliasesGroup);
-				if (node->nodeNameLabel() != node->nodeTitle())
-					m_settings->setValue('/' + node_key, node->nodeTitle());
-				else
-					m_settings->remove('/' + node_key);
-				m_settings->endGroup();
-				nodes.append(node);
+				int n = 0;
+				const QList<qpwgraph_node *>& nodes2
+					= findNodes(qpwgraph_node::NodeNameKey(node));
+				for (qpwgraph_node *node2 : nodes2) {
+					const QString& node2_key = nodeKey(node2, ++n);
+					m_settings->beginGroup(NodePosGroup);
+					m_settings->setValue('/' + node2_key, node2->pos());
+					m_settings->endGroup();
+					m_settings->beginGroup(NodeAliasesGroup);
+					if (node2->nodeNameLabel() != node2->nodeTitle())
+						m_settings->setValue('/' + node2_key, node2->nodeTitle());
+					else
+						m_settings->remove('/' + node2_key);
+					m_settings->endGroup();
+					nodes.append(node);
+				}
 			}
 		}
 		else
@@ -1473,9 +1503,13 @@ bool qpwgraph_canvas::saveState (void) const
 
 
 // Graph node/port key helpers.
-QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node ) const
+QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node, int n ) const
 {
 	QString node_key = node->nodeName();
+	if (n > 1) {
+		node_key += '_';
+		node_key += QString::number(n - 1);
+	}
 
 	switch (node->nodeMode()) {
 	case qpwgraph_item::Input:

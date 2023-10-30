@@ -1045,7 +1045,8 @@ void qpwgraph_pipewire::updateItems (void)
 				port1->setMarked(true);
 			}
 			if ((port_mode1 & qpwgraph_item::Output)
-				&& (!p1->port_links.isEmpty()))
+				&& (!p1->port_links.isEmpty())
+				&& port1 && port1->isMarked())
 				ports.append(port1);
 		}
 	}

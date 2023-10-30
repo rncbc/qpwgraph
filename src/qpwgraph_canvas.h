@@ -121,7 +121,10 @@ public:
 	// Special node finders.
 	qpwgraph_node *findNode(
 		uint id, qpwgraph_item::Mode mode, uint type = 0) const;
-	qpwgraph_node *findNode(
+
+	QList<qpwgraph_node *> findNodes(
+		const qpwgraph_node::NodeNameKey& name_key) const;
+	QList<qpwgraph_node *> findNodes(
 		const QString& name, qpwgraph_item::Mode mode, uint type = 0) const;
 
 	void releaseNode(qpwgraph_node *node);
@@ -249,7 +252,7 @@ protected:
 	void pinchGesture(QPinchGesture *pinch);
 
 	// Graph node/port key helpers.
-	QString nodeKey(qpwgraph_node *node) const;
+	QString nodeKey(qpwgraph_node *node, int n = 0) const;
 	QString portKey(qpwgraph_port *port) const;
 
 	void addNodeKeys(qpwgraph_node *node);

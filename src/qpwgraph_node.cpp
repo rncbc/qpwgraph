@@ -289,7 +289,7 @@ const QList<qpwgraph_port *>& qpwgraph_node::ports (void) const
 
 
 // Reset port markings, destroy if unmarked.
-void qpwgraph_node::resetMarkedPorts (void)
+void qpwgraph_node::resetPorts (void)
 {
 	QList<qpwgraph_port *> ports;
 
