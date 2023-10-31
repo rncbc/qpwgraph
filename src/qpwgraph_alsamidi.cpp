@@ -1,7 +1,7 @@
 // qpwgraph_alsamidi.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,9 +35,6 @@
 //----------------------------------------------------------------------------
 // qpwgraph_alsamidi -- ALSA graph driver
 
-QMutex qpwgraph_alsamidi::g_mutex;
-
-
 // Constructor.
 qpwgraph_alsamidi::qpwgraph_alsamidi ( qpwgraph_canvas *canvas )
 	: qpwgraph_sect(canvas), m_seq(nullptr), m_notifier(nullptr)
@@ -58,7 +55,7 @@ qpwgraph_alsamidi::~qpwgraph_alsamidi (void)
 // Client methods.
 bool qpwgraph_alsamidi::open (void)
 {
-	QMutexLocker locker(&g_mutex);
+	QMutexLocker locker(&m_mutex);
 
 	if (m_seq)
 		return true;
@@ -108,7 +105,7 @@ bool qpwgraph_alsamidi::open (void)
 
 void qpwgraph_alsamidi::close (void)
 {
-	QMutexLocker locker(&g_mutex);
+	QMutexLocker locker(&m_mutex);
 
 	if (m_seq == nullptr)
 		return;
@@ -158,7 +155,7 @@ void qpwgraph_alsamidi::connectPorts (
 	if (node1 == nullptr || node2 == nullptr)
 		return;
 
-	QMutexLocker locker(&g_mutex);
+	QMutexLocker locker(&m_mutex);
 
 	const int client_id1
 		= node1->nodeName().section(':', 0, 0).toInt();
@@ -293,7 +290,7 @@ bool qpwgraph_alsamidi::findClientPort (
 // ALSA graph updater.
 void qpwgraph_alsamidi::updateItems (void)
 {
-	QMutexLocker locker(&g_mutex);
+	QMutexLocker locker(&m_mutex);
 
 	if (m_seq == nullptr)
 		return;
@@ -432,7 +429,7 @@ void qpwgraph_alsamidi::updateItems (void)
 
 void qpwgraph_alsamidi::clearItems (void)
 {
-	QMutexLocker locker(&g_mutex);
+	QMutexLocker locker(&m_mutex);
 
 #ifdef CONFIG_DEBUG
 	qDebug("qpwgraph_alsamidi::clearItems()");
