@@ -4,6 +4,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Hopefully fixes the hideous random crashes caused by very short
+  lived nodes, recycled by reusing the very same ids. (EXPERIMENTAL)
+- Cope with nodes that can possibly remain with the very same name
+  but different ids. (GL #91) (EXPERIMENTAL)
 - Added deactivated (-d, --deactivated) and non-exclusive patchbay
   (-n, --nonexclusive) command line options. (GH #27) (EXPERIMENTAL)
 - Fixed unique/single instance support (Qt >= 6.6).

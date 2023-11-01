@@ -58,6 +58,24 @@ void qpwgraph_sect::addItem ( qpwgraph_item *item, bool is_new )
 
 void qpwgraph_sect::removeItem ( qpwgraph_item *item )
 {
+	if (item->type() == qpwgraph_node::Type) {
+		qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
+		if (node) for (qpwgraph_port *port : node->ports()) {
+			for (qpwgraph_connect *connect : port->connects()) {
+				connect->disconnect();
+				m_connects.removeAll(connect);
+			}
+		}
+	}
+	else
+	if (item->type() == qpwgraph_port::Type) {
+		qpwgraph_port *port = static_cast<qpwgraph_port *> (item);
+		if (port) for (qpwgraph_connect *connect : port->connects()) {
+			connect->disconnect();
+			m_connects.removeAll(connect);
+		}
+	}
+	else
 	if (item->type() == qpwgraph_connect::Type) {
 		qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 		if (connect) {
@@ -101,9 +119,23 @@ void qpwgraph_sect::clearItems ( uint node_type )
 
 // Special node finder.
 qpwgraph_node *qpwgraph_sect::findNode (
-	uint id, qpwgraph_item::Mode mode, int type ) const
+	uint id, qpwgraph_item::Mode mode, uint type ) const
 {
 	return m_canvas->findNode(id, mode, type);
+}
+
+
+// Special node destroyer.
+void qpwgraph_sect::resetNode (
+	uint id, qpwgraph_item::Mode mode, uint type )
+{
+	qpwgraph_node *node = qpwgraph_sect::findNode(id, mode, type);
+	if (node == nullptr)
+		node = qpwgraph_sect::findNode(id, qpwgraph_item::Duplex, type);
+	if (node) {
+		removeItem(node);
+		delete node;
+	}
 }
 
 

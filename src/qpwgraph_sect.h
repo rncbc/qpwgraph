@@ -56,7 +56,10 @@ public:
 	void clearItems(uint node_type);
 
 	// Special node finder.
-	qpwgraph_node *findNode(uint id, qpwgraph_item::Mode mode, int type = 0) const;
+	qpwgraph_node *findNode(uint id, qpwgraph_item::Mode mode, uint type = 0) const;
+
+	// Special node destroyer.
+	void resetNode(uint id, qpwgraph_item::Mode mode, uint type = 0);
 
 	// Client/port renaming method.
 	virtual void renameItem(qpwgraph_item *item, const QString& name);

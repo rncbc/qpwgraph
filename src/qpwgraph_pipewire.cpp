@@ -1220,6 +1220,8 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	qpwgraph_item::Mode node_mode,
 	uint node_type )
 {
+	qpwgraph_sect::resetNode(node_id, node_mode, qpwgraph_pipewire::nodeType());
+
 	Node *node = new Node(node_id);
 	node->node_name = node_name;
 	node->node_mode = node_mode;
