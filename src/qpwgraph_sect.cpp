@@ -58,24 +58,6 @@ void qpwgraph_sect::addItem ( qpwgraph_item *item, bool is_new )
 
 void qpwgraph_sect::removeItem ( qpwgraph_item *item )
 {
-	if (item->type() == qpwgraph_node::Type) {
-		qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
-		if (node) for (qpwgraph_port *port : node->ports()) {
-			for (qpwgraph_connect *connect : port->connects()) {
-				connect->disconnect();
-				m_connects.removeAll(connect);
-			}
-		}
-	}
-	else
-	if (item->type() == qpwgraph_port::Type) {
-		qpwgraph_port *port = static_cast<qpwgraph_port *> (item);
-		if (port) for (qpwgraph_connect *connect : port->connects()) {
-			connect->disconnect();
-			m_connects.removeAll(connect);
-		}
-	}
-	else
 	if (item->type() == qpwgraph_connect::Type) {
 		qpwgraph_connect *connect = static_cast<qpwgraph_connect *> (item);
 		if (connect) {
@@ -133,8 +115,14 @@ void qpwgraph_sect::resetNode (
 	if (node == nullptr)
 		node = qpwgraph_sect::findNode(id, qpwgraph_item::Duplex, type);
 	if (node) {
-		removeItem(node);
-		delete node;
+		for (qpwgraph_port *port : node->ports()) {
+			port->setMarked(false);
+			for (qpwgraph_connect *connect : port->connects()) {
+				connect->disconnect();
+				m_connects.removeAll(connect);
+			}
+		}
+		m_canvas->releaseNode(node);
 	}
 }
 
