@@ -138,6 +138,9 @@ protected:
 		uint32_t node_id, uint32_t port_id, qpwgraph_item::Mode port_mode,
 		qpwgraph_node **node, qpwgraph_port **port, bool add_new);
 
+	// Special node recycler...
+	void recycleNode(uint node_id, qpwgraph_item::Mode node_mode);
+
 private:
 
 	// PipeWire client impl.
@@ -146,6 +149,8 @@ private:
 	// PipeWire object database.
 	QHash<uint, Object *> m_objectids;
 	QList<Object *> m_objects;
+
+	QHash<uint, qpwgraph_node *> m_recycled;
 
 	// Callback sanity mutex.
 	QMutex m_mutex1;

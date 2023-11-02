@@ -934,6 +934,9 @@ bool qpwgraph_pipewire::findNodePort (
 	uint32_t node_id, uint32_t port_id,  qpwgraph_item::Mode port_mode,
 	qpwgraph_node **node, qpwgraph_port **port, bool add_new )
 {
+	if (m_recycled.value(node_id, nullptr))
+		return false;
+
 	Node *n = findNode(node_id);
 	if (n == nullptr)
 		return false;
@@ -1085,6 +1088,8 @@ void qpwgraph_pipewire::updateItems (void)
 	// 3. Clean-up all un-marked items...
 	//
 	qpwgraph_sect::resetItems(qpwgraph_pipewire::nodeType());
+
+	m_recycled.clear();
 }
 
 
@@ -1101,6 +1106,8 @@ void qpwgraph_pipewire::clearItems (void)
 	// Clean-up all items...
 	//
 	qpwgraph_sect::clearItems(qpwgraph_pipewire::nodeType());
+
+	m_recycled.clear();
 }
 
 
@@ -1220,7 +1227,7 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	qpwgraph_item::Mode node_mode,
 	uint node_type )
 {
-	qpwgraph_sect::resetNode(node_id, node_mode, qpwgraph_pipewire::nodeType());
+	recycleNode(node_id, node_mode);
 
 	Node *node = new Node(node_id);
 	node->node_name = node_name;
@@ -1364,6 +1371,21 @@ void qpwgraph_pipewire::destroyLink ( Link *link )
 
 	delete link;
 }
+
+
+// Special node recycler...
+void qpwgraph_pipewire::recycleNode (
+	uint node_id, qpwgraph_item::Mode node_mode )
+{
+	const uint node_type = qpwgraph_pipewire::nodeType();
+	qpwgraph_node *node = qpwgraph_sect::findNode(node_id, node_mode, node_type);
+	if (node == nullptr)
+		node = qpwgraph_sect::findNode(node_id, qpwgraph_item::Duplex, node_type);
+	if (node) {
+		m_recycled.insert(node_id, node);
+	}
+}
+
 
 
 // end of qpwgraph_pipewire.cpp

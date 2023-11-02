@@ -107,26 +107,6 @@ qpwgraph_node *qpwgraph_sect::findNode (
 }
 
 
-// Special node destroyer.
-void qpwgraph_sect::resetNode (
-	uint id, qpwgraph_item::Mode mode, uint type )
-{
-	qpwgraph_node *node = qpwgraph_sect::findNode(id, mode, type);
-	if (node == nullptr)
-		node = qpwgraph_sect::findNode(id, qpwgraph_item::Duplex, type);
-	if (node) {
-		for (qpwgraph_port *port : node->ports()) {
-			port->setMarked(false);
-			for (qpwgraph_connect *connect : port->connects()) {
-				connect->disconnect();
-				m_connects.removeAll(connect);
-			}
-		}
-		m_canvas->releaseNode(node);
-	}
-}
-
-
 // Client/port renaming method.
 void qpwgraph_sect::renameItem (
 	qpwgraph_item *item, const QString& name )
