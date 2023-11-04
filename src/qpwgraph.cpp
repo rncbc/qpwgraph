@@ -130,7 +130,7 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 
 	int nargs = 0;
 	m_patchbay_path.clear();
-	for	(const QString& arg : parser.positionalArguments()) {
+	foreach (const QString& arg, parser.positionalArguments()) {
 		if (nargs > 0)
 			m_patchbay_path += ' ';
 		m_patchbay_path += arg;

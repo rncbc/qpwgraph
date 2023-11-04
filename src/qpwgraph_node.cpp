@@ -254,7 +254,7 @@ void qpwgraph_node::removePort ( qpwgraph_port *port )
 
 void qpwgraph_node::removePorts (void)
 {
-	for (qpwgraph_port *port : m_ports)
+	foreach (qpwgraph_port *port, m_ports)
 		port->removeConnects();
 
 	// Do not delete ports here as they are node's child items...
@@ -293,7 +293,7 @@ void qpwgraph_node::resetPorts (void)
 {
 	QList<qpwgraph_port *> ports;
 
-	for (qpwgraph_port *port : m_ports) {
+	foreach (qpwgraph_port *port, m_ports) {
 		if (port->isMarked()) {
 			port->setMarked(false);
 		} else {
@@ -301,7 +301,7 @@ void qpwgraph_node::resetPorts (void)
 		}
 	}
 
-	for (qpwgraph_port *port : ports) {
+	foreach (qpwgraph_port *port, ports) {
 		port->removeConnects();
 		removePort(port);
 		delete port;
@@ -316,7 +316,7 @@ void qpwgraph_node::updatePath (void)
 	int width = rect.width() / 2 + 24;
 	int wi, wo;
 	wi = wo = width;
-	for (qpwgraph_port *port : m_ports) {
+	foreach (qpwgraph_port *port, m_ports) {
 		const int w = port->itemRect().width();
 		if (port->isOutput()) {
 			if (wo < w) wo = w;
@@ -332,7 +332,7 @@ void qpwgraph_node::updatePath (void)
 	int type = 0;
 	int yi, yo;
 	yi = yo = height;
-	for (qpwgraph_port *port : m_ports) {
+	foreach (qpwgraph_port *port, m_ports) {
 		const QRectF& port_rect = port->itemRect();
 		const int w = port_rect.width();
 		const int h = port_rect.height() + 1;
@@ -405,7 +405,7 @@ QVariant qpwgraph_node::itemChange (
 {
 	if (change == QGraphicsItem::ItemSelectedHasChanged) {
 		const bool is_selected = value.toBool();
-		for (qpwgraph_port *port : m_ports)
+		foreach (qpwgraph_port *port, m_ports)
 			port->setSelected(is_selected);
 	}
 

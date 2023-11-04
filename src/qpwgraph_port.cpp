@@ -239,7 +239,7 @@ void qpwgraph_port::removeConnect ( qpwgraph_connect *connect )
 
 void qpwgraph_port::removeConnects (void)
 {
-	for (qpwgraph_connect *connect : m_connects) {
+	foreach (qpwgraph_connect *connect, m_connects) {
 		if (connect->port1() != this)
 			connect->setPort1(nullptr);
 		if (connect->port2() != this)
@@ -255,7 +255,7 @@ void qpwgraph_port::removeConnects (void)
 
 qpwgraph_connect *qpwgraph_port::findConnect ( qpwgraph_port *port ) const
 {
-	for (qpwgraph_connect *connect : m_connects) {
+	foreach (qpwgraph_connect *connect, m_connects) {
 		if (connect->port1() == port || connect->port2() == port)
 			return connect;
 	}
@@ -313,7 +313,7 @@ QVariant qpwgraph_port::itemChange (
 	GraphicsItemChange change, const QVariant& value )
 {
 	if (change == QGraphicsItem::ItemScenePositionHasChanged) {
-		for (qpwgraph_connect *connect : m_connects) {
+		foreach (qpwgraph_connect *connect, m_connects) {
 			connect->updatePath();
 		}
 	}
@@ -321,7 +321,7 @@ QVariant qpwgraph_port::itemChange (
 	if (change == QGraphicsItem::ItemSelectedHasChanged && m_selectx < 1) {
 		const bool is_selected = value.toBool();
 		setHighlightEx(is_selected);
-		for (qpwgraph_connect *connect : m_connects)
+		foreach (qpwgraph_connect *connect, m_connects)
 			connect->setSelectedEx(this, is_selected);
 	}
 
@@ -333,7 +333,7 @@ QVariant qpwgraph_port::itemChange (
 void qpwgraph_port::setSelectedEx ( bool is_selected )
 {
 	if (!is_selected) {
-		for (qpwgraph_connect *connect : m_connects) {
+		foreach (qpwgraph_connect *connect, m_connects) {
 			if (connect->isSelected()) {
 				setHighlightEx(true);
 				return;
@@ -362,7 +362,7 @@ void qpwgraph_port::setHighlightEx ( bool is_highlight )
 
 	qpwgraph_item::setHighlight(is_highlight);
 
-	for (qpwgraph_connect *connect : m_connects)
+	foreach (qpwgraph_connect *connect, m_connects)
 		connect->setHighlightEx(this, is_highlight);
 
 	--m_hilitex;
@@ -381,7 +381,7 @@ void qpwgraph_port::updatePortTypeColors ( qpwgraph_canvas *canvas )
 				: color.darker());
 			qpwgraph_item::setBackground(color);
 			if (m_mode & Output) {
-				for (qpwgraph_connect *connect : m_connects) {
+				foreach (qpwgraph_connect *connect, m_connects) {
 					connect->updatePortTypeColors();
 					connect->update();
 				}

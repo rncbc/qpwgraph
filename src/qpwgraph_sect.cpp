@@ -75,7 +75,7 @@ void qpwgraph_sect::resetItems ( uint node_type )
 {
 	const QList<qpwgraph_connect *> connects(m_connects);
 
-	for (qpwgraph_connect *connect : connects) {
+	foreach (qpwgraph_connect *connect, connects) {
 		if (connect->isMarked()) {
 			connect->setMarked(false);
 		} else {

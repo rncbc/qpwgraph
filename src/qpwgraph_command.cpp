@@ -129,7 +129,7 @@ qpwgraph_move_command::qpwgraph_move_command ( qpwgraph_canvas *canvas,
 
 	const QPointF delta = (pos1 - pos2);
 
-	for (qpwgraph_node *node : nodes) {
+	foreach (qpwgraph_node *node, nodes) {
 		Item *item = new Item;
 		item->node_id   = node->nodeId();
 		item->node_mode = node->nodeMode();
@@ -141,7 +141,7 @@ qpwgraph_move_command::qpwgraph_move_command ( qpwgraph_canvas *canvas,
 	}
 
 	if (canvas && canvas->isRepelOverlappingNodes()) {
-		for (qpwgraph_node *node : nodes)
+		foreach (qpwgraph_node *node, nodes)
 			canvas->repelOverlappingNodes(node, this);
 	}
 }
@@ -184,7 +184,7 @@ bool qpwgraph_move_command::execute ( bool /* is_undo */ )
 		return false;
 
 	if (++m_nexec > 1) {
-		for (qpwgraph_node *key : m_items.keys()) {
+		foreach (qpwgraph_node *key, m_items.keys()) {
 			Item *item = m_items.value(key, nullptr);
 			if (item) {
 				qpwgraph_node *node = canvas->findNode(
