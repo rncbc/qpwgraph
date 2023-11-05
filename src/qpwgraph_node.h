@@ -99,11 +99,13 @@ public:
 	{
 	public:
 		// Constructors.
+		NodeIdKey(uint id, Mode mode, uint type = 0)
+			: IdKey(id, mode, type) {}
 		NodeIdKey(qpwgraph_node *node)
 			: IdKey(node->nodeId(), node->nodeMode(), node->nodeType()) {}
 	};
 
-	typedef QMultiHash<IdKey, qpwgraph_node *> NodeIds;
+	typedef QMultiHash<NodeIdKey, qpwgraph_node *> NodeIds;
 
 	// Node hash key (by name).
 	class NodeNameKey : public NameKey

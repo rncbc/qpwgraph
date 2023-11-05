@@ -934,9 +934,6 @@ bool qpwgraph_pipewire::findNodePort (
 	uint32_t node_id, uint32_t port_id,  qpwgraph_item::Mode port_mode,
 	qpwgraph_node **node, qpwgraph_port **port, bool add_new )
 {
-	if (m_recycled.value(node_id, nullptr))
-		return false;
-
 	Node *n = findNode(node_id);
 	if (n == nullptr)
 		return false;
@@ -966,6 +963,9 @@ bool qpwgraph_pipewire::findNodePort (
 			*node = qpwgraph_sect::findNode(node_id, node_mode, node_type);
 		}
 	}
+
+	if (*node && m_recycled.value(qpwgraph_node::NodeIdKey(*node), nullptr))
+		return false;
 
 	if (*node && n->node_changed) {
 		canvas()->releaseNode(*node);
@@ -1382,10 +1382,19 @@ void qpwgraph_pipewire::recycleNode (
 	if (node == nullptr)
 		node = qpwgraph_sect::findNode(node_id, qpwgraph_item::Duplex, node_type);
 	if (node) {
-		m_recycled.insert(node_id, node);
+		m_recycled.insert(qpwgraph_node::NodeIdKey(node), node);
+	#if 0
+		for (qpwgraph_port *port : node->ports()) {
+			if (port->portMode() & qpwgraph_item::Output) {
+				for (qpwgraph_connect *connect : port->connects()) {
+					connect->setMarked(false);
+					connect->disconnect();
+				}
+			}
+		}
+	#endif
 	}
 }
-
 
 
 // end of qpwgraph_pipewire.cpp

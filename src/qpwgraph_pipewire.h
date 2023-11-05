@@ -150,7 +150,7 @@ private:
 	QHash<uint, Object *> m_objectids;
 	QList<Object *> m_objects;
 
-	QHash<uint, qpwgraph_node *> m_recycled;
+	qpwgraph_node::NodeIds m_recycled;
 
 	// Callback sanity mutex.
 	QMutex m_mutex1;

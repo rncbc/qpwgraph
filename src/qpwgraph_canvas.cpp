@@ -497,7 +497,7 @@ void qpwgraph_canvas::clearNodes ( uint node_type )
 qpwgraph_node *qpwgraph_canvas::findNode (
 	uint id, qpwgraph_item::Mode mode, uint type ) const
 {
-	return m_node_ids.value(qpwgraph_item::IdKey(id, mode, type), nullptr);
+	return m_node_ids.value(qpwgraph_node::NodeIdKey(id, mode, type), nullptr);
 }
 
 
