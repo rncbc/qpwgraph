@@ -92,3 +92,7 @@ the application closes.
 qpwgraph can remember the current connections and apply them again in a later
 moment. This feature is called Patchbay, and it is further documented at [How
 To Use The Patchbay](qpwgraph_patchbay-user_manual.md)
+
+---
+
+Credits: @denilsonsa (a.k.a. Denilson Sá Maia).
