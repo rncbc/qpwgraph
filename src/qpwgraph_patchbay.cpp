@@ -236,7 +236,7 @@ bool qpwgraph_patchbay::scan (void)
 	if (scene == nullptr)
 		return false;
 
-	QHash<Item, qpwgraph_connect *> connects;
+	QHash<Item, qpwgraph_connect *> disconnects;
 
 	Items::ConstIterator iter = m_items.constBegin();
 	const Items::ConstIterator& iter_end = m_items.constEnd();
@@ -283,23 +283,43 @@ bool qpwgraph_patchbay::scan (void)
 				if (port2 == nullptr)
 					continue;
 				if (m_exclusive) {
-					foreach (qpwgraph_connect *connect, port1->connects()) {
-						qpwgraph_port *port3 = connect->port2();
-						if (port3 == nullptr)
+					foreach (qpwgraph_connect *connect12, port1->connects()) {
+						qpwgraph_port *port12 = connect12->port2();
+						if (port12 == nullptr)
 							continue;
-						if (port3 != port2) {
-							qpwgraph_node *node3 = port3->portNode();
-							if (node3 == nullptr)
+						if (port12 != port2) {
+							qpwgraph_node *node12 = port12->portNode();
+							if (node12 == nullptr)
 								continue;
-							const Item item2(
+							const Item item12(
 								node1->nodeType(),
 								port1->portType(),
 								node1->nodeName(),
 								port1->portName(),
-								node3->nodeName(),
-								port3->portName());
-							if (m_items.constFind(item2) == iter_end)
-								connects.insert(item2, connect);
+								node12->nodeName(),
+								port12->portName());
+							if (m_items.constFind(item12) == iter_end)
+								disconnects.insert(item12, connect12);
+						}
+					}
+					foreach (qpwgraph_connect *connect21, port2->connects()) {
+						qpwgraph_port *port21 = connect21->port1();
+						if (port21 == nullptr)
+							continue;
+						if (port21 != port1) {
+							qpwgraph_node *node21 = port21->portNode();
+							if (node21 == nullptr)
+								continue;
+							const Item item21(
+								node21->nodeType(),
+								port21->portType(),
+								node21->nodeName(),
+								port21->portName(),
+								node1->nodeName(),
+								port1->portName());
+							if (m_items.constFind(item21) == iter_end) {
+								disconnects.insert(item21, connect21);
+							}
 						}
 					}
 				}
@@ -309,8 +329,10 @@ bool qpwgraph_patchbay::scan (void)
 		}
 	}
 
-	QHash<Item, qpwgraph_connect *>::ConstIterator iter2 = connects.constBegin();
-	const QHash<Item, qpwgraph_connect *>::ConstIterator& iter2_end = connects.constEnd();
+	QHash<Item, qpwgraph_connect *>::ConstIterator iter2
+		= disconnects.constBegin();
+	const QHash<Item, qpwgraph_connect *>::ConstIterator& iter2_end
+		= disconnects.constEnd();
 	for (; iter2 != iter2_end; ++iter2) {
 		qpwgraph_connect *connect = iter2.value();
 		if (connect)

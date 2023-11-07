@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Improved Patchbay / Exclusive mode scan enforcement. (EXPERIMENTAL)
 - Hopefully fixes the hideous random crashes caused by very short
   lived nodes, recycled by reusing the very same ids. (EXPERIMENTAL)
 - Cope with nodes that can possibly remain with the very same name
