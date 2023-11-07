@@ -46,7 +46,8 @@
 
 ## Documentation
 
-  [How To Use The Patchbay](docs/qpwgraph_patchbay-user_manual.md)
+  * [User Manual](docs/qpwgraph-user_manual.md)
+  * [How To Use The Patchbay](docs/qpwgraph_patchbay-user_manual.md)
 
 ## License
 
