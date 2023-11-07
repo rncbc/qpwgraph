@@ -315,8 +315,8 @@ bool qpwgraph_patchbay::scan (void)
 								port21->portType(),
 								node21->nodeName(),
 								port21->portName(),
-								node1->nodeName(),
-								port1->portName());
+								node2->nodeName(),
+								port2->portName());
 							if (m_items.constFind(item21) == iter_end) {
 								disconnects.insert(item21, connect21);
 							}
