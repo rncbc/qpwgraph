@@ -1,6 +1,12 @@
+qpwgraph (0.6.0-32.1) unstable; urgency=low
+
+  * An autumn'23 release.
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Wed,  8 Nov 2023 18:00:00 +0000
+
 qpwgraph (0.5.3-31.1) unstable; urgency=low
 
-  * A end-of-summer'23 release.
+  * An end-of-summer'23 release.
 
  -- Rui Nuno Capela <rncbc@rncbc.org>  Fri,  8 Sep 2023 18:00:00 +0100
 

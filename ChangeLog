@@ -2,15 +2,15 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.6.0  2023-11-08  An Autumn'23 Release.
 
-- Improved Patchbay / Exclusive mode scan enforcement. (EXPERIMENTAL)
+- Improved Patchbay / Exclusive mode scan enforcement.
 - Hopefully fixes the hideous random crashes caused by very short
-  lived nodes, recycled by reusing the very same ids. (EXPERIMENTAL)
+  lived nodes, recycled by reusing the very same ids.
 - Cope with nodes that can possibly remain with the very same name
-  but different ids. (GL #91) (EXPERIMENTAL)
+  but different ids.
 - Added deactivated (-d, --deactivated) and non-exclusive patchbay
-  (-n, --nonexclusive) command line options. (GH #27) (EXPERIMENTAL)
+  (-n, --nonexclusive) command line options.
 - Fixed unique/single instance support (Qt >= 6.6).
 
 
