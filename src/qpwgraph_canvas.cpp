@@ -548,7 +548,8 @@ void qpwgraph_canvas::emitConnectPorts (
 			connect->setDimmed(true);
 	}
 
-	if (m_patchbay && (m_patchbay_autopin || !is_connect))
+	if (m_patchbay && (m_patchbay_autopin
+		|| (!is_connect && m_patchbay->isActivated())))
 		m_patchbay->connectPorts(port1, port2, is_connect);
 
 	if (is_connect)

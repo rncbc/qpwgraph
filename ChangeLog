@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Don't unpin connections that are manually disconnected, when
+  patchbay is deactivated and auto-pin is off. (GL issue #93)
+
+
 0.6.0  2023-11-08  An Autumn'23 Release.
 
 - Improved Patchbay / Exclusive mode scan enforcement.
