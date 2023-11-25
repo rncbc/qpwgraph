@@ -135,11 +135,17 @@ protected:
 
 	// PipeWire node:port finder and creator if not existing.
 	bool findNodePort(
-		uint32_t node_id, uint32_t port_id, qpwgraph_item::Mode port_mode,
+		uint node_id, uint port_id, qpwgraph_item::Mode port_mode,
 		qpwgraph_node **node, qpwgraph_port **port, bool add_new);
 
-	// Special node recycler...
-	void recycleNode(uint node_id, qpwgraph_item::Mode node_mode);
+	// Special node finder...
+	qpwgraph_node *findNode(uint node_id, qpwgraph_item::Mode node_mode) const;
+
+	// Special node/port recycler...
+	void recycleNode(
+		uint node_id, qpwgraph_item::Mode node_mode);
+	void recyclePort(
+		uint port_id, uint node_id, qpwgraph_item::Mode port_mode, uint port_type);
 
 private:
 
@@ -150,7 +156,8 @@ private:
 	QHash<uint, Object *> m_objectids;
 	QList<Object *> m_objects;
 
-	qpwgraph_node::NodeIds m_recycled;
+	qpwgraph_node::NodeIds m_recycled_nodes;
+	qpwgraph_port::PortIds m_recycled_ports;
 
 	// Callback sanity mutex.
 	QMutex m_mutex1;
