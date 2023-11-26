@@ -637,8 +637,7 @@ void qpwgraph_form::patchbayActivated ( bool on )
 	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
 	if (patchbay) {
 		patchbay->setActivated(on);
-		if (on)
-			patchbay->scan();
+		patchbay->scan();
 	}
 
 	stabilize();
@@ -650,7 +649,7 @@ void qpwgraph_form::patchbayExclusive ( bool on )
 	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
 	if (patchbay) {
 		patchbay->setExclusive(on);
-		if (on)
+		if (patchbay->isActivated())
 			patchbay->scan();
 	}
 
@@ -1119,7 +1118,7 @@ void qpwgraph_form::refresh (void)
 
 	if (nchanged > 0) {
 		qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
-		if (patchbay)
+		if (patchbay && patchbay->isActivated())
 			patchbay->scan();
 		stabilize();
 	}
@@ -1242,7 +1241,9 @@ bool qpwgraph_form::patchbayOpenFile ( const QString& path, bool clear )
 
 	m_ui.graphCanvas->patchbayEdit();
 
-	patchbay->scan();
+	if (patchbay->isActivated())
+		patchbay->scan();
+
 	return true;
 }
 

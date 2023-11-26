@@ -226,9 +226,6 @@ bool qpwgraph_patchbay::save ( const QString& filename )
 // Execute and apply rules to graph.
 bool qpwgraph_patchbay::scan (void)
 {
-	if (!m_activated)
-		return false;
-
 	if (m_canvas == nullptr)
 		return false;
 
@@ -282,7 +279,7 @@ bool qpwgraph_patchbay::scan (void)
 						item->port_type);
 				if (port2 == nullptr)
 					continue;
-				if (m_exclusive) {
+				if (m_activated && m_exclusive) {
 					foreach (qpwgraph_connect *connect12, port1->connects()) {
 						qpwgraph_port *port12 = connect12->port2();
 						if (port12 == nullptr)
@@ -323,8 +320,20 @@ bool qpwgraph_patchbay::scan (void)
 						}
 					}
 				}
-				if (!port1->findConnect(port2))
+				qpwgraph_connect *connect12 = port1->findConnect(port2);
+				if (connect12 == nullptr && m_activated)
 					m_canvas->emitConnected(port1, port2);
+				else
+				if (!m_activated) {
+					const Item item12(
+						node1->nodeType(),
+						port1->portType(),
+						node1->nodeName(),
+						port1->portName(),
+						node2->nodeName(),
+						port2->portName());
+					disconnects.insert(item12, connect12);
+				}
 			}
 		}
 	}

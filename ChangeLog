@@ -4,10 +4,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Disconnect pinned connections when patchbay is deactivated.
+  (GL issue #93) (EXPERIMENTAL)
 - Fix a potential port duplication when recycled under the same
   node and reusing a previous port id. (EXPERIMENTAL)
 - Don't unpin connections that are manually disconnected, when
-  patchbay is deactivated and auto-pin is off. (GL issue #93)
+  patchbay is deactivated and auto-pin is off.
 
 
 0.6.0  2023-11-08  An Autumn'23 Release.
