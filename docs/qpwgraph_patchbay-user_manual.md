@@ -6,7 +6,7 @@ Once a connection patchbay established, it is possible to store those connection
 
 The *Activated* button is simply to activate or not the loaded patchbay. The patchbay must be activated in order to access all the other functionalities.
 
-If checked, connections stored in the loaded patchbay will be restored. All other connections will stay as they were before the load of the patchbay. If unchecked, no connection change at all.
+If checked, connections stored in the loaded patchbay will be restored. All other connections will stay as they were before the load and activation of the patchbay. If and when unchecked, all previously pinned connections will be dropped.
 
 ## *Exclusive* button ![Exclusive](../src/images/itemExclusive.png)
 
@@ -24,7 +24,7 @@ Makes the connection persistant in the currently loaded and activated patchbay.
 
 ### *Unpin* button ![Unpin](../src/images/itemUnpin.png)
 
-Used to make the connection temporary. The unpinned connection will disappear forever if another patchbay is loaded.
+Used to make the connection temporary. The unpinned connection will not be dropped if the current patchbay is deactivated.
 
 
 ---
