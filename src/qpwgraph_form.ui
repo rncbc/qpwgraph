@@ -1047,6 +1047,26 @@
     <string/>
    </property>
   </action>
+  <action name="helpAlsaMidiAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Enable ALSA MIDI</string>
+   </property>
+   <property name="iconText">
+    <string>ALSA MIDI</string>
+   </property>
+   <property name="toolTip">
+    <string>ALSA MIDI</string>
+   </property>
+   <property name="statusTip">
+    <string>Enable ALSA MIDI</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
   <action name="helpAboutAction">
    <property name="text">
     <string>&amp;About...</string>

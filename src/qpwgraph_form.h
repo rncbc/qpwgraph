@@ -138,6 +138,7 @@ protected slots:
 	void viewConnectThroughNodes(bool on);
 
 	void helpSystemTray(bool on);
+	void helpAlsaMidi(bool on);
 
 	void helpAbout();
 	void helpAboutQt();

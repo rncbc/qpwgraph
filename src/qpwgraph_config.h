@@ -101,6 +101,9 @@ public:
 	void setSystemTrayEnabled(bool enabled);
 	bool isSystemTrayEnabled() const;
 
+	void setAlsaMidiEnabled(bool enabled);
+	bool isAlsaMidiEnabled() const;
+
 	void setSessionStartMinimized(bool start_minimized);
 	bool isSessionStartMinimized() const;
 
@@ -134,6 +137,7 @@ private:
 	QStringList m_patchbay_recentfiles;
 
 	bool        m_systray_enabled;
+	bool        m_alsaseq_enabled;
 };
 
 

@@ -107,11 +107,7 @@ qpwgraph_form::qpwgraph_form (
 	m_ui.graphCanvas->setSettings(m_config->settings());
 
 	m_pipewire = new qpwgraph_pipewire(m_ui.graphCanvas);
-#ifdef CONFIG_ALSA_MIDI
-	m_alsamidi = new qpwgraph_alsamidi(m_ui.graphCanvas);
-#else
 	m_alsamidi = nullptr;
-#endif
 
 	m_pipewire_changed = 0;
 	m_alsamidi_changed = 0;
@@ -202,13 +198,7 @@ qpwgraph_form::qpwgraph_form (
 			SIGNAL(changed()),
 			SLOT(pipewire_changed()));
 	}
-#ifdef CONFIG_ALSA_MIDI
-	if (m_alsamidi) {
-		QObject::connect(m_alsamidi,
-			SIGNAL(changed()),
-			SLOT(alsamidi_changed()));
-	}
-#endif
+
 	QObject::connect(m_ui.graphCanvas,
 		SIGNAL(added(qpwgraph_node *)),
 		SLOT(added(qpwgraph_node *)));
@@ -435,11 +425,23 @@ qpwgraph_form::qpwgraph_form (
 #ifdef CONFIG_SYSTEM_TRAY
 	m_ui.helpMenu->insertAction(
 		m_ui.helpAboutAction, m_ui.helpSystemTrayAction);
+#ifndef CONFIG_ALSA_MIDI
 	m_ui.helpMenu->insertSeparator(
 		m_ui.helpAboutAction);
+#endif
 	QObject::connect(m_ui.helpSystemTrayAction,
 		SIGNAL(triggered(bool)),
 		SLOT(helpSystemTray(bool)));
+#endif
+
+#ifdef CONFIG_ALSA_MIDI
+	m_ui.helpMenu->insertAction(
+		m_ui.helpAboutAction, m_ui.helpAlsaMidiAction);
+	m_ui.helpMenu->insertSeparator(
+		m_ui.helpAboutAction);
+	QObject::connect(m_ui.helpAlsaMidiAction,
+		 SIGNAL(triggered(bool)),
+		 SLOT(helpAlsaMidi(bool)));
 #endif
 
 	QObject::connect(m_ui.helpAboutAction,
@@ -853,6 +855,33 @@ void qpwgraph_form::helpSystemTray ( bool on )
 }
 
 
+void qpwgraph_form::helpAlsaMidi ( bool on )
+{
+#ifdef CONFIG_ALSA_MIDI
+	if (on && m_alsamidi == nullptr) {
+		m_alsamidi = new qpwgraph_alsamidi(m_ui.graphCanvas);
+		QObject::connect(
+			m_alsamidi, SIGNAL(changed()),
+			this, SLOT(alsamidi_changed()));
+		++m_alsamidi_changed;
+	}
+	else
+	if (!on && m_alsamidi) {
+		m_alsamidi->clearItems();
+		QObject::disconnect(
+			m_alsamidi, SIGNAL(changed()),
+			this, SLOT(alsamidi_changed()));
+		delete m_alsamidi;
+		m_alsamidi = nullptr;
+	}
+#else
+	(void) on;
+#endif
+
+	stabilize();
+}
+
+
 void qpwgraph_form::helpAbout (void)
 {
 	static const QString title = PROJECT_NAME;
@@ -1194,6 +1223,10 @@ void qpwgraph_form::stabilize (void)
 	m_zoom_slider->setValue(zoom_value);
 	m_zoom_spinbox->blockSignals(is_spinbox_blocked);
 	m_zoom_slider->blockSignals(is_slider_blocked);
+
+#ifdef CONFIG_ALSA_MIDI
+	m_ui.viewColorsAlsaMidiAction->setEnabled(m_alsamidi != nullptr);
+#endif
 }
 
 
@@ -1626,6 +1659,13 @@ void qpwgraph_form::restoreState (void)
 	m_ui.helpSystemTrayAction->setChecked(is_systray_enabled);
 	helpSystemTray(is_systray_enabled);
 #endif
+
+#ifdef CONFIG_ALSA_MIDI
+	const bool is_alsa_midi
+		= m_config->isAlsaMidiEnabled();
+	m_ui.helpAlsaMidiAction->setChecked(is_alsa_midi);
+	helpAlsaMidi(is_alsa_midi);
+#endif
 }
 
 
@@ -1654,6 +1694,10 @@ void qpwgraph_form::saveState (void)
 
 #ifdef CONFIG_SYSTEM_TRAY
 	m_config->setSystemTrayEnabled(m_ui.helpSystemTrayAction->isChecked());
+#endif
+
+#ifdef CONFIG_ALSA_MIDI
+	m_config->setAlsaMidiEnabled(m_ui.helpAlsaMidiAction->isChecked());
 #endif
 
 	m_config->saveState(this);
