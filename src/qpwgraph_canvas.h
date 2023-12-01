@@ -81,6 +81,10 @@ public:
 	void setPatchbayAutoPin(bool on);
 	bool isPatchbayAutoPin() const;
 
+	// Patchbay auto-disconnect accessors.
+	void setPatchbayAutoDisconnect(bool on);
+	bool isPatchbayAutoDisconnect() const;
+
 	// Patchbay edit-mode accessors.
 	void setPatchbayEdit(bool on);
 	bool isPatchbayEdit() const;
@@ -308,6 +312,7 @@ private:
 	qpwgraph_patchbay *m_patchbay;
 	bool m_patchbay_edit;
 	bool m_patchbay_autopin;
+	bool m_patchbay_autodisconnect;
 
 	QList<QGraphicsItem *> m_selected;
 	int m_selected_nodes;

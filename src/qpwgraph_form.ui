@@ -88,6 +88,7 @@
     <addaction name="separator"/>
     <addaction name="separator"/>
     <addaction name="patchbayAutoPinAction"/>
+    <addaction name="patchbayAutoDisconnectAction"/>
    </widget>
    <widget class="QMenu" name="editMenu">
     <property name="title">
@@ -476,6 +477,23 @@
    </property>
    <property name="statusTip">
     <string>Auto pin connections to current patchbay</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="patchbayAutoDisconnectAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto &amp;Disconnect</string>
+   </property>
+   <property name="toolTip">
+    <string>Auto disconnect on deactivate</string>
+   </property>
+   <property name="statusTip">
+    <string>Auto disconnect on deactivate current patchbay</string>
    </property>
    <property name="shortcut">
     <string/>

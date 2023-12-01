@@ -95,6 +95,9 @@ public:
 	void setPatchbayAutoPin(bool autopin);
 	bool isPatchbayAutoPin() const;
 
+	void setPatchbayAutoDisconnect(bool autodisconnect);
+	bool isPatchbayAutoDisconnect() const;
+
 	void patchbayRecentFiles(const QString& path);
 	const QStringList& patchbayRecentFiles() const;
 
@@ -134,6 +137,7 @@ private:
 	bool        m_patchbay_activated;
 	bool        m_patchbay_exclusive;
 	bool        m_patchbay_autopin;
+	bool        m_patchbay_autodisconnect;
 	QStringList m_patchbay_recentfiles;
 
 	bool        m_systray_enabled;

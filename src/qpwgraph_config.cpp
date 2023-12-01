@@ -50,6 +50,7 @@ static const char *PatchbayPathKey  = "/Path";
 static const char *PatchbayActivatedKey = "/Activated";
 static const char *PatchbayExclusiveKey = "/Exclusive";
 static const char *PatchbayAutoPinKey = "/AutoPin";
+static const char *PatchbayAutoDisconnectKey = "/AutoDisconnect";
 static const char *PatchbayRecentFilesKey = "/RecentFiles";
 static const char *PatchbayToolbarKey = "/Toolbar";
 
@@ -82,6 +83,7 @@ qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 		m_patchbay_activated(false),
 		m_patchbay_exclusive(false),
 		m_patchbay_autopin(true),
+		m_patchbay_autodisconnect(false),
 		m_systray_enabled(true),
 		m_alsaseq_enabled(true)
 {
@@ -285,6 +287,17 @@ bool qpwgraph_config::isPatchbayAutoPin (void) const
 }
 
 
+void qpwgraph_config::setPatchbayAutoDisconnect ( bool autodisconnect )
+{
+	m_patchbay_autodisconnect = autodisconnect;
+}
+
+bool qpwgraph_config::isPatchbayAutoDisconnect (void) const
+{
+	return m_patchbay_autodisconnect;
+}
+
+
 void qpwgraph_config::patchbayRecentFiles ( const QString& path )
 {
 	// Remove from list if already there (avoid duplicates)
@@ -375,6 +388,7 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 	m_patchbay_activated = m_settings->value(PatchbayActivatedKey, false).toBool();
 	m_patchbay_exclusive = m_settings->value(PatchbayExclusiveKey, false).toBool();
 	m_patchbay_autopin = m_settings->value(PatchbayAutoPinKey, true).toBool();
+	m_patchbay_autodisconnect = m_settings->value(PatchbayAutoDisconnectKey, false).toBool();
 	m_patchbay_recentfiles = m_settings->value(PatchbayRecentFilesKey).toStringList();
 	m_settings->endGroup();
 
@@ -444,6 +458,7 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 	m_settings->setValue(PatchbayActivatedKey, m_patchbay_activated);
 	m_settings->setValue(PatchbayExclusiveKey, m_patchbay_exclusive);
 	m_settings->setValue(PatchbayAutoPinKey, m_patchbay_autopin);
+	m_settings->setValue(PatchbayAutoDisconnectKey, m_patchbay_autodisconnect);
 	m_settings->setValue(PatchbayRecentFilesKey, m_patchbay_recentfiles);
 	m_settings->endGroup();
 

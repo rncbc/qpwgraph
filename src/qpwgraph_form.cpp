@@ -277,6 +277,9 @@ qpwgraph_form::qpwgraph_form (
 	QObject::connect(m_ui.patchbayAutoPinAction,
 		SIGNAL(toggled(bool)),
 		SLOT(patchbayAutoPin(bool)));
+	QObject::connect(m_ui.patchbayAutoDisconnectAction,
+		SIGNAL(toggled(bool)),
+		SLOT(patchbayAutoDisconnect(bool)));
 
 	QObject::connect(m_ui.patchbayEditAction,
 		SIGNAL(toggled(bool)),
@@ -686,6 +689,14 @@ void qpwgraph_form::patchbayUnpin (void)
 void qpwgraph_form::patchbayAutoPin ( bool on )
 {
 	m_ui.graphCanvas->setPatchbayAutoPin(on);
+
+	stabilize();
+}
+
+
+void qpwgraph_form::patchbayAutoDisconnect ( bool on )
+{
+	m_ui.graphCanvas->setPatchbayAutoDisconnect(on);
 
 	stabilize();
 }
@@ -1590,12 +1601,15 @@ void qpwgraph_form::restoreState (void)
 		const bool is_activated = m_config->isPatchbayActivated();
 		const bool is_exclusive = m_config->isPatchbayExclusive();
 		const bool is_autopin = m_config->isPatchbayAutoPin();
+		const bool is_autodisconnect = m_config->isPatchbayAutoDisconnect();
 		m_ui.patchbayActivatedAction->setChecked(is_activated);
 		m_ui.patchbayExclusiveAction->setChecked(is_exclusive);
 		m_ui.patchbayAutoPinAction->setChecked(is_autopin);
+		m_ui.patchbayAutoDisconnectAction->setChecked(is_autodisconnect);
 		patchbay->setActivated(is_activated);
 		patchbay->setExclusive(is_exclusive);
 		m_ui.graphCanvas->setPatchbayAutoPin(is_autopin);
+		m_ui.graphCanvas->setPatchbayAutoDisconnect(is_autodisconnect);
 	}
 
 	m_ui.viewMenubarAction->setChecked(m_config->isMenubar());
@@ -1687,6 +1701,7 @@ void qpwgraph_form::saveState (void)
 	m_config->setMenubar(m_ui.MenuBar->isVisible());
 
 	m_config->setPatchbayAutoPin(m_ui.patchbayAutoPinAction->isChecked());
+	m_config->setPatchbayAutoDisconnect(m_ui.patchbayAutoDisconnectAction->isChecked());
 	m_config->setPatchbayExclusive(m_ui.patchbayExclusiveAction->isChecked());
 	m_config->setPatchbayActivated(m_ui.patchbayActivatedAction->isChecked());
 	m_config->setPatchbayPath(m_patchbay_path);

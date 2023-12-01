@@ -7,8 +7,9 @@ GIT HEAD
 - Introduce Help > Enable ALSA MIDI runtime option, now permitting
   to disable the ALSA MIDI/Sequencer graph conveniency in a whim.
   (EXPERIMENTAL)
-- Disconnect pinned connections when patchbay is deactivated.
-  (GL issue #93) (EXPERIMENTAL)
+- Disconnect all pinned connections when patchbay is deactivated,
+  subject to Patchbay > Auto Disconnect option. (qpwgraph issue #93)
+  (EXPERIMENTAL)
 - Fix a potential port duplication when recycled under the same
   node and reusing a previous port id. (EXPERIMENTAL)
 - Don't unpin connections that are manually disconnected, when

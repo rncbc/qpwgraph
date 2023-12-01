@@ -69,8 +69,9 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 	: QGraphicsView(parent), m_state(DragNone), m_item(nullptr),
 		m_connect(nullptr), m_rubberband(nullptr),
 		m_zoom(1.0), m_zoomrange(false), m_gesture(false),
-		m_commands(nullptr), m_settings(nullptr), m_patchbay(nullptr),
-		m_patchbay_edit(false), m_patchbay_autopin(true),
+		m_commands(nullptr), m_settings(nullptr),
+		m_patchbay(nullptr), m_patchbay_edit(false),
+		m_patchbay_autopin(true), m_patchbay_autodisconnect(false),
 		m_selected_nodes(0), m_repel_overlapping_nodes(false),
 		m_edit_item(nullptr), m_editor(nullptr), m_edited(0)
 {
@@ -160,6 +161,19 @@ void qpwgraph_canvas::setPatchbayAutoPin ( bool on )
 bool qpwgraph_canvas::isPatchbayAutoPin (void) const
 {
 	return m_patchbay_autopin;
+}
+
+
+// Patchbay auto-disconnect accessors.
+void qpwgraph_canvas::setPatchbayAutoDisconnect ( bool on )
+{
+	m_patchbay_autodisconnect = on;
+}
+
+
+bool qpwgraph_canvas::isPatchbayAutoDisconnect (void) const
+{
+	return m_patchbay_autodisconnect;
 }
 
 

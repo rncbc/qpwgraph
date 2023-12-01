@@ -324,7 +324,7 @@ bool qpwgraph_patchbay::scan (void)
 				if (connect12 == nullptr && m_activated)
 					m_canvas->emitConnected(port1, port2);
 				else
-				if (!m_activated) {
+				if (!m_activated && m_canvas->isPatchbayAutoDisconnect()) {
 					const Item item12(
 						node1->nodeType(),
 						port1->portType(),
