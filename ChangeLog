@@ -2,16 +2,14 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.6.1  2023-12-01  An End-of-Autumn'23 Release.
 
 - Introduce Help > Enable ALSA MIDI runtime option, now permitting
   to disable the ALSA MIDI/Sequencer graph conveniency in a whim.
-  (EXPERIMENTAL)
 - Disconnect all pinned connections when patchbay is deactivated,
-  subject to Patchbay > Auto Disconnect option. (GL issue #93)
-  (EXPERIMENTAL)
+  subject to Patchbay > Auto Disconnect option.
 - Fix a potential port duplication when recycled under the same
-  node and reusing a previous port id. (EXPERIMENTAL)
+  node and reusing a previous port id.
 - Don't unpin connections that are manually disconnected, when
   patchbay is deactivated and auto-pin is off.
 
