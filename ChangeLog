@@ -8,7 +8,7 @@ GIT HEAD
   to disable the ALSA MIDI/Sequencer graph conveniency in a whim.
   (EXPERIMENTAL)
 - Disconnect all pinned connections when patchbay is deactivated,
-  subject to Patchbay > Auto Disconnect option. (qpwgraph issue #93)
+  subject to Patchbay > Auto Disconnect option. (GL issue #93)
   (EXPERIMENTAL)
 - Fix a potential port duplication when recycled under the same
   node and reusing a previous port id. (EXPERIMENTAL)

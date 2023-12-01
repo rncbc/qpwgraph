@@ -26,6 +26,13 @@ Makes the connection persistant in the currently loaded and activated patchbay.
 
 Used to make the connection temporary. The unpinned connection will not be dropped if the current patchbay is deactivated.
 
+### Auto Pin option
+
+If checked, all manual connections will be pinned to the current patchbay and persistant when activated.
+
+### Auto Disconnect option
+
+If checked, all pinned connections will be automatically disconnected when the current patchbay is deactivated.
 
 ---
 Credits: @Lootre (a.k.a. Thomas Lachat).
