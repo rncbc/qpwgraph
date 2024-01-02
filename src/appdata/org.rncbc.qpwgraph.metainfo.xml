@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2021-2022 Rui Nuno Capela <rncbc@rncbc.org> -->
+<!-- Copyright 2021-2024 Rui Nuno Capela <rncbc@rncbc.org> -->
 <component type="desktop">
  <id>org.rncbc.qpwgraph</id>
  <metadata_license>FSFAP</metadata_license>

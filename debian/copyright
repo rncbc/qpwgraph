@@ -4,7 +4,7 @@ Upstream-Contact: Rui Nuno Capela <rncbc@rncbc.org>
 Source: https://gitlab.freedesktop.org/rncbc/qpwgraph
 
 Files: *
-Copyright: 2021-2023 Rui Nuno Capela <rncbc@rncbc.org>
+Copyright: 2021-2024 Rui Nuno Capela <rncbc@rncbc.org>
 License: GPL-2+
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ License: GPL-2+
  License can be found in /usr/share/common-licenses/GPL-2.
 
 Files: src/appdata/*
-Copyright: 2021-2023 Rui Nuno Capela <rncbc@rncbc.org>
+Copyright: 2021-2024 Rui Nuno Capela <rncbc@rncbc.org>
 License: FSFAP
  Copying and distribution of this file, with or without modification,
  are permitted in any medium without royalty provided the copyright

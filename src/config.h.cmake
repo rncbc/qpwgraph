@@ -14,10 +14,8 @@
 /* Define to the homepage of this package. */
 #cmakedefine PROJECT_HOMEPAGE_URL "@PROJECT_HOMEPAGE_URL@"
 
-
 /* Define if debugging is enabled. */
 #cmakedefine CONFIG_DEBUG @CONFIG_DEBUG@
-
 
 /* Define if ALSA MIDI support is available. */
 #cmakedefine CONFIG_ALSA_MIDI @CONFIG_ALSA_MIDI@

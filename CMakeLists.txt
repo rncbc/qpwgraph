@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.15)
 
 project(qpwgraph
-  VERSION 0.6.1
+  VERSION 0.6.2
   DESCRIPTION "A PipeWire Graph Qt GUI Interface"
   HOMEPAGE_URL "https://gitlab.freedesktop.org/rncbc/qpwgraph"
   LANGUAGES C CXX)
@@ -32,6 +32,16 @@ if (GIT_DESCRIBE_RESULT EQUAL 0)
 endif ()
 
 
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
+  set (CONFIG_DEBUG 1)
+  set (CONFIG_BUILD_TYPE "debug")
+else ()
+  set (CONFIG_DEBUG 0)
+  set (CONFIG_BUILD_TYPE "release")
+  set (CMAKE_BUILD_TYPE "Release")
+endif ()
+
+
 # Enable ALSA MIDI support option.
 option (CONFIG_ALSA_MIDI "Enable ALSA MIDI support (default=yes)" 1)
 
@@ -43,16 +53,6 @@ option (CONFIG_WAYLAND "Enable Wayland support (EXPERIMENTAL) (default=no)" 0)
 
 # Enable Qt6 build preference.
 option (CONFIG_QT6 "Enable Qt6 build (default=yes)" 1)
-
-
-if (CMAKE_BUILD_TYPE MATCHES "Debug")
-  set (CONFIG_DEBUG 1)
-  set (CONFIG_BUILD_TYPE "debug")
-else ()
-  set (CONFIG_DEBUG 0)
-  set (CONFIG_BUILD_TYPE "release")
-  set (CMAKE_BUILD_TYPE "Release")
-endif ()
 
 
 include (GNUInstallDirs)

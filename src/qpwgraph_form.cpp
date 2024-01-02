@@ -1,7 +1,7 @@
 // qpwgraph_form.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -102,7 +102,7 @@ qpwgraph_form::qpwgraph_form (
 #if QT_VERSION < QT_VERSION_CHECK(6, 1, 0)
 	QMainWindow::setWindowIcon(QIcon(":/images/qpwgraph.png"));
 #endif
-	m_config = new qpwgraph_config("rncbc.org", "qpwgraph");
+	m_config = new qpwgraph_config(PROJECT_DOMAIN, PROJECT_NAME);
 
 	m_ui.graphCanvas->setSettings(m_config->settings());
 
@@ -895,12 +895,11 @@ void qpwgraph_form::helpAlsaMidi ( bool on )
 
 void qpwgraph_form::helpAbout (void)
 {
-	static const QString title = PROJECT_NAME;
-	static const QString version = PROJECT_VERSION;
-	static const QString subtitle = PROJECT_DESCRIPTION;
-	static const QString website = PROJECT_HOMEPAGE_URL;
-	static const QString copyright
-		= "Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.";
+	static const QString title     = PROJECT_NAME;
+	static const QString version   = PROJECT_VERSION;
+	static const QString subtitle  = PROJECT_DESCRIPTION;
+	static const QString website   = PROJECT_HOMEPAGE_URL;
+	static const QString copyright = PROJECT_COPYRIGHT;
 
 	QStringList list;
 #ifdef CONFIG_DEBUG
