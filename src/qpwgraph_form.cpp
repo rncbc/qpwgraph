@@ -940,6 +940,7 @@ void qpwgraph_form::helpAbout (void)
 	text += tr("This program is free software; you can redistribute it and/or modify it") + "<br />\n";
 	text += tr("under the terms of the GNU General Public License version 2 or later.");
 	text += "</small>";
+	text += "<br />\n";
 	text += "</p>\n";
 
 	QMessageBox::about(this, tr("About") + ' ' + title, text);
