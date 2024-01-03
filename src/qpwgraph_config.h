@@ -26,13 +26,6 @@
 
 #include <QString>
 
-#ifndef PROJECT_COPYRIGHT
-#define PROJECT_COPYRIGHT   "Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved."
-#endif
-
-#ifndef PROJECT_DOMAIN
-#define PROJECT_DOMAIN      "rncbc.org"
-#endif
 
 // Forwards decls.
 class QSettings;
