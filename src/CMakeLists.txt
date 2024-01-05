@@ -70,7 +70,10 @@ if (CONFIG_DEBUG AND UNIX AND NOT APPLE)
 endif ()
 
 set_target_properties (${PROJECT_NAME} PROPERTIES C_STANDARD 99)
-set_target_properties (${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
+set_target_properties (${PROJECT_NAME} PROPERTIES
+  CXX_STANDARD 20
+  CXX_STANDARD_REQUIRED TRUE
+)
 
 include(FindPkgConfig)
 pkg_check_modules (PIPEWIRE REQUIRED IMPORTED_TARGET libpipewire-0.3)

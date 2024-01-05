@@ -12,7 +12,7 @@
 
 ## Prerequisites
 
-  **qpwgraph** software prerequisites for building are a C++17 compiler
+  **qpwgraph** software prerequisites for building are a C++20 compiler
   (_g++_), the [Qt C++ framework](https://qt.io) (_qt6-qtbase-devel_ or
   _qt5-qtbase-devel_) and of course the [PipeWire API](https://pipewire.org)
   C development libraries and headers (_pipewire-devel_).
