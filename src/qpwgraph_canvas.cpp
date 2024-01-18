@@ -1,7 +1,7 @@
 // qpwgraph_canvas.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -88,6 +88,10 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 
 	QGraphicsView::setResizeAnchor(QGraphicsView::NoAnchor);
 	QGraphicsView::setDragMode(QGraphicsView::NoDrag);
+
+	const QPalette& pal = QGraphicsView::palette();
+	if (pal.base().color().value() > 192)
+		QGraphicsView::setBackgroundRole(QPalette::Mid);
 
 	m_editor = new QLineEdit(this);
 	m_editor->setFrame(false);

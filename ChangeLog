@@ -4,6 +4,8 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Make the main canvas background to mid-gray, when on non-dark
+  color themes. (EXPERIMENTAL)
 - Updated copyright headers into the New Year (2024).
 
 
