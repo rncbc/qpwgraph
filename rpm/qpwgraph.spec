@@ -16,8 +16,8 @@
 #
 
 %define name    qpwgraph
-%define version 0.6.1
-%define release 33.1
+%define version 0.6.2
+%define release 34.1
 
 %define _prefix	/usr
 
@@ -133,6 +133,8 @@ cmake --install build
 
 
 %changelog
+* Mon Jan 22 2024 Rui Nuno Capela <rncbc@rncbc.org> 0.6.2
+- A winter'24 release.
 * Sat Dec  2 2023 Rui Nuno Capela <rncbc@rncbc.org> 0.6.1
 - An end-of-autumn'23 release.
 * Wed Nov  8 2023 Rui Nuno Capela <rncbc@rncbc.org> 0.6.0
