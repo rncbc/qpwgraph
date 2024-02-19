@@ -126,9 +126,6 @@ void qpwgraph_sect::renameItem (
 		if (port && node)
 			port->setPortTitle(name);
 	}
-
-	if (node)
-		node->updatePath();
 }
 
 

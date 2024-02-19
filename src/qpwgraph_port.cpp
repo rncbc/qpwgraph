@@ -190,6 +190,8 @@ void qpwgraph_port::setPortTitle ( const QString& title )
 		= m_text->boundingRect().adjusted(0, +2, 0, -2);
 	path.addRoundedRect(rect, 5, 5);
 	/*QGraphicsPathItem::*/setPath(path);
+
+	m_node->updatePath();
 }
 
 
