@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Fixed renamed ports positioned incorrectly after relaunch.
+  (GL Issue #101).
+
+
 0.6.2  2024-01-22  A Winter'24 Release.
 
 - Make the main canvas background to mid-gray, when on non-dark

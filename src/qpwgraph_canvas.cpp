@@ -1395,6 +1395,11 @@ bool qpwgraph_canvas::restorePort ( qpwgraph_port *port )
 		return false;
 
 	port->setPortTitle(port_title);
+
+	qpwgraph_node *node = port->portNode();
+	if (node)
+		node->updatePath();
+
 	return true;
 }
 
