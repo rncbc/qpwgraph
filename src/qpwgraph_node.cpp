@@ -1,7 +1,7 @@
 // qpwgraph_node.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -198,9 +198,9 @@ void qpwgraph_node::setNodeTitle ( const QString& title )
 	static const int MAX_TITLE_LENGTH = 29;
 	static const QString ellipsis(3, '.');
 
-	QString text = m_title;
+	QString text = m_title.simplified();
 	if (text.length() >= MAX_TITLE_LENGTH  + ellipsis.length())
-		text = text.left(MAX_TITLE_LENGTH) + ellipsis;
+		text = text.left(MAX_TITLE_LENGTH).trimmed() + ellipsis;
 
 	m_text->setPlainText(text);
 }
