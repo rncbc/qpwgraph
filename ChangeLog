@@ -2,10 +2,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.6.3  2024-03-29  A Good-Friday'24 Release.
 
+- Node and port title ellipsis shortning trimmed and simplified.
+- Fixed system-tray icon to a 32x32 pixmap.
 - Fixed renamed ports positioned incorrectly after relaunch.
-  (GL Issue #101).
 
 
 0.6.2  2024-01-22  A Winter'24 Release.
