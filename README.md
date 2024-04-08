@@ -31,7 +31,7 @@
     cmake [-DCMAKE_INSTALL_PREFIX=<prefix>] -B build
     cmake --build build [--parallel <Njobs>]
 
-  After successful build you may test run it immedialy as follows:
+  After successful build you may test run it immediately as follows:
 
     build/src/qpwgraph
 
