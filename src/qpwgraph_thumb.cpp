@@ -43,7 +43,7 @@ public:
 		: QGraphicsView(canvas->viewport()),
 			m_canvas(canvas), m_drag_state(DragNone)
 	{
-		QGraphicsView::setInteractive(false);
+	//	QGraphicsView::setInteractive(false);
 		QGraphicsView::setRenderHints(QPainter::Antialiasing);
 		QGraphicsView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		QGraphicsView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -150,9 +150,8 @@ qpwgraph_thumb::qpwgraph_thumb ( qpwgraph_canvas *canvas, Position position )
 	layout->addWidget(m_view);
 	QFrame::setLayout(layout);
 
-	QFrame::setFrameStyle(QFrame::StyledPanel);
-
-	QFrame::setContextMenuPolicy(Qt::DefaultContextMenu);
+	QFrame::setFrameStyle(QFrame::Panel);
+	QFrame::setForegroundRole(QPalette::Window);
 
 	QObject::connect(m_canvas->horizontalScrollBar(),
 		SIGNAL(valueChanged(int)), SLOT(updateView()));
