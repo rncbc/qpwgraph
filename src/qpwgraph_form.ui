@@ -162,8 +162,9 @@
     </widget>
     <addaction name="viewMenubarAction"/>
     <addaction name="viewToolbarMenu"/>
-    <addaction name="viewThumbviewMenu"/>
     <addaction name="viewStatusbarAction"/>
+    <addaction name="separator"/>
+    <addaction name="viewThumbviewMenu"/>
     <addaction name="separator"/>
     <addaction name="viewTextBesideIconsAction"/>
     <addaction name="viewColorsMenu"/>

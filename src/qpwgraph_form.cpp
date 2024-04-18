@@ -531,6 +531,8 @@ qpwgraph_form::~qpwgraph_form (void)
 	if (m_thumb)
 		delete m_thumb;
 
+	delete m_thumb_mode;
+
 #ifdef CONFIG_SYSTEM_TRAY
 	if (m_systray)
 		delete m_systray;
