@@ -144,8 +144,11 @@ public:
 	void emitConnected(qpwgraph_port *port1, qpwgraph_port *port2);
 	void emitDisconnected(qpwgraph_port *port1, qpwgraph_port *port2);
 
-	// Rename notifiers.
+	// Rename notifier.
 	void emitRenamed(qpwgraph_item *item, const QString& name);
+
+	// Other generic notifier.
+	void emitChanged();
 
 	// Graph canvas state methods.
 	bool restoreState();

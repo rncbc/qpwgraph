@@ -31,6 +31,7 @@
 
 #include "qpwgraph_patchbay.h"
 #include "qpwgraph_systray.h"
+#include "qpwgraph_thumb.h"
 
 #include <pipewire/pipewire.h>
 
@@ -125,6 +126,9 @@ qpwgraph_form::qpwgraph_form (
 
 	m_systray = nullptr;
 	m_systray_closed = false;
+
+	m_thumb = nullptr;
+	m_thumb_update = 0;
 
 	QUndoStack *commands = m_ui.graphCanvas->commands();
 
@@ -226,7 +230,7 @@ qpwgraph_form::qpwgraph_form (
 
 	QObject::connect(m_ui.graphCanvas,
 		SIGNAL(changed()),
-		SLOT(stabilize()));
+		SLOT(changed()));
 
 	// Some actions surely need those
 	// shortcuts firmly attached...
@@ -321,6 +325,36 @@ qpwgraph_form::qpwgraph_form (
 	QObject::connect(m_ui.viewPatchbayToolbarAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewPatchbayToolbar(bool)));
+
+	m_thumb_mode = new QActionGroup(this);
+	m_thumb_mode->setExclusive(true);
+	m_thumb_mode->addAction(m_ui.viewThumbviewTopLeftAction);
+	m_thumb_mode->addAction(m_ui.viewThumbviewTopRightAction);
+	m_thumb_mode->addAction(m_ui.viewThumbviewBottomLeftAction);
+	m_thumb_mode->addAction(m_ui.viewThumbviewBottomRightAction);
+	m_thumb_mode->addAction(m_ui.viewThumbviewNoneAction);
+
+	m_ui.viewThumbviewTopLeftAction->setData(qpwgraph_thumb::TopLeft);
+	m_ui.viewThumbviewTopRightAction->setData(qpwgraph_thumb::TopRight);
+	m_ui.viewThumbviewBottomLeftAction->setData(qpwgraph_thumb::BottomLeft);
+	m_ui.viewThumbviewBottomRightAction->setData(qpwgraph_thumb::BottomRight);
+	m_ui.viewThumbviewNoneAction->setData(qpwgraph_thumb::None);
+
+	QObject::connect(m_ui.viewThumbviewTopLeftAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewThumbviewAction()));
+	QObject::connect(m_ui.viewThumbviewTopRightAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewThumbviewAction()));
+	QObject::connect(m_ui.viewThumbviewBottomLeftAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewThumbviewAction()));
+	QObject::connect(m_ui.viewThumbviewBottomRightAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewThumbviewAction()));
+	QObject::connect(m_ui.viewThumbviewNoneAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewThumbviewAction()));
 
 	QObject::connect(m_ui.viewTextBesideIconsAction,
 		SIGNAL(triggered(bool)),
@@ -494,6 +528,9 @@ qpwgraph_form::qpwgraph_form (
 // Destructor.
 qpwgraph_form::~qpwgraph_form (void)
 {
+	if (m_thumb)
+		delete m_thumb;
+
 #ifdef CONFIG_SYSTEM_TRAY
 	if (m_systray)
 		delete m_systray;
@@ -706,24 +743,63 @@ void qpwgraph_form::patchbayAutoDisconnect ( bool on )
 void qpwgraph_form::viewMenubar ( bool on )
 {
 	m_ui.MenuBar->setVisible(on);
+
+	++m_thumb_update;
 }
 
 
 void qpwgraph_form::viewGraphToolbar ( bool on )
 {
 	m_ui.graphToolbar->setVisible(on);
+
+	++m_thumb_update;
 }
 
 
 void qpwgraph_form::viewPatchbayToolbar ( bool on )
 {
 	m_ui.patchbayToolbar->setVisible(on);
+
+	++m_thumb_update;
 }
 
 
 void qpwgraph_form::viewStatusbar ( bool on )
 {
 	m_ui.StatusBar->setVisible(on);
+
+	++m_thumb_update;
+}
+
+
+void qpwgraph_form::viewThumbviewAction (void)
+{
+	QAction *action = qobject_cast<QAction *> (sender());
+	if (action)
+		viewThumbview(action->data().toInt());
+}
+
+
+void qpwgraph_form::viewThumbview ( int thumbview )
+{
+	const qpwgraph_thumb::Position position
+		= qpwgraph_thumb::Position(thumbview);
+	if (position == qpwgraph_thumb::None) {
+		if (m_thumb) {
+			m_thumb->hide();
+			delete m_thumb;
+			m_thumb = nullptr;
+			m_thumb_update = 0;
+		}
+	} else {
+		if (m_thumb) {
+			m_thumb->setPosition(position);
+		} else {
+			m_thumb = new qpwgraph_thumb(m_ui.graphCanvas, position);
+			m_thumb->show();
+			++m_thumb_update;
+		}
+	}
 }
 
 
@@ -736,6 +812,8 @@ void qpwgraph_form::viewTextBesideIcons ( bool on )
 		m_ui.graphToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 		m_ui.patchbayToolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 	}
+
+	++m_thumb_update;
 }
 
 
@@ -756,6 +834,8 @@ void qpwgraph_form::viewRefresh (void)
 
 	if (m_ui.graphCanvas->isRepelOverlappingNodes())
 		++m_repel_overlapping_nodes; // fake nodes added!
+
+	++m_thumb_update;
 
 	refresh();
 }
@@ -1118,6 +1198,15 @@ void qpwgraph_form::renamed ( qpwgraph_item *item, const QString& name )
 }
 
 
+// Graph view change slot.
+void qpwgraph_form::changed (void)
+{
+	++m_thumb_update;
+
+	stabilize();
+}
+
+
 // Graph section slots.
 void qpwgraph_form::pipewire_changed (void)
 {
@@ -1167,6 +1256,13 @@ void qpwgraph_form::refresh (void)
 		m_repel_overlapping_nodes = 0;
 		m_ui.graphCanvas->repelOverlappingNodesAll();
 		stabilize();
+		++nchanged;
+	}
+
+	if (m_thumb_update > 0 || nchanged > 0) {
+		m_thumb_update = 0;
+		if (m_thumb)
+			m_thumb->updateView();
 	}
 
 	QTimer::singleShot(300, this, SLOT(refresh()));
@@ -1428,6 +1524,8 @@ void qpwgraph_form::resizeEvent ( QResizeEvent *event )
 {
 	QMainWindow::resizeEvent(event);
 
+	++m_thumb_update;
+
 	stabilize();
 }
 
@@ -1617,6 +1715,27 @@ void qpwgraph_form::restoreState (void)
 	m_ui.viewPatchbayToolbarAction->setChecked(m_config->isPatchbayToolbar());
 	m_ui.viewStatusbarAction->setChecked(m_config->isStatusbar());
 
+	const qpwgraph_thumb::Position position
+		= qpwgraph_thumb::Position(m_config->thumbview());
+	switch (position) {
+	case qpwgraph_thumb::TopLeft:
+		m_ui.viewThumbviewTopLeftAction->setChecked(true);
+		break;
+	case qpwgraph_thumb::TopRight:
+		m_ui.viewThumbviewTopRightAction->setChecked(true);
+		break;
+	case qpwgraph_thumb::BottomLeft:
+		m_ui.viewThumbviewBottomLeftAction->setChecked(true);
+		break;
+	case qpwgraph_thumb::BottomRight:
+		m_ui.viewThumbviewBottomRightAction->setChecked(true);
+		break;
+	case qpwgraph_thumb::None:
+	default:
+		m_ui.viewThumbviewNoneAction->setChecked(true);
+		break;
+	}
+
 	m_ui.viewTextBesideIconsAction->setChecked(m_config->isTextBesideIcons());
 	m_ui.viewZoomRangeAction->setChecked(m_config->isZoomRange());
 	m_ui.viewRepelOverlappingNodesAction->setChecked(m_config->isRepelOverlappingNodes());
@@ -1656,6 +1775,8 @@ void qpwgraph_form::restoreState (void)
 	viewPatchbayToolbar(m_config->isPatchbayToolbar());
 	viewStatusbar(m_config->isStatusbar());
 
+	viewThumbview(m_config->thumbview());
+
 	viewTextBesideIcons(m_config->isTextBesideIcons());
 	viewZoomRange(m_config->isZoomRange());
 	viewRepelOverlappingNodes(m_config->isRepelOverlappingNodes());
@@ -1687,6 +1808,8 @@ void qpwgraph_form::restoreState (void)
 void qpwgraph_form::saveState (void)
 {
 	m_ui.graphCanvas->saveState();
+
+	m_config->setThumbview(m_thumb ? m_thumb->position() : qpwgraph_thumb::None);
 
 	m_config->setTextBesideIcons(m_ui.viewTextBesideIconsAction->isChecked());
 	m_config->setZoomRange(m_ui.viewZoomRangeAction->isChecked());

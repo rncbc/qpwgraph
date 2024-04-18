@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Introducing the View/Thumbview option as a whole graph thumbnail
+  overview helper. (EXPERIMENTAL)
+
+
 0.6.3  2024-03-29  A Good-Friday'24 Release.
 
 - Node and port title ellipsis shortning trimmed and simplified.

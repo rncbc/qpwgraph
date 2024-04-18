@@ -38,6 +38,7 @@ class qpwgraph_port;
 class qpwgraph_connect;
 
 class qpwgraph_systray;
+class qpwgraph_thumb;
 
 class QResizeEvent;
 class QCloseEvent;
@@ -86,6 +87,9 @@ protected slots:
 	// Item renaming slot.
 	void renamed(qpwgraph_item *item, const QString& name);
 
+	// Graph view change slot.
+	void changed();
+
 	// Graph section slots.
 	void pipewire_changed();
 	void alsamidi_changed();
@@ -121,6 +125,9 @@ protected slots:
 	void viewGraphToolbar(bool on);
 	void viewPatchbayToolbar(bool on);
 	void viewStatusbar(bool on);
+
+	void viewThumbviewAction();
+	void viewThumbview(int thumbview);
 
 	void viewTextBesideIcons(bool on);
 
@@ -235,6 +242,10 @@ private:
 
 	qpwgraph_systray *m_systray;
 	bool m_systray_closed;
+
+	QActionGroup *m_thumb_mode;
+	qpwgraph_thumb *m_thumb;
+	int m_thumb_update;
 };
 
 

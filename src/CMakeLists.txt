@@ -27,6 +27,7 @@ set (HEADERS
   qpwgraph_alsamidi.h
   qpwgraph_patchbay.h
   qpwgraph_systray.h
+  qpwgraph_thumb.h
   qpwgraph_form.h
 )
 
@@ -44,6 +45,7 @@ set (SOURCES
   qpwgraph_alsamidi.cpp
   qpwgraph_patchbay.cpp
   qpwgraph_systray.cpp
+  qpwgraph_thumb.cpp
   qpwgraph_form.cpp
 )
 

@@ -59,6 +59,9 @@ public:
 	void setStatusbar(bool statusbar);
 	bool isStatusbar() const;
 
+	void setThumbview(int thumbview);
+	int thumbview() const;
+
 	void setTextBesideIcons(bool texticons);
 	bool isTextBesideIcons() const;
 
@@ -123,6 +126,7 @@ private:
 	bool        m_menubar;
 	bool        m_toolbar;
 	bool        m_statusbar;
+	int         m_thumbview;
 	bool        m_texticons;
 	bool        m_zoomrange;
 	int         m_sorttype;

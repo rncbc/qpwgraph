@@ -111,6 +111,17 @@
      <addaction name="viewGraphToolbarAction"/>
      <addaction name="viewPatchbayToolbarAction"/>
     </widget>
+    <widget class="QMenu" name="viewThumbviewMenu">
+     <property name="title">
+      <string>T&amp;humbview</string>
+     </property>
+     <addaction name="viewThumbviewTopLeftAction"/>
+     <addaction name="viewThumbviewTopRightAction"/>
+     <addaction name="viewThumbviewBottomLeftAction"/>
+     <addaction name="viewThumbviewBottomRightAction"/>
+     <addaction name="separator"/>
+     <addaction name="viewThumbviewNoneAction"/>
+    </widget>
     <widget class="QMenu" name="viewZoomMenu">
      <property name="title">
       <string>&amp;Zoom</string>
@@ -151,6 +162,7 @@
     </widget>
     <addaction name="viewMenubarAction"/>
     <addaction name="viewToolbarMenu"/>
+    <addaction name="viewThumbviewMenu"/>
     <addaction name="viewStatusbarAction"/>
     <addaction name="separator"/>
     <addaction name="viewTextBesideIconsAction"/>
@@ -656,6 +668,106 @@
    </property>
    <property name="statusTip">
     <string>Show/hide the main program window statusbar</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewThumbviewTopLeftAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Top Left</string>
+   </property>
+   <property name="iconText">
+    <string>Top left</string>
+   </property>
+   <property name="toolTip">
+    <string>Top left</string>
+   </property>
+   <property name="statusTip">
+    <string>Show the thumbnail overview on the top-left</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewThumbviewTopRightAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Top &amp;Right</string>
+   </property>
+   <property name="iconText">
+    <string>Top right</string>
+   </property>
+   <property name="toolTip">
+    <string>Top right</string>
+   </property>
+   <property name="statusTip">
+    <string>Show the thumbnail overview on the top-right</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewThumbviewBottomLeftAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bottom &amp;Left</string>
+   </property>
+   <property name="iconText">
+    <string>Bottom Left</string>
+   </property>
+   <property name="toolTip">
+    <string>Bottom left</string>
+   </property>
+   <property name="statusTip">
+    <string>Show the thumbnail overview on the bottom-left</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewThumbviewBottomRightAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Bottom Right</string>
+   </property>
+   <property name="iconText">
+    <string>Bottom right</string>
+   </property>
+   <property name="toolTip">
+    <string>Bottom right</string>
+   </property>
+   <property name="statusTip">
+    <string>Show the thumbnail overview on the bottom-right</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewThumbviewNoneAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;None</string>
+   </property>
+   <property name="iconText">
+    <string>None</string>
+   </property>
+   <property name="toolTip">
+    <string>Hide thumbview</string>
+   </property>
+   <property name="statusTip">
+    <string>Hide the thumbnail overview</string>
    </property>
    <property name="shortcut">
     <string/>

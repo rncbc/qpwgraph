@@ -592,10 +592,17 @@ void qpwgraph_canvas::emitDisconnected (
 }
 
 
-// Rename notifiers.
+// Rename notifier.
 void qpwgraph_canvas::emitRenamed ( qpwgraph_item *item, const QString& name )
 {
 	emit renamed(item, name);
+}
+
+
+// Other generic notifier.
+void qpwgraph_canvas::emitChanged (void)
+{
+	emit changed();
 }
 
 
@@ -922,6 +929,7 @@ void qpwgraph_canvas::mouseReleaseEvent ( QMouseEvent *event )
 			}
 			m_commands->push(
 				new qpwgraph_move_command(this, nodes, m_pos1, pos));
+			++nchanged;
 		}
 		// Close rubber-band lasso...
 		if (m_rubberband) {

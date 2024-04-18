@@ -37,6 +37,7 @@ static const char *ViewGroup        = "/GraphView";
 static const char *ViewMenubarKey   = "/Menubar";
 static const char *ViewToolbarKey   = "/Toolbar";
 static const char *ViewStatusbarKey = "/Statusbar";
+static const char *ViewThumbviewKey = "/Thumbview";
 static const char *ViewTextBesideIconsKey = "/TextBesideIcons";
 static const char *ViewZoomRangeKey = "/ZoomRange";
 static const char *ViewSortTypeKey  = "/SortType";
@@ -75,7 +76,7 @@ static const char *SessionStartMinimizedKey = "/StartMinimized";
 qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 	: m_settings(settings), m_owner(owner),
 		m_menubar(false), m_toolbar(false), m_statusbar(false),
-		m_texticons(false), m_zoomrange(false),
+		m_thumbview(0), m_texticons(false), m_zoomrange(false),
 		m_sorttype(0), m_sortorder(0),
 		m_repelnodes(false),
 		m_cthrunodes(false),
@@ -150,6 +151,17 @@ void qpwgraph_config::setStatusbar ( bool statusbar )
 bool qpwgraph_config::isStatusbar (void) const
 {
 	return m_statusbar;
+}
+
+
+void qpwgraph_config::setThumbview ( int thumbview )
+{
+	m_thumbview = thumbview;
+}
+
+int qpwgraph_config::thumbview (void) const
+{
+	return m_thumbview;
 }
 
 
@@ -402,6 +414,7 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 	m_menubar = m_settings->value(ViewMenubarKey, true).toBool();
 	m_toolbar = m_settings->value(ViewToolbarKey, true).toBool();
 	m_statusbar = m_settings->value(ViewStatusbarKey, true).toBool();
+	m_thumbview = m_settings->value(ViewThumbviewKey, 0).toInt();
 	m_texticons = m_settings->value(ViewTextBesideIconsKey, true).toBool();
 	m_zoomrange = m_settings->value(ViewZoomRangeKey, false).toBool();
 	m_sorttype  = m_settings->value(ViewSortTypeKey, 0).toInt();
@@ -466,6 +479,7 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 	m_settings->setValue(ViewMenubarKey, m_menubar);
 	m_settings->setValue(ViewToolbarKey, m_toolbar);
 	m_settings->setValue(ViewStatusbarKey, m_statusbar);
+	m_settings->setValue(ViewThumbviewKey, m_thumbview);
 	m_settings->setValue(ViewTextBesideIconsKey, m_texticons);
 	m_settings->setValue(ViewZoomRangeKey, m_zoomrange);
 	m_settings->setValue(ViewSortTypeKey, m_sorttype);
