@@ -1514,7 +1514,7 @@ bool qpwgraph_form::patchbayQueryQuit (void)
 		= m_ui.graphCanvas->patchbay();
 	if (patchbay && patchbay->isActivated()) {
 		showNormal();
-		if (m_config->isPatchbayQueryQuit()) {
+		if (m_ui.helpPatchbayQueryQuitAction->isChecked()) {
 			const QString& title
 				= tr("Warning");
 			const QString& text
@@ -1534,8 +1534,9 @@ bool qpwgraph_form::patchbayQueryQuit (void)
 			cbox.blockSignals(true);
 			mbox.addButton(&cbox, QMessageBox::ActionRole);
 			ret = (mbox.exec() == QMessageBox::Ok);
-			if (ret && cbox.isChecked())
-				m_config->setPatchbayQueryQuit(false);
+			if (ret && cbox.isChecked()) {
+				m_ui.helpPatchbayQueryQuitAction->setChecked(false);
+			}
 		#endif
 		}
 	}
@@ -1607,7 +1608,8 @@ void qpwgraph_form::closeEvent ( QCloseEvent *event )
 {
 #ifdef CONFIG_SYSTEM_TRAY
 	if (m_systray) {
-		if (!m_systray_closed && m_config->isSystemTrayQueryClose()) {
+		if (!m_systray_closed
+			&& m_ui.helpSystemTrayQueryCloseAction->isChecked()) {
 			const QString& title
 				= tr("Information");
 			const QString& text
@@ -1630,8 +1632,9 @@ void qpwgraph_form::closeEvent ( QCloseEvent *event )
 			cbox.blockSignals(true);
 			mbox.addButton(&cbox, QMessageBox::ActionRole);
 			mbox.exec();
-			if (cbox.isChecked())
-				m_config->setSystemTrayQueryClose(false);
+			if (cbox.isChecked()) {
+				m_ui.helpSystemTrayQueryCloseAction->setChecked(false);
+			}
 		#endif
 		}
 		m_systray_closed = true;
