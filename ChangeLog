@@ -4,6 +4,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Whether to show the System-tray informational and/or active
+  Patchbay warning messages, respectively on Close and/or Quit,
+  is now optional (cf. Help > Enable System Tray Message and/or
+  Help > Enable Patchbay Message, resp.) (EXPERIMENTAL)
 - Introducing the View/Thumbview option as a whole graph thumbnail
   overview helper. (EXPERIMENTAL)
 

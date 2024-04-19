@@ -148,6 +148,9 @@ protected slots:
 	void helpSystemTray(bool on);
 	void helpAlsaMidi(bool on);
 
+	void helpSystemTrayQueryClose(bool on);
+	void helpPatchbayQueryQuit(bool on);
+
 	void helpAbout();
 	void helpAboutQt();
 

@@ -295,6 +295,23 @@
     <string>Ctrl+D</string>
    </property>
   </action>
+  <action name="graphQuitAction">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="iconText">
+    <string>Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>Quit</string>
+   </property>
+   <property name="statusTip">
+    <string>Quit this application program</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
   <action name="patchbayNewAction">
    <property name="icon">
     <iconset resource="qpwgraph.qrc">:/images/fileNew.png</iconset>
@@ -512,23 +529,6 @@
     <string/>
    </property>
   </action>
-  <action name="graphQuitAction">
-   <property name="text">
-    <string>&amp;Quit</string>
-   </property>
-   <property name="iconText">
-    <string>Quit</string>
-   </property>
-   <property name="toolTip">
-    <string>Quit</string>
-   </property>
-   <property name="statusTip">
-    <string>Quit this application program</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Q</string>
-   </property>
-  </action>
   <action name="editSelectAllAction">
    <property name="text">
     <string>Select &amp;All</string>
@@ -588,13 +588,13 @@
     <string>&amp;Rename...</string>
    </property>
    <property name="iconText">
-    <string>Rename item</string>
+    <string>Rename Item</string>
    </property>
    <property name="toolTip">
-    <string>Rename Item</string>
+    <string>Rename item</string>
    </property>
    <property name="statusTip">
-    <string>Rename Item</string>
+    <string>Rename item</string>
    </property>
    <property name="shortcut">
     <string>F2</string>
@@ -628,7 +628,7 @@
     <string>&amp;Graph</string>
    </property>
    <property name="iconText">
-    <string>Graph toolbar</string>
+    <string>Graph Toolbar</string>
    </property>
    <property name="toolTip">
     <string>Graph toolbar</string>
@@ -645,7 +645,7 @@
     <string>&amp;Patchbay</string>
    </property>
    <property name="iconText">
-    <string>Patchbay toolbar</string>
+    <string>Patchbay Toolbar</string>
    </property>
    <property name="toolTip">
     <string>Patchbay toolbar</string>
@@ -702,7 +702,7 @@
     <string>Top &amp;Right</string>
    </property>
    <property name="iconText">
-    <string>Top right</string>
+    <string>Top Right</string>
    </property>
    <property name="toolTip">
     <string>Top right</string>
@@ -742,7 +742,7 @@
     <string>&amp;Bottom Right</string>
    </property>
    <property name="iconText">
-    <string>Bottom right</string>
+    <string>Bottom Right</string>
    </property>
    <property name="toolTip">
     <string>Bottom right</string>
@@ -782,7 +782,7 @@
     <string>Text Beside &amp;Icons</string>
    </property>
    <property name="iconText">
-    <string>Text beside icons</string>
+    <string>Text Beside Icons</string>
    </property>
    <property name="toolTip">
     <string>Text beside icons</string>
@@ -936,7 +936,7 @@
     <string>PipeWire &amp;Audio...</string>
    </property>
    <property name="iconText">
-    <string>PipeWire Audio color</string>
+    <string>PipeWire Audio Color</string>
    </property>
    <property name="toolTip">
     <string>PipeWire Audio color</string>
@@ -953,7 +953,7 @@
     <string>PipeWire &amp;MIDI...</string>
    </property>
    <property name="iconText">
-    <string>PipeWire MIDI</string>
+    <string>PipeWire MIDI Color</string>
    </property>
    <property name="toolTip">
     <string>PipeWire MIDI color</string>
@@ -970,7 +970,7 @@
     <string>PipeWire &amp;Video...</string>
    </property>
    <property name="iconText">
-    <string>PipeWire Video</string>
+    <string>PipeWire Video Color</string>
    </property>
    <property name="toolTip">
     <string>PipeWire Video color</string>
@@ -987,7 +987,7 @@
     <string>PipeWire &amp;Other...</string>
    </property>
    <property name="iconText">
-    <string>PipeWire Other color</string>
+    <string>PipeWire Other Color</string>
    </property>
    <property name="toolTip">
     <string>PipeWire Other color</string>
@@ -1004,7 +1004,7 @@
     <string>ALSA M&amp;IDI...</string>
    </property>
    <property name="iconText">
-    <string>ALSA MIDI</string>
+    <string>ALSA MIDI Color</string>
    </property>
    <property name="toolTip">
     <string>ALSA MIDI color</string>
@@ -1021,7 +1021,7 @@
     <string>&amp;Reset</string>
    </property>
    <property name="iconText">
-    <string>Reset colors</string>
+    <string>Reset Colors</string>
    </property>
    <property name="toolTip">
     <string>Reset colors</string>
@@ -1126,7 +1126,7 @@
     <string>Repel O&amp;verlapping Nodes</string>
    </property>
    <property name="iconText">
-    <string>Repel nodes</string>
+    <string>Repel Nodes</string>
    </property>
    <property name="toolTip">
     <string>Repel overlapping nodes</string>
@@ -1166,7 +1166,7 @@
     <string>&amp;Enable System Tray Icon</string>
    </property>
    <property name="iconText">
-    <string>System tray</string>
+    <string>System Tray Icon</string>
    </property>
    <property name="toolTip">
     <string>System tray icon</string>
@@ -1193,6 +1193,46 @@
    </property>
    <property name="statusTip">
     <string>Enable ALSA MIDI</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="helpSystemTrayQueryCloseAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Enable System Tray Message</string>
+   </property>
+   <property name="iconText">
+    <string>System Tray Message</string>
+   </property>
+   <property name="toolTip">
+    <string>System tray message</string>
+   </property>
+   <property name="statusTip">
+    <string>Enable system tray message on close</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="helpPatchbayQueryQuitAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Enable Patchbay Message</string>
+   </property>
+   <property name="iconText">
+    <string>Patchbay Message</string>
+   </property>
+   <property name="toolTip">
+    <string>Patchbay message</string>
+   </property>
+   <property name="statusTip">
+    <string>Enable patchbay message on quit</string>
    </property>
    <property name="shortcut">
     <string/>

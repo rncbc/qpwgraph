@@ -42,6 +42,7 @@
 #include <QFileDialog>
 
 #include <QMessageBox>
+#include <QCheckBox>
 
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -480,6 +481,22 @@ qpwgraph_form::qpwgraph_form (
 		 SIGNAL(triggered(bool)),
 		 SLOT(helpAlsaMidi(bool)));
 #endif
+
+#ifdef CONFIG_SYSTEM_TRAY
+	m_ui.helpMenu->insertAction(
+		m_ui.helpAboutAction, m_ui.helpSystemTrayQueryCloseAction);
+	QObject::connect(m_ui.helpSystemTrayQueryCloseAction,
+		SIGNAL(triggered(bool)),
+		SLOT(helpSystemTrayQueryClose(bool)));
+#endif
+
+	m_ui.helpMenu->insertAction(
+		m_ui.helpAboutAction, m_ui.helpPatchbayQueryQuitAction);
+	QObject::connect(m_ui.helpPatchbayQueryQuitAction,
+		SIGNAL(triggered(bool)),
+		SLOT(helpPatchbayQueryQuit(bool)));
+	m_ui.helpMenu->insertSeparator(
+		m_ui.helpAboutAction);
 
 	QObject::connect(m_ui.helpAboutAction,
 		SIGNAL(triggered(bool)),
@@ -972,6 +989,18 @@ void qpwgraph_form::helpAlsaMidi ( bool on )
 #endif
 
 	stabilize();
+}
+
+
+void qpwgraph_form::helpSystemTrayQueryClose ( bool on )
+{
+	m_config->setSystemTrayQueryClose(on);
+}
+
+
+void qpwgraph_form::helpPatchbayQueryQuit ( bool on )
+{
+	m_config->setPatchbayQueryQuit(on);
 }
 
 
@@ -1485,10 +1514,30 @@ bool qpwgraph_form::patchbayQueryQuit (void)
 		= m_ui.graphCanvas->patchbay();
 	if (patchbay && patchbay->isActivated()) {
 		showNormal();
-		ret = (QMessageBox::warning(this, tr("Warning"),
-			tr("A patchbay is currently activated:\n\n\"%1\"\n\n"
-			"Are you sure you want to quit?").arg(patchbayFileName()),
-			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+		if (m_config->isPatchbayQueryQuit()) {
+			const QString& title
+				= tr("Warning");
+			const QString& text
+				= tr("A patchbay is currently activated:\n\n\"%1\"\n\n"
+					 "Are you sure you want to quit?").arg(patchbayFileName());
+		#if 0// Old no dont-ask-again message-box...
+			ret = (QMessageBox::warning(this, title, text,
+				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+		#else
+			QMessageBox mbox(this);
+			mbox.setIcon(QMessageBox::Warning);
+			mbox.setWindowTitle(title);
+			mbox.setText(text);
+			mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+			QCheckBox cbox(tr("Don't ask this again"));
+			cbox.setChecked(false);
+			cbox.blockSignals(true);
+			mbox.addButton(&cbox, QMessageBox::ActionRole);
+			ret = (mbox.exec() == QMessageBox::Ok);
+			if (ret && cbox.isChecked())
+				m_config->setPatchbayQueryQuit(false);
+		#endif
+		}
 	}
 
 	return ret;
@@ -1558,17 +1607,32 @@ void qpwgraph_form::closeEvent ( QCloseEvent *event )
 {
 #ifdef CONFIG_SYSTEM_TRAY
 	if (m_systray) {
-		if (!m_systray_closed) {
+		if (!m_systray_closed && m_config->isSystemTrayQueryClose()) {
 			const QString& title
 				= tr("Information");
 			const QString& text
 				= tr("The program will keep running in the system tray.\n\n"
 					"To terminate the program, please choose \"Quit\"\n"
-					"in the main menu or the context menu of the system tray icon.");
+					"in the context menu of the system tray icon.");
+		#if 0//--Old no dont-ask-again message-box...
 			if (QSystemTrayIcon::supportsMessages())
 				m_systray->showMessage(title, text, QSystemTrayIcon::Information);
 			else
 				QMessageBox::information(this, title, text);
+		#else
+			QMessageBox mbox(this);
+			mbox.setIcon(QMessageBox::Information);
+			mbox.setWindowTitle(title);
+			mbox.setText(text);
+			mbox.setStandardButtons(QMessageBox::Ok);
+			QCheckBox cbox(tr("Don't show this message again"));
+			cbox.setChecked(false);
+			cbox.blockSignals(true);
+			mbox.addButton(&cbox, QMessageBox::ActionRole);
+			mbox.exec();
+			if (cbox.isChecked())
+				m_config->setSystemTrayQueryClose(false);
+		#endif
 		}
 		m_systray_closed = true;
 		hide();
@@ -1790,11 +1854,20 @@ void qpwgraph_form::restoreState (void)
 	m_patchbay_dir = m_config->patchbayDir();
 	m_patchbay_path = m_config->patchbayPath();
 
+	const bool is_patchbay_queryquit
+		= m_config->isPatchbayQueryQuit();
+	m_ui.helpPatchbayQueryQuitAction->setChecked(is_patchbay_queryquit);
+	helpPatchbayQueryQuit(is_patchbay_queryquit);
+
 #ifdef CONFIG_SYSTEM_TRAY
 	const bool is_systray_enabled
 		= m_config->isSystemTrayEnabled();
 	m_ui.helpSystemTrayAction->setChecked(is_systray_enabled);
 	helpSystemTray(is_systray_enabled);
+	const bool is_systray_queryclose
+		= m_config->isSystemTrayQueryClose();
+	m_ui.helpSystemTrayQueryCloseAction->setChecked(is_systray_queryclose);
+	helpSystemTrayQueryClose(is_systray_queryclose);
 #endif
 
 #ifdef CONFIG_ALSA_MIDI
@@ -1831,9 +1904,11 @@ void qpwgraph_form::saveState (void)
 	m_config->setPatchbayActivated(m_ui.patchbayActivatedAction->isChecked());
 	m_config->setPatchbayPath(m_patchbay_path);
 	m_config->setPatchbayDir(m_patchbay_dir);
+	m_config->setPatchbayQueryQuit(m_ui.helpPatchbayQueryQuitAction->isChecked());
 
 #ifdef CONFIG_SYSTEM_TRAY
 	m_config->setSystemTrayEnabled(m_ui.helpSystemTrayAction->isChecked());
+	m_config->setSystemTrayQueryClose(m_ui.helpSystemTrayQueryCloseAction->isChecked());
 #endif
 
 #ifdef CONFIG_ALSA_MIDI

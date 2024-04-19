@@ -54,10 +54,12 @@ static const char *PatchbayAutoPinKey = "/AutoPin";
 static const char *PatchbayAutoDisconnectKey = "/AutoDisconnect";
 static const char *PatchbayRecentFilesKey = "/RecentFiles";
 static const char *PatchbayToolbarKey = "/Toolbar";
+static const char *PatchbayQueryQuitKey = "/QueryQuit";
 
 #ifdef CONFIG_SYSTEM_TRAY
 static const char *SystemTrayGroup  = "/SystemTray";
 static const char *SystemTrayEnabledKey = "/Enabled";
+static const char *SystemTrayQueryCloseKey = "/QueryClose";
 #endif
 
 #ifdef CONFIG_ALSA_MIDI
@@ -333,6 +335,29 @@ const QStringList& qpwgraph_config::patchbayRecentFiles (void) const
 }
 
 
+
+void qpwgraph_config::setPatchbayQueryQuit ( bool query_quit )
+{
+	m_patchbay_queryquit = query_quit;
+}
+
+bool qpwgraph_config::isPatchbayQueryQuit (void) const
+{
+	return m_patchbay_queryquit;
+}
+
+
+void qpwgraph_config::setSystemTrayQueryClose ( bool query_close )
+{
+	m_systray_queryclose = query_close;
+}
+
+bool qpwgraph_config::isSystemTrayQueryClose (void) const
+{
+	return m_systray_queryclose;
+}
+
+
 void qpwgraph_config::setSystemTrayEnabled ( bool enabled )
 {
 	m_systray_enabled = enabled;
@@ -384,6 +409,7 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 #ifdef CONFIG_SYSTEM_TRAY
 	m_settings->beginGroup(SystemTrayGroup);
 	m_systray_enabled = m_settings->value(SystemTrayEnabledKey, true).toBool();
+	m_systray_queryclose = m_settings->value(SystemTrayQueryCloseKey, true).toBool();
 	m_settings->endGroup();
 #endif
 
@@ -402,6 +428,7 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 	m_patchbay_autopin = m_settings->value(PatchbayAutoPinKey, true).toBool();
 	m_patchbay_autodisconnect = m_settings->value(PatchbayAutoDisconnectKey, false).toBool();
 	m_patchbay_recentfiles = m_settings->value(PatchbayRecentFilesKey).toStringList();
+	m_patchbay_queryquit = m_settings->value(PatchbayQueryQuitKey, true).toBool();
 	m_settings->endGroup();
 
 	QMutableStringListIterator iter(m_patchbay_recentfiles);
@@ -455,6 +482,7 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 #ifdef CONFIG_SYSTEM_TRAY
 	m_settings->beginGroup(SystemTrayGroup);
 	m_settings->setValue(SystemTrayEnabledKey, m_systray_enabled);
+	m_settings->setValue(SystemTrayQueryCloseKey, m_systray_queryclose);
 	m_settings->endGroup();
 #endif
 
@@ -473,6 +501,7 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 	m_settings->setValue(PatchbayAutoPinKey, m_patchbay_autopin);
 	m_settings->setValue(PatchbayAutoDisconnectKey, m_patchbay_autodisconnect);
 	m_settings->setValue(PatchbayRecentFilesKey, m_patchbay_recentfiles);
+	m_settings->setValue(PatchbayQueryQuitKey, m_patchbay_queryquit);
 	m_settings->endGroup();
 
 	m_settings->beginGroup(ViewGroup);

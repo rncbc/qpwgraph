@@ -104,6 +104,12 @@ public:
 	void patchbayRecentFiles(const QString& path);
 	const QStringList& patchbayRecentFiles() const;
 
+	void setPatchbayQueryQuit(bool query_quit);
+	bool isPatchbayQueryQuit() const;
+
+	void setSystemTrayQueryClose(bool query_close);
+	bool isSystemTrayQueryClose() const;
+
 	void setSystemTrayEnabled(bool enabled);
 	bool isSystemTrayEnabled() const;
 
@@ -143,6 +149,9 @@ private:
 	bool        m_patchbay_autopin;
 	bool        m_patchbay_autodisconnect;
 	QStringList m_patchbay_recentfiles;
+
+	bool        m_patchbay_queryquit;
+	bool        m_systray_queryclose;
 
 	bool        m_systray_enabled;
 	bool        m_alsaseq_enabled;
