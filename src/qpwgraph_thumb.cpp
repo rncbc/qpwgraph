@@ -77,7 +77,8 @@ protected:
 		QGraphicsView::paintEvent(event);
 
 		QPainter painter(QGraphicsView::viewport());
-		painter.setPen(Qt::darkGray);
+		const QPalette& pal = QGraphicsView::palette();
+		painter.setPen(pal.light().color());
 		painter.drawRect(viewRect());
 	}
 
