@@ -49,7 +49,7 @@ public:
 		QGraphicsView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		QGraphicsView::setScene(m_canvas->scene());
 
-		QPalette pal = QGraphicsView::palette();
+		QPalette pal = m_canvas->palette();
 		const QColor& base = pal.base().color();
 		pal.setColor(QPalette::Base, base.darker(120));
 		QGraphicsView::setPalette(pal);
