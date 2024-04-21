@@ -190,7 +190,7 @@ void qpwgraph_thumb::updatePosition (void)
 	const QRect& rect = m_canvas->viewport()->rect();
 	const int w = rect.width()  / 4;
 	const int h = rect.height() / 4;
-	QFrame:setFixedSize(w, h);
+	QFrame:setFixedSize(w + 1, h + 1); // 1px slack.
 
 	switch (m_position) {
 	case TopLeft:
