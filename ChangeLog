@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Prepping next release candidate (aka. v1.0.0-rc2) (Qt >= 6.7)
 - Whether to show the System-tray informational and/or active
   Patchbay warning messages, respectively on Close and/or Quit,
   is now optional (cf. Help > Enable System Tray Message and/or
