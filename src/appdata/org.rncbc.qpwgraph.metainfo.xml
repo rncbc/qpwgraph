@@ -17,7 +17,7 @@
  </provides>
  <screenshots>
   <screenshot type="default">
-   <image>https://gitlab.freedesktop.org/rncbc/qpwgraph/-/raw/main/src/images/qpwgraph_screenshot-2.png</image>
+   <image>https://gitlab.freedesktop.org/rncbc/qpwgraph/-/raw/main/src/images/qpwgraph_screenshot-4.png</image>
    <caption>The main application window in action</caption>
   </screenshot>
   <screenshot>
@@ -37,7 +37,7 @@
  <developer_name>rncbc aka. Rui Nuno Capela</developer_name>
  <update_contact>rncbc@rncbc.org</update_contact>
  <releases>
-  <release version="0.6.3" date="2024-03-29" urgency="low" />
+  <release version="0.7.0" date="2024-04-22" urgency="low" />
  </releases>
  <content_rating type="oars-1.0"/>
 </component>

@@ -2,7 +2,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.7.0  2024-04-22  A Spring'24 Beta Release.
 
 - Prepping next release candidate (aka. v1.0.0-rc2) (Qt >= 6.7)
 - Whether to show the System-tray informational and/or active
