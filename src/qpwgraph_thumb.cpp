@@ -50,9 +50,12 @@ public:
 		QGraphicsView::setScene(m_canvas->scene());
 
 		QPalette pal = m_canvas->palette();
-		const QColor& base = pal.base().color();
-		pal.setColor(QPalette::Base, base.darker(120));
+		const QPalette::ColorRole role
+			= m_canvas->backgroundRole();
+		const QColor& color = pal.color(role);
+		pal.setColor(role, color.darker(120));
 		QGraphicsView::setPalette(pal);
+		QGraphicsView::setBackgroundRole(role);
 	}
 
 protected:
@@ -78,7 +81,7 @@ protected:
 
 		QPainter painter(QGraphicsView::viewport());
 		const QPalette& pal = QGraphicsView::palette();
-		painter.setPen(pal.light().color());
+		painter.setPen(pal.midlight().color());
 		painter.drawRect(viewRect());
 	}
 

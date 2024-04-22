@@ -89,9 +89,12 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 	QGraphicsView::setResizeAnchor(QGraphicsView::NoAnchor);
 	QGraphicsView::setDragMode(QGraphicsView::NoDrag);
 
-	const QPalette& pal = QGraphicsView::palette();
-	if (pal.base().color().value() > 192)
-		QGraphicsView::setBackgroundRole(QPalette::Mid);
+	QPalette pal = QGraphicsView::palette();
+	const QPalette::ColorRole role = QPalette::Window;
+	const QColor& color = pal.color(role);
+	pal.setColor(role, color.darker(120));
+	QGraphicsView::setPalette(pal);
+	QGraphicsView::setBackgroundRole(role);
 
 	m_editor = new QLineEdit(this);
 	m_editor->setFrame(false);
