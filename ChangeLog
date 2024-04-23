@@ -4,13 +4,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 0.7.0  2024-04-22  A Spring'24 Beta Release.
 
-- Prepping next release candidate (aka. v1.0.0-rc2) (Qt >= 6.7)
 - Whether to show the System-tray informational and/or active
   Patchbay warning messages, respectively on Close and/or Quit,
   is now optional (cf. Help > Enable System Tray Message and/or
-  Help > Enable Patchbay Message, resp.) (EXPERIMENTAL)
+  Help > Enable Patchbay Message, resp.)
 - Introducing the View/Thumbview option as a whole graph thumbnail
-  overview helper. (EXPERIMENTAL)
+  overview helper.
 
 
 0.6.3  2024-03-29  A Good-Friday'24 Release.
