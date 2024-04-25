@@ -43,11 +43,13 @@ public:
 		: QGraphicsView(canvas->viewport()),
 			m_canvas(canvas), m_drag_state(DragNone)
 	{
-	//	QGraphicsView::setInteractive(false);
+		QGraphicsView::setInteractive(false);
+
 		QGraphicsView::setRenderHints(QPainter::Antialiasing);
+		QGraphicsView::setRenderHint(QPainter::SmoothPixmapTransform);
+
 		QGraphicsView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		QGraphicsView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-		QGraphicsView::setScene(m_canvas->scene());
 
 		QPalette pal = m_canvas->palette();
 		const QPalette::ColorRole role
@@ -56,6 +58,8 @@ public:
 		pal.setColor(role, color.darker(120));
 		QGraphicsView::setPalette(pal);
 		QGraphicsView::setBackgroundRole(role);
+
+		QGraphicsView::setScene(m_canvas->scene());
 	}
 
 protected:
@@ -80,9 +84,33 @@ protected:
 		QGraphicsView::paintEvent(event);
 
 		QPainter painter(QGraphicsView::viewport());
-		const QPalette& pal = QGraphicsView::palette();
-		painter.setPen(pal.midlight().color());
-		painter.drawRect(viewRect());
+	//	const QPalette& pal = QGraphicsView::palette();
+	//	painter.setPen(pal.midlight().color());
+		const QRect& vrect
+			= QGraphicsView::viewport()->rect();
+		const QRect& vrect2 = viewRect();
+		const QColor shade(0, 0, 0, 64);
+		QRect rect;
+		// top shade...
+		rect.setTopLeft(vrect.topLeft());
+		rect.setBottomRight(QPoint(vrect.right(), vrect2.top()));
+		if (rect.isValid())
+			painter.fillRect(rect, shade);
+		// left shade...
+		rect.setTopLeft(QPoint(vrect.left(), vrect2.top()));
+		rect.setBottomRight(vrect2.bottomLeft());
+		if (rect.isValid())
+			painter.fillRect(rect, shade);
+		// right shade...
+		rect.setTopLeft(vrect2.topRight());
+		rect.setBottomRight(QPoint(vrect.right(), vrect2.bottom()));
+		if (rect.isValid())
+			painter.fillRect(rect, shade);
+		// bottom shade...
+		rect.setTopLeft(QPoint(vrect.left(), vrect2.bottom()));
+		rect.setBottomRight(vrect.bottomRight());
+		if (rect.isValid())
+			painter.fillRect(rect, shade);
 	}
 
 	// Handle mouse events.
@@ -123,6 +151,8 @@ protected:
 			m_drag_state = DragNone;
 		}
 	}
+
+	void wheelEvent(QWheelEvent *) {} // Ignore wheel events.
 
 private:
 

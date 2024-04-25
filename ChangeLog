@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+0.7.1  2024-04-25  A Spring'24 Beta Release Hot-Fix.
+
+- Hot-fix: isable thumbview interactivity: prevent dragging
+  nodes over to extremely severe off-limits by accident.
+
+
 0.7.0  2024-04-22  A Spring'24 Beta Release.
 
 - Whether to show the System-tray informational and/or active

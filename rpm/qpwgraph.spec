@@ -16,8 +16,8 @@
 #
 
 %define name    qpwgraph
-%define version 0.7.0
-%define release 36.1
+%define version 0.7.1
+%define release 37.1
 
 %define _prefix	/usr
 
@@ -136,6 +136,8 @@ cmake --install build
 
 
 %changelog
+* Thu Apr 25 2024 Rui Nuno Capela <rncbc@rncbc.org> 0.7.1
+- A spring'24 beta release hot-fix.
 * Mon Apr 22 2024 Rui Nuno Capela <rncbc@rncbc.org> 0.7.0
 - A spring'24 beta release.
 * Fri Mar 29 2024 Rui Nuno Capela <rncbc@rncbc.org> 0.6.3
