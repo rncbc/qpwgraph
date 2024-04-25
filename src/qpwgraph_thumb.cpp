@@ -93,7 +93,7 @@ protected:
 		QRect rect;
 		// top shade...
 		rect.setTopLeft(vrect.topLeft());
-		rect.setBottomRight(QPoint(vrect.right(), vrect2.top()));
+		rect.setBottomRight(QPoint(vrect.right(), vrect2.top() - 1));
 		if (rect.isValid())
 			painter.fillRect(rect, shade);
 		// left shade...
@@ -107,7 +107,7 @@ protected:
 		if (rect.isValid())
 			painter.fillRect(rect, shade);
 		// bottom shade...
-		rect.setTopLeft(QPoint(vrect.left(), vrect2.bottom()));
+		rect.setTopLeft(QPoint(vrect.left(), vrect2.bottom() + 1));
 		rect.setBottomRight(vrect.bottomRight());
 		if (rect.isValid())
 			painter.fillRect(rect, shade);
