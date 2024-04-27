@@ -11,37 +11,25 @@
 # case the license is the MIT License). An "Open Source License" is a
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
-#
+
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-%define name    qpwgraph
-%define version 0.7.1
-%define release 37.1
-
-%define _prefix	/usr
-
-%if %{defined fedora}
-%define debug_package %{nil}
-%endif
+Summary:	A PipeWire Graph Qt GUI Interface
+Name:		qpwgraph
+Version:	0.7.1
+Release:	37.1
+License:	GPL-2.0-or-later
+Group:		Productivity/Multimedia/Sound/Midi
+Source:		%{name}-%{version}.tar.gz
+URL:		https://gitlab.freedesktop.org/rncbc/qpwgraph
+#Packager:	rncbc.org
 
 %if 0%{?fedora_version} >= 34 || 0%{?suse_version} > 1500 || ( 0%{?sle_version} == 150200 && 0%{?is_opensuse} )
 %define qt_major_version  6
 %else
 %define qt_major_version  5
 %endif
-
-Summary:	A PipeWire Graph Qt GUI Interface
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-License:	GPL-2.0+
-Group:		Productivity/Multimedia/Sound/Midi
-Source0:	%{name}-%{version}.tar.gz
-URL:		https://gitlab.freedesktop.org/rncbc/qpwgraph
-Packager:	rncbc.org
-
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires:	coreutils
 BuildRequires:	pkgconfig
@@ -91,6 +79,7 @@ qpwgraph is a graph manager dedicated for PipeWire (https://pipewire.org),
 using the Qt C++ framework (https://qt.io), based and pretty much like the
 same of QjackCtl (https://qjackctl.sourceforge.io).
 
+
 %prep
 %setup -q
 
@@ -106,11 +95,8 @@ cmake --build build %{?_smp_mflags}
 DESTDIR="%{buildroot}" \
 cmake --install build
 
-%clean
-[ -d "%{buildroot}" -a "%{buildroot}" != "/" ] && %__rm -rf "%{buildroot}"
 
 %files
-%defattr(-,root,root)
 %license LICENSE.md
 %doc README.md  ChangeLog
 %dir %{_datadir}/applications
