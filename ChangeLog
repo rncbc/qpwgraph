@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Possible fix to pipewire backend thread loop locking.
+- Updated to latest framework level (Qt >= 6.7)
+
+
 0.7.1  2024-04-25  A Spring'24 Beta Release Hot-Fix.
 
 - Hot-fix: disable thumbview interactivity: prevent dragging nodes

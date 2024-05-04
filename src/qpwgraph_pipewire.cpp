@@ -700,11 +700,14 @@ bool qpwgraph_pipewire::open (void)
 		return false;
 	}
 
+	pw_thread_loop_lock(m_data->loop);
+
 	struct pw_loop *loop = pw_thread_loop_get_loop(m_data->loop);
 	m_data->context = pw_context_new(loop,
 		nullptr /*properties*/, 0 /*user_data size*/);
 	if (m_data->context == nullptr) {
 		qDebug("pw_context_new: Can't create context.");
+		pw_thread_loop_unlock(m_data->loop);
 		pw_thread_loop_destroy(m_data->loop);
 		delete m_data;
 		m_data = nullptr;
@@ -716,6 +719,7 @@ bool qpwgraph_pipewire::open (void)
 		nullptr /*properties*/, 0 /*user_data size*/);
 	if (m_data->core == nullptr) {
 		qDebug("pw_context_connect: Can't connect context.");
+		pw_thread_loop_unlock(m_data->loop);
 		pw_context_destroy(m_data->context);
 		pw_thread_loop_destroy(m_data->loop);
 		delete m_data;
@@ -738,7 +742,7 @@ bool qpwgraph_pipewire::open (void)
 	m_data->error = false;
 
 	pw_thread_loop_start(m_data->loop);
-
+	pw_thread_loop_unlock(m_data->loop);
 	return true;
 }
 
@@ -750,7 +754,11 @@ void qpwgraph_pipewire::close (void)
 
 	QMutexLocker locker1(&m_mutex1);
 
+	pw_thread_loop_lock(m_data->loop);
+
 	clearObjects();
+
+	pw_thread_loop_unlock(m_data->loop);
 
 	if (m_data->loop)
 		pw_thread_loop_stop(m_data->loop);
