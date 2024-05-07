@@ -38,16 +38,10 @@
   </property>
   <widget class="QWidget" name="MainCentralWidget">
    <layout class="QVBoxLayout">
-    <property name="leftMargin">
+    <property name="margin">
      <number>0</number>
     </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="spacing">
      <number>0</number>
     </property>
     <item>

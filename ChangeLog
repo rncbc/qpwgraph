@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Remove margins and spacing from the top-level canvas layout.
 - Possible fix to pipewire backend thread loop locking.
 - Updated to latest framework level (Qt >= 6.7)
 
