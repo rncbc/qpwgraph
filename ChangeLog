@@ -2,6 +2,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Introducing thumbview context-menu.
+
+
 0.7.2  2024-05-12  A Mid-Spring'24 Beta Release.
 
 - Remove margins and spacing from the top-level canvas layout.

@@ -53,6 +53,14 @@ public:
 	void setPosition(Position position);
 	Position position() const;
 
+	// Emit context-menu request.
+	void contextMenu(const QPoint& pos);
+
+signals:
+
+	// Context-menu request.
+	void contextMenuRequested(const QPoint& pos);
+
 public slots:
 
 	// Update view slot.
