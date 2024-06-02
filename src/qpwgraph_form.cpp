@@ -1075,6 +1075,7 @@ void qpwgraph_form::thumbviewContextMenu ( const QPoint& pos )
 	QMenu menu(this);
 	menu.addMenu(m_ui.viewThumbviewMenu);
 	menu.addSeparator();
+	menu.addAction(m_ui.viewCenterAction);
 	menu.addMenu(m_ui.viewZoomMenu);
 
 	menu.exec(pos);
