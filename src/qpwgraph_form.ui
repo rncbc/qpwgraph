@@ -121,6 +121,9 @@
      <property name="title">
       <string>T&amp;humbview</string>
      </property>
+     <property name="icon">
+      <iconset resource="qpwgraph.qrc">:/images/viewThumbview.png</iconset>
+     </property>
      <addaction name="viewThumbviewTopLeftAction"/>
      <addaction name="viewThumbviewTopRightAction"/>
      <addaction name="viewThumbviewBottomLeftAction"/>
