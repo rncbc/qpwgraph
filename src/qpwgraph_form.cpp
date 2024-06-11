@@ -1646,19 +1646,20 @@ void qpwgraph_form::closeEvent ( QCloseEvent *event )
 			mbox.setIcon(QMessageBox::Information);
 			mbox.setWindowTitle(title);
 			mbox.setText(text);
-			mbox.setStandardButtons(QMessageBox::Ok);
+			mbox.setStandardButtons(QMessageBox::Ok|QMessageBox::Cancel);
 			QCheckBox cbox(tr("Don't show this message again"));
 			cbox.setChecked(false);
 			cbox.blockSignals(true);
 			mbox.addButton(&cbox, QMessageBox::ActionRole);
-			mbox.exec();
+			m_systray_closed = (mbox.exec() == QMessageBox::Ok);
 			if (cbox.isChecked()) {
 				m_ui.helpSystemTrayQueryCloseAction->setChecked(false);
 			}
 		#endif
 		}
-		m_systray_closed = true;
-		hide();
+		if (m_systray_closed
+			|| !m_ui.helpSystemTrayQueryCloseAction->isChecked())
+			hide();
 		event->ignore();
 	}
 	else

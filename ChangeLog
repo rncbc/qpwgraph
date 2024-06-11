@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Cancel button option added to close to system-tray icon message.
 - Introducing thumbview context-menu.
 
 
