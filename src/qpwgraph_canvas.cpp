@@ -487,11 +487,13 @@ void qpwgraph_canvas::resetNodes ( uint node_type )
 				node->resetPorts();
 				node->setMarked(false);
 			} else {
-				removeItem(node);
 				nodes.append(node);
 			}
 		}
 	}
+
+	foreach (qpwgraph_node *node, nodes)
+		removeItem(node);
 
 	qDeleteAll(nodes);
 }
@@ -502,12 +504,14 @@ void qpwgraph_canvas::clearNodes ( uint node_type )
 	QList<qpwgraph_node *> nodes;
 
 	foreach (qpwgraph_node *node, m_nodes) {
-		if (node->nodeType() == node_type) {
-			m_node_names.remove(qpwgraph_node::NodeNameKey(node), node);
-			m_node_ids.remove(qpwgraph_node::NodeIdKey(node), node);
-			m_nodes.removeAll(node);
+		if (node->nodeType() == node_type)
 			nodes.append(node);
-		}
+	}
+
+	foreach (qpwgraph_node *node, nodes) {
+		m_node_names.remove(qpwgraph_node::NodeNameKey(node), node);
+		m_node_ids.remove(qpwgraph_node::NodeIdKey(node), node);
+		m_nodes.removeAll(node);
 	}
 
 	qDeleteAll(nodes);

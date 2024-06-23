@@ -2,6 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Fixed a potential use-after-free issue on canvas nodes refresh
+  and recycle. (EXPERIMENTAL)
+
+
 0.7.3  2024-06-22  An Early-Summer'24 Beta Release.
 
 - Cancel button option added to close to system-tray icon message.
