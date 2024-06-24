@@ -509,8 +509,7 @@ void qpwgraph_canvas::clearNodes ( uint node_type )
 	}
 
 	foreach (qpwgraph_node *node, nodes) {
-		m_node_names.remove(qpwgraph_node::NodeNameKey(node), node);
-		m_node_ids.remove(qpwgraph_node::NodeIdKey(node), node);
+		removeNodeKeys(node);
 		m_nodes.removeAll(node);
 	}
 
