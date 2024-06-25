@@ -1372,7 +1372,7 @@ bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 	const qpwgraph_node::NodeNameKey name_key(node);
 	const int n = m_node_names.values(name_key).count();
 	if (n < 1)
-		return false;
+		return true;
 
 	const QString& node_key = nodeKey(node, n);
 

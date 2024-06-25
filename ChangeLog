@@ -4,6 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
+- Force a default PipeWire node name if given empty. (EXPERIMENTAL)
 - Fixed a potential use-after-free issue on canvas nodes refresh
   and recycle. (EXPERIMENTAL)
 

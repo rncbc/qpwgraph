@@ -47,7 +47,7 @@ QIcon qpwgraph_icon ( const QString& name )
 	static QHash<QString, QIcon> icon_cache;
 
 	QIcon icon = icon_cache.value(name);
-	if (icon.isNull()) {
+	if (icon.isNull() && !name.isEmpty() && name != "node") {
 		if (name.at(0) == ':')
 			icon = QIcon(name);
 		else
@@ -441,14 +441,14 @@ void qpwgraph_registry_event_global (
 	if (::strcmp(type, PW_TYPE_INTERFACE_Node) == 0) {
 		QString node_name;
 		const char *str = spa_dict_lookup(props, PW_KEY_NODE_DESCRIPTION);
-		if (str == nullptr)
+		if (str == nullptr || ::strlen(str) < 1)
 			str = spa_dict_lookup(props, PW_KEY_NODE_NICK);
-		if (str == nullptr)
+		if (str == nullptr || ::strlen(str) < 1)
 			str = spa_dict_lookup(props, PW_KEY_NODE_NAME);
-		if (str == nullptr)
+		if (str == nullptr || ::strlen(str) < 1)
 			str = "node";
 		const char *app = spa_dict_lookup(props, PW_KEY_APP_NAME);
-		if (app && ::strcmp(app, str) != 0) {
+		if (app && ::strlen(app) > 0 && ::strcmp(app, str) != 0) {
 			node_name += app;
 			node_name += '/';
 		}
