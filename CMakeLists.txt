@@ -18,8 +18,6 @@ execute_process (
 if (GIT_DESCRIBE_RESULT EQUAL 0)
   set (GIT_VERSION "${GIT_DESCRIBE_OUTPUT}")
   string (REGEX REPLACE "^[^0-9]+" "" GIT_VERSION "${GIT_VERSION}")
-  string (REGEX REPLACE "^1_"      "" GIT_VERSION "${GIT_VERSION}")
-  string (REGEX REPLACE "^[_vV]+"  "" GIT_VERSION "${GIT_VERSION}")
   string (REGEX REPLACE "-g"   "git." GIT_VERSION "${GIT_VERSION}")
   string (REGEX REPLACE "[_|-]"   "." GIT_VERSION "${GIT_VERSION}")
   execute_process (

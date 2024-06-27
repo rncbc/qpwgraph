@@ -4,9 +4,9 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 
 GIT HEAD
 
-- Force a default PipeWire node name if given empty. (EXPERIMENTAL)
+- Force a default PipeWire node name if given empty.
 - Fixed a potential use-after-free issue on canvas nodes refresh
-  and recycle. (EXPERIMENTAL)
+  and recycle.
 
 
 0.7.3  2024-06-22  An Early-Summer'24 Beta Release.
@@ -76,13 +76,13 @@ GIT HEAD
 - Fixed unique/single instance support (Qt >= 6.6).
 
 
-0.5.3  2023-09-08  An end-of-summer'23 release.
+0.5.3  2023-09-08  An End-of-Summer'23 Release.
 
 - Added user contributed documentation: How To Use The Patchbay.
 - Fix condition for saving node name aliases.
 
 
-0.5.2  2023-08-05  A high-summer'23 release.
+0.5.2  2023-08-05  A High-Summer'23 Release.
 
 - Ctrl+left or middle-button click-dragging for panning, is now a
   lot smoother, hopefully.
@@ -91,12 +91,12 @@ GIT HEAD
 - Add Ctrl+Q to Quit action
 
 
-0.5.1  2023-07-17  A summer'23 hot-fix release.
+0.5.1  2023-07-17  A Summer'23 Hot-fix Release.
 
 - Fixed segfault on initialization that was affecting Qt5 builds.
 
 
-0.5.0  2023-07-16  Yet another summer'23 release.
+0.5.0  2023-07-16  Yet another Summer'23 Release.
 
 - Completely refactored the internal PipeWire node registry logic,
   just to have unique node names, as seen fit to purpose to solve
@@ -107,7 +107,7 @@ GIT HEAD
   are the suspected cause to some rare crashes.
 
 
-0.4.5  2023-07-10  A summer'23 release.
+0.4.5  2023-07-10  A Summer'23 Release.
 
 - Split non-physical terminal device nodes for monitor and control
   ports, adding the suffix "[Monitor]" and/or "[Control]" resp. to
@@ -116,17 +116,17 @@ GIT HEAD
   and Patchbay/Auto Pin is off.
 
 
-0.4.4  2023-06-18  A late-spring'23 regression.
+0.4.4  2023-06-18  A Late-Spring'23 Regression.
 
 - Split devices for capture/monitor and playback ports. (REGRESSION)
 
 
-0.4.3  2023-06-17  A late-spring'23 release.
+0.4.3  2023-06-17  A Late-Spring'23 Release.
 
 - Split devices for capture/monitor and playback ports.
 
 
-0.4.2  2023-04-02  An early-spring'23 release.
+0.4.2  2023-04-02  An Early-Spring'23 Release.
 
 - Soft incremental bounds constraints now imposed to all new and
   old nodes positioning.
@@ -135,14 +135,14 @@ GIT HEAD
   restart).
 
 
-0.4.1  2023-03-03  A late-winter'23 release.
+0.4.1  2023-03-03  A Late-Winter'23 Release.
 
 - Attempt to make port labels as short as possible.
 - Fixed a possible crash when several PW objects (nodes and ports)
   are created and destroyed in fast succession.
 
 
-0.4.0  2023-02-25  A mid-winter'23 release.
+0.4.0  2023-02-25  A Mid-Winter'23 Release.
 
 - Node names now have the "media.name" property as a bracketed
   suffix; when given and applicable.
@@ -153,25 +153,25 @@ GIT HEAD
 - Bumping copyright headers to the brand new year.
 
 
-0.3.9  2022-12-27  An end-of-year'22 release
+0.3.9  2022-12-27  An End-of-Year'22 Release
 
 - Whether to draw connectors through or around nodes is now an
   user preference option (cf. View > Connect Through Nodes).
 
 
-0.3.8  2022-11-19  A mid-autumn'22 release.
+0.3.8  2022-11-19  A Mid-Autumn'22 Release.
 
 - Allow middle mouse button for grabbing and dragging the canvas.
 
 
-0.3.7  2022-10-22  An autumn'22 release.
+0.3.7  2022-10-22  An Autumn'22 release.
 
 - Fixed the system-tray icon tooltip to always reflect current
   main window title, usually the current patchbay name.
 - Make up visual immediate feedback connectlons.
 
 
-0.3.6  2022-09-24  An early-autumn'22 release.
+0.3.6  2022-09-24  An Early-Autumn'22 Release.
 
 - View / Repel Overlapping Nodes option added.
 
