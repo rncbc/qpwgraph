@@ -73,7 +73,8 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 		m_patchbay(nullptr), m_patchbay_edit(false),
 		m_patchbay_autopin(true), m_patchbay_autodisconnect(false),
 		m_selected_nodes(0), m_repel_overlapping_nodes(false),
-		m_rename_item(nullptr), m_rename_editor(nullptr), m_renamed(0)
+		m_rename_item(nullptr), m_rename_editor(nullptr), m_renamed(0),
+		m_search_editor(nullptr)
 {
 	m_scene = new QGraphicsScene();
 
@@ -111,6 +112,18 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 
 	m_rename_editor->setEnabled(false);
 	m_rename_editor->hide();
+
+	m_search_editor = new QLineEdit(this);
+	m_search_editor->setClearButtonEnabled(true);
+	m_search_editor->setEnabled(false);
+	m_search_editor->hide();
+
+	QObject::connect(m_search_editor,
+		SIGNAL(textChanged(const QString&)),
+		SLOT(searchTextChanged(const QString&)));
+	QObject::connect(m_search_editor,
+		SIGNAL(editingFinished()),
+		SLOT(searchEditingFinished()));
 }
 
 
@@ -119,6 +132,7 @@ qpwgraph_canvas::~qpwgraph_canvas (void)
 {
 	clear();
 
+	delete m_search_editor;
 	delete m_rename_editor;
 
 	delete m_patchbay;
@@ -1005,8 +1019,18 @@ void qpwgraph_canvas::keyPressEvent ( QKeyEvent *event )
 {
 	if (event->key() == Qt::Key_Escape) {
 		m_scene->clearSelection();
+		m_search_editor->editingFinished();
 		clear();
 		emit changed();
+	}
+	else
+	if (!m_search_editor->isEnabled()
+		&& !event->text().trimmed().isEmpty()) {
+		m_search_editor->setEnabled(true);
+		m_search_editor->setText(event->text());
+		m_search_editor->raise();
+		m_search_editor->show();
+		m_search_editor->setFocus();
 	}
 }
 
@@ -1709,6 +1733,49 @@ void qpwgraph_canvas::renameEditingFinished (void)
 		m_rename_editor->hide();
 		m_renamed = 0;
 	}
+}
+
+
+// Search item slots.
+void qpwgraph_canvas::searchTextChanged ( const QString& text )
+{
+	clearSelection();
+
+	if (text.isEmpty())
+		return;
+
+	const QRegularExpression& rx
+		= QRegularExpression(text, QRegularExpression::CaseInsensitiveOption);
+	if (!rx.isValid())
+		return;
+
+	for (qpwgraph_node *node : m_nodes) {
+		if (rx.match(node->nodeTitle()).hasMatch()) {
+			node->setSelected(true);
+		}
+	}
+}
+
+
+void qpwgraph_canvas::searchEditingFinished (void)
+{
+	m_search_editor->setEnabled(false);
+	m_search_editor->hide();
+	m_search_editor->clearFocus();
+
+	QGraphicsView::setFocus();
+}
+
+
+void qpwgraph_canvas::resizeEvent( QResizeEvent *event )
+{
+	QGraphicsView::resizeEvent(event);
+
+	// Position the search QLineEdit to the bottom-right of the canvas
+	const int w = m_search_editor->sizeHint().width() * 2;
+	const int h = m_search_editor->sizeHint().height();
+	m_search_editor->setGeometry(
+		event->size().width() - w, event->size().height() - h, w, h);
 }
 
 

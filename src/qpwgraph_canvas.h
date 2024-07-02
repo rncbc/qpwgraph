@@ -233,6 +233,10 @@ protected slots:
 	void renameTextChanged(const QString&);
 	void renameEditingFinished();
 
+	// Search item slots.
+	void searchTextChanged(const QString&);
+	void searchEditingFinished();
+
 protected:
 
 	// Item finder (internal).
@@ -289,6 +293,8 @@ protected:
 	void cleanupNodeNames(const char *group);
 #endif
 
+	void resizeEvent(QResizeEvent *event) override;
+
 private:
 
 	// Mouse pointer dragging states.
@@ -335,6 +341,9 @@ private:
 
 	// Allowed auto-scroll margins/limits (for move command).
 	QRectF m_rect1;
+
+	// Item search stuff.
+	QLineEdit *m_search_editor;
 };
 
 
