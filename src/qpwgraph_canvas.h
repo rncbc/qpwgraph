@@ -230,8 +230,8 @@ public slots:
 protected slots:
 
 	// Rename item slots.
-	void textChanged(const QString&);
-	void editingFinished();
+	void renameTextChanged(const QString&);
+	void renameEditingFinished();
 
 protected:
 
@@ -326,9 +326,9 @@ private:
 	QHash<uint, QColor> m_port_colors;
 
 	// Item renaming stuff.
-	qpwgraph_item *m_edit_item;
-	QLineEdit     *m_editor;
-	int            m_edited;
+	qpwgraph_item *m_rename_item;
+	QLineEdit     *m_rename_editor;
+	int            m_renamed;
 
 	// Original node position (for move command).
 	QPointF m_pos1;

@@ -73,7 +73,7 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 		m_patchbay(nullptr), m_patchbay_edit(false),
 		m_patchbay_autopin(true), m_patchbay_autodisconnect(false),
 		m_selected_nodes(0), m_repel_overlapping_nodes(false),
-		m_edit_item(nullptr), m_editor(nullptr), m_edited(0)
+		m_rename_item(nullptr), m_rename_editor(nullptr), m_renamed(0)
 {
 	m_scene = new QGraphicsScene();
 
@@ -96,22 +96,21 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 	QGraphicsView::setPalette(pal);
 	QGraphicsView::setBackgroundRole(role);
 
-	m_editor = new QLineEdit(this);
-	m_editor->setFrame(false);
-//	m_editor->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+	m_rename_editor = new QLineEdit(this);
+	m_rename_editor->setFrame(false);
+//	m_rename_editor->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 
-	QObject::connect(m_editor,
+	QObject::connect(m_rename_editor,
 		SIGNAL(textChanged(const QString&)),
-		SLOT(textChanged(const QString&)));
-	QObject::connect(m_editor,
+		SLOT(renameTextChanged(const QString&)));
+	QObject::connect(m_rename_editor,
 		SIGNAL(editingFinished()),
-		SLOT(editingFinished()));
+		SLOT(renameEditingFinished()));
 
 	QGraphicsView::grabGesture(Qt::PinchGesture);
 
-	m_editor->setEnabled(false);
-	m_editor->hide();
-
+	m_rename_editor->setEnabled(false);
+	m_rename_editor->hide();
 }
 
 
@@ -120,7 +119,8 @@ qpwgraph_canvas::~qpwgraph_canvas (void)
 {
 	clear();
 
-	delete m_editor;
+	delete m_rename_editor;
+
 	delete m_patchbay;
 	delete m_commands;
 	delete m_scene;
@@ -447,9 +447,9 @@ void qpwgraph_canvas::setZoom ( qreal zoom )
 	const qreal scale = zoom / m_zoom;
 	QGraphicsView::scale(scale, scale);
 
-	QFont font = m_editor->font();
+	QFont font = m_rename_editor->font();
 	font.setPointSizeF(scale * font.pointSizeF());
-	m_editor->setFont(font);
+	m_rename_editor->setFont(font);
 	updateEditorGeometry();
 
 	m_zoom = zoom;
@@ -549,8 +549,8 @@ QList<qpwgraph_node *> qpwgraph_canvas::findNodes (
 // Whether it's in the middle of something...
 bool qpwgraph_canvas::isBusy (void) const
 {
-	return (m_state != DragNone || m_connect   != nullptr
-		||  m_item  != nullptr  || m_edit_item != nullptr);
+	return (m_state != DragNone || m_connect != nullptr
+		||  m_item  != nullptr  || m_rename_item != nullptr);
 }
 
 
@@ -1183,12 +1183,12 @@ void qpwgraph_canvas::renameItem (void)
 				: foreground.darker());
 			background.setAlpha(255);
 			pal.setColor(QPalette::Base, background);
-			m_editor->setPalette(pal);
-			QFont font = m_editor->font();
+			m_rename_editor->setPalette(pal);
+			QFont font = m_rename_editor->font();
 			font.setBold(true);
-			m_editor->setFont(font);
-			m_editor->setPlaceholderText(node->nodeName());
-			m_editor->setText(node->nodeTitle());
+			m_rename_editor->setFont(font);
+			m_rename_editor->setPlaceholderText(node->nodeName());
+			m_rename_editor->setText(node->nodeTitle());
 		}
 	}
 	else
@@ -1206,12 +1206,12 @@ void qpwgraph_canvas::renameItem (void)
 				? foreground.lighter()
 				: foreground.darker());
 			pal.setColor(QPalette::Base, background.lighter());
-			m_editor->setPalette(pal);
-			QFont font = m_editor->font();
+			m_rename_editor->setPalette(pal);
+			QFont font = m_rename_editor->font();
 			font.setBold(false);
-			m_editor->setFont(font);
-			m_editor->setPlaceholderText(port->portName());
-			m_editor->setText(port->portTitle());
+			m_rename_editor->setFont(font);
+			m_rename_editor->setPlaceholderText(port->portName());
+			m_rename_editor->setText(port->portTitle());
 		}
 	}
 	else return;
@@ -1219,13 +1219,13 @@ void qpwgraph_canvas::renameItem (void)
 	m_selected_nodes = 0;
 	m_scene->clearSelection();
 
-	m_editor->show();
-	m_editor->setEnabled(true);
-	m_editor->selectAll();
-	m_editor->setFocus();
-	m_edited = 0;
+	m_rename_editor->show();
+	m_rename_editor->setEnabled(true);
+	m_rename_editor->selectAll();
+	m_rename_editor->setFocus();
+	m_renamed = 0;
 
-	m_edit_item = item;
+	m_rename_item = item;
 
 	updateEditorGeometry();
 }
@@ -1234,14 +1234,16 @@ void qpwgraph_canvas::renameItem (void)
 // Renaming editor position and size updater.
 void qpwgraph_canvas::updateEditorGeometry (void)
 {
-	if (m_edit_item && m_editor->isEnabled() && m_editor->isVisible()) {
+	if (m_rename_item
+		&& m_rename_editor->isEnabled()
+		&& m_rename_editor->isVisible()) {
 		const QRectF& rect
-			= m_edit_item->editorRect().adjusted(+2.0, +2.0, -2.0, -2.0);
+			= m_rename_item->editorRect().adjusted(+2.0, +2.0, -2.0, -2.0);
 		const QPoint& pos1
 			= QGraphicsView::mapFromScene(rect.topLeft());
 		const QPoint& pos2
 			= QGraphicsView::mapFromScene(rect.bottomRight());
-		m_editor->setGeometry(
+		m_rename_editor->setGeometry(
 			pos1.x(),  pos1.y(),
 			pos2.x() - pos1.x(),
 			pos2.y() - pos1.y());
@@ -1645,10 +1647,10 @@ void qpwgraph_canvas::clearSelection (void)
 	m_selected_nodes = 0;
 	m_scene->clearSelection();
 
-	m_edit_item = nullptr;
-	m_editor->setEnabled(false);
-	m_editor->hide();
-	m_edited = 0;
+	m_rename_item = nullptr;
+	m_rename_editor->setEnabled(false);
+	m_rename_editor->hide();
+	m_renamed = 0;
 }
 
 
@@ -1670,10 +1672,10 @@ void qpwgraph_canvas::clear (void)
 		QGraphicsView::setDragMode(QGraphicsView::NoDrag);
 	m_state = DragNone;
 	m_item = nullptr;
-	m_edit_item = nullptr;
-	m_editor->setEnabled(false);
-	m_editor->hide();
-	m_edited = 0;
+	m_rename_item = nullptr;
+	m_rename_editor->setEnabled(false);
+	m_rename_editor->hide();
+	m_renamed = 0;
 
 	// Reset cursor...
 	QGraphicsView::setCursor(Qt::ArrowCursor);
@@ -1681,27 +1683,31 @@ void qpwgraph_canvas::clear (void)
 
 
 // Rename item slots.
-void qpwgraph_canvas::textChanged ( const QString& /* text */)
+void qpwgraph_canvas::renameTextChanged ( const QString& /* text */)
 {
-	if (m_edit_item && m_editor->isEnabled() && m_editor->isVisible())
-		++m_edited;
+	if (m_rename_item
+		&& m_rename_editor->isEnabled()
+		&& m_rename_editor->isVisible())
+		++m_renamed;
 }
 
 
-void qpwgraph_canvas::editingFinished (void)
+void qpwgraph_canvas::renameEditingFinished (void)
 {
-	if (m_edit_item && m_editor->isEnabled() && m_editor->isVisible()) {
+	if (m_rename_item
+		&& m_rename_editor->isEnabled()
+		&& m_rename_editor->isVisible()) {
 		// If changed then notify...
-		if (m_edited > 0) {
+		if (m_renamed > 0) {
 			m_commands->push(
 				new qpwgraph_rename_command(this,
-					m_edit_item, m_editor->text()));
+					m_rename_item, m_rename_editor->text()));
 		}
 		// Reset all renaming stuff...
-		m_edit_item = nullptr;
-		m_editor->setEnabled(false);
-		m_editor->hide();
-		m_edited = 0;
+		m_rename_item = nullptr;
+		m_rename_editor->setEnabled(false);
+		m_rename_editor->hide();
+		m_renamed = 0;
 	}
 }
 
