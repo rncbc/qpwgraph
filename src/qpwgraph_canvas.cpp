@@ -1753,8 +1753,10 @@ void qpwgraph_canvas::searchTextChanged ( const QString& text )
 	for (qpwgraph_node *node : m_nodes) {
 		if (rx.match(node->nodeTitle()).hasMatch()) {
 			node->setSelected(true);
+			QGraphicsView::ensureVisible(node);
 		}
 	}
+
 }
 
 
