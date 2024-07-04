@@ -1025,6 +1025,7 @@ void qpwgraph_canvas::keyPressEvent ( QKeyEvent *event )
 	}
 	else
 	if (!m_search_editor->isEnabled()
+		&& (event->modifiers() & Qt::ControlModifier) == 0
 		&& !event->text().trimmed().isEmpty()) {
 		m_search_editor->setEnabled(true);
 		m_search_editor->setText(event->text());
