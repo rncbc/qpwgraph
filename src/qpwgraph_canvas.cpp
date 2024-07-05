@@ -99,7 +99,8 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 
 	m_rename_editor = new QLineEdit(this);
 	m_rename_editor->setFrame(false);
-//	m_rename_editor->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+	m_rename_editor->setEnabled(false);
+	m_rename_editor->hide();
 
 	QObject::connect(m_rename_editor,
 		SIGNAL(textChanged(const QString&)),
@@ -109,9 +110,6 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 		SLOT(renameEditingFinished()));
 
 	QGraphicsView::grabGesture(Qt::PinchGesture);
-
-	m_rename_editor->setEnabled(false);
-	m_rename_editor->hide();
 
 	m_search_editor = new QLineEdit(this);
 	m_search_editor->setClearButtonEnabled(true);
@@ -449,6 +447,12 @@ bool qpwgraph_canvas::canRenameItem (void) const
 }
 
 
+bool qpwgraph_canvas::canSearchItem (void) const
+{
+	return !m_nodes.isEmpty();
+}
+
+
 // Zooming methods.
 void qpwgraph_canvas::setZoom ( qreal zoom )
 {
@@ -464,7 +468,7 @@ void qpwgraph_canvas::setZoom ( qreal zoom )
 	QFont font = m_rename_editor->font();
 	font.setPointSizeF(scale * font.pointSizeF());
 	m_rename_editor->setFont(font);
-	updateEditorGeometry();
+	updateRenameEditor();
 
 	m_zoom = zoom;
 
@@ -1027,11 +1031,7 @@ void qpwgraph_canvas::keyPressEvent ( QKeyEvent *event )
 	if (!m_search_editor->isEnabled()
 		&& (event->modifiers() & Qt::ControlModifier) == 0
 		&& !event->text().trimmed().isEmpty()) {
-		m_search_editor->setEnabled(true);
-		m_search_editor->setText(event->text());
-		m_search_editor->raise();
-		m_search_editor->show();
-		m_search_editor->setFocus();
+		startSearchEditor(event->text());
 	}
 }
 
@@ -1252,12 +1252,19 @@ void qpwgraph_canvas::renameItem (void)
 
 	m_rename_item = item;
 
-	updateEditorGeometry();
+	updateRenameEditor();
 }
 
 
-// Renaming editor position and size updater.
-void qpwgraph_canvas::updateEditorGeometry (void)
+void qpwgraph_canvas::searchItem (void)
+{
+	if (!m_search_editor->isEnabled())
+		startSearchEditor();
+}
+
+
+// Update editors position and size.
+void qpwgraph_canvas::updateRenameEditor (void)
 {
 	if (m_rename_item
 		&& m_rename_editor->isEnabled()
@@ -1273,6 +1280,17 @@ void qpwgraph_canvas::updateEditorGeometry (void)
 			pos2.x() - pos1.x(),
 			pos2.y() - pos1.y());
 	}
+}
+
+
+void qpwgraph_canvas::updateSearchEditor (void)
+{
+	// Position the search editor to the bottom-right of the canvas...
+	const QSize& size = QGraphicsView::viewport()->size();
+	const QSize& hint = m_search_editor->sizeHint();
+	const int w = hint.width() * 2;
+	const int h = hint.height();
+	m_search_editor->setGeometry(size.width() - w, size.height() - h, w, h);
 }
 
 
@@ -1770,15 +1788,22 @@ void qpwgraph_canvas::searchEditingFinished (void)
 }
 
 
+// Start search editor...
+void qpwgraph_canvas::startSearchEditor ( const QString& text )
+{
+	m_search_editor->setEnabled(true);
+	m_search_editor->setText(text);
+	m_search_editor->raise();
+	m_search_editor->show();
+	m_search_editor->setFocus();
+}
+
+
 void qpwgraph_canvas::resizeEvent( QResizeEvent *event )
 {
 	QGraphicsView::resizeEvent(event);
 
-	// Position the search QLineEdit to the bottom-right of the canvas
-	const int w = m_search_editor->sizeHint().width() * 2;
-	const int h = m_search_editor->sizeHint().height();
-	m_search_editor->setGeometry(
-		event->size().width() - w, event->size().height() - h, w, h);
+	updateSearchEditor();
 }
 
 

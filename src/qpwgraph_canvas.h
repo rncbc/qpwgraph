@@ -110,6 +110,7 @@ public:
 
 	// Edit predicates.
 	bool canRenameItem() const;
+	bool canSearchItem() const;
 
 	// Zooming methods.
 	void setZoom(qreal zoom);
@@ -214,6 +215,7 @@ public slots:
 
 	// Edit actions.
 	void renameItem();
+	void searchItem();
 
 	// Discrete zooming actions.
 	void zoomIn();
@@ -279,8 +281,9 @@ protected:
 	bool restorePort(qpwgraph_port *port);
 	bool savePort(qpwgraph_port *port) const;
 
-	// Renaming editor position and size updater.
-	void updateEditorGeometry();
+	// Update editors position and size.
+	void updateRenameEditor();
+	void updateSearchEditor();
 
 	// Bounding margins/limits...
 	const QRectF& boundingRect(bool reset = false);
@@ -289,11 +292,14 @@ protected:
 	// Snap into position helper.
 	void snapPos(QPointF& pos) const;
 
+	// Start search editor...
+	void startSearchEditor(const QString& text = QString());
+
+	void resizeEvent(QResizeEvent *event) override;
+
 #ifdef CONFIG_CLEANUP_NODE_NAMES
 	void cleanupNodeNames(const char *group);
 #endif
-
-	void resizeEvent(QResizeEvent *event) override;
 
 private:
 

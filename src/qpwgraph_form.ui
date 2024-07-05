@@ -104,6 +104,7 @@
     <addaction name="editSelectNoneAction"/>
     <addaction name="editSelectInvertAction"/>
     <addaction name="separator"/>
+    <addaction name="editSearchItemAction"/>
     <addaction name="editRenameItemAction"/>
    </widget>
    <widget class="QMenu" name="viewMenu">
@@ -607,6 +608,26 @@
    </property>
    <property name="shortcut">
     <string>F2</string>
+   </property>
+  </action>
+  <action name="editSearchItemAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/itemFind.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Find...</string>
+   </property>
+   <property name="iconText">
+    <string>Find</string>
+   </property>
+   <property name="toolTip">
+    <string>Find nodes</string>
+   </property>
+   <property name="statusTip">
+    <string>Find nodes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
   <action name="viewMenubarAction">
