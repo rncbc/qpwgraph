@@ -2,12 +2,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.7.5  2024-07-12  A Summer'24 Beta Release.
 
 - Implement patchbay node search functionality: adds a floating
   text-entry field, which appears when typing in the canvas,
   selecting nodes that contains the typed text (maybe regular
-  expression). (formerly MR!15) (EXPERIMENTAL)
+  expression).
 
 
 0.7.4  2024-06-28  An Early-Summer'24 Hot-fix Release.
