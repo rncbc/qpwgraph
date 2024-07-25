@@ -1602,7 +1602,10 @@ void qpwgraph_form::resizeEvent ( QResizeEvent *event )
 {
 	QMainWindow::resizeEvent(event);
 
-	++m_thumb_update;
+	if (m_thumb) {
+		m_thumb_update = 0;
+		m_thumb->updateView();
+	}
 
 	stabilize();
 }

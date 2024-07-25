@@ -2,6 +2,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
+GIT HEAD
+
+- Thumb-view repositions and resizes immediately when visible.
+
+
 0.7.5  2024-07-12  A Summer'24 Beta Release.
 
 - Implement patchbay node search functionality: adds a floating
