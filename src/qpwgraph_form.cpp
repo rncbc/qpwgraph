@@ -1614,6 +1614,8 @@ void qpwgraph_form::resizeEvent ( QResizeEvent *event )
 // Widget event handlers.
 void qpwgraph_form::showEvent ( QShowEvent *event )
 {
+	++m_thumb_update;
+
 	QMainWindow::showEvent(event);
 #ifdef CONFIG_SYSTEM_TRAY
 	if (m_systray)
