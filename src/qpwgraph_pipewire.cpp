@@ -1,7 +1,7 @@
 // qpwgraph_pipewire.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -128,6 +128,7 @@ struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
 	};
 
 	QString node_name;
+	QString node_nick;
 	qpwgraph_item::Mode node_mode;
 	NodeType node_type;
 	QList<qpwgraph_pipewire::Port *> node_ports;
@@ -441,18 +442,20 @@ void qpwgraph_registry_event_global (
 	if (::strcmp(type, PW_TYPE_INTERFACE_Node) == 0) {
 		QString node_name;
 		const char *str = spa_dict_lookup(props, PW_KEY_NODE_DESCRIPTION);
+		const char *nick = spa_dict_lookup(props, PW_KEY_NODE_NICK);
 		if (str == nullptr || ::strlen(str) < 1)
-			str = spa_dict_lookup(props, PW_KEY_NODE_NICK);
+			str = nick;
 		if (str == nullptr || ::strlen(str) < 1)
-			str = spa_dict_lookup(props, PW_KEY_NODE_NAME);
+			str = nick = spa_dict_lookup(props, PW_KEY_NODE_NAME);
 		if (str == nullptr || ::strlen(str) < 1)
-			str = "node";
+			str = nick = "node";
 		const char *app = spa_dict_lookup(props, PW_KEY_APP_NAME);
 		if (app && ::strlen(app) > 0 && ::strcmp(app, str) != 0) {
 			node_name += app;
 			node_name += '/';
 		}
 		node_name += str;
+		const QString node_nick(nick ? nick : str);
 		qpwgraph_item::Mode node_mode = qpwgraph_item::None;
 		uint node_types = qpwgraph_pipewire::Node::None;
 		str = spa_dict_lookup(props, PW_KEY_MEDIA_CLASS);
@@ -480,7 +483,7 @@ void qpwgraph_registry_event_global (
 					node_mode = qpwgraph_item::Duplex;
 			}
 		}
-		if (pw->createNode(id, node_name, node_mode, node_types))
+		if (pw->createNode(id, node_name, node_nick, node_mode, node_types))
 			++nchanged;
 	}
 	else
@@ -1005,6 +1008,7 @@ bool qpwgraph_pipewire::findNodePort (
 		*node = new qpwgraph_node(node_id, node_name, node_mode, node_type);
 		(*node)->setNodeIcon(n->node_icon);
 		(*node)->setNodeLabel(n->media_name);
+		(*node)->setNodePrefix(n->node_nick);
 		n->node_changed = false;
 		qpwgraph_sect::addItem(*node);
 	}
@@ -1237,6 +1241,7 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::findNode ( uint node_id ) const
 qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	uint node_id,
 	const QString& node_name,
+	const QString& node_nick,
 	qpwgraph_item::Mode node_mode,
 	uint node_type )
 {
@@ -1244,6 +1249,7 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 
 	Node *node = new Node(node_id);
 	node->node_name = node_name;
+	node->node_nick = node_nick;
 	node->node_mode = node_mode;
 	node->node_type = Node::NodeType(node_type);
 	node->node_icon = qpwgraph_icon(":/images/itemPipewire.png");

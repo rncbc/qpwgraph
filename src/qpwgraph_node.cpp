@@ -212,6 +212,18 @@ const QString& qpwgraph_node::nodeTitle (void) const
 }
 
 
+void qpwgraph_node::setNodePrefix ( const QString& prefix )
+{
+	m_prefix = prefix;
+}
+
+
+const QString& qpwgraph_node::nodePrefix (void) const
+{
+	return m_prefix;
+}
+
+
 // Port-list methods.
 qpwgraph_port *qpwgraph_node::addPort (
 	uint id, const QString& name, qpwgraph_item::Mode mode, int type )

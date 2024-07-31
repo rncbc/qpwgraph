@@ -72,6 +72,9 @@ public:
 	void setNodeTitle(const QString& title);
 	const QString& nodeTitle() const;
 
+	void setNodePrefix(const QString& prefix);
+	const QString& nodePrefix() const;
+
 	// Port-list methods.
 	qpwgraph_port *addPort(uint id, const QString& name, Mode mode, int type = 0);
 
@@ -141,6 +144,8 @@ private:
 	QIcon   m_icon;
 	QString m_label;
 	QString m_title;
+
+	QString m_prefix;
 
 	QGraphicsPixmapItem *m_pixmap;
 	QGraphicsTextItem   *m_text;
