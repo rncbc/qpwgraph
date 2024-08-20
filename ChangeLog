@@ -2,7 +2,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.7.6  2024-08-20  A Mid-Summer'24 Beta Release.
 
 - Thumb-view repositions and resizes immediately when visible.
 
