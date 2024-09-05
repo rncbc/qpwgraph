@@ -1,4 +1,4 @@
-// qpwgraph_form.cpp
+// qpwgraph_main.cpp
 //
 /****************************************************************************
    Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "qpwgraph.h"
-#include "qpwgraph_form.h"
+#include "qpwgraph_main.h"
 
 #include "qpwgraph_config.h"
 
@@ -92,10 +92,10 @@ protected:
 
 
 //----------------------------------------------------------------------------
-// qpwgraph_form -- UI wrapper form.
+// qpwgraph_main -- UI wrapper form.
 
 // Constructor.
-qpwgraph_form::qpwgraph_form (
+qpwgraph_main::qpwgraph_main (
 	QWidget *parent, Qt::WindowFlags wflags )
 	: QMainWindow(parent, wflags)
 {
@@ -547,7 +547,7 @@ qpwgraph_form::qpwgraph_form (
 
 
 // Destructor.
-qpwgraph_form::~qpwgraph_form (void)
+qpwgraph_main::~qpwgraph_main (void)
 {
 	if (m_thumb)
 		delete m_thumb;
@@ -576,7 +576,7 @@ qpwgraph_form::~qpwgraph_form (void)
 
 
 // Take care of command line options and arguments...
-void qpwgraph_form::apply_args ( qpwgraph_application *app )
+void qpwgraph_main::apply_args ( qpwgraph_application *app )
 {
 	if (app->isPatchbayActivatedSet())
 		m_ui.patchbayActivatedAction->setChecked(app->isPatchbayActivated());
@@ -609,7 +609,7 @@ void qpwgraph_form::apply_args ( qpwgraph_application *app )
 
 
 // Patchbay menu slots.
-void qpwgraph_form::patchbayNew (void)
+void qpwgraph_main::patchbayNew (void)
 {
 	if (!patchbayQueryClose())
 		return;
@@ -629,7 +629,7 @@ void qpwgraph_form::patchbayNew (void)
 }
 
 
-void qpwgraph_form::patchbayOpen (void)
+void qpwgraph_main::patchbayOpen (void)
 {
 	if (!patchbayQueryClose())
 		return;
@@ -649,7 +649,7 @@ void qpwgraph_form::patchbayOpen (void)
 }
 
 
-void qpwgraph_form::patchbayOpenRecent (void)
+void qpwgraph_main::patchbayOpenRecent (void)
 {
 	// Retrive filename index from action data...
 	QAction *action = qobject_cast<QAction *> (sender());
@@ -664,7 +664,7 @@ void qpwgraph_form::patchbayOpenRecent (void)
 }
 
 
-void qpwgraph_form::patchbaySave (void)
+void qpwgraph_main::patchbaySave (void)
 {
 	if (m_patchbay_path.isEmpty()) {
 		patchbaySaveAs();
@@ -677,7 +677,7 @@ void qpwgraph_form::patchbaySave (void)
 }
 
 
-void qpwgraph_form::patchbaySaveAs (void)
+void qpwgraph_main::patchbaySaveAs (void)
 {
 	const QString& path
 		= QFileDialog::getSaveFileName(this,
@@ -697,7 +697,7 @@ void qpwgraph_form::patchbaySaveAs (void)
 }
 
 
-void qpwgraph_form::patchbayActivated ( bool on )
+void qpwgraph_main::patchbayActivated ( bool on )
 {
 	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
 	if (patchbay) {
@@ -709,7 +709,7 @@ void qpwgraph_form::patchbayActivated ( bool on )
 }
 
 
-void qpwgraph_form::patchbayExclusive ( bool on )
+void qpwgraph_main::patchbayExclusive ( bool on )
 {
 	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
 	if (patchbay) {
@@ -722,7 +722,7 @@ void qpwgraph_form::patchbayExclusive ( bool on )
 }
 
 
-void qpwgraph_form::patchbayEdit ( bool on )
+void qpwgraph_main::patchbayEdit ( bool on )
 {
 	m_ui.graphCanvas->setPatchbayEdit(on);
 
@@ -730,7 +730,7 @@ void qpwgraph_form::patchbayEdit ( bool on )
 }
 
 
-void qpwgraph_form::patchbayPin (void)
+void qpwgraph_main::patchbayPin (void)
 {
 	m_ui.graphCanvas->patchbayPin();
 
@@ -738,7 +738,7 @@ void qpwgraph_form::patchbayPin (void)
 }
 
 
-void qpwgraph_form::patchbayUnpin (void)
+void qpwgraph_main::patchbayUnpin (void)
 {
 	m_ui.graphCanvas->patchbayUnpin();
 
@@ -746,7 +746,7 @@ void qpwgraph_form::patchbayUnpin (void)
 }
 
 
-void qpwgraph_form::patchbayAutoPin ( bool on )
+void qpwgraph_main::patchbayAutoPin ( bool on )
 {
 	m_ui.graphCanvas->setPatchbayAutoPin(on);
 
@@ -754,7 +754,7 @@ void qpwgraph_form::patchbayAutoPin ( bool on )
 }
 
 
-void qpwgraph_form::patchbayAutoDisconnect ( bool on )
+void qpwgraph_main::patchbayAutoDisconnect ( bool on )
 {
 	m_ui.graphCanvas->setPatchbayAutoDisconnect(on);
 
@@ -763,7 +763,7 @@ void qpwgraph_form::patchbayAutoDisconnect ( bool on )
 
 
 // Main menu slots.
-void qpwgraph_form::viewMenubar ( bool on )
+void qpwgraph_main::viewMenubar ( bool on )
 {
 	m_ui.MenuBar->setVisible(on);
 
@@ -771,7 +771,7 @@ void qpwgraph_form::viewMenubar ( bool on )
 }
 
 
-void qpwgraph_form::viewGraphToolbar ( bool on )
+void qpwgraph_main::viewGraphToolbar ( bool on )
 {
 	m_ui.graphToolbar->setVisible(on);
 
@@ -779,7 +779,7 @@ void qpwgraph_form::viewGraphToolbar ( bool on )
 }
 
 
-void qpwgraph_form::viewPatchbayToolbar ( bool on )
+void qpwgraph_main::viewPatchbayToolbar ( bool on )
 {
 	m_ui.patchbayToolbar->setVisible(on);
 
@@ -787,7 +787,7 @@ void qpwgraph_form::viewPatchbayToolbar ( bool on )
 }
 
 
-void qpwgraph_form::viewStatusbar ( bool on )
+void qpwgraph_main::viewStatusbar ( bool on )
 {
 	m_ui.StatusBar->setVisible(on);
 
@@ -795,7 +795,7 @@ void qpwgraph_form::viewStatusbar ( bool on )
 }
 
 
-void qpwgraph_form::viewThumbviewAction (void)
+void qpwgraph_main::viewThumbviewAction (void)
 {
 	QAction *action = qobject_cast<QAction *> (sender());
 	if (action)
@@ -803,7 +803,7 @@ void qpwgraph_form::viewThumbviewAction (void)
 }
 
 
-void qpwgraph_form::viewThumbview ( int thumbview )
+void qpwgraph_main::viewThumbview ( int thumbview )
 {
 	const qpwgraph_thumb::Position position
 		= qpwgraph_thumb::Position(thumbview);
@@ -830,7 +830,7 @@ void qpwgraph_form::viewThumbview ( int thumbview )
 }
 
 
-void qpwgraph_form::viewTextBesideIcons ( bool on )
+void qpwgraph_main::viewTextBesideIcons ( bool on )
 {
 	if (on) {
 		m_ui.graphToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -844,7 +844,7 @@ void qpwgraph_form::viewTextBesideIcons ( bool on )
 }
 
 
-void qpwgraph_form::viewCenter (void)
+void qpwgraph_main::viewCenter (void)
 {
 	const QRectF& scene_rect
 		= m_ui.graphCanvas->scene()->itemsBoundingRect();
@@ -854,7 +854,7 @@ void qpwgraph_form::viewCenter (void)
 }
 
 
-void qpwgraph_form::viewRefresh (void)
+void qpwgraph_main::viewRefresh (void)
 {
 	pipewire_changed();
 	alsamidi_changed();
@@ -868,13 +868,13 @@ void qpwgraph_form::viewRefresh (void)
 }
 
 
-void qpwgraph_form::viewZoomRange ( bool on )
+void qpwgraph_main::viewZoomRange ( bool on )
 {
 	m_ui.graphCanvas->setZoomRange(on);
 }
 
 
-void qpwgraph_form::viewColorsAction (void)
+void qpwgraph_main::viewColorsAction (void)
 {
 	QAction *action = qobject_cast<QAction *> (sender());
 	if (action == nullptr)
@@ -895,7 +895,7 @@ void qpwgraph_form::viewColorsAction (void)
 }
 
 
-void qpwgraph_form::viewColorsReset (void)
+void qpwgraph_main::viewColorsReset (void)
 {
 	m_ui.graphCanvas->clearPortTypeColors();
 	if (m_pipewire)
@@ -910,7 +910,7 @@ void qpwgraph_form::viewColorsReset (void)
 }
 
 
-void qpwgraph_form::viewSortTypeAction (void)
+void qpwgraph_main::viewSortTypeAction (void)
 {
 	QAction *action = qobject_cast<QAction *> (sender());
 	if (action == nullptr)
@@ -924,7 +924,7 @@ void qpwgraph_form::viewSortTypeAction (void)
 }
 
 
-void qpwgraph_form::viewSortOrderAction (void)
+void qpwgraph_main::viewSortOrderAction (void)
 {
 	QAction *action = qobject_cast<QAction *> (sender());
 	if (action == nullptr)
@@ -938,21 +938,21 @@ void qpwgraph_form::viewSortOrderAction (void)
 }
 
 
-void qpwgraph_form::viewRepelOverlappingNodes ( bool on )
+void qpwgraph_main::viewRepelOverlappingNodes ( bool on )
 {
 	m_ui.graphCanvas->setRepelOverlappingNodes(on);
 	if (on) ++m_repel_overlapping_nodes;
 }
 
 
-void qpwgraph_form::viewConnectThroughNodes ( bool on )
+void qpwgraph_main::viewConnectThroughNodes ( bool on )
 {
 	qpwgraph_connect::setConnectThroughNodes(on);
 	m_ui.graphCanvas->updateConnects();
 }
 
 
-void qpwgraph_form::helpSystemTray ( bool on )
+void qpwgraph_main::helpSystemTray ( bool on )
 {
 #ifdef CONFIG_SYSTEM_TRAY
 	if (on && m_systray == nullptr) {
@@ -973,7 +973,7 @@ void qpwgraph_form::helpSystemTray ( bool on )
 }
 
 
-void qpwgraph_form::helpAlsaMidi ( bool on )
+void qpwgraph_main::helpAlsaMidi ( bool on )
 {
 #ifdef CONFIG_ALSA_MIDI
 	if (on && m_alsamidi == nullptr) {
@@ -1000,19 +1000,19 @@ void qpwgraph_form::helpAlsaMidi ( bool on )
 }
 
 
-void qpwgraph_form::helpSystemTrayQueryClose ( bool on )
+void qpwgraph_main::helpSystemTrayQueryClose ( bool on )
 {
 	m_config->setSystemTrayQueryClose(on);
 }
 
 
-void qpwgraph_form::helpPatchbayQueryQuit ( bool on )
+void qpwgraph_main::helpPatchbayQueryQuit ( bool on )
 {
 	m_config->setPatchbayQueryQuit(on);
 }
 
 
-void qpwgraph_form::helpAbout (void)
+void qpwgraph_main::helpAbout (void)
 {
 	static const QString title     = PROJECT_NAME;
 	static const QString version   = PROJECT_VERSION;
@@ -1066,13 +1066,13 @@ void qpwgraph_form::helpAbout (void)
 }
 
 
-void qpwgraph_form::helpAboutQt (void)
+void qpwgraph_main::helpAboutQt (void)
 {
 	QMessageBox::aboutQt(this);
 }
 
 
-void qpwgraph_form::thumbviewContextMenu ( const QPoint& pos )
+void qpwgraph_main::thumbviewContextMenu ( const QPoint& pos )
 {
 	stabilize();
 
@@ -1088,13 +1088,13 @@ void qpwgraph_form::thumbviewContextMenu ( const QPoint& pos )
 }
 
 
-void qpwgraph_form::zoomValueChanged ( int zoom_value )
+void qpwgraph_main::zoomValueChanged ( int zoom_value )
 {
 	m_ui.graphCanvas->setZoom(0.01 * qreal(zoom_value));
 }
 
 
-void qpwgraph_form::patchbayNameChanged ( int index )
+void qpwgraph_main::patchbayNameChanged ( int index )
 {
 	if (index > 0) {
 		const QString& path
@@ -1108,7 +1108,7 @@ void qpwgraph_form::patchbayNameChanged ( int index )
 
 
 // Node life-cycle slots.
-void qpwgraph_form::added ( qpwgraph_node *node )
+void qpwgraph_main::added ( qpwgraph_node *node )
 {
 	const qpwgraph_canvas *canvas
 		= m_ui.graphCanvas;
@@ -1156,14 +1156,14 @@ void qpwgraph_form::added ( qpwgraph_node *node )
 }
 
 
-void qpwgraph_form::updated ( qpwgraph_node */*node*/ )
+void qpwgraph_main::updated ( qpwgraph_node */*node*/ )
 {
 	if (m_ui.graphCanvas->isRepelOverlappingNodes())
 		++m_repel_overlapping_nodes;
 }
 
 
-void qpwgraph_form::removed ( qpwgraph_node */*node*/ )
+void qpwgraph_main::removed ( qpwgraph_node */*node*/ )
 {
 #if 0// FIXME: DANGEROUS! Node might have been deleted by now...
 	if (node) {
@@ -1184,7 +1184,7 @@ void qpwgraph_form::removed ( qpwgraph_node */*node*/ )
 
 
 // Port (dis)connection slots.
-void qpwgraph_form::connected ( qpwgraph_port *port1, qpwgraph_port *port2 )
+void qpwgraph_main::connected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 {
 	if (qpwgraph_pipewire::isPortType(port1->portType())) {
 		if (m_pipewire)
@@ -1204,7 +1204,7 @@ void qpwgraph_form::connected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 }
 
 
-void qpwgraph_form::disconnected ( qpwgraph_port *port1, qpwgraph_port *port2 )
+void qpwgraph_main::disconnected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 {
 	if (qpwgraph_pipewire::isPortType(port1->portType())) {
 		if (m_pipewire)
@@ -1224,7 +1224,7 @@ void qpwgraph_form::disconnected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 }
 
 
-void qpwgraph_form::connected ( qpwgraph_connect *connect )
+void qpwgraph_main::connected ( qpwgraph_connect *connect )
 {
 	qpwgraph_port *port1 = connect->port1();
 	if (port1 == nullptr)
@@ -1245,7 +1245,7 @@ void qpwgraph_form::connected ( qpwgraph_connect *connect )
 
 
 // Item renaming slot.
-void qpwgraph_form::renamed ( qpwgraph_item *item, const QString& name )
+void qpwgraph_main::renamed ( qpwgraph_item *item, const QString& name )
 {
 	qpwgraph_sect *sect = item_sect(item);
 	if (sect)
@@ -1254,7 +1254,7 @@ void qpwgraph_form::renamed ( qpwgraph_item *item, const QString& name )
 
 
 // Graph view change slot.
-void qpwgraph_form::changed (void)
+void qpwgraph_main::changed (void)
 {
 	++m_thumb_update;
 
@@ -1263,20 +1263,20 @@ void qpwgraph_form::changed (void)
 
 
 // Graph section slots.
-void qpwgraph_form::pipewire_changed (void)
+void qpwgraph_main::pipewire_changed (void)
 {
 	++m_pipewire_changed;
 }
 
 
-void qpwgraph_form::alsamidi_changed (void)
+void qpwgraph_main::alsamidi_changed (void)
 {
 	++m_alsamidi_changed;
 }
 
 
 // Pseudo-asyncronous timed refreshner.
-void qpwgraph_form::refresh (void)
+void qpwgraph_main::refresh (void)
 {
 	if (m_ui.graphCanvas->isBusy()) {
 		QTimer::singleShot(1200, this, SLOT(refresh()));
@@ -1325,7 +1325,7 @@ void qpwgraph_form::refresh (void)
 
 
 // Graph selection change slot.
-void qpwgraph_form::stabilize (void)
+void qpwgraph_main::stabilize (void)
 {
 	const qpwgraph_canvas *canvas
 		= m_ui.graphCanvas;
@@ -1395,7 +1395,7 @@ void qpwgraph_form::stabilize (void)
 
 
 // Tool-bar orientation change slot.
-void qpwgraph_form::orientationChanged ( Qt::Orientation orientation )
+void qpwgraph_main::orientationChanged ( Qt::Orientation orientation )
 {
 	QToolBar *toolbar = qobject_cast<QToolBar *> (sender());
 	if (toolbar == nullptr)
@@ -1413,7 +1413,7 @@ void qpwgraph_form::orientationChanged ( Qt::Orientation orientation )
 
 
 // Open/save patchbay file.
-bool qpwgraph_form::patchbayOpenFile ( const QString& path, bool clear )
+bool qpwgraph_main::patchbayOpenFile ( const QString& path, bool clear )
 {
 	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
 	if (patchbay == nullptr)
@@ -1445,7 +1445,7 @@ bool qpwgraph_form::patchbayOpenFile ( const QString& path, bool clear )
 }
 
 
-bool qpwgraph_form::patchbaySaveFile ( const QString& path )
+bool qpwgraph_main::patchbaySaveFile ( const QString& path )
 {
 	qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
 	if (patchbay == nullptr)
@@ -1468,7 +1468,7 @@ bool qpwgraph_form::patchbaySaveFile ( const QString& path )
 
 
 // Get the current display file-name.
-QString qpwgraph_form::patchbayFileName (void) const
+QString qpwgraph_main::patchbayFileName (void) const
 {
 	if (m_patchbay_path.isEmpty())
 		return tr("Untitled%1").arg(m_patchbay_untitled + 1);
@@ -1478,7 +1478,7 @@ QString qpwgraph_form::patchbayFileName (void) const
 
 
 // Get default patchbay file directory/extension/filter.
-QString qpwgraph_form::patchbayFileDir (void) const
+QString qpwgraph_main::patchbayFileDir (void) const
 {
 	if (m_patchbay_path.isEmpty())
 		return m_patchbay_dir;
@@ -1487,13 +1487,13 @@ QString qpwgraph_form::patchbayFileDir (void) const
 }
 
 
-QString qpwgraph_form::patchbayFileExt (void) const
+QString qpwgraph_main::patchbayFileExt (void) const
 {
 	return QString(PROJECT_NAME).toLower();
 }
 
 
-QString qpwgraph_form::patchbayFileFilter (void) const
+QString qpwgraph_main::patchbayFileFilter (void) const
 {
 	return tr("Patchbay files (*.%1)").arg(patchbayFileExt()) + ";;"
 		 + tr("All files (*.*)");
@@ -1502,7 +1502,7 @@ QString qpwgraph_form::patchbayFileFilter (void) const
 
 
 // Whether we can close/quit current patchbay.
-bool qpwgraph_form::patchbayQueryClose (void)
+bool qpwgraph_main::patchbayQueryClose (void)
 {
 	bool ret = true;
 	const qpwgraph_patchbay *patchbay
@@ -1530,7 +1530,7 @@ bool qpwgraph_form::patchbayQueryClose (void)
 }
 
 
-bool qpwgraph_form::patchbayQueryQuit (void)
+bool qpwgraph_main::patchbayQueryQuit (void)
 {
 	if (!patchbayQueryClose())
 		return false;
@@ -1572,7 +1572,7 @@ bool qpwgraph_form::patchbayQueryQuit (void)
 
 
 // Context-menu event handler.
-void qpwgraph_form::contextMenuEvent ( QContextMenuEvent *event )
+void qpwgraph_main::contextMenuEvent ( QContextMenuEvent *event )
 {
 	m_ui.graphCanvas->clear();
 
@@ -1598,7 +1598,7 @@ void qpwgraph_form::contextMenuEvent ( QContextMenuEvent *event )
 
 
 // Widget resize event handler.
-void qpwgraph_form::resizeEvent ( QResizeEvent *event )
+void qpwgraph_main::resizeEvent ( QResizeEvent *event )
 {
 	QMainWindow::resizeEvent(event);
 
@@ -1612,7 +1612,7 @@ void qpwgraph_form::resizeEvent ( QResizeEvent *event )
 
 
 // Widget event handlers.
-void qpwgraph_form::showEvent ( QShowEvent *event )
+void qpwgraph_main::showEvent ( QShowEvent *event )
 {
 	++m_thumb_update;
 
@@ -1624,7 +1624,7 @@ void qpwgraph_form::showEvent ( QShowEvent *event )
 }
 
 
-void qpwgraph_form::hideEvent ( QHideEvent *event )
+void qpwgraph_main::hideEvent ( QHideEvent *event )
 {
 	QMainWindow::hideEvent(event);
 #ifdef CONFIG_SYSTEM_TRAY
@@ -1635,7 +1635,7 @@ void qpwgraph_form::hideEvent ( QHideEvent *event )
 }
 
 
-void qpwgraph_form::closeEvent ( QCloseEvent *event )
+void qpwgraph_main::closeEvent ( QCloseEvent *event )
 {
 #ifdef CONFIG_SYSTEM_TRAY
 	if (m_systray) {
@@ -1685,7 +1685,7 @@ void qpwgraph_form::closeEvent ( QCloseEvent *event )
 
 
 // Special port-type color methods.
-void qpwgraph_form::updateViewColorsAction ( QAction *action )
+void qpwgraph_main::updateViewColorsAction ( QAction *action )
 {
 	const uint port_type = action->data().toUInt();
 	if (0 >= port_type)
@@ -1701,7 +1701,7 @@ void qpwgraph_form::updateViewColorsAction ( QAction *action )
 }
 
 
-void qpwgraph_form::updateViewColors (void)
+void qpwgraph_main::updateViewColors (void)
 {
 	updateViewColorsAction(m_ui.viewColorsPipewireAudioAction);
 	updateViewColorsAction(m_ui.viewColorsPipewireMidiAction);
@@ -1714,7 +1714,7 @@ void qpwgraph_form::updateViewColors (void)
 
 
 // Update patchbay recent files menu.
-void qpwgraph_form::updatePatchbayMenu (void)
+void qpwgraph_main::updatePatchbayMenu (void)
 {
 	// Rebuild the recent files menu...
 	const QIcon icon(":/images/itemPatchbay.png");
@@ -1737,7 +1737,7 @@ void qpwgraph_form::updatePatchbayMenu (void)
 
 
 // Update patchbay names combo-box (toolbar).
-void qpwgraph_form::updatePatchbayNames (void)
+void qpwgraph_main::updatePatchbayNames (void)
 {
 	const bool is_blocked
 		= m_patchbay_names->blockSignals(true);
@@ -1762,7 +1762,7 @@ void qpwgraph_form::updatePatchbayNames (void)
 
 
 // Item sect predicate.
-qpwgraph_sect *qpwgraph_form::item_sect ( qpwgraph_item *item ) const
+qpwgraph_sect *qpwgraph_main::item_sect ( qpwgraph_item *item ) const
 {
 	if (item->type() == qpwgraph_node::Type) {
 		qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
@@ -1791,7 +1791,7 @@ qpwgraph_sect *qpwgraph_form::item_sect ( qpwgraph_item *item ) const
 
 
 // Restore whole form state...
-void qpwgraph_form::restoreState (void)
+void qpwgraph_main::restoreState (void)
 {
 	m_config->restoreState(this);
 
@@ -1915,7 +1915,7 @@ void qpwgraph_form::restoreState (void)
 
 
 // Forcibly save whole form state.
-void qpwgraph_form::saveState (void)
+void qpwgraph_main::saveState (void)
 {
 	m_ui.graphCanvas->saveState();
 
@@ -1955,7 +1955,7 @@ void qpwgraph_form::saveState (void)
 
 
 // Forcibly quit application.
-void qpwgraph_form::closeQuit (void)
+void qpwgraph_main::closeQuit (void)
 {
 	if (!patchbayQueryQuit())
 		return;
@@ -1972,7 +1972,7 @@ void qpwgraph_form::closeQuit (void)
 
 
 // Session management handler (eg. logoff)
-void qpwgraph_form::commitData ( QSessionManager& sm )
+void qpwgraph_main::commitData ( QSessionManager& sm )
 {
 	sm.release();
 
@@ -1980,5 +1980,5 @@ void qpwgraph_form::commitData ( QSessionManager& sm )
 }
 
 
-// end of qpwgraph_form.cpp
+// end of qpwgraph_main.cpp
 

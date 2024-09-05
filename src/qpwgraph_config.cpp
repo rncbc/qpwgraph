@@ -71,6 +71,14 @@ static const char *SessionGroup = "/Session";
 static const char *SessionStartMinimizedKey = "/StartMinimized";
 
 
+// Legacy main-form class renaming support (> v0.7.7)
+#define LEGACY_MAIN_FORM 1
+#ifdef  LEGACY_MAIN_FORM
+static const char *LegacyName = "form";
+static const char *ModernName = "main";
+#endif
+
+
 //----------------------------------------------------------------------------
 // qpwgraph_config --  Canvas state memento.
 
@@ -451,8 +459,19 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 	m_settings->endGroup();
 
 	m_settings->beginGroup(GeometryGroup);
+#ifdef LEGACY_MAIN_FORM
+	QString sGeometryKey = '/' + widget->objectName();
+	QByteArray geometry_state = m_settings->value(sGeometryKey).toByteArray();
+	if (geometry_state.isEmpty() || geometry_state.isNull()) {
+		sGeometryKey.replace(ModernName, LegacyName);
+		geometry_state = m_settings->value(sGeometryKey).toByteArray();
+		if (!geometry_state.isEmpty() && !geometry_state.isNull())
+			m_settings->remove(sGeometryKey);
+	}
+#else
 	const QByteArray& geometry_state
 		= m_settings->value('/' + widget->objectName()).toByteArray();
+#endif
 	m_settings->endGroup();
 
 	if (geometry_state.isEmpty() || geometry_state.isNull())
@@ -461,8 +480,19 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 	widget->restoreGeometry(geometry_state);
 
 	m_settings->beginGroup(LayoutGroup);
+#ifdef LEGACY_MAIN_FORM
+	QString sLayoutKey = '/' + widget->objectName();
+	QByteArray layout_state = m_settings->value(sLayoutKey).toByteArray();
+	if (layout_state.isEmpty() || layout_state.isNull()) {
+		sLayoutKey.replace(ModernName, LegacyName);
+		layout_state = m_settings->value(sLayoutKey).toByteArray();
+		if (!layout_state.isEmpty() && !layout_state.isNull())
+			m_settings->remove(sLayoutKey);
+	}
+#else
 	const QByteArray& layout_state
 		= m_settings->value('/' + widget->objectName()).toByteArray();
+#endif
 	m_settings->endGroup();
 
 	if (layout_state.isEmpty() || layout_state.isNull())

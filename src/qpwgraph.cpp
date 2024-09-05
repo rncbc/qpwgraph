@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "qpwgraph.h"
-#include "qpwgraph_form.h"
+#include "qpwgraph_main.h"
 
 #include <pipewire/pipewire.h>
 
@@ -254,7 +254,7 @@ void qpwgraph_application::readyReadSlot (void)
 		if (nread > 0) {
 			const QByteArray data = socket->read(nread);
 			// Parse and apply passed command-line arguments...
-			qpwgraph_form *form = static_cast<qpwgraph_form *> (m_widget);
+			qpwgraph_main *form = static_cast<qpwgraph_main *> (m_widget);
 			if (form && parse_args(QString(data).split(' ')))
 				form->apply_args(this);
 			// Just make it always shows up fine...
@@ -297,7 +297,7 @@ int main ( int argc, char *argv[] )
 	}
 #endif
 
-	qpwgraph_form form;
+	qpwgraph_main form;
 	app.setMainWidget(&form);
 	form.apply_args(&app);
 

@@ -31,7 +31,7 @@
 
 
 // Forward decls.
-class qpwgraph_form;
+class qpwgraph_main;
 class QAction;
 
 
@@ -45,7 +45,7 @@ class qpwgraph_systray : public QSystemTrayIcon
 public:
 
 	// Constructor.
-	qpwgraph_systray(qpwgraph_form *form);
+	qpwgraph_systray(qpwgraph_main *main);
 
 	// Update context menu.
 	void updateContextMenu();
@@ -60,7 +60,7 @@ protected slots:
 
 private:
 
-	qpwgraph_form *m_form;
+	qpwgraph_main *m_main;
 
 	QAction *m_show;
 	QAction *m_quit;

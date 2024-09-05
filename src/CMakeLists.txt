@@ -28,7 +28,7 @@ set (HEADERS
   qpwgraph_patchbay.h
   qpwgraph_systray.h
   qpwgraph_thumb.h
-  qpwgraph_form.h
+  qpwgraph_main.h
 )
 
 set (SOURCES
@@ -46,11 +46,11 @@ set (SOURCES
   qpwgraph_patchbay.cpp
   qpwgraph_systray.cpp
   qpwgraph_thumb.cpp
-  qpwgraph_form.cpp
+  qpwgraph_main.cpp
 )
 
 set (FORMS
-  qpwgraph_form.ui
+  qpwgraph_main.ui
 )
 
 set (RESOURCES

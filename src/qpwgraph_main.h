@@ -1,4 +1,4 @@
-// qpwgraph_form.h
+// qpwgraph_main.h
 //
 /****************************************************************************
    Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -19,10 +19,10 @@
 
 *****************************************************************************/
 
-#ifndef __qpwgraph_form_h
-#define __qpwgraph_form_h
+#ifndef __qpwgraph_main_h
+#define __qpwgraph_main_h
 
-#include "ui_qpwgraph_form.h"
+#include "ui_qpwgraph_main.h"
 
 
 // Forward decls.
@@ -53,20 +53,20 @@ class QSessionManager;
 
 
 //----------------------------------------------------------------------------
-// qpwgraph_form -- UI wrapper form.
+// qpwgraph_main -- UI wrapper form.
 
-class qpwgraph_form : public QMainWindow
+class qpwgraph_main : public QMainWindow
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qpwgraph_form(QWidget *parent = nullptr,
+	qpwgraph_main(QWidget *parent = nullptr,
 		Qt::WindowFlags wflags = Qt::WindowFlags());
 
 	// Destructor.
-	~qpwgraph_form();
+	~qpwgraph_main();
 
 	// Take care of command line options and arguments...
 	void apply_args(qpwgraph_application *app);
@@ -217,7 +217,7 @@ protected:
 private:
 
 	// The Qt-designer UI struct...
-	Ui::qpwgraph_form m_ui;
+	Ui::qpwgraph_main m_ui;
 
 	// Instance variables.
 	qpwgraph_config *m_config;
@@ -254,6 +254,6 @@ private:
 };
 
 
-#endif	// __qpwgraph_form_h
+#endif	// __qpwgraph_main_h
 
-// end of qpwgraph_form.h
+// end of qpwgraph_main.h

@@ -24,7 +24,7 @@
 
 #ifdef CONFIG_SYSTEM_TRAY
 
-#include "qpwgraph_form.h"
+#include "qpwgraph_main.h"
 
 #include <QWidget>
 #include <QAction>
@@ -36,19 +36,19 @@
 // qpwgraph_systray -- Custom system tray icon.
 
 // Constructor.
-qpwgraph_systray::qpwgraph_systray ( qpwgraph_form *form )
-	: QSystemTrayIcon(form), m_form(form)
+qpwgraph_systray::qpwgraph_systray ( qpwgraph_main *main )
+	: QSystemTrayIcon(main), m_main(main)
 {
 	// Set things as inherited...
 #if QT_VERSION < QT_VERSION_CHECK(6, 1, 0)
 	QSystemTrayIcon::setIcon(QIcon(":/images/qpwgraph.png"));
 #else
-	QSystemTrayIcon::setIcon(m_form->windowIcon().pixmap(32, 32));
+	QSystemTrayIcon::setIcon(m_main->windowIcon().pixmap(32, 32));
 #endif
-	QSystemTrayIcon::setToolTip(m_form->windowTitle());
+	QSystemTrayIcon::setToolTip(m_main->windowTitle());
 
 	m_show = m_menu.addAction(tr("Show/Hide"), this, SLOT(showHide()));
-	m_quit = m_menu.addAction(tr("Quit"), m_form, SLOT(closeQuit()));
+	m_quit = m_menu.addAction(tr("Quit"), m_main, SLOT(closeQuit()));
 
 	QSystemTrayIcon::setContextMenu(&m_menu);
 
@@ -63,7 +63,7 @@ qpwgraph_systray::qpwgraph_systray ( qpwgraph_form *form )
 // Update context menu.
 void qpwgraph_systray::updateContextMenu (void)
 {
-	if (m_form->isVisible() && !m_form->isMinimized())
+	if (m_main->isVisible() && !m_main->isMinimized())
 		m_show->setText(tr("Hide"));
 	else
 		m_show->setText(tr("Show"));
@@ -89,14 +89,14 @@ void qpwgraph_systray::activated ( QSystemTrayIcon::ActivationReason reason )
 // Handle menu actions.
 void qpwgraph_systray::showHide (void)
 {
-	if (m_form->isVisible() && !m_form->isMinimized()) {
+	if (m_main->isVisible() && !m_main->isMinimized()) {
 		// Hide away from sight, totally...
-		m_form->hide();
+		m_main->hide();
 	} else {
 		// Show normally.
-		m_form->showNormal();
-		m_form->raise();
-		m_form->activateWindow();
+		m_main->showNormal();
+		m_main->raise();
+		m_main->activateWindow();
 	}
 }
 

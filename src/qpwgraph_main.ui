@@ -20,8 +20,8 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
  </comment>
- <class>qpwgraph_form</class>
- <widget class="QMainWindow" name="qpwgraph_form">
+ <class>qpwgraph_main</class>
+ <widget class="QMainWindow" name="qpwgraph_main">
   <property name="geometry">
    <rect>
     <x>0</x>
