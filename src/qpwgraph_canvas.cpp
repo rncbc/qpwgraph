@@ -2050,4 +2050,16 @@ bool qpwgraph_canvas::cleanupNodeName ( QString& name )
 
 
 
+// Search placeholder text accessors.
+void qpwgraph_canvas::setSearchPlaceholderText ( const QString& text )
+{
+	m_search_editor->setPlaceholderText(text);
+}
+
+QString qpwgraph_canvas::searchPlaceholderText (void) const
+{
+	return m_search_editor->placeholderText();
+}
+
+
 // end of qpwgraph_canvas.cpp

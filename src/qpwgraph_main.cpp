@@ -516,6 +516,9 @@ qpwgraph_main::qpwgraph_main (
 		SIGNAL(orientationChanged(Qt::Orientation)),
 		SLOT(orientationChanged(Qt::Orientation)));
 
+	m_ui.graphCanvas->setSearchPlaceholderText(
+		m_ui.editSearchItemAction->statusTip() + QString(3, '.'));
+
 	restoreState();
 
 	updatePatchbayMenu();

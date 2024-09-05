@@ -183,6 +183,10 @@ public:
 	static bool cleanupNodeName(QString& name);
 #endif
 
+	// Search placeholder text accessors.
+	void setSearchPlaceholderText(const QString& text);
+	QString searchPlaceholderText() const;
+
 signals:
 
 	// Node factory notifications.
