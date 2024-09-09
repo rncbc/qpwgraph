@@ -54,12 +54,18 @@ public:
 	Position position() const;
 
 	// Emit context-menu request.
-	void contextMenu(const QPoint& pos);
+	void requestContextMenu(const QPoint& pos);
+
+	// Request re-positioning.
+	void requestPosition(Position position);
 
 signals:
 
 	// Context-menu request.
 	void contextMenuRequested(const QPoint& pos);
+
+	// Re-positioning request.
+	void positionRequested(int position);
 
 public slots:
 

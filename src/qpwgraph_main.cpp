@@ -826,9 +826,31 @@ void qpwgraph_main::viewThumbview ( int thumbview )
 				SIGNAL(contextMenuRequested(const QPoint&)),
 				SLOT(thumbviewContextMenu(const QPoint&)),
 				Qt::QueuedConnection);
-			m_thumb->show();
+			QObject::connect(m_thumb,
+				SIGNAL(positionRequested(int)),
+				SLOT(viewThumbview(int)),
+				Qt::QueuedConnection);
 			++m_thumb_update;
 		}
+	}
+
+	switch (position) {
+	case qpwgraph_thumb::TopLeft:
+		m_ui.viewThumbviewTopLeftAction->setChecked(true);
+		break;
+	case qpwgraph_thumb::TopRight:
+		m_ui.viewThumbviewTopRightAction->setChecked(true);
+		break;
+	case qpwgraph_thumb::BottomLeft:
+		m_ui.viewThumbviewBottomLeftAction->setChecked(true);
+		break;
+	case qpwgraph_thumb::BottomRight:
+		m_ui.viewThumbviewBottomRightAction->setChecked(true);
+		break;
+	case qpwgraph_thumb::None:
+	default:
+		m_ui.viewThumbviewNoneAction->setChecked(true);
+		break;
 	}
 }
 
@@ -1818,27 +1840,6 @@ void qpwgraph_main::restoreState (void)
 	m_ui.viewGraphToolbarAction->setChecked(m_config->isToolbar());
 	m_ui.viewPatchbayToolbarAction->setChecked(m_config->isPatchbayToolbar());
 	m_ui.viewStatusbarAction->setChecked(m_config->isStatusbar());
-
-	const qpwgraph_thumb::Position position
-		= qpwgraph_thumb::Position(m_config->thumbview());
-	switch (position) {
-	case qpwgraph_thumb::TopLeft:
-		m_ui.viewThumbviewTopLeftAction->setChecked(true);
-		break;
-	case qpwgraph_thumb::TopRight:
-		m_ui.viewThumbviewTopRightAction->setChecked(true);
-		break;
-	case qpwgraph_thumb::BottomLeft:
-		m_ui.viewThumbviewBottomLeftAction->setChecked(true);
-		break;
-	case qpwgraph_thumb::BottomRight:
-		m_ui.viewThumbviewBottomRightAction->setChecked(true);
-		break;
-	case qpwgraph_thumb::None:
-	default:
-		m_ui.viewThumbviewNoneAction->setChecked(true);
-		break;
-	}
 
 	m_ui.viewTextBesideIconsAction->setChecked(m_config->isTextBesideIcons());
 	m_ui.viewZoomRangeAction->setChecked(m_config->isZoomRange());
