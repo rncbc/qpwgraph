@@ -124,6 +124,7 @@ protected:
 		if (event->button() == Qt::LeftButton) {
 			m_drag_pos = event->pos();
 			m_drag_state = DragStart;
+			QApplication::setOverrideCursor(QCursor(Qt::PointingHandCursor));
 		}
 	}
 
@@ -135,11 +136,50 @@ protected:
 			&& (event->pos() - m_drag_pos).manhattanLength()
 				> QApplication::startDragDistance()) {
 			m_drag_state = DragMove;
+			QApplication::changeOverrideCursor(QCursor(Qt::DragMoveCursor));
 		}
 
 		if (m_drag_state == DragMove) {
-			m_thumb->canvas()->centerOn(
-				QGraphicsView::mapToScene(event->pos()));
+			const QRect& rect = QGraphicsView::rect();
+			if (rect.contains(event->pos())) {
+				m_thumb->canvas()->centerOn(
+					QGraphicsView::mapToScene(event->pos()));
+			} else {
+				const int mx = rect.width()  + 4;
+				const int my = rect.height() + 4;
+				const Position position = m_thumb->position();
+				if (event->pos().x() < rect.left() - mx) {
+					if (position == TopRight)
+						m_thumb->setPosition(TopLeft);
+					else
+					if (position == BottomRight)
+						m_thumb->setPosition(BottomLeft);
+				}
+				else
+				if (event->pos().x() > rect.right() + mx) {
+					if (position == TopLeft)
+						m_thumb->setPosition(TopRight);
+					else
+					if (position == BottomLeft)
+						m_thumb->setPosition(BottomRight);
+				}
+				else
+				if (event->pos().y() < rect.top() - my) {
+					if (position == BottomLeft)
+						m_thumb->setPosition(TopLeft);
+					else
+					if (position == BottomRight)
+						m_thumb->setPosition(TopRight);
+				}
+				else
+				if (event->pos().y() > rect.bottom() + my) {
+					if (position == TopLeft)
+						m_thumb->setPosition(BottomRight);
+					else
+					if (position == TopRight)
+						m_thumb->setPosition(BottomLeft);
+				}
+			}
 		}
 	}
 
@@ -151,6 +191,7 @@ protected:
 			m_thumb->canvas()->centerOn(
 				QGraphicsView::mapToScene(event->pos()));
 			m_drag_state = DragNone;
+			QApplication::restoreOverrideCursor();
 		}
 	}
 
