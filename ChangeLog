@@ -2,10 +2,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 --------------------------------------------
 
 
-GIT HEAD
+0.7.8  2024-09-19  An End-of-Summer'24 Beta Release.
 
 - When visible the thumb-view may now be drag-moved to a different
-  corner position anytime. (EXPERIMENTAL)
+  corner position anytime.
   
 
 0.7.7  2024-08-21  A Mid-Summer'24 Beta Release.
