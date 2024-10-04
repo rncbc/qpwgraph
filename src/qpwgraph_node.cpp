@@ -354,12 +354,12 @@ void qpwgraph_node::updatePath (void)
 			yi = yo = height;
 		}
 		if (port->isOutput()) {
-			port->setPos(+width / 2 + 6 - w, yo);
+			port->setPos(width + 6 - w, yo);
 			yo += h;
 			if (height < yo)
 				height = yo;
 		} else {
-			port->setPos(-width / 2 - 6, yi);
+			port->setPos(-6, yi);
 			yi += h;
 			if (height < yi)
 				height = yi;
@@ -367,7 +367,7 @@ void qpwgraph_node::updatePath (void)
 	}
 
 	QPainterPath path;
-	path.addRoundedRect(-width / 2, 0, width, height + 6, 5, 5);
+	path.addRoundedRect(0, 0, width, height + 6, 5, 5);
 	/*QGraphicsPathItem::*/setPath(path);
 }
 
@@ -408,7 +408,8 @@ void qpwgraph_node::paint ( QPainter *painter,
 	m_pixmap->setPos(node_rect.x() + 4, node_rect.y() + 4);
 
 	const QRectF& text_rect = m_text->boundingRect();
-	m_text->setPos(- text_rect.width() / 2, text_rect.y() + 2);
+	const qreal w2 = (node_rect.width() - text_rect.width()) / 2;
+	m_text->setPos(node_rect.x() + w2 + 4, node_rect.y() + 2);
 }
 
 

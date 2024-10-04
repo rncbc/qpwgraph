@@ -751,8 +751,7 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 						++nchanged;
 					}
 					// Original node position (for move command)...
-					m_pos1 = m_pos;
-					snapPos(m_pos1);
+					m_pos1 = snapPos(m_pos);
 				}
 				else m_item = nullptr;
 			}
@@ -819,7 +818,7 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 		}
 		// Move current selected nodes...
 		if (m_item && m_item->type() == qpwgraph_node::Type) {
-			snapPos(pos);
+			pos = snapPos(pos);
 			const QPointF delta = (pos - m_pos);
 			foreach (QGraphicsItem *item, m_scene->selectedItems()) {
 				if (item->type() == qpwgraph_node::Type) {
@@ -951,7 +950,7 @@ void qpwgraph_canvas::mouseReleaseEvent ( QMouseEvent *event )
 				}
 			}
 			m_commands->push(
-				new qpwgraph_move_command(this, nodes, m_pos1, pos));
+				new qpwgraph_move_command(this, nodes, m_pos1, m_pos));
 			++nchanged;
 		}
 		// Close rubber-band lasso...
@@ -1970,18 +1969,11 @@ void qpwgraph_canvas::boundingPos ( QPointF& pos )
 
 // Snap into position helpers.
 //
-void qpwgraph_canvas::snapPos ( QPointF& pos ) const
+QPointF qpwgraph_canvas::snapPos ( const QPointF& pos ) const
 {
-	pos.setX(4.0 * ::round(0.25 * pos.x()));
-	pos.setY(4.0 * ::round(0.25 * pos.y()));
-}
-
-
-QPointF qpwgraph_canvas::snapPos ( qreal x, qreal y ) const
-{
-	QPointF pos(x, y);
-	snapPos(pos);
-	return pos;
+	return QPointF(
+		4.0 * ::round(0.25 * pos.x()),
+		4.0 * ::round(0.25 * pos.y()));
 }
 
 
