@@ -336,7 +336,7 @@ void qpwgraph_node::updatePath (void)
 			if (wi < w) wi = w;
 		}
 	}
-	width = wi + wo;
+	width = 4 * ((wi + wo) / 4);
 
 	std::sort(m_ports.begin(), m_ports.end(), qpwgraph_port::Compare());
 

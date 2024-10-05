@@ -824,7 +824,7 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 				if (item->type() == qpwgraph_node::Type) {
 					qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
 					if (node)
-						node->setPos(node->pos() + delta);
+						node->setPos(snapPos(node->pos() + delta));
 				}
 			}
 			m_pos = pos;
