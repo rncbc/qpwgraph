@@ -141,10 +141,7 @@ protected:
 
 		if (m_drag_state == DragMove) {
 			const QRect& rect = QGraphicsView::rect();
-			if (rect.contains(event->pos())) {
-				m_thumb->canvas()->centerOn(
-					QGraphicsView::mapToScene(event->pos()));
-			} else {
+			if (!rect.contains(event->pos())) {
 				const int mx = rect.width()  + 4;
 				const int my = rect.height() + 4;
 				const Position position = m_thumb->position();
@@ -180,6 +177,11 @@ protected:
 						m_thumb->requestPosition(BottomLeft);
 				}
 			}
+			else
+			if (event->modifiers() & Qt::ControlModifier) {
+				m_thumb->canvas()->centerOn(
+					QGraphicsView::mapToScene(event->pos()));
+			}
 		}
 	}
 
@@ -188,8 +190,11 @@ protected:
 		QGraphicsView::mouseReleaseEvent(event);
 
 		if (m_drag_state != DragNone) {
-			m_thumb->canvas()->centerOn(
-				QGraphicsView::mapToScene(event->pos()));
+			if ((m_drag_state == DragStart) ||
+				(event->modifiers() & Qt::ControlModifier)) {
+				m_thumb->canvas()->centerOn(
+					QGraphicsView::mapToScene(event->pos()));
+			}
 			m_drag_state = DragNone;
 			QApplication::restoreOverrideCursor();
 		}
