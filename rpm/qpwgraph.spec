@@ -17,8 +17,8 @@
 
 Summary:	A PipeWire Graph Qt GUI Interface
 Name:		qpwgraph
-Version:	0.7.8
-Release:	43.1
+Version:	0.7.9
+Release:	44.1
 License:	GPL-2.0-or-later
 Group:		Productivity/Multimedia/Sound/Midi
 Source:		%{name}-%{version}.tar.gz
@@ -122,6 +122,8 @@ cmake --install build
 
 
 %changelog
+* Mon Oct 28 2024 Rui Nuno Capela <rncbc@rncbc.org> 0.7.9
+- An autumn'24 beta release.
 * Thu Sep 19 2024 Rui Nuno Capela <rncbc@rncbc.org> 0.7.8
 - An end-of-summer'24 beta release.
 * Wed Aug 21 2024 Rui Nuno Capela <rncbc@rncbc.org> 0.7.7

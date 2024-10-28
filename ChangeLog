@@ -4,10 +4,13 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.7.9  2024-10-28  An Autumn'24 Beta Release.
 
+- Thumb-view: Fixed flicker when dragging widget from top to
+  bottom corners (and vice-versa); inner thumb-viewport is
+  drag+moved only if the Ctrl keyboard modifier is pressed.
 - Node reference positioning changed to the top-left corner,
-  improving the base snapping-to-grid perception. (EXPERIMENTAL)
+  improving the base snapping-to-grid perception.
 - Prepping up next development cycle (Qt >= 6.8)
 
 
