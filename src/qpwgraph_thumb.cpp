@@ -171,10 +171,10 @@ protected:
 				else
 				if (event->pos().y() > rect.bottom() + my) {
 					if (position == TopLeft)
-						m_thumb->requestPosition(BottomRight);
+						m_thumb->requestPosition(BottomLeft);
 					else
 					if (position == TopRight)
-						m_thumb->requestPosition(BottomLeft);
+						m_thumb->requestPosition(BottomRight);
 				}
 			}
 			else
