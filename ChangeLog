@@ -4,6 +4,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Fix default PipeWire node nickname if given empty. (EXPERIMENTAL)
+
+
 0.7.9  2024-10-28  An Autumn'24 Beta Release.
 
 - Thumb-view: Fixed flicker when dragging widget from top to

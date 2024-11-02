@@ -177,7 +177,7 @@ void qpwgraph_port::setPortTitle ( const QString& title )
 	static const QString ellipsis(3, '.');
 
 	QString text = m_title.simplified();
-	if (m_node && !m_node->nodePrefix().isEmpty())
+	if (m_node)
 		text.remove(QRegularExpression('^' + m_node->nodePrefix() + ':'));
 	if (text.length() >= MAX_TITLE_LENGTH) {
 		const int nlength = text.indexOf(':');

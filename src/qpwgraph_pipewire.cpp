@@ -448,7 +448,7 @@ void qpwgraph_registry_event_global (
 		if (str == nullptr || ::strlen(str) < 1)
 			str = nick = spa_dict_lookup(props, PW_KEY_NODE_NAME);
 		if (str == nullptr || ::strlen(str) < 1)
-			str = nick = "node";
+			str = "node";
 		const char *app = spa_dict_lookup(props, PW_KEY_APP_NAME);
 		if (app && ::strlen(app) > 0 && ::strcmp(app, str) != 0) {
 			node_name += app;
