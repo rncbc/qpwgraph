@@ -55,8 +55,8 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 			config->isSystemTrayEnabled());
 		m_ui.SystemTrayQueryCloseCheckBox->setChecked(
 			config->isSystemTrayQueryClose());
-		m_ui.SessionStartMinimizedCheckBox->setChecked(
-			config->isSessionStartMinimized());
+		m_ui.SystemTrayStartMinimizedCheckBox->setChecked(
+			config->isStartMinimized());
 	#endif
 		m_ui.PatchbayQueryQuitCheckBox->setChecked(
 			config->isPatchbayQueryQuit());
@@ -70,12 +70,12 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 	if (!QSystemTrayIcon::isSystemTrayAvailable()) {
 		m_ui.SystemTrayEnabledCheckBox->setEnabled(false);
 		m_ui.SystemTrayQueryCloseCheckBox->setEnabled(false);
-		m_ui.SessionStartMinimizedCheckBox->setChecked(false);
+		m_ui.SystemTrayStartMinimizedCheckBox->setChecked(false);
 	}
 #else
 	m_ui.SystemTrayEnabledCheckBox->hide();
 	m_ui.SystemTrayQueryCloseCheckBox->hide();
-	m_ui.SessionStartMinimizedCheckBox->hide();
+	m_ui.SystemTrayStartMinimizedCheckBox->hide();
 #endif
 
 #ifndef CONFIG_ALSA_MIDI
@@ -93,7 +93,7 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 	QObject::connect(m_ui.SystemTrayQueryCloseCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.SessionStartMinimizedCheckBox,
+	QObject::connect(m_ui.SystemTrayStartMinimizedCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
 #endif
@@ -165,8 +165,8 @@ void qpwgraph_options::accept (void)
 			m_ui.SystemTrayEnabledCheckBox->isChecked());
 		config->setSystemTrayQueryClose(
 			m_ui.SystemTrayQueryCloseCheckBox->isChecked());
-		config->setSessionStartMinimized(
-			m_ui.SessionStartMinimizedCheckBox->isChecked());
+		config->setStartMinimized(
+			m_ui.SystemTrayStartMinimizedCheckBox->isChecked());
 	#endif
 		config->setPatchbayQueryQuit(
 			m_ui.PatchbayQueryQuitCheckBox->isChecked());
@@ -196,7 +196,7 @@ void qpwgraph_options::stabilize (void)
 #ifdef CONFIG_SYSTEM_TRAY
 	const bool systray = m_ui.SystemTrayEnabledCheckBox->isChecked();
 	m_ui.SystemTrayQueryCloseCheckBox->setEnabled(systray);
-	m_ui.SessionStartMinimizedCheckBox->setEnabled(systray);
+	m_ui.SystemTrayStartMinimizedCheckBox->setEnabled(systray);
 #endif
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(m_dirty > 0);

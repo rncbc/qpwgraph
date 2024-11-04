@@ -116,6 +116,9 @@ public:
 	void setAlsaMidiEnabled(bool enabled);
 	bool isAlsaMidiEnabled() const;
 
+	void setStartMinimized(bool start_minimized);
+	bool isStartMinimized() const;
+
 	void setSessionStartMinimized(bool start_minimized);
 	bool isSessionStartMinimized() const;
 
@@ -155,6 +158,8 @@ private:
 
 	bool        m_systray_enabled;
 	bool        m_alsaseq_enabled;
+
+	bool        m_start_minimized;
 };
 
 

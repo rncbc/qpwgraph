@@ -569,7 +569,7 @@ void qpwgraph_main::apply_args ( qpwgraph_application *app )
 
 	bool start_minimized = app->isStartMinimized();
 	if (!start_minimized)
-		start_minimized = m_config->isSessionStartMinimized();
+		start_minimized = m_config->isStartMinimized();
 	if (!start_minimized)
 		start_minimized = app->isSessionRestored();
 	if (start_minimized) {

@@ -60,6 +60,7 @@ static const char *PatchbayQueryQuitKey = "/QueryQuit";
 static const char *SystemTrayGroup  = "/SystemTray";
 static const char *SystemTrayEnabledKey = "/Enabled";
 static const char *SystemTrayQueryCloseKey = "/QueryClose";
+static const char *SystemTrayStartMinimizedKey = "/StartMinimized";
 #endif
 
 #ifdef CONFIG_ALSA_MIDI
@@ -95,8 +96,11 @@ qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 		m_patchbay_exclusive(false),
 		m_patchbay_autopin(true),
 		m_patchbay_autodisconnect(false),
+		m_patchbay_queryquit(false),
+		m_systray_queryclose(false),
 		m_systray_enabled(true),
-		m_alsaseq_enabled(true)
+		m_alsaseq_enabled(true),
+		m_start_minimized(false)
 {
 }
 
@@ -388,6 +392,17 @@ bool qpwgraph_config::isAlsaMidiEnabled (void) const
 }
 
 
+void qpwgraph_config::setStartMinimized ( bool start_minimized )
+{
+	m_start_minimized = start_minimized;
+}
+
+bool qpwgraph_config::isStartMinimized (void) const
+{
+	return m_start_minimized;
+}
+
+
 void qpwgraph_config::setSessionStartMinimized ( bool start_minimized )
 {
 	m_settings->beginGroup(SessionGroup);
@@ -418,6 +433,7 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 	m_settings->beginGroup(SystemTrayGroup);
 	m_systray_enabled = m_settings->value(SystemTrayEnabledKey, true).toBool();
 	m_systray_queryclose = m_settings->value(SystemTrayQueryCloseKey, true).toBool();
+	m_start_minimized = m_settings->value(SystemTrayStartMinimizedKey, false).toBool();
 	m_settings->endGroup();
 #endif
 
@@ -513,6 +529,7 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 	m_settings->beginGroup(SystemTrayGroup);
 	m_settings->setValue(SystemTrayEnabledKey, m_systray_enabled);
 	m_settings->setValue(SystemTrayQueryCloseKey, m_systray_queryclose);
+	m_settings->setValue(SystemTrayStartMinimizedKey, m_start_minimized);
 	m_settings->endGroup();
 #endif
 
