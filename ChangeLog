@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing the new Graph/Options... dialog, to where the most
+  general option settings have been (re)moved from the main Help
+  menu. (EXPERIMENTAL)
 - Fix default PipeWire node nickname if given empty. (EXPERIMENTAL)
 
 

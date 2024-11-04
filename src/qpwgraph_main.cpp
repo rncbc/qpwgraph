@@ -35,6 +35,8 @@
 
 #include <pipewire/pipewire.h>
 
+#include "qpwgraph_options.h"
+
 #include <QTimer>
 #include <QMenu>
 
@@ -256,6 +258,10 @@ qpwgraph_main::qpwgraph_main (
 		SIGNAL(triggered(bool)),
 		m_ui.graphCanvas, SLOT(disconnectItems()));
 
+	QObject::connect(m_ui.graphOptionsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(graphOptions()));
+
 	QObject::connect(m_ui.patchbayMenu,
 		 SIGNAL(aboutToShow()),
 		 SLOT(updatePatchbayMenu()));
@@ -464,44 +470,6 @@ qpwgraph_main::qpwgraph_main (
 		SIGNAL(triggered(bool)),
 		SLOT(viewSortOrderAction()));
 
-#ifdef CONFIG_SYSTEM_TRAY
-	m_ui.helpMenu->insertAction(
-		m_ui.helpAboutAction, m_ui.helpSystemTrayAction);
-#ifndef CONFIG_ALSA_MIDI
-	m_ui.helpMenu->insertSeparator(
-		m_ui.helpAboutAction);
-#endif
-	QObject::connect(m_ui.helpSystemTrayAction,
-		SIGNAL(triggered(bool)),
-		SLOT(helpSystemTray(bool)));
-#endif
-
-#ifdef CONFIG_ALSA_MIDI
-	m_ui.helpMenu->insertAction(
-		m_ui.helpAboutAction, m_ui.helpAlsaMidiAction);
-	m_ui.helpMenu->insertSeparator(
-		m_ui.helpAboutAction);
-	QObject::connect(m_ui.helpAlsaMidiAction,
-		 SIGNAL(triggered(bool)),
-		 SLOT(helpAlsaMidi(bool)));
-#endif
-
-#ifdef CONFIG_SYSTEM_TRAY
-	m_ui.helpMenu->insertAction(
-		m_ui.helpAboutAction, m_ui.helpSystemTrayQueryCloseAction);
-	QObject::connect(m_ui.helpSystemTrayQueryCloseAction,
-		SIGNAL(triggered(bool)),
-		SLOT(helpSystemTrayQueryClose(bool)));
-#endif
-
-	m_ui.helpMenu->insertAction(
-		m_ui.helpAboutAction, m_ui.helpPatchbayQueryQuitAction);
-	QObject::connect(m_ui.helpPatchbayQueryQuitAction,
-		SIGNAL(triggered(bool)),
-		SLOT(helpPatchbayQueryQuit(bool)));
-	m_ui.helpMenu->insertSeparator(
-		m_ui.helpAboutAction);
-
 	QObject::connect(m_ui.helpAboutAction,
 		SIGNAL(triggered(bool)),
 		SLOT(helpAbout()));
@@ -523,6 +491,7 @@ qpwgraph_main::qpwgraph_main (
 
 	updatePatchbayMenu();
 	updateViewColors();
+	updateOptions();
 
 	// Restore last open patchbay file...
 	m_patchbay_untitled = 0;
@@ -578,6 +547,13 @@ qpwgraph_main::~qpwgraph_main (void)
 }
 
 
+// Configuration accessor.
+qpwgraph_config *qpwgraph_main::config (void) const
+{
+	return m_config;
+}
+
+
 // Take care of command line options and arguments...
 void qpwgraph_main::apply_args ( qpwgraph_application *app )
 {
@@ -592,8 +568,10 @@ void qpwgraph_main::apply_args ( qpwgraph_application *app )
 	updatePatchbayNames();
 
 	bool start_minimized = app->isStartMinimized();
-	if (!start_minimized &&	app->isSessionRestored())
+	if (!start_minimized)
 		start_minimized = m_config->isSessionStartMinimized();
+	if (!start_minimized)
+		start_minimized = app->isSessionRestored();
 	if (start_minimized) {
 	#ifdef CONFIG_SYSTEM_TRAY
 		if (m_systray) {
@@ -608,6 +586,50 @@ void qpwgraph_main::apply_args ( qpwgraph_application *app )
 	} else {
 		show();
 	}
+}
+
+
+// Update configure options.
+void qpwgraph_main::updateOptions (void)
+{
+#ifdef CONFIG_SYSTEM_TRAY
+	const bool systray_enabled
+		= m_config->isSystemTrayEnabled();
+	if (systray_enabled && m_systray == nullptr) {
+		m_systray = new qpwgraph_systray(this);
+		m_systray->show();
+		m_systray_closed = false;
+	}
+	else
+	if (!systray_enabled && m_systray) {
+		m_systray->hide();
+		delete m_systray;
+		m_systray = nullptr;
+	}
+#endif
+
+#ifdef CONFIG_ALSA_MIDI
+	const bool alsamidi_enabled
+		= m_config->isAlsaMidiEnabled();
+	if (alsamidi_enabled && m_alsamidi == nullptr) {
+		m_alsamidi = new qpwgraph_alsamidi(m_ui.graphCanvas);
+		QObject::connect(
+			m_alsamidi, SIGNAL(changed()),
+			this, SLOT(alsamidi_changed()));
+		++m_alsamidi_changed;
+	}
+	else
+	if (!alsamidi_enabled && m_alsamidi) {
+		m_alsamidi->clearItems();
+		QObject::disconnect(
+			m_alsamidi, SIGNAL(changed()),
+			this, SLOT(alsa_changed()));
+		delete m_alsamidi;
+		m_alsamidi = nullptr;
+	}
+#endif
+
+	stabilize();
 }
 
 
@@ -974,66 +996,6 @@ void qpwgraph_main::viewConnectThroughNodes ( bool on )
 {
 	qpwgraph_connect::setConnectThroughNodes(on);
 	m_ui.graphCanvas->updateConnects();
-}
-
-
-void qpwgraph_main::helpSystemTray ( bool on )
-{
-#ifdef CONFIG_SYSTEM_TRAY
-	if (on && m_systray == nullptr) {
-		m_systray = new qpwgraph_systray(this);
-		m_systray->show();
-	}
-	else
-	if (!on && m_systray) {
-		m_systray->hide();
-		delete m_systray;
-		m_systray = nullptr;
-	}
-#else
-	(void) on;
-#endif
-
-	m_systray_closed = false;
-}
-
-
-void qpwgraph_main::helpAlsaMidi ( bool on )
-{
-#ifdef CONFIG_ALSA_MIDI
-	if (on && m_alsamidi == nullptr) {
-		m_alsamidi = new qpwgraph_alsamidi(m_ui.graphCanvas);
-		QObject::connect(
-			m_alsamidi, SIGNAL(changed()),
-			this, SLOT(alsamidi_changed()));
-		++m_alsamidi_changed;
-	}
-	else
-	if (!on && m_alsamidi) {
-		m_alsamidi->clearItems();
-		QObject::disconnect(
-			m_alsamidi, SIGNAL(changed()),
-			this, SLOT(alsamidi_changed()));
-		delete m_alsamidi;
-		m_alsamidi = nullptr;
-	}
-#else
-	(void) on;
-#endif
-
-	stabilize();
-}
-
-
-void qpwgraph_main::helpSystemTrayQueryClose ( bool on )
-{
-	m_config->setSystemTrayQueryClose(on);
-}
-
-
-void qpwgraph_main::helpPatchbayQueryQuit ( bool on )
-{
-	m_config->setPatchbayQueryQuit(on);
 }
 
 
@@ -1437,6 +1399,13 @@ void qpwgraph_main::orientationChanged ( Qt::Orientation orientation )
 }
 
 
+// Options/settings dialog accessor.
+void qpwgraph_main::graphOptions (void)
+{
+	qpwgraph_options(this).exec();
+}
+
+
 // Open/save patchbay file.
 bool qpwgraph_main::patchbayOpenFile ( const QString& path, bool clear )
 {
@@ -1565,7 +1534,7 @@ bool qpwgraph_main::patchbayQueryQuit (void)
 		= m_ui.graphCanvas->patchbay();
 	if (patchbay && patchbay->isActivated()) {
 		showNormal();
-		if (m_ui.helpPatchbayQueryQuitAction->isChecked()) {
+		if (m_config->isPatchbayQueryQuit()) {
 			const QString& title
 				= tr("Warning");
 			const QString& text
@@ -1586,7 +1555,7 @@ bool qpwgraph_main::patchbayQueryQuit (void)
 			mbox.addButton(&cbox, QMessageBox::ActionRole);
 			ret = (mbox.exec() == QMessageBox::Ok);
 			if (ret && cbox.isChecked()) {
-				m_ui.helpPatchbayQueryQuitAction->setChecked(false);
+				m_config->setPatchbayQueryQuit(false);
 			}
 		#endif
 		}
@@ -1665,7 +1634,7 @@ void qpwgraph_main::closeEvent ( QCloseEvent *event )
 #ifdef CONFIG_SYSTEM_TRAY
 	if (m_systray) {
 		if (!m_systray_closed
-			&& m_ui.helpSystemTrayQueryCloseAction->isChecked()) {
+			&& m_config->isSystemTrayQueryClose()) {
 			const QString& title
 				= tr("Information");
 			const QString& text
@@ -1689,12 +1658,12 @@ void qpwgraph_main::closeEvent ( QCloseEvent *event )
 			mbox.addButton(&cbox, QMessageBox::ActionRole);
 			m_systray_closed = (mbox.exec() == QMessageBox::Ok);
 			if (cbox.isChecked()) {
-				m_ui.helpSystemTrayQueryCloseAction->setChecked(false);
+				m_config->setSystemTrayQueryClose(false);
 			}
 		#endif
 		}
 		if (m_systray_closed
-			|| !m_ui.helpSystemTrayQueryCloseAction->isChecked())
+			|| !m_config->isSystemTrayQueryClose())
 			hide();
 		event->ignore();
 	}
@@ -1892,29 +1861,6 @@ void qpwgraph_main::restoreState (void)
 	// Restore last open patchbay directory and file-path...
 	m_patchbay_dir = m_config->patchbayDir();
 	m_patchbay_path = m_config->patchbayPath();
-
-	const bool is_patchbay_queryquit
-		= m_config->isPatchbayQueryQuit();
-	m_ui.helpPatchbayQueryQuitAction->setChecked(is_patchbay_queryquit);
-	helpPatchbayQueryQuit(is_patchbay_queryquit);
-
-#ifdef CONFIG_SYSTEM_TRAY
-	const bool is_systray_enabled
-		= m_config->isSystemTrayEnabled();
-	m_ui.helpSystemTrayAction->setChecked(is_systray_enabled);
-	helpSystemTray(is_systray_enabled);
-	const bool is_systray_queryclose
-		= m_config->isSystemTrayQueryClose();
-	m_ui.helpSystemTrayQueryCloseAction->setChecked(is_systray_queryclose);
-	helpSystemTrayQueryClose(is_systray_queryclose);
-#endif
-
-#ifdef CONFIG_ALSA_MIDI
-	const bool is_alsa_midi
-		= m_config->isAlsaMidiEnabled();
-	m_ui.helpAlsaMidiAction->setChecked(is_alsa_midi);
-	helpAlsaMidi(is_alsa_midi);
-#endif
 }
 
 
@@ -1943,16 +1889,6 @@ void qpwgraph_main::saveState (void)
 	m_config->setPatchbayActivated(m_ui.patchbayActivatedAction->isChecked());
 	m_config->setPatchbayPath(m_patchbay_path);
 	m_config->setPatchbayDir(m_patchbay_dir);
-	m_config->setPatchbayQueryQuit(m_ui.helpPatchbayQueryQuitAction->isChecked());
-
-#ifdef CONFIG_SYSTEM_TRAY
-	m_config->setSystemTrayEnabled(m_ui.helpSystemTrayAction->isChecked());
-	m_config->setSystemTrayQueryClose(m_ui.helpSystemTrayQueryCloseAction->isChecked());
-#endif
-
-#ifdef CONFIG_ALSA_MIDI
-	m_config->setAlsaMidiEnabled(m_ui.helpAlsaMidiAction->isChecked());
-#endif
 
 	m_config->saveState(this);
 }

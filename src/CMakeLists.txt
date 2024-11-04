@@ -29,6 +29,7 @@ set (HEADERS
   qpwgraph_systray.h
   qpwgraph_thumb.h
   qpwgraph_main.h
+  qpwgraph_options.h
 )
 
 set (SOURCES
@@ -47,10 +48,12 @@ set (SOURCES
   qpwgraph_systray.cpp
   qpwgraph_thumb.cpp
   qpwgraph_main.cpp
+  qpwgraph_options.cpp
 )
 
 set (FORMS
   qpwgraph_main.ui
+  qpwgraph_options.ui
 )
 
 set (RESOURCES

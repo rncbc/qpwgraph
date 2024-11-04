@@ -68,8 +68,14 @@ public:
 	// Destructor.
 	~qpwgraph_main();
 
+	// Configuration accessor.
+	qpwgraph_config *config() const;
+
 	// Take care of command line options and arguments...
 	void apply_args(qpwgraph_application *app);
+
+	// Update configure options.
+	void updateOptions();
 
 protected slots:
 
@@ -102,6 +108,9 @@ protected slots:
 
 	// Tool-bar orientation change slot.
 	void orientationChanged(Qt::Orientation orientation);
+
+	// Options/settings dialog accessor.
+	void graphOptions();
 
 	// Patchbay menu slots.
 	void patchbayNew();
@@ -144,12 +153,6 @@ protected slots:
 
 	void viewRepelOverlappingNodes(bool on);
 	void viewConnectThroughNodes(bool on);
-
-	void helpSystemTray(bool on);
-	void helpAlsaMidi(bool on);
-
-	void helpSystemTrayQueryClose(bool on);
-	void helpPatchbayQueryQuit(bool on);
 
 	void helpAbout();
 	void helpAboutQt();

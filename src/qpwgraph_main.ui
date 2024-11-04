@@ -66,6 +66,8 @@
     <addaction name="graphConnectAction"/>
     <addaction name="graphDisconnectAction"/>
     <addaction name="separator"/>
+    <addaction name="graphOptionsAction"/>
+    <addaction name="separator"/>
     <addaction name="graphQuitAction"/>
    </widget>
    <widget class="QMenu" name="patchbayMenu">
@@ -303,6 +305,23 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="graphOptionsAction">
+   <property name="text">
+    <string>&amp;Options...</string>
+   </property>
+   <property name="iconText">
+    <string>Options</string>
+   </property>
+   <property name="toolTip">
+    <string>Options</string>
+   </property>
+   <property name="statusTip">
+    <string>Change general application program options</string>
+   </property>
+   <property name="shortcut">
+    <string/>
    </property>
   </action>
   <action name="graphQuitAction">
@@ -1183,86 +1202,6 @@
    </property>
    <property name="statusTip">
     <string>Whether to draw connectors through or around nodes</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-  </action>
-  <action name="helpSystemTrayAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Enable System Tray Icon</string>
-   </property>
-   <property name="iconText">
-    <string>System Tray Icon</string>
-   </property>
-   <property name="toolTip">
-    <string>System tray icon</string>
-   </property>
-   <property name="statusTip">
-    <string>Enable system tray icon</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-  </action>
-  <action name="helpAlsaMidiAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Enable ALSA MIDI</string>
-   </property>
-   <property name="iconText">
-    <string>ALSA MIDI</string>
-   </property>
-   <property name="toolTip">
-    <string>ALSA MIDI</string>
-   </property>
-   <property name="statusTip">
-    <string>Enable ALSA MIDI</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-  </action>
-  <action name="helpSystemTrayQueryCloseAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Enable System Tray Message</string>
-   </property>
-   <property name="iconText">
-    <string>System Tray Message</string>
-   </property>
-   <property name="toolTip">
-    <string>System tray message</string>
-   </property>
-   <property name="statusTip">
-    <string>Enable system tray message on close</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-  </action>
-  <action name="helpPatchbayQueryQuitAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Enable Patchbay Message</string>
-   </property>
-   <property name="iconText">
-    <string>Patchbay Message</string>
-   </property>
-   <property name="toolTip">
-    <string>Patchbay message</string>
-   </property>
-   <property name="statusTip">
-    <string>Enable patchbay message on quit</string>
    </property>
    <property name="shortcut">
     <string/>
