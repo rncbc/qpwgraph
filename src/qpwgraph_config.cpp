@@ -28,6 +28,8 @@
 #include <QMainWindow>
 #include <QFileInfo>
 
+#include <QComboBox>
+
 
 // Local constants.
 static const char *GeometryGroup    = "/GraphGeometry";
@@ -74,6 +76,8 @@ static const char *SessionStartMinimizedKey = "/StartMinimized";
 static const char *FilterNodesGroup = "/FilterNodes";
 static const char *FilterNodesEnabledKey = "/Enabled";
 static const char *FilterNodesListKey = "/List";
+
+static const char *HistoryGroup = "/History";
 
 
 // Legacy main-form class renaming support (> v0.7.7)
@@ -624,6 +628,46 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 	m_settings->endGroup();
 
 	return true;
+}
+
+
+// Combo box history persistence helpers.
+//
+void qpwgraph_config::loadComboBoxHistory ( QComboBox *cbox, int nlimit )
+{
+	m_settings->beginGroup(HistoryGroup);
+	if (m_settings->childKeys().count() > 0) {
+		const QStringList& items
+			= m_settings->value('/' + cbox->objectName()).toStringList();
+		if (!items.isEmpty()) {
+			const bool block_signals
+				= cbox->blockSignals(true);
+			cbox->setUpdatesEnabled(false);
+			cbox->setDuplicatesEnabled(false);
+			cbox->clear();
+			cbox->addItems(items);
+			cbox->setUpdatesEnabled(true);
+			cbox->blockSignals(block_signals);
+		}
+	}
+	m_settings->endGroup();
+
+}
+
+
+void qpwgraph_config::saveComboBoxHistory ( QComboBox *cbox, int nlimit )
+{
+	int ncount = cbox->count();
+	if (ncount > nlimit)
+		ncount = nlimit;
+
+	QStringList items;
+	for (int i = 0; i < ncount; ++i)
+		items.append(cbox->itemText(i));
+
+	m_settings->beginGroup(HistoryGroup);
+	m_settings->setValue('/' + cbox->objectName(), items);
+	m_settings->endGroup();
 }
 
 

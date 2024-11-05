@@ -30,6 +30,7 @@
 // Forwards decls.
 class QSettings;
 class QMainWindow;
+class QComboBox;
 
 
 //----------------------------------------------------------------------------
@@ -134,6 +135,10 @@ public:
 	// Graph main-widget state methods.
 	bool restoreState(QMainWindow *widget);
 	bool saveState(QMainWindow *widget) const;
+
+	// Combo box history persistence helpers.
+	void loadComboBoxHistory(QComboBox *cbox, int nlimit = 8);
+	void saveComboBoxHistory(QComboBox *cbox, int nlimit = 8);
 
 private:
 

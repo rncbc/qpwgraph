@@ -54,6 +54,7 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 	// Setup current options...
 	qpwgraph_config *config = parent->config();
 	if (config) {
+		config->loadComboBoxHistory(m_ui.FilterNodesNameComboBox);
 	#ifdef CONFIG_SYSTEM_TRAY
 		m_ui.SystemTrayEnabledCheckBox->setChecked(
 			config->isSystemTrayEnabled());
@@ -93,6 +94,7 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 	m_ui.FilterNodesNameComboBox->lineEdit()->setClearButtonEnabled(true);
 	m_ui.FilterNodesNameComboBox->lineEdit()->setPlaceholderText(
 		tr("Node name (pattern)"));
+	m_ui.FilterNodesNameComboBox->setCurrentText(QString());
 	m_ui.FilterNodesListWidget->clear();
 	m_ui.FilterNodesListWidget->addItems(
 		config->filterNodesList());
@@ -223,6 +225,7 @@ void qpwgraph_options::accept (void)
 			config->setFilterNodesDirty(true);
 			m_dirty_filter = 0;
 		}
+		config->saveComboBoxHistory(m_ui.FilterNodesNameComboBox);
 		parent->updateOptions();
 	}
 
