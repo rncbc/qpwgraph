@@ -1,7 +1,7 @@
 // qpwgraph_alsamidi.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -238,6 +238,10 @@ bool qpwgraph_alsamidi::findClientPort (
 	qpwgraph_port **port,
 	bool add_new )
 {
+	qpwgraph_canvas *canvas = qpwgraph_sect::canvas();
+	if (canvas == nullptr)
+		return false;
+
 	const int client_id
 		= snd_seq_client_info_get_client(client_info);
 	const int client_port_id
@@ -271,7 +275,7 @@ bool qpwgraph_alsamidi::findClientPort (
 	if (*node)
 		*port = (*node)->findPort(port_id, port_mode, port_type);
 
-	if (add_new && *node == nullptr) {
+	if (add_new && *node == nullptr && !canvas->isFilterNodes(node_name)) {
 		*node = new qpwgraph_node(node_id, node_name, node_mode, node_type);
 		(*node)->setNodeIcon(QIcon(":/images/itemAlsamidi.png"));
 		qpwgraph_sect::addItem(*node);
@@ -279,7 +283,7 @@ bool qpwgraph_alsamidi::findClientPort (
 
 	if (add_new && *port == nullptr && *node) {
 		*port = (*node)->addPort(port_id, port_name, port_mode, port_type);
-		(*port)->updatePortTypeColors(qpwgraph_sect::canvas());
+		(*port)->updatePortTypeColors(canvas);
 		qpwgraph_sect::addItem(*port);
 	}
 

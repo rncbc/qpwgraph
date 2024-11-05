@@ -74,7 +74,7 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 		m_patchbay_autopin(true), m_patchbay_autodisconnect(false),
 		m_selected_nodes(0), m_repel_overlapping_nodes(false),
 		m_rename_item(nullptr), m_rename_editor(nullptr), m_renamed(0),
-		m_search_editor(nullptr)
+		m_search_editor(nullptr), m_filter_enabled(false)
 {
 	m_scene = new QGraphicsScene();
 
@@ -2051,6 +2051,51 @@ void qpwgraph_canvas::setSearchPlaceholderText ( const QString& text )
 QString qpwgraph_canvas::searchPlaceholderText (void) const
 {
 	return m_search_editor->placeholderText();
+}
+
+
+// Filter/hide list management accessors.
+void qpwgraph_canvas::setFilterNodesEnabled ( bool enabled )
+{
+	m_filter_enabled = enabled;
+}
+
+bool qpwgraph_canvas::isFilterNodesEnabled (void) const
+{
+	return m_filter_enabled;
+}
+
+
+void qpwgraph_canvas::setFilterNodesList ( const QStringList& nodes )
+{
+	m_filter_nodes = nodes;
+}
+
+
+const QStringList& qpwgraph_canvas::filterNodesList (void) const
+{
+	return m_filter_nodes;
+}
+
+
+bool qpwgraph_canvas::isFilterNodes ( const QString& node_name ) const
+{
+	if (!m_filter_enabled)
+		return false;
+
+	QStringListIterator iter(m_filter_nodes);
+	while (iter.hasNext()) {
+		const QString& node_pattern = iter.next();
+		const QRegularExpression& rx
+			= QRegularExpression(node_pattern,
+				QRegularExpression::CaseInsensitiveOption);
+		if (rx.isValid()) {
+			if (rx.match(node_name).hasMatch())
+				return true;
+		}
+	}
+
+	return false;
 }
 
 

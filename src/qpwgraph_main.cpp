@@ -629,6 +629,19 @@ void qpwgraph_main::updateOptions (void)
 	}
 #endif
 
+	m_ui.graphCanvas->setFilterNodesEnabled(m_config->isFilterNodesEnabled());
+	m_ui.graphCanvas->setFilterNodesList(m_config->filterNodesList());
+
+	if (m_config->isFilterNodesDirty()) {
+		m_config->setFilterNodesDirty(false);
+		m_pipewire->clearItems();
+		++m_pipewire_changed;
+	#ifdef CONFIG_ALSA_MIDI
+		m_alsamidi->clearItems();
+		++m_alsamidi_changed;
+	#endif
+	}
+
 	stabilize();
 }
 

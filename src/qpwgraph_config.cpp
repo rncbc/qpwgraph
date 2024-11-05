@@ -71,6 +71,10 @@ static const char *AlsaMidiEnabledKey = "/Enabled";
 static const char *SessionGroup = "/Session";
 static const char *SessionStartMinimizedKey = "/StartMinimized";
 
+static const char *FilterNodesGroup = "/FilterNodes";
+static const char *FilterNodesEnabledKey = "/Enabled";
+static const char *FilterNodesListKey = "/List";
+
 
 // Legacy main-form class renaming support (> v0.7.7)
 #define LEGACY_MAIN_FORM 1
@@ -100,7 +104,9 @@ qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 		m_systray_queryclose(false),
 		m_systray_enabled(true),
 		m_alsaseq_enabled(true),
-		m_start_minimized(false)
+		m_start_minimized(false),
+		m_filter_enabled(false),
+		m_filter_dirty(false)
 {
 }
 
@@ -403,6 +409,39 @@ bool qpwgraph_config::isStartMinimized (void) const
 }
 
 
+void qpwgraph_config::setFilterNodesEnabled ( bool enabled )
+{
+	m_filter_enabled = enabled;
+}
+
+bool qpwgraph_config::isFilterNodesEnabled (void) const
+{
+	return m_filter_enabled;
+}
+
+
+void qpwgraph_config::setFilterNodesList ( const QStringList& nodes )
+{
+	m_filter_nodes = nodes;
+}
+
+const QStringList& qpwgraph_config::filterNodesList (void) const
+{
+	return m_filter_nodes;
+}
+
+
+void qpwgraph_config::setFilterNodesDirty ( bool dirty )
+{
+	m_filter_dirty = dirty;
+}
+
+bool qpwgraph_config::isFilterNodesDirty (void) const
+{
+	return m_filter_dirty;
+}
+
+
 void qpwgraph_config::setSessionStartMinimized ( bool start_minimized )
 {
 	m_settings->beginGroup(SessionGroup);
@@ -428,6 +467,11 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 {
 	if (m_settings == nullptr || widget == nullptr)
 		return false;
+
+	m_settings->beginGroup(FilterNodesGroup);
+	m_filter_enabled = m_settings->value(FilterNodesEnabledKey, false).toBool();
+	m_filter_nodes = m_settings->value(FilterNodesListKey).toStringList();
+	m_settings->endGroup();
 
 #ifdef CONFIG_SYSTEM_TRAY
 	m_settings->beginGroup(SystemTrayGroup);
@@ -524,6 +568,11 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 {
 	if (m_settings == nullptr || widget == nullptr)
 		return false;
+
+	m_settings->beginGroup(FilterNodesGroup);
+	m_settings->setValue(FilterNodesEnabledKey, m_filter_enabled);
+	m_settings->setValue(FilterNodesListKey, m_filter_nodes);
+	m_settings->endGroup();
 
 #ifdef CONFIG_SYSTEM_TRAY
 	m_settings->beginGroup(SystemTrayGroup);

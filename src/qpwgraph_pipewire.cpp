@@ -964,6 +964,10 @@ bool qpwgraph_pipewire::findNodePort (
 	uint node_id, uint port_id,  qpwgraph_item::Mode port_mode,
 	qpwgraph_node **node, qpwgraph_port **port, bool add_new )
 {
+	qpwgraph_canvas *canvas = qpwgraph_sect::canvas();
+	if (canvas == nullptr)
+		return false;
+
 	Node *n = findNode(node_id);
 	if (n == nullptr)
 		return false;
@@ -998,7 +1002,7 @@ bool qpwgraph_pipewire::findNodePort (
 		return false;
 
 	if (*node && n->node_changed) {
-		canvas()->releaseNode(*node);
+		canvas->releaseNode(*node);
 		*node = nullptr;
 	}
 
@@ -1008,7 +1012,7 @@ bool qpwgraph_pipewire::findNodePort (
 	if (*port && m_recycled_ports.value(qpwgraph_port::PortIdKey(*port), nullptr))
 		return false;
 
-	if (add_new && *node == nullptr) {
+	if (add_new && *node == nullptr && !canvas->isFilterNodes(n->node_name)) {
 		QString node_name = n->node_name;
 		if ((p->port_flags & Port::Physical) == Port::None) {
 			if (n->name_num > 0) {
@@ -1034,7 +1038,7 @@ bool qpwgraph_pipewire::findNodePort (
 
 	if (add_new && *port == nullptr && *node) {
 		*port = (*node)->addPort(port_id, p->port_name, port_mode, port_type);
-		(*port)->updatePortTypeColors(qpwgraph_sect::canvas());
+		(*port)->updatePortTypeColors(canvas);
 		qpwgraph_sect::addItem(*port);
 	}
 

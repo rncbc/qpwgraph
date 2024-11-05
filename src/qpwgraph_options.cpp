@@ -29,6 +29,8 @@
 #include <QMessageBox>
 #include <QPushButton>
 
+#include <QLineEdit>
+
 #ifdef CONFIG_SYSTEM_TRAY
 #include <QSystemTrayIcon>
 #endif
@@ -46,6 +48,8 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 
 	// Initialize dirty control state.
 	m_dirty = 0;
+
+	m_dirty_filter = 0;
 
 	// Setup current options...
 	qpwgraph_config *config = parent->config();
@@ -82,6 +86,17 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 	m_ui.AlsaMidiEnabledCheckBox->hide();
 #endif
 
+	// Filter/hide list management...
+	//
+	m_ui.FilterNodesEnabledCheckBox->setChecked(
+		config->isFilterNodesEnabled());
+	m_ui.FilterNodesNameComboBox->lineEdit()->setClearButtonEnabled(true);
+	m_ui.FilterNodesNameComboBox->lineEdit()->setPlaceholderText(
+		tr("Node name (pattern)"));
+	m_ui.FilterNodesListWidget->clear();
+	m_ui.FilterNodesListWidget->addItems(
+		config->filterNodesList());
+
 	// Try to restore old window positioning.
 	adjustSize();
 
@@ -105,6 +120,26 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
 #endif
+
+	QObject::connect(m_ui.FilterNodesEnabledCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changedFilterNodes()));
+	QObject::connect(m_ui.FilterNodesNameComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(selectFilterNodes()));
+	QObject::connect(m_ui.FilterNodesAddToolButton,
+		SIGNAL(clicked()),
+		SLOT(addFilterNodes()));
+	QObject::connect(m_ui.FilterNodesListWidget,
+		SIGNAL(itemSelectionChanged()),
+		SLOT(selectFilterNodes()));
+	QObject::connect(m_ui.FilterNodesRemoveToolButton,
+		SIGNAL(clicked()),
+		SLOT(removeFilterNodes()));
+	QObject::connect(m_ui.FilterNodesClearToolButton,
+		SIGNAL(clicked()),
+		SLOT(clearFilterNodes()));
+
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -174,6 +209,20 @@ void qpwgraph_options::accept (void)
 		config->setAlsaMidiEnabled(
 			m_ui.AlsaMidiEnabledCheckBox->isChecked());
 	#endif
+		if (m_dirty_filter > 0) {
+			config->setFilterNodesEnabled(
+				m_ui.FilterNodesEnabledCheckBox->isChecked());
+			QStringList nodes;
+			const int n = m_ui.FilterNodesListWidget->count();
+			for (int i = 0; i < n; ++i) {
+				QListWidgetItem *item = m_ui.FilterNodesListWidget->item(i);
+				if (item)
+					nodes.append(item->text());
+			}
+			config->setFilterNodesList(nodes);
+			config->setFilterNodesDirty(true);
+			m_dirty_filter = 0;
+		}
 		parent->updateOptions();
 	}
 
@@ -190,6 +239,67 @@ void qpwgraph_options::changed (void)
 }
 
 
+// Filter/hide list management...
+//
+void qpwgraph_options::changedFilterNodes (void)
+{
+	++m_dirty_filter;
+
+	changed();
+}
+
+
+void qpwgraph_options::selectFilterNodes (void)
+{
+	stabilize();
+}
+
+
+void qpwgraph_options::addFilterNodes (void)
+{
+	const QString& node_name
+		= m_ui.FilterNodesNameComboBox->currentText();
+	if (node_name.isEmpty())
+		return;
+
+	m_ui.FilterNodesListWidget->addItem(node_name);
+	m_ui.FilterNodesListWidget->setCurrentRow(
+		m_ui.FilterNodesListWidget->count() - 1);
+
+	const int i = m_ui.FilterNodesNameComboBox->findText(node_name);
+	if (i >= 0)
+		m_ui.FilterNodesNameComboBox->removeItem(i);
+	m_ui.FilterNodesNameComboBox->insertItem(0, node_name);
+	m_ui.FilterNodesNameComboBox->setEditText(QString());
+
+	m_ui.FilterNodesListWidget->setFocus();
+
+	changedFilterNodes();
+}
+
+
+void qpwgraph_options::removeFilterNodes (void)
+{
+	const int i	= m_ui.FilterNodesListWidget->currentRow();
+	if (i < 0)
+		return;
+
+	QListWidgetItem *item = m_ui.FilterNodesListWidget->takeItem(i);
+	if (item)
+		delete item;
+
+	changedFilterNodes();
+}
+
+
+void qpwgraph_options::clearFilterNodes (void)
+{
+	m_ui.FilterNodesListWidget->clear();
+
+	changedFilterNodes();
+}
+
+
 // Stabilize current form state.
 void qpwgraph_options::stabilize (void)
 {
@@ -198,6 +308,25 @@ void qpwgraph_options::stabilize (void)
 	m_ui.SystemTrayQueryCloseCheckBox->setEnabled(systray);
 	m_ui.SystemTrayStartMinimizedCheckBox->setEnabled(systray);
 #endif
+
+	if (m_ui.FilterNodesEnabledCheckBox->isChecked()) {
+		m_ui.FilterNodesNameComboBox->setEnabled(true);
+		m_ui.FilterNodesListWidget->setEnabled(true);
+		const QString& node_name
+			= m_ui.FilterNodesNameComboBox->currentText();
+		m_ui.FilterNodesAddToolButton->setEnabled(!node_name.isEmpty() &&
+			m_ui.FilterNodesListWidget->findItems(node_name, Qt::MatchFixedString).isEmpty());
+		const int i	= m_ui.FilterNodesListWidget->currentRow();
+		m_ui.FilterNodesRemoveToolButton->setEnabled(i >= 0);
+		m_ui.FilterNodesClearToolButton->setEnabled(
+			m_ui.FilterNodesListWidget->count() > 0);
+	} else {
+		m_ui.FilterNodesNameComboBox->setEnabled(false);
+		m_ui.FilterNodesListWidget->setEnabled(false);
+		m_ui.FilterNodesAddToolButton->setEnabled(false);
+		m_ui.FilterNodesRemoveToolButton->setEnabled(false);
+		m_ui.FilterNodesClearToolButton->setEnabled(false);
+	}
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(m_dirty > 0);
 }

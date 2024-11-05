@@ -50,6 +50,13 @@ protected slots:
 	void accept();
 	void reject();
 
+	// Filter/hide list management slots.
+	void selectFilterNodes();
+	void addFilterNodes();
+	void removeFilterNodes();
+	void clearFilterNodes();
+	void changedFilterNodes();
+
 protected:
 
 	void stabilize();
@@ -60,6 +67,7 @@ private:
 	Ui::qpwgraph_options m_ui;
 
 	int m_dirty;
+	int m_dirty_filter;
 };
 
 

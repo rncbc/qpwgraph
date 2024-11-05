@@ -187,6 +187,15 @@ public:
 	void setSearchPlaceholderText(const QString& text);
 	QString searchPlaceholderText() const;
 
+	// Filter/hide list management accessors.
+	void setFilterNodesEnabled(bool enabled);
+	bool isFilterNodesEnabled() const;
+
+	void setFilterNodesList(const QStringList& nodes);
+	const QStringList& filterNodesList() const;
+
+	bool isFilterNodes(const QString& node_name) const;
+
 signals:
 
 	// Node factory notifications.
@@ -351,6 +360,10 @@ private:
 
 	// Item search stuff.
 	QLineEdit *m_search_editor;
+
+	// Filter/hide list management.
+	bool        m_filter_enabled;
+	QStringList m_filter_nodes;
 };
 
 

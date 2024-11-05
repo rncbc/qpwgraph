@@ -116,6 +116,15 @@ public:
 	void setAlsaMidiEnabled(bool enabled);
 	bool isAlsaMidiEnabled() const;
 
+	void setFilterNodesEnabled(bool enabled);
+	bool isFilterNodesEnabled() const;
+
+	void setFilterNodesList(const QStringList& nodes);
+	const QStringList& filterNodesList() const;
+
+	void setFilterNodesDirty(bool dirty);
+	bool isFilterNodesDirty() const;
+
 	void setStartMinimized(bool start_minimized);
 	bool isStartMinimized() const;
 
@@ -158,6 +167,10 @@ private:
 
 	bool        m_systray_enabled;
 	bool        m_alsaseq_enabled;
+
+	bool        m_filter_enabled;
+	QStringList m_filter_nodes;
+	bool        m_filter_dirty;
 
 	bool        m_start_minimized;
 };

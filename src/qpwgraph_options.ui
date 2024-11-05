@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>320</height>
+    <width>240</width>
+    <height>120</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,6 +38,12 @@
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>480</width>
+    <height>240</height>
+   </size>
   </property>
   <layout class="QVBoxLayout">
    <item>
@@ -212,6 +218,174 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="FilterNodesTabPage">
+      <attribute name="title">
+       <string>Filter</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0" colspan="2">
+        <widget class="QCheckBox" name="FilterNodesEnabledCheckBox">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Whether to filter/hide nodes from the graph</string>
+         </property>
+         <property name="text">
+          <string>Enable filter/hide nodes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QComboBox" name="FilterNodesNameComboBox">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Node name (pattern)</string>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QToolButton" name="FilterNodesAddToolButton">
+         <property name="minimumSize">
+          <size>
+           <width>72</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Add node type and name (pattern) to filter/hide list</string>
+         </property>
+         <property name="text">
+          <string>&amp;Add</string>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" rowspan="3">
+        <widget class="QListWidget" name="FilterNodesListWidget">
+         <property name="minimumSize">
+          <size>
+           <width>320</width>
+           <height>80</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Node type and name (pattern) filter/hide list</string>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="uniformItemSizes">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QToolButton" name="FilterNodesRemoveToolButton">
+         <property name="minimumSize">
+          <size>
+           <width>72</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Remove node type and name (pattern) from filter/hide list</string>
+         </property>
+         <property name="text">
+          <string>&amp;Remove</string>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>8</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="1">
+        <widget class="QToolButton" name="FilterNodesClearToolButton">
+         <property name="minimumSize">
+          <size>
+           <width>72</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Clear filter/hide list</string>
+         </property>
+         <property name="text">
+          <string>&amp;Clear</string>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>8</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
@@ -234,6 +408,13 @@
   <tabstop>SystemTrayStartMinimizedCheckBox</tabstop>
   <tabstop>PatchbayQueryQuitCheckBox</tabstop>
   <tabstop>AlsaMidiEnabledCheckBox</tabstop>
+  <tabstop>FilterNodesEnabledCheckBox</tabstop>
+  <tabstop>FilterNodesTypeComboBox</tabstop>
+  <tabstop>FilterNodesNameComboBox</tabstop>
+  <tabstop>FilterNodesAddToolButton</tabstop>
+  <tabstop>FilterNodesListWidget</tabstop>
+  <tabstop>FilterNodesRemoveToolButton</tabstop>
+  <tabstop>FilterNodesClearToolButton</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
