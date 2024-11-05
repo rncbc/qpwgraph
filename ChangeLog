@@ -9,6 +9,8 @@ GIT HEAD
 - Introducing the new Graph/Options... dialog, to where the most
   general option settings have been (re)moved from the main Help
   menu. (EXPERIMENTAL)
+- Introducing Graph/Options.../Filter to hide nodes by node name
+  pattern (blacklist). (EXPERIMENTAL)
 - Fix default PipeWire node nickname if given empty. (EXPERIMENTAL)
 
 
