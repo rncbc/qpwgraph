@@ -6,6 +6,7 @@ ChangeLog
 
 GIT HEAD
 
+- Force an actual complete graph refresh on main View/Refresh...
 - Introducing the new Graph/Options... dialog, to where the most
   general option settings have been (re)moved from the main Help
   menu. (EXPERIMENTAL)
