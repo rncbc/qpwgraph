@@ -634,12 +634,7 @@ void qpwgraph_main::updateOptions (void)
 
 	if (m_config->isFilterNodesDirty()) {
 		m_config->setFilterNodesDirty(false);
-		m_pipewire->clearItems();
-		++m_pipewire_changed;
-	#ifdef CONFIG_ALSA_MIDI
-		m_alsamidi->clearItems();
-		++m_alsamidi_changed;
-	#endif
+		viewRefresh();
 	}
 
 	stabilize();
@@ -916,6 +911,13 @@ void qpwgraph_main::viewCenter (void)
 
 void qpwgraph_main::viewRefresh (void)
 {
+	if (m_pipewire)
+		m_pipewire->clearItems();
+#ifdef CONFIG_ALSA_MIDI
+	if (m_alsamidi)
+		m_alsamidi->clearItems();
+#endif
+
 	pipewire_changed();
 	alsamidi_changed();
 
