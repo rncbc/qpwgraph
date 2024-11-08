@@ -232,10 +232,10 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Whether to filter/hide nodes from the graph</string>
+          <string>Whether to filter / hide nodes from the graph</string>
          </property>
          <property name="text">
-          <string>Enable filter/hide nodes</string>
+          <string>Enable filter / hide nodes</string>
          </property>
         </widget>
        </item>
@@ -248,7 +248,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Node name (pattern)</string>
+          <string>Node name (regex)</string>
          </property>
          <property name="editable">
           <bool>true</bool>
@@ -270,7 +270,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Add node type and name (pattern) to filter/hide list</string>
+          <string>Add node name (regex) to filter / hide list</string>
          </property>
          <property name="text">
           <string>&amp;Add</string>
@@ -295,7 +295,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Node type and name (pattern) filter/hide list</string>
+          <string>Node name (regex) filter / hide list</string>
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
@@ -320,7 +320,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Remove node type and name (pattern) from filter/hide list</string>
+          <string>Remove node name (regex) from filter / hide list</string>
          </property>
          <property name="text">
           <string>&amp;Remove</string>
@@ -358,7 +358,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Clear filter/hide list</string>
+          <string>Clear filter / hide list</string>
          </property>
          <property name="text">
           <string>&amp;Clear</string>

@@ -93,7 +93,7 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 		config->isFilterNodesEnabled());
 	m_ui.FilterNodesNameComboBox->lineEdit()->setClearButtonEnabled(true);
 	m_ui.FilterNodesNameComboBox->lineEdit()->setPlaceholderText(
-		tr("Node name (pattern)"));
+		m_ui.FilterNodesNameComboBox->toolTip());
 	m_ui.FilterNodesNameComboBox->setCurrentText(QString());
 	m_ui.FilterNodesListWidget->clear();
 	m_ui.FilterNodesListWidget->addItems(
