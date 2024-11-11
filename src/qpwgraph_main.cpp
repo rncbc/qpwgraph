@@ -30,6 +30,7 @@
 #include "qpwgraph_connect.h"
 
 #include "qpwgraph_patchbay.h"
+#include "qpwgraph_patchman.h"
 #include "qpwgraph_systray.h"
 #include "qpwgraph_thumb.h"
 
@@ -292,6 +293,10 @@ qpwgraph_main::qpwgraph_main (
 	QObject::connect(m_ui.patchbayAutoDisconnectAction,
 		SIGNAL(toggled(bool)),
 		SLOT(patchbayAutoDisconnect(bool)));
+
+	QObject::connect(m_ui.patchbayManageAction,
+		SIGNAL(triggered(bool)),
+		SLOT(patchbayManage()));
 
 	QObject::connect(m_ui.patchbayEditAction,
 		SIGNAL(toggled(bool)),
@@ -792,6 +797,14 @@ void qpwgraph_main::patchbayAutoDisconnect ( bool on )
 	m_ui.graphCanvas->setPatchbayAutoDisconnect(on);
 
 	stabilize();
+}
+
+
+void qpwgraph_main::patchbayManage (void)
+{
+	qpwgraph_patchman patchman(this);
+	patchman.setPatchbay(m_ui.graphCanvas->patchbay());
+	patchman.exec();
 }
 
 
@@ -1352,6 +1365,8 @@ void qpwgraph_main::stabilize (void)
 
 	m_ui.patchbayPinAction->setEnabled(canvas->canPatchbayPin());
 	m_ui.patchbayUnpinAction->setEnabled(canvas->canPatchbayUnpin());
+
+	m_ui.patchbayManageAction->setEnabled(!canvas->isPatchbayEmpty());
 
 	m_ui.graphConnectAction->setEnabled(canvas->canConnect());
 	m_ui.graphDisconnectAction->setEnabled(canvas->canDisconnect());

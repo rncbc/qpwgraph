@@ -6,13 +6,14 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing the Patchbay/Manage... dialog. (EXPERIMENTAL)
 - Force an actual complete graph refresh on main View/Refresh...
 - Introducing the new Graph/Options... dialog, to where the most
   general option settings have been (re)moved from the main Help
-  menu. (EXPERIMENTAL)
+  menu.
 - Introducing Graph/Options.../Filter to hide nodes by node name
-  pattern (blacklist). (EXPERIMENTAL)
-- Fix default PipeWire node nickname if given empty. (EXPERIMENTAL)
+  pattern (blacklist).
+- Fix default PipeWire node nickname if given empty.
 
 
 0.7.9  2024-10-28  An Autumn'24 Beta Release.

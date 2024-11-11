@@ -97,6 +97,8 @@ public:
 	void patchbayPin();
 	void patchbayUnpin();
 
+	bool isPatchbayEmpty() const;
+
 	// Canvas methods.
 	void addItem(qpwgraph_item *item);
 	void removeItem(qpwgraph_item *item);

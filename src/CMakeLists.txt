@@ -26,6 +26,7 @@ set (HEADERS
   qpwgraph_alsamidi.h
   qpwgraph_alsamidi.h
   qpwgraph_patchbay.h
+  qpwgraph_patchman.h
   qpwgraph_systray.h
   qpwgraph_thumb.h
   qpwgraph_main.h
@@ -45,6 +46,7 @@ set (SOURCES
   qpwgraph_pipewire.cpp
   qpwgraph_alsamidi.cpp
   qpwgraph_patchbay.cpp
+  qpwgraph_patchman.cpp
   qpwgraph_systray.cpp
   qpwgraph_thumb.cpp
   qpwgraph_main.cpp

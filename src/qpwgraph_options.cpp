@@ -190,8 +190,6 @@ void qpwgraph_options::reject (void)
 // Accept options (OK button slot).
 void qpwgraph_options::accept (void)
 {
-	bool ret = true;
-
 	qpwgraph_config *config = nullptr;
 	qpwgraph_main *parent = qobject_cast<qpwgraph_main *> (parentWidget());
 	if (parent)

@@ -1,7 +1,7 @@
 // qpraph1_patchbay.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,6 +50,10 @@ public:
 	// Destructor.
 	~qpwgraph_patchbay() { clear(); }
 
+	// Canvas accessor.
+	qpwgraph_canvas *canvas() const
+		{ return m_canvas; }
+
 	// Mode/properties accessors.
 	void setActivated(bool activated)
 		{ m_activated = activated; }
@@ -78,7 +82,8 @@ public:
 	bool connectPorts(qpwgraph_port *port1, qpwgraph_port *port2, bool is_connect);
 	bool connect(qpwgraph_connect *connect, bool is_connect);
 
-	// Patchbay rule item.
+	// Patchbay rule items.
+	//
 	struct Item
 	{
 		Item(uint nt, uint pt,
@@ -107,20 +112,30 @@ public:
 		QString port2;
 	};
 
-	typedef QHash<Item, Item *> Items;
+	struct Items : public QHash<Item, Item *>
+	{
+		bool addItem(const Item& item);
+		bool removeItem(const Item& item);
+
+		void copyItems(const Items& items);
+
+		void clearItems();
+	};
 
 	// Find a connection rule.
 	Item *findConnectPorts(qpwgraph_port *port1, qpwgraph_port *port2) const;
 	Item *findConnect(qpwgraph_connect *connect) const;
+
+	// Patchbay rule items accessors.
+	void setItems(const Items& items);
+	const Items& items() const
+		{ return m_items; }
 
 	// Dirty status flag.
 	bool isDirty() const
 		{ return (m_dirty > 0); }
 
 protected:
-
-	// Add a new patchbay rule item.
-	void addItem(Item *item);
 
 	// Node and port type to text helpers.
 	static uint nodeTypeFromText(const QString& text);

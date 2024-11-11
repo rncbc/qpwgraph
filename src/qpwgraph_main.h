@@ -129,6 +129,8 @@ protected slots:
 	void patchbayAutoPin(bool on);
 	void patchbayAutoDisconnect(bool on);
 
+	void patchbayManage();
+
 	// Main menu slots.
 	void viewMenubar(bool on);
 	void viewGraphToolbar(bool on);

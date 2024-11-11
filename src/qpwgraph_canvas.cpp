@@ -296,6 +296,12 @@ void qpwgraph_canvas::patchbayUnpin (void)
 }
 
 
+bool qpwgraph_canvas::isPatchbayEmpty (void) const
+{
+	return (m_patchbay ? m_patchbay->items().isEmpty() : true);
+}
+
+
 // Canvas methods.
 void qpwgraph_canvas::addItem ( qpwgraph_item *item )
 {

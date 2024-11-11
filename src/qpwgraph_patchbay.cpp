@@ -1,7 +1,7 @@
 // qpwgraph_patchbay.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,15 +46,63 @@
 // qpwgraph_patchbay -- Persistant connections patchbay impl.
 
 
-// Clear all patchbay rules and cache.
-void qpwgraph_patchbay::clear (void)
+// Manage connection rules.
+bool qpwgraph_patchbay::Items::addItem ( const Item& item )
 {
-	Items::ConstIterator iter = m_items.constBegin();
-	const Items::ConstIterator& iter_end = m_items.constEnd();
+	bool ret = false;
+
+	ConstIterator iter = constFind(item);
+	if (iter == constEnd()) {
+		insert(item, new Item(item));
+		ret = true;
+	}
+
+	return ret;
+}
+
+
+bool qpwgraph_patchbay::Items::removeItem ( const Item& item )
+{
+	bool ret = false;
+
+	ConstIterator iter = constFind(item);
+	if (iter != constEnd()) {
+		delete iter.value();
+		erase(iter);
+		ret = true;
+	}
+
+	return ret;
+}
+
+
+// Copy all patchbay rules and cache.
+void qpwgraph_patchbay::Items::copyItems ( const Items& items )
+{
+	clearItems();
+
+	Items::ConstIterator iter = items.constBegin();
+	const Items::ConstIterator& iter_end = items.constEnd();
+	for ( ; iter != iter_end; ++iter)
+		addItem(iter.key());
+}
+
+
+// Clear all patchbay rules and cache.
+void qpwgraph_patchbay::Items::clearItems (void)
+{
+	ConstIterator iter = constBegin();
+	const ConstIterator& iter_end = constEnd();
 	for ( ; iter != iter_end; ++iter)
 		delete iter.value();
 
-	m_items.clear();
+	clear();
+}
+
+
+void qpwgraph_patchbay::clear (void)
+{
+	m_items.clearItems();
 
 	m_dirty = 0;
 }
@@ -82,7 +130,7 @@ void qpwgraph_patchbay::snap (void)
 					qpwgraph_node *node1 = port1->portNode();
 					qpwgraph_node *node2 = port2->portNode();
 					if (node1 && node2) {
-						addItem(new Item(
+						m_items.addItem(Item(
 							node1->nodeType(),
 							port1->portType(),
 							node1->nodeName(),
@@ -163,7 +211,7 @@ bool qpwgraph_patchbay::load ( const QString& filename )
 					if (node_type > 0 && port_type > 0
 						&& !node1.isEmpty() && !port1.isEmpty()
 						&& !node2.isEmpty() && !port2.isEmpty()) {
-						addItem(new Item(
+						m_items.addItem(Item(
 							node_type, port_type,
 							node1, port1, node2, port2));
 					}
@@ -371,18 +419,10 @@ bool qpwgraph_patchbay::connectPorts (
 			port1->portName(),
 			node2->nodeName(),
 			port2->portName());
-		Items::ConstIterator iter = m_items.constFind(item);
-		const Items::ConstIterator& iter_end = m_items.constEnd();
-		if (iter == iter_end && is_connect) {
-			m_items.insert(item, new Item(item));
-			ret = true;
-		}
+		if (is_connect)
+			ret = m_items.addItem(item);
 		else
-		if (iter != iter_end && !is_connect) {
-			delete iter.value();
-			m_items.erase(iter);
-			ret = true;
-		}
+			ret = m_items.removeItem(item);
 	}
 
 	if (ret) ++m_dirty;
@@ -428,14 +468,15 @@ qpwgraph_patchbay::Item *qpwgraph_patchbay::findConnect (
 }
 
 
-// Add a new patchbay rule item.
-void qpwgraph_patchbay::addItem ( Item *item )
+// Dirty status flag.
+void qpwgraph_patchbay::setItems ( const Items& items )
 {
-	Item *item2 = m_items.value(*item, nullptr);
-	if (item2)
-		delete item2;
+	m_items.copyItems(items);
 
-	m_items.insert(*item, item);
+	++m_dirty;
+
+	m_canvas->patchbayEdit();
+	emit m_canvas->changed();
 }
 
 
