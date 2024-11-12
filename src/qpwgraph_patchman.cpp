@@ -132,7 +132,6 @@ private:
 	typedef QMultiHash<QTreeWidgetItem *, QTreeWidgetItem *> Lines;
 
 	Lines m_lines;
-	Lines m_line2;
 
 	// Connector line color map/persistence.
 	static QHash<QString, int> g_colors;
@@ -228,13 +227,10 @@ protected:
 			const QColor& color
 				= opt.palette.base().color().value() < 0x7f
 				? Qt::cyan : Qt::blue;
-			if (opt.state & QStyle::State_Selected) {
+			if (opt.state & QStyle::State_Selected)
 				opt.palette.setColor(QPalette::HighlightedText, color);
-				opt.font.setBold(true);
-			} else {
+			else
 				opt.palette.setColor(QPalette::Text, color);
-				opt.font.setBold(false);
-			}
 		}
 		QItemDelegate::paint(painter, opt, index);
 	}
@@ -375,7 +371,6 @@ void qpwgraph_patchman::LineWidget::addLine (
 	QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item )
 {
 	m_lines.insert(port1_item, port2_item);
-	m_line2.insert(port2_item, port1_item);
 }
 
 
@@ -383,7 +378,6 @@ void qpwgraph_patchman::LineWidget::removeLine (
 	QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item )
 {
 	m_lines.remove(port1_item, port2_item);
-	m_line2.remove(port2_item, port1_item);
 }
 
 
@@ -401,7 +395,6 @@ bool qpwgraph_patchman::LineWidget::findLine (
 void qpwgraph_patchman::LineWidget::clear (void)
 {
 	m_lines.clear();
-	m_line2.clear();
 
 	QWidget::update();
 }
