@@ -1020,7 +1020,7 @@ bool qpwgraph_patchman::MainWidget::removeConnect (
 // Stabilize item highlights.
 void qpwgraph_patchman::MainWidget::stabilize (void)
 {
-	QHash<QTreeWidgetItem *, int> nodes;
+	QHash<QTreeWidgetItem *, int> items;
 
 	qpwgraph_patchbay::Items::ConstIterator iter = m_items.constBegin();
 	const qpwgraph_patchbay::Items::ConstIterator& iter_end = m_items.constEnd();
@@ -1044,26 +1044,33 @@ void qpwgraph_patchman::MainWidget::stabilize (void)
 			continue;
 		const bool hilite1
 			= (node2_item->isSelected() || port2_item->isSelected());
-		int n1 = nodes.value(node1_item, 0);
+		int n = items.value(node1_item, 0);
 		if (hilite1)
-			++n1;
-		nodes.insert(node1_item, n1);
-		port1_item->setData(0, Qt::UserRole, hilite1);
+			++n;
+		items.insert(node1_item, n);
+		n = items.value(port1_item, 0);
+		if (hilite1)
+			++n;
+		items.insert(port1_item, n);
 		const bool hilite2
 			= (node1_item->isSelected() || port1_item->isSelected());
-		int n2 = nodes.value(node2_item, 0);
+		n = items.value(node2_item, 0);
 		if (hilite2)
-			++n2;
-		nodes.insert(node2_item, n2);
-		port2_item->setData(0, Qt::UserRole, hilite2);
+			++n;
+		items.insert(node2_item, n);
+		n = items.value(port2_item, 0);
+		if (hilite2)
+			++n;
+		items.insert(port2_item, n);
 	}
 
-	QHash<QTreeWidgetItem *, int>::ConstIterator nodes_iter = nodes.constBegin();
-	const QHash<QTreeWidgetItem *, int>::ConstIterator& nodes_end = nodes.constEnd();
-	for ( ; nodes_iter != nodes_end; ++nodes_iter) {
-		QTreeWidgetItem *node_item = nodes_iter.key();
-		node_item->setData(0, Qt::UserRole,
-			bool(!node_item->isExpanded() && nodes_iter.value() > 0));
+	QHash<QTreeWidgetItem *, int>::ConstIterator items_iter = items.constBegin();
+	const QHash<QTreeWidgetItem *, int>::ConstIterator& items_end = items.constEnd();
+	for ( ; items_iter != items_end; ++items_iter) {
+		QTreeWidgetItem *item = items_iter.key();
+		const bool hilite = (items_iter.value() > 0);
+		item->setData(0, Qt::UserRole, bool(
+			(item->parent() || !item->isExpanded()) && hilite));
 	}
 }
 
