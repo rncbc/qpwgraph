@@ -1109,10 +1109,11 @@ qpwgraph_patchman::qpwgraph_patchman ( QWidget *parent )
 	hbox->setSpacing(8);
 	hbox->addWidget(m_remove_button);
 	hbox->addWidget(m_remove_all_button);
-	hbox->addStretch();
+	hbox->addStretch(20);
 	hbox->addWidget(m_cleanup_button);
+	hbox->addStretch(8);
 	hbox->addWidget(m_reset_button);
-	hbox->addStretch();
+	hbox->addStretch(20);
 	hbox->addWidget(m_button_box);
 
 	QVBoxLayout *vbox = new QVBoxLayout();
