@@ -74,6 +74,8 @@ protected:
 	class TreeWidget;
 	class LineWidget;
 
+	class ItemDelegate;
+
 private:
 
 	// Instance members.

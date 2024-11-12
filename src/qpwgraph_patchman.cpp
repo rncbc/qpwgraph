@@ -132,6 +132,7 @@ private:
 	typedef QMultiHash<QTreeWidgetItem *, QTreeWidgetItem *> Lines;
 
 	Lines m_lines;
+	Lines m_line2;
 
 	// Connector line color map/persistence.
 	static QHash<QString, int> g_colors;
@@ -172,6 +173,9 @@ public:
 	bool canCleanup() const;
 	void cleanup();
 
+	// Stabilize item highlights.
+	void stabilize();
+
 protected:
 
 	// Patchbay item finder/removal.
@@ -195,6 +199,49 @@ private:
 	TreeWidget *m_inputs;
 
 	qpwgraph_patchbay::Items m_items;
+};
+
+
+//----------------------------------------------------------------------------
+// qpwgraph_patchman::ItemDelegate -- side-view item delegate decl.
+#include <QItemDelegate>
+
+class qpwgraph_patchman::ItemDelegate : public QItemDelegate
+{
+public:
+
+	// Constructor.
+	ItemDelegate(TreeWidget *parent)
+		: QItemDelegate(parent), m_tree(parent) {}
+
+protected:
+
+	// Overridden paint method.
+	void paint(QPainter *painter,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const
+	{
+		QStyleOptionViewItem opt = option;
+		QTreeWidgetItem *item = m_tree->itemFromIndex(index);
+		if (item && item->data(0, Qt::UserRole).toBool()) {
+			// opt.palette;
+			const QColor& color
+				= opt.palette.base().color().value() < 0x7f
+				? Qt::cyan : Qt::blue;
+			if (opt.state & QStyle::State_Selected) {
+				opt.palette.setColor(QPalette::HighlightedText, color);
+				opt.font.setBold(true);
+			} else {
+				opt.palette.setColor(QPalette::Text, color);
+				opt.font.setBold(false);
+			}
+		}
+		QItemDelegate::paint(painter, opt, index);
+	}
+
+private:
+
+	TreeWidget *m_tree;
 };
 
 
@@ -224,6 +271,8 @@ qpwgraph_patchman::TreeWidget::TreeWidget ( MainWidget *parent, Mode mode )
 	QTreeWidget::setSortingEnabled(true);
 	QTreeWidget::setMinimumWidth(120);
 	QTreeWidget::setColumnCount(1);
+
+	QTreeWidget::setItemDelegate(new ItemDelegate(this));
 
 	QString text;
 	if (isOutputs())
@@ -326,6 +375,7 @@ void qpwgraph_patchman::LineWidget::addLine (
 	QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item )
 {
 	m_lines.insert(port1_item, port2_item);
+	m_line2.insert(port2_item, port1_item);
 }
 
 
@@ -333,6 +383,7 @@ void qpwgraph_patchman::LineWidget::removeLine (
 	QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item )
 {
 	m_lines.remove(port1_item, port2_item);
+	m_line2.remove(port2_item, port1_item);
 }
 
 
@@ -350,6 +401,7 @@ bool qpwgraph_patchman::LineWidget::findLine (
 void qpwgraph_patchman::LineWidget::clear (void)
 {
 	m_lines.clear();
+	m_line2.clear();
 
 	QWidget::update();
 }
@@ -580,6 +632,7 @@ void qpwgraph_patchman::MainWidget::refresh (void)
 			node1_item = new QTreeWidgetItem(m_outputs, node_type);
 			node1_item->setIcon(0, node_icon);
 			node1_item->setText(0, node1_name);
+			node1_item->setData(0, Qt::UserRole, false);
 		}
 		const QString& port1_name = item->port1;
 		QTreeWidgetItem *port1_item = m_outputs->findPortItem(node1_item, port1_name, port_type);
@@ -587,6 +640,7 @@ void qpwgraph_patchman::MainWidget::refresh (void)
 			port1_item = new QTreeWidgetItem(node1_item, port_type);
 			port1_item->setIcon(0, port_icon);
 			port1_item->setText(0, port1_name);
+			port1_item->setData(0, Qt::UserRole, false);
 		}
 		// Input node/port...
 		const QString& node2_name = item->node2;
@@ -595,6 +649,7 @@ void qpwgraph_patchman::MainWidget::refresh (void)
 			node2_item = new QTreeWidgetItem(m_inputs, node_type);
 			node2_item->setIcon(0, node_icon);
 			node2_item->setText(0, node2_name);
+			node2_item->setData(0, Qt::UserRole, false);
 		}
 		const QString& port2_name = item->port2;
 		QTreeWidgetItem *port2_item = m_inputs->findPortItem(node2_item, port2_name, port_type);
@@ -602,6 +657,7 @@ void qpwgraph_patchman::MainWidget::refresh (void)
 			port2_item = new QTreeWidgetItem(node2_item, port_type);
 			port2_item->setIcon(0, port_icon);
 			port2_item->setText(0, port2_name);
+			port2_item->setData(0, Qt::UserRole, false);
 		}
 		// Connect line...
 		m_connects->addLine(port1_item, port2_item);
@@ -968,6 +1024,57 @@ bool qpwgraph_patchman::MainWidget::removeConnect (
 }
 
 
+// Stabilize item highlights.
+void qpwgraph_patchman::MainWidget::stabilize (void)
+{
+	QHash<QTreeWidgetItem *, int> nodes;
+
+	qpwgraph_patchbay::Items::ConstIterator iter = m_items.constBegin();
+	const qpwgraph_patchbay::Items::ConstIterator& iter_end = m_items.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		qpwgraph_patchbay::Item *item = iter.value();
+		QTreeWidgetItem *node1_item
+			= m_outputs->findNodeItem(item->node1, item->node_type);
+		if (node1_item == nullptr)
+			continue;
+		QTreeWidgetItem *node2_item
+			= m_inputs->findNodeItem(item->node2, item->node_type);
+		if (node2_item == nullptr)
+			continue;
+		QTreeWidgetItem *port1_item
+			= m_outputs->findPortItem(node1_item, item->port1, item->port_type);
+		if (port1_item == nullptr)
+			continue;
+		QTreeWidgetItem *port2_item
+			= m_inputs->findPortItem(node2_item, item->port2, item->port_type);
+		if (port2_item == nullptr)
+			continue;
+		const bool hilite1
+			= (node2_item->isSelected() || port2_item->isSelected());
+		int n1 = nodes.value(node1_item, 0);
+		if (hilite1)
+			++n1;
+		nodes.insert(node1_item, n1);
+		port1_item->setData(0, Qt::UserRole, hilite1);
+		const bool hilite2
+			= (node1_item->isSelected() || port1_item->isSelected());
+		int n2 = nodes.value(node2_item, 0);
+		if (hilite2)
+			++n2;
+		nodes.insert(node2_item, n2);
+		port2_item->setData(0, Qt::UserRole, hilite2);
+	}
+
+	QHash<QTreeWidgetItem *, int>::ConstIterator nodes_iter = nodes.constBegin();
+	const QHash<QTreeWidgetItem *, int>::ConstIterator& nodes_end = nodes.constEnd();
+	for ( ; nodes_iter != nodes_end; ++nodes_iter) {
+		QTreeWidgetItem *node_item = nodes_iter.key();
+		node_item->setData(0, Qt::UserRole,
+			bool(!node_item->isExpanded() && nodes_iter.value() > 0));
+	}
+}
+
+
 // Initial size hints.
 QSize qpwgraph_patchman::MainWidget::sizeHint (void) const
 {
@@ -998,7 +1105,7 @@ qpwgraph_patchman::qpwgraph_patchman ( QWidget *parent )
 	m_main = new MainWidget(this);
 
 	QHBoxLayout *hbox = new QHBoxLayout();
-	hbox->setContentsMargins(4, 4, 4, 4);
+	hbox->setContentsMargins(4, 8, 4, 4);
 	hbox->setSpacing(8);
 	hbox->addWidget(m_remove_button);
 	hbox->addWidget(m_remove_all_button);
@@ -1009,7 +1116,7 @@ qpwgraph_patchman::qpwgraph_patchman ( QWidget *parent )
 	hbox->addWidget(m_button_box);
 
 	QVBoxLayout *vbox = new QVBoxLayout();
-	vbox->setContentsMargins(4, 4, 4, 4);
+	vbox->setContentsMargins(4, 8, 4, 4);
 	vbox->setSpacing(4);
 	vbox->addWidget(m_main);
 	vbox->addLayout(hbox);
@@ -1019,8 +1126,21 @@ qpwgraph_patchman::qpwgraph_patchman ( QWidget *parent )
 	QObject::connect(m_main->outputs(),
 		SIGNAL(itemSelectionChanged()),
 		SLOT(stabilize()));
+	QObject::connect(m_main->outputs(),
+		SIGNAL(itemExpanded(QTreeWidgetItem *)),
+		SLOT(stabilize()));
+	QObject::connect(m_main->outputs(),
+		SIGNAL(itemCollapsed(QTreeWidgetItem *)),
+		SLOT(stabilize()));
+
 	QObject::connect(m_main->inputs(),
 		SIGNAL(itemSelectionChanged()),
+		SLOT(stabilize()));
+	QObject::connect(m_main->inputs(),
+		SIGNAL(itemExpanded(QTreeWidgetItem *)),
+		SLOT(stabilize()));
+	QObject::connect(m_main->inputs(),
+		SIGNAL(itemCollapsed(QTreeWidgetItem *)),
 		SLOT(stabilize()));
 
 	QObject::connect(m_remove_button,
@@ -1157,6 +1277,8 @@ void qpwgraph_patchman::reject (void)
 // Stabilize current form state.
 void qpwgraph_patchman::stabilize (void)
 {
+	m_main->stabilize();
+
 	m_remove_button->setEnabled(m_main->canRemove());
 	m_remove_all_button->setEnabled(m_main->canRemoveAll());
 	m_cleanup_button->setEnabled(m_main->canCleanup());
