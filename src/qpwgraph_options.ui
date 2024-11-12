@@ -409,7 +409,6 @@
   <tabstop>PatchbayQueryQuitCheckBox</tabstop>
   <tabstop>AlsaMidiEnabledCheckBox</tabstop>
   <tabstop>FilterNodesEnabledCheckBox</tabstop>
-  <tabstop>FilterNodesTypeComboBox</tabstop>
   <tabstop>FilterNodesNameComboBox</tabstop>
   <tabstop>FilterNodesAddToolButton</tabstop>
   <tabstop>FilterNodesListWidget</tabstop>
