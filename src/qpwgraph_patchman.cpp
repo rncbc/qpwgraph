@@ -33,6 +33,7 @@
 #include <QSplitter>
 #include <QTreeWidget>
 #include <QHeaderView>
+#include <QItemDelegate>
 #include <QScrollBar>
 #include <QPushButton>
 
@@ -160,8 +161,8 @@ public:
 	TreeWidget *inputs() const   { return m_inputs; }
 
 	// Patchbay items accessors.
-	void setPatchbayItems(const qpwgraph_patchbay::Items& items);
-	const qpwgraph_patchbay::Items& patchbayItems() const;
+	void setItems(const qpwgraph_patchbay::Items& items);
+	const qpwgraph_patchbay::Items& items() const;
 
 	// Patchbay view refresh.
 	void refresh();
@@ -181,13 +182,16 @@ public:
 
 protected:
 
-	// Patchbay item finder/removal.
-	bool findConnect(
+	// Patchbay item connection finder.
+	bool findConnect(qpwgraph_patchbay::Item *item) const;
+
+	// Patchbay connect line finder/removal.
+	bool findLine(
 		QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item) const;
-	bool removeConnect(
+	bool removeLine(
 		QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item);
 
-	void clearPatchbayItems();
+	void clearItems();
 
 	// Initial size hints.
 	QSize sizeHint() const;
@@ -207,7 +211,6 @@ private:
 
 //----------------------------------------------------------------------------
 // qpwgraph_patchman::ItemDelegate -- side-view item delegate decl.
-#include <QItemDelegate>
 
 class qpwgraph_patchman::ItemDelegate : public QItemDelegate
 {
@@ -226,15 +229,19 @@ protected:
 	{
 		QStyleOptionViewItem opt = option;
 		QTreeWidgetItem *item = m_tree->itemFromIndex(index);
-		if (item && item->data(0, Qt::UserRole).toBool()) {
-			// opt.palette;
-			const QColor& color
-				= opt.palette.base().color().value() < 0x7f
-				? Qt::cyan : Qt::blue;
-			if (opt.state & QStyle::State_Selected)
-				opt.palette.setColor(QPalette::HighlightedText, color);
-			else
-				opt.palette.setColor(QPalette::Text, color);
+		if (item) {
+			const int data = item->data(0, Qt::UserRole).toInt();
+			if (data & 1) {
+				const QColor& color
+					= opt.palette.base().color().value() < 0x7f
+					? Qt::cyan : Qt::blue;
+				if (opt.state & QStyle::State_Selected)
+					opt.palette.setColor(QPalette::HighlightedText, color);
+				else
+					opt.palette.setColor(QPalette::Text, color);
+			}
+			if (data & 2)
+				opt.font.setBold(item->parent() || !item->isExpanded());
 		}
 		QItemDelegate::paint(painter, opt, index);
 	}
@@ -574,7 +581,7 @@ qpwgraph_patchman::MainWidget::~MainWidget (void)
 
 
 // Patchbay items accessors.
-void qpwgraph_patchman::MainWidget::setPatchbayItems (
+void qpwgraph_patchman::MainWidget::setItems (
 	const qpwgraph_patchbay::Items& items )
 {
 	m_items.copyItems(items);
@@ -583,7 +590,7 @@ void qpwgraph_patchman::MainWidget::setPatchbayItems (
 }
 
 
-const qpwgraph_patchbay::Items& qpwgraph_patchman::MainWidget::patchbayItems (void) const
+const qpwgraph_patchbay::Items& qpwgraph_patchman::MainWidget::items (void) const
 {
 	return m_items;
 }
@@ -600,10 +607,14 @@ void qpwgraph_patchman::MainWidget::refresh (void)
 	m_connects->clear();
 	m_inputs->clear();
 
+	QFont font;
+	font.setBold(true);
+
 	qpwgraph_patchbay::Items::ConstIterator iter = m_items.constBegin();
 	const qpwgraph_patchbay::Items::ConstIterator& iter_end = m_items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		qpwgraph_patchbay::Item *item = iter.value();
+		const int data = (findConnect(item) ? 2 : 0);
 		const int node_type = item->node_type;
 		QIcon node_icon;
 		if (node_type == qpwgraph_pipewire::nodeType())
@@ -629,7 +640,10 @@ void qpwgraph_patchman::MainWidget::refresh (void)
 			node1_item = new QTreeWidgetItem(m_outputs, node_type);
 			node1_item->setIcon(0, node_icon);
 			node1_item->setText(0, node1_name);
-			node1_item->setData(0, Qt::UserRole, false);
+			node1_item->setData(0, Qt::UserRole, data);
+		} else {
+			node1_item->setData(0, Qt::UserRole,
+				 data | node1_item->data(0, Qt::UserRole).toInt());
 		}
 		const QString& port1_name = item->port1;
 		QTreeWidgetItem *port1_item = m_outputs->findPortItem(node1_item, port1_name, port_type);
@@ -637,7 +651,10 @@ void qpwgraph_patchman::MainWidget::refresh (void)
 			port1_item = new QTreeWidgetItem(node1_item, port_type);
 			port1_item->setIcon(0, port_icon);
 			port1_item->setText(0, port1_name);
-			port1_item->setData(0, Qt::UserRole, false);
+			port1_item->setData(0, Qt::UserRole, data);
+		} else {
+			port1_item->setData(0, Qt::UserRole,
+				 data | port1_item->data(0, Qt::UserRole).toInt());
 		}
 		// Input node/port...
 		const QString& node2_name = item->node2;
@@ -646,7 +663,10 @@ void qpwgraph_patchman::MainWidget::refresh (void)
 			node2_item = new QTreeWidgetItem(m_inputs, node_type);
 			node2_item->setIcon(0, node_icon);
 			node2_item->setText(0, node2_name);
-			node2_item->setData(0, Qt::UserRole, false);
+			node2_item->setData(0, Qt::UserRole, data);
+		} else {
+			node2_item->setData(0, Qt::UserRole,
+				 data | node2_item->data(0, Qt::UserRole).toInt());
 		}
 		const QString& port2_name = item->port2;
 		QTreeWidgetItem *port2_item = m_inputs->findPortItem(node2_item, port2_name, port_type);
@@ -654,7 +674,10 @@ void qpwgraph_patchman::MainWidget::refresh (void)
 			port2_item = new QTreeWidgetItem(node2_item, port_type);
 			port2_item->setIcon(0, port_icon);
 			port2_item->setText(0, port2_name);
-			port2_item->setData(0, Qt::UserRole, false);
+			port2_item->setData(0, Qt::UserRole, data);
+		} else {
+			port2_item->setData(0, Qt::UserRole,
+				 data | port2_item->data(0, Qt::UserRole).toInt());
 		}
 		// Connect line...
 		m_connects->addLine(port1_item, port2_item);
@@ -698,7 +721,7 @@ bool qpwgraph_patchman::MainWidget::canRemove (void) const
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1->child(j);
 					QTreeWidgetItem *port2_item = item2->child(j);
-					if (findConnect(port1_item, port2_item))
+					if (findLine(port1_item, port2_item))
 						return true;
 				}
 			} else {
@@ -707,7 +730,7 @@ bool qpwgraph_patchman::MainWidget::canRemove (void) const
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1;
 					QTreeWidgetItem *port2_item = item2->child(j);
-					if (findConnect(port1_item, port2_item))
+					if (findLine(port1_item, port2_item))
 						return true;
 				}
 			}
@@ -718,14 +741,14 @@ bool qpwgraph_patchman::MainWidget::canRemove (void) const
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1->child(j);
 					QTreeWidgetItem *port2_item = item2;
-					if (findConnect(port1_item, port2_item))
+					if (findLine(port1_item, port2_item))
 						return true;
 				}
 			} else {
 				// One-to-many(all) connection...
 				QTreeWidgetItem *port1_item = item1;
 				QTreeWidgetItem *port2_item = item2;
-				if (findConnect(port1_item, port2_item))
+				if (findLine(port1_item, port2_item))
 					return true;
 			}
 		}
@@ -768,7 +791,7 @@ void qpwgraph_patchman::MainWidget::remove (void)
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1->child(j);
 					QTreeWidgetItem *port2_item = item2->child(j);
-					if (removeConnect(port1_item, port2_item))
+					if (removeLine(port1_item, port2_item))
 						++nremoved;
 				}
 			} else {
@@ -777,7 +800,7 @@ void qpwgraph_patchman::MainWidget::remove (void)
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1;
 					QTreeWidgetItem *port2_item = item2->child(j);
-					if (removeConnect(port1_item, port2_item))
+					if (removeLine(port1_item, port2_item))
 						++nremoved;
 				}
 			}
@@ -788,14 +811,14 @@ void qpwgraph_patchman::MainWidget::remove (void)
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1->child(j);
 					QTreeWidgetItem *port2_item = item2;
-					if (removeConnect(port1_item, port2_item))
+					if (removeLine(port1_item, port2_item))
 						++nremoved;
 				}
 			} else {
 				// One-to-many(all) connection...
 				QTreeWidgetItem *port1_item = item1;
 				QTreeWidgetItem *port2_item = item2;
-					if (removeConnect(port1_item, port2_item))
+					if (removeLine(port1_item, port2_item))
 						++nremoved;
 			}
 		}
@@ -823,70 +846,12 @@ void qpwgraph_patchman::MainWidget::removeAll (void)
 
 bool qpwgraph_patchman::MainWidget::canCleanup (void) const
 {
-	qpwgraph_patchbay *patchbay = m_patchman->patchbay();
-	if (patchbay == nullptr)
-		return false;
-
-	qpwgraph_canvas *canvas = patchbay->canvas();
-	if (canvas == nullptr)
-		return false;
-
 	qpwgraph_patchbay::Items::ConstIterator iter = m_items.constBegin();
 	const qpwgraph_patchbay::Items::ConstIterator& iter_end = m_items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		qpwgraph_patchbay::Item *item = iter.value();
-		QList<qpwgraph_node *> nodes1
-			= canvas->findNodes(
-				item->node1,
-				qpwgraph_item::Output,
-				item->node_type);
-		if (nodes1.isEmpty())
-			nodes1 = canvas->findNodes(
-				item->node1,
-				qpwgraph_item::Duplex,
-				item->node_type);
-		if (nodes1.isEmpty())
+		if (!findConnect(iter.value()))
 			return true;
-		foreach (qpwgraph_node *node1, nodes1) {
-			qpwgraph_port *port1
-				= node1->findPort(
-					item->port1,
-					qpwgraph_item::Output,
-					item->port_type);
-			if (port1 == nullptr)
-				return true;
-			QList<qpwgraph_node *> nodes2
-				= canvas->findNodes(
-					item->node2,
-					qpwgraph_item::Input,
-					item->node_type);
-			if (nodes2.isEmpty())
-				nodes2 = canvas->findNodes(
-					item->node2,
-					qpwgraph_item::Duplex,
-					item->node_type);
-			if (nodes2.isEmpty())
-				return true;
-			foreach (qpwgraph_node *node2, nodes2) {
-				qpwgraph_port *port2
-					= node2->findPort(
-						item->port2,
-						qpwgraph_item::Input,
-						item->port_type);
-				if (port2 == nullptr)
-					return true;
-				qpwgraph_connect *connect12 = port1->findConnect(port2);
-				if (connect12 == nullptr)
-					return true;
-				if (!patchbay->findConnect(connect12))
-					return true;
-				qpwgraph_connect *connect21 = port2->findConnect(port1);
-				if (connect21 == nullptr)
-					return true;
-				if (!patchbay->findConnect(connect21))
-					return true;
-			}
-		}
 	}
 
 	return false;
@@ -895,88 +860,14 @@ bool qpwgraph_patchman::MainWidget::canCleanup (void) const
 
 void qpwgraph_patchman::MainWidget::cleanup (void)
 {
-	qpwgraph_patchbay *patchbay = m_patchman->patchbay();
-	if (patchbay == nullptr)
-		return;
-
-	qpwgraph_canvas *canvas = patchbay->canvas();
-	if (canvas == nullptr)
-		return;
-
 	QList<qpwgraph_patchbay::Item *> items;
 
 	qpwgraph_patchbay::Items::ConstIterator iter = m_items.constBegin();
 	const qpwgraph_patchbay::Items::ConstIterator& iter_end = m_items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		qpwgraph_patchbay::Item *item = iter.value();
-		QList<qpwgraph_node *> nodes1
-			= canvas->findNodes(
-				item->node1,
-				qpwgraph_item::Output,
-				item->node_type);
-		if (nodes1.isEmpty())
-			nodes1 = canvas->findNodes(
-				item->node1,
-				qpwgraph_item::Duplex,
-				item->node_type);
-		if (nodes1.isEmpty()) {
+		if (!findConnect(item))
 			items.append(item);
-			continue;
-		}
-		foreach (qpwgraph_node *node1, nodes1) {
-			qpwgraph_port *port1
-				= node1->findPort(
-					item->port1,
-					qpwgraph_item::Output,
-					item->port_type);
-			if (port1 == nullptr) {
-				items.append(item);
-				continue;
-			}
-			QList<qpwgraph_node *> nodes2
-				= canvas->findNodes(
-					item->node2,
-					qpwgraph_item::Input,
-					item->node_type);
-			if (nodes2.isEmpty())
-				nodes2 = canvas->findNodes(
-					item->node2,
-					qpwgraph_item::Duplex,
-					item->node_type);
-			if (nodes2.isEmpty()) {
-				items.append(item);
-				continue;
-			}
-			foreach (qpwgraph_node *node2, nodes2) {
-				qpwgraph_port *port2
-					= node2->findPort(
-						item->port2,
-						qpwgraph_item::Input,
-						item->port_type);
-				if (port2 == nullptr) {
-					items.append(item);
-					continue;
-				}
-				qpwgraph_connect *connect12 = port1->findConnect(port2);
-				if (connect12 == nullptr) {
-					items.append(item);
-					continue;
-				}
-				if (!patchbay->findConnect(connect12)) {
-					items.append(item);
-					continue;
-				}
-				qpwgraph_connect *connect21 = port2->findConnect(port1);
-				if (connect21 == nullptr) {
-					items.append(item);
-					continue;
-				}
-				if (!patchbay->findConnect(connect21)) {
-					items.append(item);
-					continue;
-				}
-			}
-		}
 	}
 
 	if (!items.isEmpty()) {
@@ -988,18 +879,84 @@ void qpwgraph_patchman::MainWidget::cleanup (void)
 }
 
 
-// Patchbay item finder/removal.
+// Patchbay item connection finder.
 bool qpwgraph_patchman::MainWidget::findConnect (
+	qpwgraph_patchbay::Item *item ) const
+{
+	qpwgraph_patchbay *patchbay = m_patchman->patchbay();
+	if (patchbay == nullptr)
+		return false;
+
+	qpwgraph_canvas *canvas = patchbay->canvas();
+	if (canvas == nullptr)
+		return false;
+
+	QList<qpwgraph_node *> nodes1
+		= canvas->findNodes(
+			item->node1,
+			qpwgraph_item::Output,
+			item->node_type);
+	if (nodes1.isEmpty())
+		nodes1 = canvas->findNodes(
+			item->node1,
+			qpwgraph_item::Duplex,
+			item->node_type);
+	if (nodes1.isEmpty())
+		return false;
+
+	foreach (qpwgraph_node *node1, nodes1) {
+		qpwgraph_port *port1
+			= node1->findPort(
+				item->port1,
+				qpwgraph_item::Output,
+				item->port_type);
+		if (port1 == nullptr)
+			continue;
+		QList<qpwgraph_node *> nodes2
+			= canvas->findNodes(
+				item->node2,
+				qpwgraph_item::Input,
+				item->node_type);
+		if (nodes2.isEmpty())
+			nodes2 = canvas->findNodes(
+				item->node2,
+				qpwgraph_item::Duplex,
+				item->node_type);
+		if (nodes2.isEmpty())
+			continue;
+		foreach (qpwgraph_node *node2, nodes2) {
+			qpwgraph_port *port2
+				= node2->findPort(
+					item->port2,
+					qpwgraph_item::Input,
+					item->port_type);
+			if (port2 == nullptr)
+				continue;
+			qpwgraph_connect *connect12 = port1->findConnect(port2);
+			if (connect12)
+				return true;
+			qpwgraph_connect *connect21 = port2->findConnect(port1);
+			if (connect21)
+				return true;
+		}
+	}
+
+	return false;
+}
+
+
+// Patchbay connect line finder/removal.
+bool qpwgraph_patchman::MainWidget::findLine (
 	QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item ) const
 {
 	return m_connects->findLine(port1_item, port2_item);
 }
 
 
-bool qpwgraph_patchman::MainWidget::removeConnect (
+bool qpwgraph_patchman::MainWidget::removeLine (
 	QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item )
 {
-	if (!findConnect(port1_item, port2_item))
+	if (!findLine(port1_item, port2_item))
 		return false;
 
 	QTreeWidgetItem *node1_item = port1_item->parent();
@@ -1073,8 +1030,12 @@ void qpwgraph_patchman::MainWidget::stabilize (void)
 	for ( ; items_iter != items_end; ++items_iter) {
 		QTreeWidgetItem *item = items_iter.key();
 		const bool hilite = (items_iter.value() > 0);
-		item->setData(0, Qt::UserRole, bool(
-			(item->parent() || !item->isExpanded()) && hilite));
+		int data = item->data(0, Qt::UserRole).toInt();
+		if ((item->parent() || !item->isExpanded()) && hilite)
+			data |= 1;
+		else
+			data &= 2;
+		item->setData(0, Qt::UserRole, data);
 	}
 }
 
@@ -1236,7 +1197,7 @@ void qpwgraph_patchman::cleanupClicked (void)
 void qpwgraph_patchman::resetClicked (void)
 {
 	if (m_patchbay)
-		m_main->setPatchbayItems(m_patchbay->items());
+		m_main->setItems(m_patchbay->items());
 
 	m_dirty = 0;
 
@@ -1247,7 +1208,7 @@ void qpwgraph_patchman::resetClicked (void)
 void qpwgraph_patchman::accept (void)
 {
 	if (m_patchbay)
-		m_patchbay->setItems(m_main->patchbayItems());
+		m_patchbay->setItems(m_main->items());
 
 	QDialog::accept();
 }
