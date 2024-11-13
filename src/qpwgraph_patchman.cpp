@@ -69,6 +69,10 @@ public:
 	QTreeWidgetItem *findPortItem(QTreeWidgetItem *node_item,
 		const QString& port_name, int port_type) const;
 
+	// Brainless override necessary to make this public (Qt5)...
+	QTreeWidgetItem *itemFromIndex(const QModelIndex &index) const
+		{ return QTreeWidget::itemFromIndex(index); }
+
 protected:
 
 	// Initial size hints.
@@ -337,7 +341,7 @@ QTreeWidgetItem *qpwgraph_patchman::TreeWidget::findPortItem (
 // Initial size hints.
 QSize qpwgraph_patchman::TreeWidget::sizeHint (void) const
 {
-	return QSize(290, 240);
+	return QSize(290, 260);
 }
 
 
@@ -517,7 +521,7 @@ void qpwgraph_patchman::LineWidget::paintEvent ( QPaintEvent * )
 // Initial size hints.
 QSize qpwgraph_patchman::LineWidget::sizeHint (void) const
 {
-	return QSize(60, 240);
+	return QSize(60, 260);
 }
 
 
@@ -1078,7 +1082,7 @@ void qpwgraph_patchman::MainWidget::stabilize (void)
 // Initial size hints.
 QSize qpwgraph_patchman::MainWidget::sizeHint (void) const
 {
-	return QSize(640, 240);
+	return QSize(640, 260);
 }
 
 
