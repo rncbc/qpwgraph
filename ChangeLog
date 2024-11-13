@@ -6,7 +6,10 @@ ChangeLog
 
 GIT HEAD
 
-- Introducing the Patchbay/Manage... dialog. (EXPERIMENTAL)
+- A new Patchbay/Manage... feature dialog is introduced, targeting
+  the currently loaded patchbay, allowing the removal and cleanup
+  of connection rules that are no longer used, obsolete or simply
+  not applicable anymore. (EXPERIMENTAL)
 - Force an actual complete graph refresh on main View/Refresh...
 - Introducing the new Graph/Options... dialog, to where the most
   general option settings have been (re)moved from the main Help
