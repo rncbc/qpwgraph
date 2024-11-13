@@ -34,5 +34,10 @@ If checked, all manual connections will be pinned to the current patchbay and pe
 
 If checked, all pinned connections will be automatically disconnected when the current patchbay is deactivated.
 
+## Manage... dialog
+
+Manages the currently loaded patchbay, allowing to remove and cleanup connection rules that are no longer used, obsolete or not applicable anymore.
+
+
 ---
 Credits: @Lootre (a.k.a. Thomas Lachat).
