@@ -516,8 +516,13 @@ void qpwgraph_patchman::LineWidget::paintEvent ( QPaintEvent * )
 			QTreeWidgetItem *node2_item = port2_item->parent();
 			if (node2_item == nullptr)
 				continue;
+			// Actual currently active connections lines are thicker:
+			pen.setWidth((
+				port1_item->data(0, Qt::UserRole).toInt() &
+				port2_item->data(0, Qt::UserRole).toInt() & 2)
+				? 2 : 1);
 			// Obviously, should be a connection
-			// from pOPort to pIPort items:
+			// from port1 to port2 items:
 			y2 = itemY(port2_item) + (yi - yc);
 			drawLine(&painter, x1, y1, x2, y2, h1, h2, pen);
 		}
