@@ -712,8 +712,6 @@ bool qpwgraph_pipewire::open (void)
 	spa_list_init(&m_data->pending);
 	m_data->pending_seq = 0;
 
-	m_data->node_names = new Data::NodeNames;
-
 	m_data->loop = pw_thread_loop_new("qpwgraph_thread_loop", nullptr);
 	if (m_data->loop == nullptr) {
 		qDebug("pw_thread_loop_new: Can't create thread loop.");
@@ -762,6 +760,7 @@ bool qpwgraph_pipewire::open (void)
 	m_data->pending_seq = 0;
 	m_data->last_seq = 0;
 	m_data->error = false;
+	m_data->node_names = new Data::NodeNames;
 
 	pw_thread_loop_start(m_data->loop);
 	pw_thread_loop_unlock(m_data->loop);
