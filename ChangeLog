@@ -4,12 +4,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.8.0  2024-11-14  A Mid-Autumn'24 Beta Release.
 
 - A new Patchbay/Manage... feature dialog is introduced, targeting
   the currently loaded patchbay, allowing the removal and cleanup
   of connection rules that are no longer used, obsolete or simply
-  not applicable anymore. (EXPERIMENTAL)
+  not applicable anymore.
 - Force an actual complete graph refresh on main View/Refresh...
 - Introducing the new Graph/Options... dialog, to where the most
   general option settings have been (re)moved from the main Help
