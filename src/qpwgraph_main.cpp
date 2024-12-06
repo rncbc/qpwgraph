@@ -494,10 +494,6 @@ qpwgraph_main::qpwgraph_main (
 
 	restoreState();
 
-	updatePatchbayMenu();
-	updateViewColors();
-	updateOptions();
-
 	// Restore last open patchbay file...
 	m_patchbay_untitled = 0;
 
@@ -510,7 +506,10 @@ qpwgraph_main::qpwgraph_main (
 			patchbay->snap(); // Simulate patchbayNew()!
 	}
 
+	updateViewColors();
+	updatePatchbayMenu();
 	updatePatchbayNames();
+	updateOptions();
 
 	// Make it ready :-)
 	m_ui.StatusBar->showMessage(tr("Ready"), 3000);
@@ -568,9 +567,7 @@ void qpwgraph_main::apply_args ( qpwgraph_application *app )
 		m_ui.patchbayExclusiveAction->setChecked(app->isPatchbayExclusive());
 
 	if (!app->patchbayPath().isEmpty())
-		patchbayOpenFile(app->patchbayPath());
-
-	updatePatchbayNames();
+		m_patchbay_path = app->patchbayPath();
 
 	bool start_minimized = app->isStartMinimized();
 	if (!start_minimized)
@@ -604,6 +601,10 @@ void qpwgraph_main::updateOptions (void)
 		m_systray = new qpwgraph_systray(this);
 		m_systray->show();
 		m_systray_closed = false;
+		QObject::connect(m_systray,
+			SIGNAL(patchbayPresetChanged(int)),
+			SLOT(patchbayNameChanged(int)));
+		updatePatchbayNames();
 	}
 	else
 	if (!systray_enabled && m_systray) {
@@ -1114,11 +1115,12 @@ void qpwgraph_main::patchbayNameChanged ( int index )
 	if (index > 0) {
 		const QString& path
 			= m_patchbay_names->itemData(index).toString();
-		if (!path.isEmpty() && patchbayQueryClose())
-			patchbayOpenFile(path);
+		if (!path.isEmpty()
+			&& patchbayQueryClose()
+			&& patchbayOpenFile(path)) {
+			updatePatchbayNames();
+		}
 	}
-
-	updatePatchbayNames();
 }
 
 
@@ -1768,14 +1770,24 @@ void qpwgraph_main::updatePatchbayNames (void)
 
 	const QIcon icon(":/images/itemPatchbay.png");
 	m_patchbay_names->clear();
+#ifdef CONFIG_SYSTEM_TRAY
+	if (m_systray)
+		m_systray->clearPatchbayPresets();
+#endif
 	m_patchbay_names->addItem(icon,
 		patchbayFileName(), m_patchbay_path);
 	const QStringList& paths = m_config->patchbayRecentFiles();
 	foreach (const QString& path, paths) {
-		if (path == m_patchbay_path)
-			continue;
-		m_patchbay_names->addItem(icon,
-			QFileInfo(path).completeBaseName(), path);
+		const QString& name
+			= QFileInfo(path).completeBaseName();
+		const bool is_selected
+			= (path == m_patchbay_path);
+	#ifdef CONFIG_SYSTEM_TRAY
+		if (m_systray)
+			m_systray->addPatchbayPreset(name, is_selected);
+	#endif
+		if (!is_selected)
+			m_patchbay_names->addItem(icon, name, path);
 	}
 
 	m_patchbay_names->setCurrentIndex(0);

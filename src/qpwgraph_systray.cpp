@@ -47,6 +47,9 @@ qpwgraph_systray::qpwgraph_systray ( qpwgraph_main *main )
 #endif
 	QSystemTrayIcon::setToolTip(m_main->windowTitle());
 
+	m_presets = m_menu.addMenu(tr("Presets"));
+
+	m_menu.addSeparator();
 	m_show = m_menu.addAction(tr("Show/Hide"), this, SLOT(showHide()));
 	m_quit = m_menu.addAction(tr("Quit"), m_main, SLOT(closeQuit()));
 
@@ -59,7 +62,6 @@ qpwgraph_systray::qpwgraph_systray ( qpwgraph_main *main )
 	QSystemTrayIcon::show();
 }
 
-
 // Update context menu.
 void qpwgraph_systray::updateContextMenu (void)
 {
@@ -67,6 +69,22 @@ void qpwgraph_systray::updateContextMenu (void)
 		m_show->setText(tr("Hide"));
 	else
 		m_show->setText(tr("Show"));
+}
+
+
+void qpwgraph_systray::addPatchbayPreset (
+	const QString& name, bool is_selected )
+{
+	QAction *action = m_presets->addAction(name,
+		this, SLOT(patchbayPresetSelected(bool)));
+	action->setCheckable(true);
+	action->setChecked(is_selected);
+}
+
+
+void qpwgraph_systray::clearPatchbayPresets (void)
+{
+	m_presets->clear();
 }
 
 
@@ -97,6 +115,19 @@ void qpwgraph_systray::showHide (void)
 		m_main->showNormal();
 		m_main->raise();
 		m_main->activateWindow();
+	}
+}
+
+
+// Handle patchbay presets menu actions.
+void qpwgraph_systray::patchbayPresetSelected ( bool is_selected )
+{
+	QAction *action = qobject_cast<QAction *> (sender());
+	if (action && is_selected) {
+		const int index
+			= m_presets->actions().indexOf(action);
+		if (index >= 0)
+			emit patchbayPresetChanged(index);
 	}
 }
 

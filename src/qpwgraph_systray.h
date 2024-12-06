@@ -50,6 +50,10 @@ public:
 	// Update context menu.
 	void updateContextMenu();
 
+	// Handle dynamic creation/deletion of presets
+	void addPatchbayPreset(const QString& name, bool is_selected);
+	void clearPatchbayPresets();
+
 protected slots:
 
 	// Handle systeam tray activity.
@@ -57,6 +61,13 @@ protected slots:
 
 	// Handle menu actions.
 	void showHide();
+
+	// Handle presets menu actions.
+	void patchbayPresetSelected(bool is_checked);
+
+signals:
+	// Notify about preset changes.
+	void patchbayPresetChanged(int index);
 
 private:
 
@@ -66,6 +77,8 @@ private:
 	QAction *m_quit;
 
 	QMenu    m_menu;
+
+	QMenu   *m_presets;
 };
 
 
