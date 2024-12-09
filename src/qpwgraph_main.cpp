@@ -496,6 +496,7 @@ qpwgraph_main::qpwgraph_main (
 
 	// Restore last open patchbay file...
 	m_patchbay_untitled = 0;
+	m_patchbay_update = 0;
 
 	const QString path(m_patchbay_path);
 	if (!path.isEmpty() && patchbayOpenFile(path)) {
@@ -508,7 +509,6 @@ qpwgraph_main::qpwgraph_main (
 
 	updateViewColors();
 	updatePatchbayMenu();
-	updatePatchbayNames();
 	updateOptions();
 
 	// Make it ready :-)
@@ -604,7 +604,7 @@ void qpwgraph_main::updateOptions (void)
 		QObject::connect(m_systray,
 			SIGNAL(patchbayPresetChanged(int)),
 			SLOT(patchbayNameChanged(int)));
-		updatePatchbayNames();
+		++m_patchbay_update;
 	}
 	else
 	if (!systray_enabled && m_systray) {
@@ -663,8 +663,7 @@ void qpwgraph_main::patchbayNew (void)
 	++m_patchbay_untitled;
 
 	m_ui.graphCanvas->patchbayEdit();
-
-	updatePatchbayNames();
+	++m_patchbay_update;
 }
 
 
@@ -683,8 +682,7 @@ void qpwgraph_main::patchbayOpen (void)
 		return;
 
 	patchbayOpenFile(path);
-
-	updatePatchbayNames();
+	++m_patchbay_update;
 }
 
 
@@ -699,7 +697,7 @@ void qpwgraph_main::patchbayOpenRecent (void)
 			patchbayOpenFile(path);
 	}
 
-	updatePatchbayNames();
+	++m_patchbay_update;
 }
 
 
@@ -711,8 +709,7 @@ void qpwgraph_main::patchbaySave (void)
 	}
 
 	patchbaySaveFile(m_patchbay_path);
-
-	updatePatchbayNames();
+	++m_patchbay_update;
 }
 
 
@@ -732,7 +729,7 @@ void qpwgraph_main::patchbaySaveAs (void)
 	else
 		patchbaySaveFile(path);
 
-	updatePatchbayNames();
+	++m_patchbay_update;
 }
 
 
@@ -1115,12 +1112,11 @@ void qpwgraph_main::patchbayNameChanged ( int index )
 	if (index > 0) {
 		const QString& path
 			= m_patchbay_names->itemData(index).toString();
-		if (!path.isEmpty()
-			&& patchbayQueryClose()
-			&& patchbayOpenFile(path)) {
-			updatePatchbayNames();
-		}
+		if (!path.isEmpty() && patchbayQueryClose())
+			patchbayOpenFile(path);
 	}
+
+	++m_patchbay_update;
 }
 
 
@@ -1335,6 +1331,11 @@ void qpwgraph_main::refresh (void)
 		m_thumb_update = 0;
 		if (m_thumb)
 			m_thumb->updateView();
+	}
+
+	if (m_patchbay_update > 0) {
+		m_patchbay_update = 0;
+		updatePatchbayNames();
 	}
 
 	QTimer::singleShot(300, this, SLOT(refresh()));

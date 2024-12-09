@@ -28,6 +28,7 @@
 
 #include <QWidget>
 #include <QAction>
+#include <QActionGroup>
 
 #include <QApplication>
 
@@ -50,6 +51,7 @@ qpwgraph_systray::qpwgraph_systray ( qpwgraph_main *main )
 	m_presets = m_menu.addMenu(tr("Presets"));
 
 	m_menu.addSeparator();
+
 	m_show = m_menu.addAction(tr("Show/Hide"), this, SLOT(showHide()));
 	m_quit = m_menu.addAction(tr("Quit"), m_main, SLOT(closeQuit()));
 
@@ -61,6 +63,14 @@ qpwgraph_systray::qpwgraph_systray ( qpwgraph_main *main )
 
 	QSystemTrayIcon::show();
 }
+
+
+// Destructor.
+qpwgraph_systray::~qpwgraph_systray (void)
+{
+	clearPatchbayPresets();
+}
+
 
 // Update context menu.
 void qpwgraph_systray::updateContextMenu (void)
@@ -75,15 +85,27 @@ void qpwgraph_systray::updateContextMenu (void)
 void qpwgraph_systray::addPatchbayPreset (
 	const QString& name, bool is_selected )
 {
-	QAction *action = m_presets->addAction(name,
-		this, SLOT(patchbayPresetSelected(bool)));
+	QAction *action = new QAction(name);
 	action->setCheckable(true);
 	action->setChecked(is_selected);
+
+	QObject::connect(action,
+		SIGNAL(triggered(bool)),
+		SLOT(patchbayPresetSelected(bool)));
+
+	m_presets->addAction(action);
 }
 
 
 void qpwgraph_systray::clearPatchbayPresets (void)
 {
+	QListIterator iter(m_presets->actions());
+	while (iter.hasNext()) {
+		QAction *action = iter.next();
+		m_presets->removeAction(action);
+		delete action;
+	}
+
 	m_presets->clear();
 }
 
@@ -123,7 +145,7 @@ void qpwgraph_systray::showHide (void)
 void qpwgraph_systray::patchbayPresetSelected ( bool is_selected )
 {
 	QAction *action = qobject_cast<QAction *> (sender());
-	if (action && is_selected) {
+	if (action) {
 		const int index
 			= m_presets->actions().indexOf(action);
 		if (index >= 0)

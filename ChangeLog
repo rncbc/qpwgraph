@@ -4,6 +4,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Patchbay 'presets' may now be selected from the system-tray icon
+  context-menu. (EXPERIMENTAL)
+
+
 0.8.0  2024-11-14  A Mid-Autumn'24 Beta Release.
 
 - A new Patchbay/Manage... feature dialog is introduced, targeting

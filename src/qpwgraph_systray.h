@@ -47,6 +47,9 @@ public:
 	// Constructor.
 	qpwgraph_systray(qpwgraph_main *main);
 
+	// Destructor.
+	~qpwgraph_systray();
+
 	// Update context menu.
 	void updateContextMenu();
 
@@ -63,7 +66,7 @@ protected slots:
 	void showHide();
 
 	// Handle presets menu actions.
-	void patchbayPresetSelected(bool is_checked);
+	void patchbayPresetSelected(bool is_selected);
 
 signals:
 	// Notify about preset changes.

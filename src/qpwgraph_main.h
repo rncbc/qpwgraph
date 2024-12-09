@@ -246,6 +246,7 @@ private:
 	QString m_patchbay_dir;
 	QString m_patchbay_path;
 	int     m_patchbay_untitled;
+	int     m_patchbay_update;
 
 	QComboBox *m_patchbay_names;
 	QAction   *m_patchbay_names_tool;
