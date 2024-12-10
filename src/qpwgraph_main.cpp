@@ -511,6 +511,8 @@ qpwgraph_main::qpwgraph_main (
 	updatePatchbayMenu();
 	updateOptions();
 
+	++m_patchbay_update;
+
 	// Make it ready :-)
 	m_ui.StatusBar->showMessage(tr("Ready"), 3000);
 
