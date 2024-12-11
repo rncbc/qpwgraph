@@ -496,7 +496,6 @@ qpwgraph_main::qpwgraph_main (
 
 	// Restore last open patchbay file...
 	m_patchbay_untitled = 0;
-	m_patchbay_update = 0;
 
 	const QString path(m_patchbay_path);
 	if (!path.isEmpty() && patchbayOpenFile(path)) {
@@ -509,9 +508,8 @@ qpwgraph_main::qpwgraph_main (
 
 	updateViewColors();
 	updatePatchbayMenu();
+	updatePatchbayNames();
 	updateOptions();
-
-	++m_patchbay_update;
 
 	// Make it ready :-)
 	m_ui.StatusBar->showMessage(tr("Ready"), 3000);
@@ -606,7 +604,6 @@ void qpwgraph_main::updateOptions (void)
 		QObject::connect(m_systray,
 			SIGNAL(patchbayPresetChanged(int)),
 			SLOT(patchbayNameChanged(int)));
-		++m_patchbay_update;
 	}
 	else
 	if (!systray_enabled && m_systray) {
@@ -672,7 +669,8 @@ void qpwgraph_main::patchbayNew (void)
 	++m_patchbay_untitled;
 
 	m_ui.graphCanvas->patchbayEdit();
-	++m_patchbay_update;
+
+	updatePatchbayNames();
 }
 
 
@@ -691,7 +689,8 @@ void qpwgraph_main::patchbayOpen (void)
 		return;
 
 	patchbayOpenFile(path);
-	++m_patchbay_update;
+
+	updatePatchbayNames();
 }
 
 
@@ -706,7 +705,7 @@ void qpwgraph_main::patchbayOpenRecent (void)
 			patchbayOpenFile(path);
 	}
 
-	++m_patchbay_update;
+	updatePatchbayNames();
 }
 
 
@@ -718,7 +717,8 @@ void qpwgraph_main::patchbaySave (void)
 	}
 
 	patchbaySaveFile(m_patchbay_path);
-	++m_patchbay_update;
+
+	updatePatchbayNames();
 }
 
 
@@ -738,7 +738,7 @@ void qpwgraph_main::patchbaySaveAs (void)
 	else
 		patchbaySaveFile(path);
 
-	++m_patchbay_update;
+	updatePatchbayNames();
 }
 
 
@@ -1125,7 +1125,7 @@ void qpwgraph_main::patchbayNameChanged ( int index )
 			patchbayOpenFile(path);
 	}
 
-	++m_patchbay_update;
+	updatePatchbayNames();
 }
 
 
@@ -1340,11 +1340,6 @@ void qpwgraph_main::refresh (void)
 		m_thumb_update = 0;
 		if (m_thumb)
 			m_thumb->updateView();
-	}
-
-	if (m_patchbay_update > 0) {
-		m_patchbay_update = 0;
-		updatePatchbayNames();
 	}
 
 	QTimer::singleShot(300, this, SLOT(refresh()));
