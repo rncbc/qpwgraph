@@ -649,6 +649,13 @@ void qpwgraph_main::updateOptions (void)
 }
 
 
+// Current selected patchbay path accessor.
+const QString& qpwgraph_main::patchbayPath (void) const
+{
+	return m_patchbay_path;
+}
+
+
 // Patchbay menu slots.
 void qpwgraph_main::patchbayNew (void)
 {
@@ -1773,24 +1780,14 @@ void qpwgraph_main::updatePatchbayNames (void)
 
 	const QIcon icon(":/images/itemPatchbay.png");
 	m_patchbay_names->clear();
-#ifdef CONFIG_SYSTEM_TRAY
-	if (m_systray)
-		m_systray->clearPatchbayPresets();
-#endif
 	m_patchbay_names->addItem(icon,
 		patchbayFileName(), m_patchbay_path);
 	const QStringList& paths = m_config->patchbayRecentFiles();
 	foreach (const QString& path, paths) {
-		const QString& name
-			= QFileInfo(path).completeBaseName();
-		const bool is_selected
-			= (path == m_patchbay_path);
-	#ifdef CONFIG_SYSTEM_TRAY
-		if (m_systray)
-			m_systray->addPatchbayPreset(name, is_selected);
-	#endif
-		if (!is_selected)
-			m_patchbay_names->addItem(icon, name, path);
+		if (path == m_patchbay_path)
+			continue;
+		m_patchbay_names->addItem(icon,
+			QFileInfo(path).completeBaseName(), path);
 	}
 
 	m_patchbay_names->setCurrentIndex(0);

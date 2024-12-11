@@ -77,6 +77,9 @@ public:
 	// Update configure options.
 	void updateOptions();
 
+	// Current selected patchbay path accessor.
+	const QString& patchbayPath() const;
+
 protected slots:
 
 	// Node life-cycle slots

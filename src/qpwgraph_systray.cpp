@@ -25,10 +25,12 @@
 #ifdef CONFIG_SYSTEM_TRAY
 
 #include "qpwgraph_main.h"
+#include "qpwgraph_config.h"
 
 #include <QWidget>
 #include <QAction>
-#include <QActionGroup>
+
+#include <QFileInfo>
 
 #include <QApplication>
 
@@ -61,6 +63,10 @@ qpwgraph_systray::qpwgraph_systray ( qpwgraph_main *main )
 		SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
 		SLOT(activated(QSystemTrayIcon::ActivationReason)));
 
+	QObject::connect(m_presets,
+		SIGNAL(aboutToShow()),
+		SLOT(updatePatchbayPresets()));
+
 	QSystemTrayIcon::show();
 }
 
@@ -79,34 +85,6 @@ void qpwgraph_systray::updateContextMenu (void)
 		m_show->setText(tr("Hide"));
 	else
 		m_show->setText(tr("Show"));
-}
-
-
-void qpwgraph_systray::addPatchbayPreset (
-	const QString& name, bool is_selected )
-{
-	QAction *action = new QAction(name);
-	action->setCheckable(true);
-	action->setChecked(is_selected);
-
-	QObject::connect(action,
-		SIGNAL(triggered(bool)),
-		SLOT(patchbayPresetSelected(bool)));
-
-	m_presets->addAction(action);
-}
-
-
-void qpwgraph_systray::clearPatchbayPresets (void)
-{
-	QListIterator iter(m_presets->actions());
-	while (iter.hasNext()) {
-		QAction *action = iter.next();
-		m_presets->removeAction(action);
-		delete action;
-	}
-
-	m_presets->clear();
 }
 
 
@@ -142,7 +120,7 @@ void qpwgraph_systray::showHide (void)
 
 
 // Handle patchbay presets menu actions.
-void qpwgraph_systray::patchbayPresetSelected ( bool is_selected )
+void qpwgraph_systray::patchbayPresetSelected (void)
 {
 	QAction *action = qobject_cast<QAction *> (sender());
 	if (action) {
@@ -151,6 +129,43 @@ void qpwgraph_systray::patchbayPresetSelected ( bool is_selected )
 		if (index >= 0)
 			emit patchbayPresetChanged(index);
 	}
+}
+
+
+// Rebuild the patchbay presets menu.
+void qpwgraph_systray::updatePatchbayPresets (void)
+{
+	clearPatchbayPresets();
+
+	const QString& patchbay_path = m_main->patchbayPath();
+	const QStringList& paths = m_main->config()->patchbayRecentFiles();
+	foreach (const QString& path, paths) {
+		const QString& name
+			= QFileInfo(path).completeBaseName();
+		const bool is_selected
+			= (path == patchbay_path);
+		QAction *action = new QAction(name);
+		action->setCheckable(true);
+		action->setChecked(is_selected);
+		QObject::connect(action,
+			SIGNAL(triggered(bool)),
+			SLOT(patchbayPresetSelected()));
+		m_presets->addAction(action);
+	}
+}
+
+
+// Destroy the patchbay presets menu.
+void qpwgraph_systray::clearPatchbayPresets (void)
+{
+	QListIterator iter(m_presets->actions());
+	while (iter.hasNext()) {
+		QAction *action = iter.next();
+		m_presets->removeAction(action);
+		delete action;
+	}
+
+	m_presets->clear();
 }
 
 
