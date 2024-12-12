@@ -62,7 +62,7 @@ protected slots:
 	void showHide();
 
 	// Handle presets menu actions.
-	void patchbayPresetSelected();
+	void patchbayPresetTriggered(QAction *action);
 
 	// Rebuild the patchbay presets menu.
 	void updatePatchbayPresets();

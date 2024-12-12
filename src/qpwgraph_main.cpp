@@ -599,6 +599,7 @@ void qpwgraph_main::updateOptions (void)
 		= m_config->isSystemTrayEnabled();
 	if (systray_enabled && m_systray == nullptr) {
 		m_systray = new qpwgraph_systray(this);
+		m_systray->updateContextMenu();
 		m_systray->show();
 		m_systray_closed = false;
 		QObject::connect(m_systray,

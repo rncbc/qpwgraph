@@ -66,6 +66,9 @@ qpwgraph_systray::qpwgraph_systray ( qpwgraph_main *main )
 	QObject::connect(m_presets,
 		SIGNAL(aboutToShow()),
 		SLOT(updatePatchbayPresets()));
+	QObject::connect(m_presets,
+		SIGNAL(triggered(QAction *)),
+		SLOT(patchbayPresetTriggered(QAction *)));
 
 	QSystemTrayIcon::show();
 }
@@ -120,15 +123,12 @@ void qpwgraph_systray::showHide (void)
 
 
 // Handle patchbay presets menu actions.
-void qpwgraph_systray::patchbayPresetSelected (void)
+void qpwgraph_systray::patchbayPresetTriggered ( QAction *action )
 {
-	QAction *action = qobject_cast<QAction *> (sender());
-	if (action) {
-		const int index
-			= m_presets->actions().indexOf(action);
-		if (index >= 0)
-			emit patchbayPresetChanged(index);
-	}
+	const int index
+		= m_presets->actions().indexOf(action);
+	if (index >= 0)
+		emit patchbayPresetChanged(index);
 }
 
 
@@ -147,9 +147,6 @@ void qpwgraph_systray::updatePatchbayPresets (void)
 		QAction *action = new QAction(name);
 		action->setCheckable(true);
 		action->setChecked(is_selected);
-		QObject::connect(action,
-			SIGNAL(triggered(bool)),
-			SLOT(patchbayPresetSelected()));
 		m_presets->addAction(action);
 	}
 }
