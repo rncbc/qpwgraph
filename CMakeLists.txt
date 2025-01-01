@@ -6,7 +6,7 @@ project(qpwgraph
   HOMEPAGE_URL "https://gitlab.freedesktop.org/rncbc/qpwgraph"
   LANGUAGES C CXX)
 
-set (PROJECT_COPYRIGHT "Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.")
+set (PROJECT_COPYRIGHT "Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.")
 set (PROJECT_DOMAIN    "rncbc.org")
 
 execute_process (
