@@ -60,17 +60,7 @@ qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 	QApplication::setDesktopFileName(
 		QString("org.rncbc.%1").arg(PROJECT_NAME));
 
-	QString version(PROJECT_VERSION);
-	version += '\n';
-	version += QString("Qt: %1").arg(qVersion());
-#if defined(QT_STATIC)
-	version += "-static";
-#endif
-	version += '\n';
-	version += QString("libpipewire: %1 (headers: %2)")
-		.arg(pw_get_library_version())
-		.arg(pw_get_headers_version());
-	QApplication::setApplicationVersion(version);
+	QApplication::setApplicationVersion(PROJECT_VERSION);
 }
 
 
@@ -106,13 +96,36 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 		QObject::tr("Non-exclusive patchbay.")});
 	parser.addOption({{"m", s_minimized},
 		QObject::tr("Start minimized.")});
-	parser.addHelpOption();
-	parser.addVersionOption();
+	const QCommandLineOption& helpOption = parser.addHelpOption();
+	const QCommandLineOption& versionOption = parser.addVersionOption();
 	parser.addPositionalArgument("patchbay-file",
 		QObject::tr("Patchbay file (.%1)")
 			.arg(QString(PROJECT_NAME).toLower()),
 		QObject::tr("[patchbay-file]"));
-	parser.process(args);
+
+	QTextStream out(stderr);
+
+	if (!parser.parse(args)) {
+		out << parser.errorText() << '\n';
+		return false;
+	}
+
+	if (parser.isSet(helpOption)) {
+		out << parser.helpText() << '\n';
+		return false;
+	}
+
+	if (parser.isSet(versionOption)) {
+		out << QString("%1 %2\n")
+			.arg(PROJECT_NAME)
+			.arg(QCoreApplication::applicationVersion());
+		out << QString("Qt: %1").arg(qVersion());
+	#if defined(QT_STATIC)
+		out << "-static";
+	#endif
+		out << '\n' << '\n';;
+		return false;
+	}
 
 	if (parser.isSet(s_activated))
 		m_patchbay_activated = 1;

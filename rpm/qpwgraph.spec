@@ -1,7 +1,7 @@
 #
 # spec file for package qpwgraph
 #
-# Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+# Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed

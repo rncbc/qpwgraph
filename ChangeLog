@@ -4,6 +4,13 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed command line parsing (QCommandLineParser/Option) to not
+  exiting the application with a segfault when showing help and
+  version information.
+
+
 0.8.1  2024-12-27  An End-of-Year'24 Beta Release.
 
 - Patchbay 'presets' may now be selected from the system-tray icon
