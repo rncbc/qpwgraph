@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Port colors: new PypeWire MIDI 2 (UMP) port type is now aliased
+  to the same as (now old) MIDI port type. (EXPERIMENTAL)
+
 - Fixed command line parsing (QCommandLineParser/Option) to not
   exiting the application with a segfault when showing help and
   version information.

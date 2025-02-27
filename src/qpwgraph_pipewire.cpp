@@ -1,7 +1,7 @@
 // qpwgraph_pipewire.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,6 +34,7 @@
 // Default port types...
 #define DEFAULT_AUDIO_TYPE "32 bit float mono audio"
 #define DEFAULT_MIDI_TYPE  "8 bit raw midi"
+#define DEFAULT_MIDI2_TYPE "32 bit raw UMP"
 #define DEFAULT_VIDEO_TYPE "32 bit float RGBA video"
 
 
@@ -947,6 +948,11 @@ uint qpwgraph_pipewire::midiPortType (void)
 	return qpwgraph_item::itemType(DEFAULT_MIDI_TYPE);
 }
 
+uint qpwgraph_pipewire::midi2PortType (void)
+{
+	return qpwgraph_item::itemType(DEFAULT_MIDI2_TYPE);
+}
+
 uint qpwgraph_pipewire::videoPortType (void)
 {
 	return qpwgraph_item::itemType(DEFAULT_VIDEO_TYPE);
@@ -1343,6 +1349,9 @@ qpwgraph_pipewire::Port *qpwgraph_pipewire::createPort (
 	port->port_mode = port_mode;
 	port->port_type = port_type;
 	port->port_flags = Port::Flags(port_flags);
+
+	if (port->port_type == midi2PortType())
+		port->port_type =  midiPortType();	// FIXME: legacy aliasing!...
 
 	node->node_ports.append(port);
 

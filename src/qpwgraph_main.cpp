@@ -981,6 +981,7 @@ void qpwgraph_main::viewColorsAction (void)
 void qpwgraph_main::viewColorsReset (void)
 {
 	m_ui.graphCanvas->clearPortTypeColors();
+
 	if (m_pipewire)
 		m_pipewire->resetPortTypeColors();
 #ifdef CONFIG_ALSA_MIDI

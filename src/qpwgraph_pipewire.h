@@ -1,7 +1,7 @@
 // qpwgraph_pipewire.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -72,6 +72,7 @@ public:
 	// PipeWire port types.
 	static uint audioPortType();
 	static uint midiPortType();
+	static uint midi2PortType();
 	static uint videoPortType();
 	static uint otherPortType();
 
