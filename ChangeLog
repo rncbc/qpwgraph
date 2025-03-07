@@ -4,10 +4,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.8.2  2025-03-07  An End-of-Winter'25 Beta Release.
 
-- Port colors: new PypeWire MIDI 2 (UMP) port type is now aliased
-  to the same as (now old) MIDI port type. (EXPERIMENTAL)
+- Port colors: new PipeWire MIDI 2 (UMP) port type is now aliased
+  to the same as (now old) MIDI port type. (pipewire >= 1.3.81)
 
 - Fixed command line parsing (QCommandLineParser/Option) to not
   exiting the application with a segfault when showing help and
