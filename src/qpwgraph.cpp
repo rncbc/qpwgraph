@@ -123,7 +123,11 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 	#if defined(QT_STATIC)
 		out << "-static";
 	#endif
-		out << '\n' << '\n';;
+		out << '\n';
+		out << QString("PipeWire: %1 (headers: %2)")
+			.arg(pw_get_library_version())
+			.arg(pw_get_headers_version());
+		out << '\n' << '\n';
 		return false;
 	}
 

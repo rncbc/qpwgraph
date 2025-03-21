@@ -1070,7 +1070,7 @@ void qpwgraph_main::helpAbout (void)
 	text += "-static";
 #endif
 	text += ", ";
-	text +=	tr("libpipewire %1 (headers: %2)")
+	text +=	tr("PipeWire %1 (headers: %2)")
 		.arg(pw_get_library_version())
 		.arg(pw_get_headers_version());
 	text += "<br />\n";

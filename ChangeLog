@@ -4,6 +4,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Added PipeWire command line version information.
+
+
 0.8.2  2025-03-07  An End-of-Winter'25 Beta Release.
 
 - Port colors: new PipeWire MIDI 2 (UMP) port type is now aliased

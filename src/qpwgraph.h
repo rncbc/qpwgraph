@@ -50,7 +50,7 @@ public:
 	// Destructor.
 	~qpwgraph_application();
 
-	// Parse/help about command line arguments.
+	// Parse command line arguments.
 	bool parse_args(const QStringList& args);
 
 	// Main application widget accessors.
