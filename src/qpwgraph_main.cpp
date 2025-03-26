@@ -494,17 +494,7 @@ qpwgraph_main::qpwgraph_main (
 
 	restoreState();
 
-	// Restore last open patchbay file...
 	m_patchbay_untitled = 0;
-
-	const QString path(m_patchbay_path);
-	if (!path.isEmpty() && patchbayOpenFile(path)) {
-		--m_patchbay_untitled;
-	} else {
-		qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
-		if (patchbay)
-			patchbay->snap(); // Simulate patchbayNew()!
-	}
 
 	updateViewColors();
 	updatePatchbayMenu();
@@ -568,6 +558,16 @@ void qpwgraph_main::apply_args ( qpwgraph_application *app )
 
 	if (!app->patchbayPath().isEmpty())
 		m_patchbay_path = app->patchbayPath();
+
+	const QString path(m_patchbay_path);
+	if (path.isEmpty() || !patchbayOpenFile(path)) {
+		qpwgraph_patchbay *patchbay = m_ui.graphCanvas->patchbay();
+		if (patchbay)
+			patchbay->snap(); // Simulate patchbayNew()!
+		++m_patchbay_untitled;
+	}
+
+	updatePatchbayNames();
 
 	bool start_minimized = app->isStartMinimized();
 	if (!start_minimized)
@@ -1504,7 +1504,7 @@ bool qpwgraph_main::patchbaySaveFile ( const QString& path )
 QString qpwgraph_main::patchbayFileName (void) const
 {
 	if (m_patchbay_path.isEmpty())
-		return tr("Untitled%1").arg(m_patchbay_untitled + 1);
+		return tr("Untitled%1").arg(m_patchbay_untitled);
 	else
 		return QFileInfo(m_patchbay_path).completeBaseName();
 }
