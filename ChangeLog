@@ -4,7 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.8.3  2025-03-28  An Early Spring'25 Beta Release.
 
 - Loading a patchbay profile (*.qpwgraph) from the command line,
   is now properly shown on the main window title and toolbar.
