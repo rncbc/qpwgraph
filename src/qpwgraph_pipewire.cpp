@@ -133,6 +133,7 @@ struct qpwgraph_pipewire::Node : public qpwgraph_pipewire::Object
 	qpwgraph_item::Mode node_mode;
 	NodeType node_type;
 	QList<qpwgraph_pipewire::Port *> node_ports;
+	qpwgraph_item::Mode node_mode2;
 	QIcon node_icon;
 	QString media_name;
 	bool node_changed;
@@ -986,7 +987,7 @@ bool qpwgraph_pipewire::findNodePort (
 	const uint node_type
 		= qpwgraph_pipewire::nodeType();
 	qpwgraph_item::Mode node_mode
-		= port_mode;
+		= port_mode;//n->node_mode2;
 	const uint port_type
 		= p->port_type;
 
@@ -998,7 +999,7 @@ bool qpwgraph_pipewire::findNodePort (
 		const uint port_flags_mask
 			= (Port::Physical | Port::Terminal);
 		if ((port_flags & port_flags_mask) != port_flags_mask) {
-			node_mode = qpwgraph_item::Duplex;
+			node_mode = n->node_mode2;//qpwgraph_item::Duplex;
 			*node = qpwgraph_sect::findNode(node_id, node_mode, node_type);
 		}
 	}
@@ -1280,10 +1281,12 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	node->node_nick = node_nick;
 	node->node_mode = node_mode;
 	node->node_type = Node::NodeType(node_type);
+	node->node_mode2 = node_mode;
 	node->node_icon = qpwgraph_icon(":/images/itemPipewire.png");
 	node->node_changed = false;
 	node->node_ready = false;
 	node->name_num = 0;
+
 
 	Data::NodeNames *node_names = nullptr;
 	if (m_data)
@@ -1352,6 +1355,9 @@ qpwgraph_pipewire::Port *qpwgraph_pipewire::createPort (
 
 	if (port->port_type == midi2PortType())
 		port->port_type =  midiPortType();	// FIXME: legacy aliasing!...
+
+	if ((node->node_mode2 & port_mode) == qpwgraph_item::None)
+		node->node_mode2 = qpwgraph_item::Duplex;
 
 	node->node_ports.append(port);
 

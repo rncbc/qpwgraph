@@ -4,6 +4,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Mitigate an alternate re-positioning to some application nodes
+  (eg. Discord) on each screen refresh (F5). (EXPERIMENTAL) (#116)
+
+
 0.8.3  2025-03-28  An Early Spring'25 Beta Release.
 
 - Loading a patchbay profile (*.qpwgraph) from the command line,
