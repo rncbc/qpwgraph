@@ -49,10 +49,10 @@ BuildRequires:	gcc-c++ >= 10
 %endif
 %if 0%{qt_major_version} == 6
 %if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
-BuildRequires:	qtbase6.8-static >= 6.8
-BuildRequires:	qttools6.8-static
-BuildRequires:	qttranslations6.8-static
-BuildRequires:	qtsvg6.8-static
+BuildRequires:	qtbase6.9-static >= 6.9
+BuildRequires:	qttools6.9-static
+BuildRequires:	qttranslations6.9-static
+BuildRequires:	qtsvg6.9-static
 %else
 BuildRequires:	cmake(Qt6LinguistTools)
 BuildRequires:	pkgconfig(Qt6Core)
@@ -85,7 +85,7 @@ same of QjackCtl (https://qjackctl.sourceforge.io).
 
 %build
 %if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
-source /opt/qt6.8-static/bin/qt6.8-static-env.sh
+source /opt/qt6.9-static/bin/qt6.9-static-env.sh
 %endif
 CXX=%{_GXX} CC=%{_GCC} \
 cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCONFIG_ALSA_MIDI=ON -Wno-dev -B build

@@ -8,6 +8,7 @@ GIT HEAD
 
 - Mitigate an alternate re-positioning to some application nodes
   (eg. Discord) on each screen refresh (F5). (EXPERIMENTAL) (#116)
+- Stepping up next development cycle (Qt >= 6.9)
 
 
 0.8.3  2025-03-28  An Early Spring'25 Beta Release.
