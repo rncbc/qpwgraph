@@ -1,23 +1,5 @@
-qpwgraph (0.8.3-48.1) unstable; urgency=low
+qpwgraph (0.9.0-49.1) unstable; urgency=low
 
-  * An early-spring'25 beta release.
+  * A spring'25 beta release.
 
- -- Rui Nuno Capela <rncbc@rncbc.org>  Fri, 28 Mar 2025 18:00:00 +0000
-
-qpwgraph (0.8.2-47.1) unstable; urgency=low
-
-  * An end-of-winter'25 beta release.
-
- -- Rui Nuno Capela <rncbc@rncbc.org>  Fri,  7 Mar 2025 18:00:00 +0000
-
-qpwgraph (0.8.1-46.1) unstable; urgency=low
-
-  * An end-of-year'24 beta release.
-
- -- Rui Nuno Capela <rncbc@rncbc.org>  Fri, 27 Dec 2024 18:00:00 +0000
-
-qpwgraph (0.8.0-45.1) unstable; urgency=low
-
-  * A mid-autumn'24 beta release.
-
- -- Rui Nuno Capela <rncbc@rncbc.org>  Thu, 14 Nov 2024 20:00:00 +0000
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Fri, 25 Apr 2025 15:00:00 +0000

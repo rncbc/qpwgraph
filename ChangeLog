@@ -4,10 +4,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.9.0  2025-04-25  A Spring'25 Beta Release.
 
 - Mitigate an alternate re-positioning to some application nodes
-  (eg. Discord) on each screen refresh (F5). (EXPERIMENTAL) (#116)
+  (eg. Discord) on each screen refresh (F5).
 - Stepping up next development cycle (Qt >= 6.9)
 
 
