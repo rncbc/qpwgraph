@@ -1021,10 +1021,6 @@ bool qpwgraph_pipewire::findNodePort (
 	if (add_new && *node == nullptr && !canvas->isFilterNodes(n->node_name)) {
 		QString node_name = n->node_name;
 		if ((p->port_flags & Port::Physical) == Port::None) {
-			if (n->name_num > 0) {
-				node_name += '-';
-				node_name += QString::number(n->name_num);
-			}
 			if (p->port_flags & Port::Monitor) {
 				node_name += ' ';
 				node_name += "[Monitor]";
@@ -1036,6 +1032,7 @@ bool qpwgraph_pipewire::findNodePort (
 		}
 		*node = new qpwgraph_node(node_id, node_name, node_mode, node_type);
 		(*node)->setNodeIcon(n->node_icon);
+		(*node)->setNodeNum(n->name_num);
 		(*node)->setNodeLabel(n->media_name);
 		(*node)->setNodePrefix(n->node_nick);
 		n->node_changed = false;

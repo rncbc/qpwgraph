@@ -1,7 +1,7 @@
 // qpwgraph_node.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,6 +65,10 @@ public:
 	void setNodeIcon(const QIcon& icon);
 	const QIcon& nodeIcon() const;
 
+	void setNodeNum(uint num);
+	uint nodeNum() const;
+	QString nodeNameNum() const;
+
 	void setNodeLabel(const QString& label);
 	const QString& nodeLabel() const;
 	QString nodeNameLabel() const;
@@ -123,6 +127,19 @@ public:
 
 	typedef QMultiHash<NodeNameKey, qpwgraph_node *> NodeNames;
 
+	// Node hash key (by name-num).
+	class NodeNumKey : public NameKey
+	{
+	public:
+		// Constructors.
+		NodeNumKey (const QString& name_num, Mode mode, uint type = 0)
+			: NameKey(name_num, mode, type) {}
+		NodeNumKey(qpwgraph_node *node)
+			: NameKey(node->nodeNameNum(), node->nodeMode(), node->nodeType()) {}
+	};
+
+	typedef QMultiHash<NodeNumKey, qpwgraph_node *> NodeNums;
+
 	// Rectangular editor extents.
 	QRectF editorRect() const;
 
@@ -142,6 +159,7 @@ private:
 	uint    m_type;
 
 	QIcon   m_icon;
+	uint    m_num;
 	QString m_label;
 	QString m_title;
 

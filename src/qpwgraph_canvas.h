@@ -1,7 +1,7 @@
 // qpwgraph_canvas.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -133,6 +133,11 @@ public:
 		const qpwgraph_node::NodeNameKey& name_key) const;
 	QList<qpwgraph_node *> findNodes(
 		const QString& name, qpwgraph_item::Mode mode, uint type = 0) const;
+
+	QList<qpwgraph_node *> findNodeNums(
+		const qpwgraph_node::NodeNumKey& num_key) const;
+	QList<qpwgraph_node *> findNodeNums(
+		const QString& name_num, qpwgraph_item::Mode mode, uint type = 0) const;
 
 	void releaseNode(qpwgraph_node *node);
 
@@ -331,6 +336,7 @@ private:
 
 	qpwgraph_node::NodeIds   m_node_ids;
 	qpwgraph_node::NodeNames m_node_names;
+	qpwgraph_node::NodeNums  m_node_nums;
 	QList<qpwgraph_node *>   m_nodes;
 
 	QUndoStack *m_commands;

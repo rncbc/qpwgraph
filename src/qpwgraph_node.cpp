@@ -1,7 +1,7 @@
 // qpwgraph_node.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@
 qpwgraph_node::qpwgraph_node (
 	uint id, const QString& name, qpwgraph_item::Mode mode, uint type )
 	: qpwgraph_item(nullptr),
-		m_id(id), m_name(name), m_mode(mode), m_type(type)
+		m_id(id), m_name(name), m_mode(mode), m_type(type), m_num(0)
 {
 	QGraphicsPathItem::setZValue(0.0);
 
@@ -157,6 +157,33 @@ const QIcon& qpwgraph_node::nodeIcon (void) const
 }
 
 
+void qpwgraph_node::setNodeNum ( uint num )
+{
+	m_num = num;
+
+	setNodeTitle(QString()); // reset title.
+}
+
+
+uint qpwgraph_node::nodeNum (void) const
+{
+	return m_num;
+}
+
+
+QString qpwgraph_node::nodeNameNum (void) const
+{
+	QString name_num = m_name;
+
+	if (m_num > 0) {
+		name_num += '-';
+		name_num += QString::number(m_num);
+	}
+
+	return name_num;
+}
+
+
 void qpwgraph_node::setNodeLabel ( const QString& label )
 {
 	m_label = label;
@@ -173,16 +200,16 @@ const QString& qpwgraph_node::nodeLabel (void) const
 
 QString qpwgraph_node::nodeNameLabel (void) const
 {
-	QString label = m_name;
+	QString node_label = nodeNameNum();
 
 	if (!m_label.isEmpty()) {
-		label += ' ';
-		label += '[';
-		label += m_label;
-		label += ']';
+		node_label += ' ';
+		node_label += '[';
+		node_label += m_label;
+		node_label += ']';
 	}
 
-	return label;
+	return node_label;
 }
 
 

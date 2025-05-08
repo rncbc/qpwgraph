@@ -1,7 +1,7 @@
 // qpwgraph_canvas.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -567,6 +567,27 @@ QList<qpwgraph_node *> qpwgraph_canvas::findNodes (
 	const QString& name, qpwgraph_item::Mode mode, uint type ) const
 {
 	return findNodes(qpwgraph_node::NodeNameKey(name, mode, type));
+}
+
+
+QList<qpwgraph_node *> qpwgraph_canvas::findNodeNums (
+	const qpwgraph_node::NodeNumKey& num_key ) const
+{
+	struct CompareNodeId {
+		bool operator()(qpwgraph_node *node1, qpwgraph_node *node2) const
+			{ return (node1->nodeId() < node2->nodeId()); }
+	};
+
+	QList<qpwgraph_node *> nodes = m_node_nums.values(num_key);
+	std::sort(nodes.begin(), nodes.end(), CompareNodeId());
+	return nodes;
+}
+
+
+QList<qpwgraph_node *> qpwgraph_canvas::findNodeNums (
+	const QString& name_num, qpwgraph_item::Mode mode, uint type ) const
+{
+	return findNodeNums(qpwgraph_node::NodeNumKey(name_num, mode, type));
 }
 
 
@@ -1386,8 +1407,8 @@ bool qpwgraph_canvas::restoreNode ( qpwgraph_node *node )
 
 	// Assume node name-keys have been added before this...
 	//
-	const qpwgraph_node::NodeNameKey name_key(node);
-	const int n = m_node_names.values(name_key).count();
+	const qpwgraph_node::NodeNumKey num_key(node);
+	const int n = m_node_nums.values(num_key).count();
 	const QString& node_key = nodeKey(node, n);
 
 	m_settings->beginGroup(NodeAliasesGroup);
@@ -1419,8 +1440,8 @@ bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 
 	// Assume node name-keys are to be removed after this...
 	//
-	const qpwgraph_node::NodeNameKey name_key(node);
-	const int n = m_node_names.values(name_key).count();
+	const qpwgraph_node::NodeNumKey num_key(node);
+	const int n = m_node_nums.values(num_key).count();
 	if (n < 1)
 		return true;
 
@@ -1592,7 +1613,7 @@ bool qpwgraph_canvas::saveState (void) const
 // Graph node/port key helpers.
 QString qpwgraph_canvas::nodeKey ( qpwgraph_node *node, int n ) const
 {
-	QString node_key = node->nodeName();
+	QString node_key = node->nodeNameNum();
 	if (n > 1) {
 		node_key += '_';
 		node_key += QString::number(n - 1);
@@ -1644,11 +1665,13 @@ void qpwgraph_canvas::addNodeKeys ( qpwgraph_node *node )
 {
 	m_node_ids.insert(qpwgraph_node::NodeIdKey(node), node);
 	m_node_names.insert(qpwgraph_node::NodeNameKey(node), node);
+	m_node_nums.insert(qpwgraph_node::NodeNumKey(node), node);
 }
 
 
 void qpwgraph_canvas::removeNodeKeys ( qpwgraph_node *node )
 {
+	m_node_nums.remove(qpwgraph_node::NodeNumKey(node), node);
 	m_node_names.remove(qpwgraph_node::NodeNameKey(node), node);
 	m_node_ids.remove(qpwgraph_node::NodeIdKey(node), node);
 }

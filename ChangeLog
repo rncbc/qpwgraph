@@ -4,6 +4,14 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Patchbay node-name persistence is now made uniform and generic
+  for most if not all multimedia players (eg. web browsers) that
+  usually tend to power-cycle their PipeWire client/driver on a
+  whim (eg. pause, skip,... whatever) (EXPERIMENTAL)
+
+
 0.9.0  2025-04-25  A Spring'25 Beta Release.
 
 - Mitigate an alternate re-positioning to some application nodes
