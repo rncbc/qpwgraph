@@ -552,14 +552,7 @@ qpwgraph_node *qpwgraph_canvas::findNode (
 QList<qpwgraph_node *> qpwgraph_canvas::findNodes (
 	const qpwgraph_node::NodeNameKey& name_key ) const
 {
-	struct CompareNodeId {
-		bool operator()(qpwgraph_node *node1, qpwgraph_node *node2) const
-			{ return (node1->nodeId() < node2->nodeId()); }
-	};
-
-	QList<qpwgraph_node *> nodes = m_node_names.values(name_key);
-	std::sort(nodes.begin(), nodes.end(), CompareNodeId());
-	return nodes;
+	return m_node_names.values(name_key);
 }
 
 
@@ -581,13 +574,6 @@ QList<qpwgraph_node *> qpwgraph_canvas::findNodeNums (
 	QList<qpwgraph_node *> nodes = m_node_nums.values(num_key);
 	std::sort(nodes.begin(), nodes.end(), CompareNodeId());
 	return nodes;
-}
-
-
-QList<qpwgraph_node *> qpwgraph_canvas::findNodeNums (
-	const QString& name_num, qpwgraph_item::Mode mode, uint type ) const
-{
-	return findNodeNums(qpwgraph_node::NodeNumKey(name_num, mode, type));
 }
 
 

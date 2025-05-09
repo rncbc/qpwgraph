@@ -136,8 +136,6 @@ public:
 
 	QList<qpwgraph_node *> findNodeNums(
 		const qpwgraph_node::NodeNumKey& num_key) const;
-	QList<qpwgraph_node *> findNodeNums(
-		const QString& name_num, qpwgraph_item::Mode mode, uint type = 0) const;
 
 	void releaseNode(qpwgraph_node *node);
 
