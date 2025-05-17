@@ -4,6 +4,14 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Regression to the late uniform and generic patchbay node-names
+  which was a terrible mistake: while it sort of fixed some issues
+  regarding multimedia players, it sent all other cases bonkers.
+  So sorry for all the foul play or inconvenience. (EXPERIMENTAL)
+
+
 0.9.1  2025-05-15  A Mid-Spring'25 Beta Release.
 
 - Patchbay node-name persistence is now made uniform and generic

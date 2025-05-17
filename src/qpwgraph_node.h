@@ -54,7 +54,7 @@ public:
 	uint nodeId() const;
 
 	void setNodeName(const QString& name);
-	const QString& nodeName() const;
+	QString nodeName() const;
 
 	void setNodeMode(Mode mode);
 	Mode nodeMode() const;
@@ -67,7 +67,6 @@ public:
 
 	void setNodeNum(uint num);
 	uint nodeNum() const;
-	QString nodeNameNum() const;
 
 	void setNodeLabel(const QString& label);
 	const QString& nodeLabel() const;
@@ -126,19 +125,6 @@ public:
 	};
 
 	typedef QMultiHash<NodeNameKey, qpwgraph_node *> NodeNames;
-
-	// Node hash key (by name-num).
-	class NodeNumKey : public NameKey
-	{
-	public:
-		// Constructors.
-		NodeNumKey (const QString& name_num, Mode mode, uint type = 0)
-			: NameKey(name_num, mode, type) {}
-		NodeNumKey(qpwgraph_node *node)
-			: NameKey(node->nodeNameNum(), node->nodeMode(), node->nodeType()) {}
-	};
-
-	typedef QMultiHash<NodeNumKey, qpwgraph_node *> NodeNums;
 
 	// Rectangular editor extents.
 	QRectF editorRect() const;

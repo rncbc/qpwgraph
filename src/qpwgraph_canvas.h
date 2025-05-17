@@ -134,9 +134,6 @@ public:
 	QList<qpwgraph_node *> findNodes(
 		const QString& name, qpwgraph_item::Mode mode, uint type = 0) const;
 
-	QList<qpwgraph_node *> findNodeNums(
-		const qpwgraph_node::NodeNumKey& num_key) const;
-
 	void releaseNode(qpwgraph_node *node);
 
 	// Whether it's in the middle of something...
@@ -334,7 +331,6 @@ private:
 
 	qpwgraph_node::NodeIds   m_node_ids;
 	qpwgraph_node::NodeNames m_node_names;
-	qpwgraph_node::NodeNums  m_node_nums;
 	QList<qpwgraph_node *>   m_nodes;
 
 	QUndoStack *m_commands;

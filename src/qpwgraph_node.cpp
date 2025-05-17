@@ -113,9 +113,16 @@ void qpwgraph_node::setNodeName ( const QString& name )
 }
 
 
-const QString& qpwgraph_node::nodeName (void) const
+QString qpwgraph_node::nodeName (void) const
 {
-	return m_name;
+	QString name = m_name;
+
+	if (m_num > 0) {
+		name += '-';
+		name += QString::number(m_num);
+	}
+
+	return name;
 }
 
 
@@ -171,19 +178,6 @@ uint qpwgraph_node::nodeNum (void) const
 }
 
 
-QString qpwgraph_node::nodeNameNum (void) const
-{
-	QString name_num = m_name;
-
-	if (m_num > 0) {
-		name_num += '-';
-		name_num += QString::number(m_num);
-	}
-
-	return name_num;
-}
-
-
 void qpwgraph_node::setNodeLabel ( const QString& label )
 {
 	m_label = label;
@@ -200,16 +194,16 @@ const QString& qpwgraph_node::nodeLabel (void) const
 
 QString qpwgraph_node::nodeNameLabel (void) const
 {
-	QString node_label = nodeNameNum();
+	QString name_label = nodeName();
 
 	if (!m_label.isEmpty()) {
-		node_label += ' ';
-		node_label += '[';
-		node_label += m_label;
-		node_label += ']';
+		name_label += ' ';
+		name_label += '[';
+		name_label += m_label;
+		name_label += ']';
 	}
 
-	return node_label;
+	return name_label;
 }
 
 
