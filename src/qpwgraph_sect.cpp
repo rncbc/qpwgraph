@@ -115,16 +115,20 @@ void qpwgraph_sect::renameItem (
 
 	if (item->type() == qpwgraph_node::Type) {
 		qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
-		if (node)
+		if (node) {
 			node->setNodeTitle(name);
+			m_canvas->saveNode(node);
+		}
 	}
 	else
 	if (item->type() == qpwgraph_port::Type) {
 		qpwgraph_port *port = static_cast<qpwgraph_port *> (item);
 		if (port)
 			node = port->portNode();
-		if (port && node)
+		if (port && node) {
 			port->setPortTitle(name);
+			m_canvas->savePort(port);
+		}
 	}
 
 	if (node)

@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Save node positions as soon as they taken or are moved around,
+  avoiding accidental re-positioning to the previous or original
+  state. (EXPERIMENTAL)
+
 - Regression to the late uniform and generic patchbay node-names
   which was a terrible mistake: while it sort of fixed some issues
   regarding multimedia players, it sent all other cases bonkers.

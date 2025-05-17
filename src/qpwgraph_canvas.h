@@ -157,6 +157,13 @@ public:
 	bool restoreState();
 	bool saveState() const;
 
+	// Graph node/port state methods.
+	bool restoreNode(qpwgraph_node *node);
+	bool saveNode(qpwgraph_node *node) const;
+
+	bool restorePort(qpwgraph_port *port);
+	bool savePort(qpwgraph_port *port) const;
+
 	// Repel overlapping nodes...
 	void setRepelOverlappingNodes(bool on);
 	bool isRepelOverlappingNodes() const;
@@ -288,13 +295,6 @@ protected:
 
 	// Zoom in rectangle range.
 	void zoomFitRange(const QRectF& range_rect);
-
-	// Graph node/port state methods.
-	bool restoreNode(qpwgraph_node *node);
-	bool saveNode(qpwgraph_node *node) const;
-
-	bool restorePort(qpwgraph_port *port);
-	bool savePort(qpwgraph_port *port) const;
 
 	// Update editors position and size.
 	void updateRenameEditor();
