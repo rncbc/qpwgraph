@@ -4,16 +4,16 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.9.2  2025-05-17  A Mid-Spring'25 Hot-Fix Beta Release.
 
-- Save node positions as soon as they taken or are moved around,
+- Save node positions as soon as they are taken or moved around,
   avoiding accidental re-positioning to the previous or original
-  state. (EXPERIMENTAL)
+  state.
 
 - Regression to the late uniform and generic patchbay node-names
   which was a terrible mistake: while it sort of fixed some issues
   regarding multimedia players, it sent all other cases bonkers.
-  So sorry for all the foul play or inconvenience. (EXPERIMENTAL)
+  So sorry for all the foul play or inconvenience.
 
 
 0.9.1  2025-05-15  A Mid-Spring'25 Beta Release.
