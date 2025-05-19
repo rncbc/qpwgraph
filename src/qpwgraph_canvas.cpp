@@ -1386,8 +1386,7 @@ bool qpwgraph_canvas::restoreNode ( qpwgraph_node *node )
 
 	// Assume node name-keys have been added before this...
 	//
-	const qpwgraph_node::NodeNameKey name_key(node);
-	const int n = m_node_names.values(name_key).count();
+	const int n = nodeNum(node);
 	const QString& node_key = nodeKey(node, n);
 
 	m_settings->beginGroup(NodeAliasesGroup);
@@ -1419,8 +1418,7 @@ bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 
 	// Assume node name-keys are to be removed after this...
 	//
-	const qpwgraph_node::NodeNameKey name_key(node);
-	const int n = m_node_names.values(name_key).count();
+	const int n = nodeNum(node);
 	if (n < 1)
 		return true;
 
@@ -1586,6 +1584,26 @@ bool qpwgraph_canvas::saveState (void) const
 	m_settings->endGroup();
 
 	return true;
+}
+
+
+// Node number if multiple (else count).
+int qpwgraph_canvas::nodeNum ( qpwgraph_node *node ) const
+{
+	int n = 0;
+
+	const QList<qpwgraph_node *>& nodes
+		= findNodes(qpwgraph_node::NodeNameKey(node));
+	const QList<qpwgraph_node *>::ConstIterator& iter_end = nodes.constEnd();
+	QList<qpwgraph_node *>::ConstIterator iter = nodes.constBegin();
+	while (iter != iter_end) {
+		++n;
+		if ((*iter)->nodeId() == node->nodeId())
+			break;
+		++iter;
+	}
+
+	return n;
 }
 
 

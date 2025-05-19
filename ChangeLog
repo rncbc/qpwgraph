@@ -4,6 +4,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Corrected (again) salvage of node positions that possible have
+  the very same and exact name. (EXPERIMENTAL)
+
+
 0.9.2  2025-05-17  A Mid-Spring'25 Hot-Fix Beta Release.
 
 - Save node positions as soon as they are taken or moved around,

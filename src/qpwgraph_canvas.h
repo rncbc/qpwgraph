@@ -286,6 +286,9 @@ protected:
 	bool gestureEvent(QGestureEvent *event);
 	void pinchGesture(QPinchGesture *pinch);
 
+	// Node number if multiple (else count).
+	int nodeNum(qpwgraph_node *node) const;
+
 	// Graph node/port key helpers.
 	QString nodeKey(qpwgraph_node *node, int n = 0) const;
 	QString portKey(qpwgraph_port *port) const;
