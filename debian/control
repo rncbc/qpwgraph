@@ -3,7 +3,6 @@ Section: sound
 Priority: optional
 Maintainer: Rui Nuno Capela <rncbc@rncbc.org>
 Build-Depends: debhelper (>= 11), cmake, pkg-config,
-  build-essential, g++ (>= 8), g++-11 | g++-10 | g++-9 | g++-8,
   qt6-base-dev (>= 6.1) | qtbase5-dev (>= 5.1),
   qt6-base-dev-tools (>= 6.1) | qtbase5-dev-tools (>= 5.1),
   qt6-tools-dev (>= 6.1) | qttools5-dev (>= 5.1),
