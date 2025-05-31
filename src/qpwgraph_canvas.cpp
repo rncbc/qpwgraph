@@ -344,8 +344,9 @@ void qpwgraph_canvas::removeItem ( qpwgraph_item *item )
 			emit removed(node);
 			node->removePorts();
 			removeNodeKeys(node);
-			m_nodes.removeAll(node);
 		}
+		if (node)
+			m_nodes.removeAll(node);
 	}
 	else
 	if (item->type() == qpwgraph_port::Type) {
@@ -543,9 +544,15 @@ void qpwgraph_canvas::clearNodes ( uint node_type )
 
 // Special node finders.
 qpwgraph_node *qpwgraph_canvas::findNode (
+	const qpwgraph_node::NodeIdKey& node_key ) const
+{
+	return m_node_ids.value(node_key, nullptr);
+}
+
+qpwgraph_node *qpwgraph_canvas::findNode (
 	uint id, qpwgraph_item::Mode mode, uint type ) const
 {
-	return m_node_ids.value(qpwgraph_node::NodeIdKey(id, mode, type), nullptr);
+	return findNode(qpwgraph_node::NodeIdKey(id, mode, type));
 }
 
 
@@ -1414,6 +1421,10 @@ bool qpwgraph_canvas::restoreNode ( qpwgraph_node *node )
 bool qpwgraph_canvas::saveNode ( qpwgraph_node *node ) const
 {
 	if (m_settings == nullptr || node == nullptr)
+		return false;
+
+	// Sure node keys hasn't been released before?...
+	if (findNode(qpwgraph_node::NodeIdKey(node)) != node)
 		return false;
 
 	// Assume node name-keys are to be removed after this...

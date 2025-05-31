@@ -127,6 +127,8 @@ public:
 
 	// Special node finders.
 	qpwgraph_node *findNode(
+		const qpwgraph_node::NodeIdKey& node_key) const;
+	qpwgraph_node *findNode(
 		uint id, qpwgraph_item::Mode mode, uint type = 0) const;
 
 	QList<qpwgraph_node *> findNodes(
