@@ -138,17 +138,13 @@ qpwgraph_move_command::qpwgraph_move_command ( qpwgraph_canvas *canvas,
 		item->node_pos1 = pos + delta;
 		item->node_pos2 = pos;
 		m_items.insert(node, item);
-
+		if (canvas)
+			canvas->saveNode(node);
 	}
 
 	if (canvas && canvas->isRepelOverlappingNodes()) {
 		foreach (qpwgraph_node *node, nodes)
 			canvas->repelOverlappingNodes(node, this);
-	}
-
-	if (canvas) {
-		foreach (qpwgraph_node *node, nodes)
-			canvas->saveNode(node);
 	}
 }
 
@@ -178,6 +174,10 @@ void qpwgraph_move_command::addItem (
 		item->node_pos2 = pos2;//node->pos();
 		m_items.insert(node, item);
 	}
+
+	qpwgraph_canvas *canvas = qpwgraph_command::canvas();
+	if (canvas)
+		canvas->saveNode(node);
 }
 
 
