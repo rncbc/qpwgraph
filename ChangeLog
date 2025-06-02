@@ -4,10 +4,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.9.3  2025-06-02  An End-of-Spring'25 Beta Release.
 
 - Corrected (again) salvage of node positions that possible have
-  the very same and exact name. (EXPERIMENTAL)
+  the very same and exact name.
 
 
 0.9.2  2025-05-17  A Mid-Spring'25 Hot-Fix Beta Release.
