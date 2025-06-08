@@ -36,7 +36,7 @@ If checked, all pinned connections will be automatically disconnected when the c
 
 ## Manage... dialog
 
-Manages the currently loaded patchbay, allowing the removal and cleanup of connection rules that are no longer used, obsolete or simply not applicable anymore. (EXPERIMENTAL)
+Manages the currently loaded patchbay, allowing the removal and cleanup of connection rules that are no longer used, obsolete or simply not applicable anymore.
 
 
 ---
