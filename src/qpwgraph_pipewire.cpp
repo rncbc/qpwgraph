@@ -260,27 +260,8 @@ void qpwgraph_node_event_info ( void *data, const struct pw_node_info *info )
 					node->node_icon = node_icon;
 				const char *media_name
 					= spa_dict_lookup(info->props, PW_KEY_MEDIA_NAME);
-				if (media_name && ::strlen(media_name) > 0) {
+				if (media_name && ::strlen(media_name) > 0)
 					node->media_name = media_name;
-					if (node->node_nick.isEmpty()) {
-						qpwgraph_pipewire *pw = nullptr;
-						if (node->p)
-							pw = (node->p)->pw;
-						qpwgraph_pipewire::Data::NodeNames *node_names = nullptr;
-						if (pw && pw->data())
-							node_names = (pw->data())->node_names;
-						if (node_names) {
-							node_names->remove(
-								qpwgraph_pipewire::Node::NameKey(node),
-								node->name_num);
-							node->node_name = node->media_name;
-							node->media_name.clear();
-							node_names->insert(
-								qpwgraph_pipewire::Node::NameKey(node),
-								node->name_num);
-						}
-					}
-				}
 				node->node_changed = true;
 				node->node_ready = true;
 				if (object->p->pw)
