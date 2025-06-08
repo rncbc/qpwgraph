@@ -985,9 +985,6 @@ bool qpwgraph_pipewire::findNodePort (
 		}
 	}
 
-	if (*node && m_recycled_nodes.value(qpwgraph_node::NodeIdKey(*node), nullptr))
-		return false;
-
 	if (*node && n->node_changed) {
 		canvas->releaseNode(*node);
 		*node = nullptr;
@@ -995,9 +992,6 @@ bool qpwgraph_pipewire::findNodePort (
 
 	if (*node)
 		*port = (*node)->findPort(port_id, port_mode, port_type);
-
-	if (*port && m_recycled_ports.value(qpwgraph_port::PortIdKey(*port), nullptr))
-		return false;
 
 	if (add_new && *node == nullptr && !canvas->isFilterNodes(n->node_name)) {
 		QString node_name = n->node_name;
@@ -1111,9 +1105,6 @@ void qpwgraph_pipewire::updateItems (void)
 	// 3. Clean-up all un-marked items...
 	//
 	qpwgraph_sect::resetItems(qpwgraph_pipewire::nodeType());
-
-	m_recycled_nodes.clear();
-	m_recycled_ports.clear();
 }
 
 
@@ -1130,9 +1121,6 @@ void qpwgraph_pipewire::clearItems (void)
 	// Clean-up all items...
 	//
 	qpwgraph_sect::clearItems(qpwgraph_pipewire::nodeType());
-
-	m_recycled_nodes.clear();
-	m_recycled_ports.clear();
 }
 
 
@@ -1253,8 +1241,6 @@ qpwgraph_pipewire::Node *qpwgraph_pipewire::createNode (
 	qpwgraph_item::Mode node_mode,
 	uint node_type )
 {
-	recycleNode(node_id, node_mode);
-
 	Node *node = new Node(node_id);
 	node->node_name = node_name;
 	node->node_nick = node_nick;
@@ -1319,8 +1305,6 @@ qpwgraph_pipewire::Port *qpwgraph_pipewire::createPort (
 	uint port_type,
 	uint port_flags )
 {
-	recyclePort(port_id, node_id, port_mode, port_type);
-
 	Node *node = findNode(node_id);
 	if (node == nullptr)
 		return nullptr;
@@ -1420,29 +1404,6 @@ qpwgraph_node *qpwgraph_pipewire::findNode (
 		node = qpwgraph_sect::findNode(node_id, qpwgraph_item::Duplex, node_type);
 
 	return node;
-}
-
-
-// Special node recycler...
-void qpwgraph_pipewire::recycleNode (
-	uint node_id, qpwgraph_item::Mode node_mode )
-{
-	qpwgraph_node *node = findNode(node_id, node_mode);
-	if (node)
-		m_recycled_nodes.insert(qpwgraph_node::NodeIdKey(node), node);
-}
-
-
-// Special port recycler...
-void qpwgraph_pipewire::recyclePort (
-	uint port_id, uint node_id, qpwgraph_item::Mode port_mode, uint port_type )
-{
-	qpwgraph_node *node = findNode(node_id, port_mode);
-	if (node) {
-		qpwgraph_port *port = node->findPort(port_id, port_mode, port_type);
-		if (port)
-			m_recycled_ports.insert(qpwgraph_port::PortIdKey(port), port);
-	}
 }
 
 

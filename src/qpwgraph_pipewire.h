@@ -143,12 +143,6 @@ protected:
 	// Special node finder...
 	qpwgraph_node *findNode(uint node_id, qpwgraph_item::Mode node_mode) const;
 
-	// Special node/port recycler...
-	void recycleNode(
-		uint node_id, qpwgraph_item::Mode node_mode);
-	void recyclePort(
-		uint port_id, uint node_id, qpwgraph_item::Mode port_mode, uint port_type);
-
 private:
 
 	// PipeWire client impl.
