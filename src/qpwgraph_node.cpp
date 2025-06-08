@@ -42,7 +42,8 @@
 qpwgraph_node::qpwgraph_node (
 	uint id, const QString& name, qpwgraph_item::Mode mode, uint type )
 	: qpwgraph_item(nullptr),
-		m_id(id), m_name(name), m_mode(mode), m_type(type), m_num(0)
+		m_id(id), m_name(name), m_mode(mode), m_type(type),
+		m_num(0), m_name_ex(false)
 {
 	QGraphicsPathItem::setZValue(0.0);
 
@@ -242,6 +243,24 @@ void qpwgraph_node::setNodePrefix ( const QString& prefix )
 const QString& qpwgraph_node::nodePrefix (void) const
 {
 	return m_prefix;
+}
+
+
+void qpwgraph_node::setNodeNameEx ( bool name_ex )
+{
+	m_name_ex = name_ex;
+}
+
+
+bool qpwgraph_node::isNodeNameEx (void) const
+{
+	return m_name_ex;
+}
+
+
+QString qpwgraph_node::nodeNameEx (void) const
+{
+	return (m_name_ex ? m_name : nodeName());
 }
 
 

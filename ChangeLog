@@ -4,6 +4,14 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Introducing Graph/Options.../Merger to unify node-names for
+  Patchbay persistence, especially useful to PipeWire clients
+  that spawn more than one node, having the very same name (eg.
+  web browsers). (EXPERIMENTAL)
+
+
 0.9.3  2025-06-02  An End-of-Spring'25 Beta Release.
 
 - Corrected (again) salvage of node positions that possible have

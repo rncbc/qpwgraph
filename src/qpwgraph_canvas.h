@@ -207,6 +207,15 @@ public:
 
 	bool isFilterNodes(const QString& node_name) const;
 
+	// Merger/unify list management accessors.
+	void setMergerNodesEnabled(bool enabled);
+	bool isMergerNodesEnabled() const;
+
+	void setMergerNodesList(const QStringList& nodes);
+	const QStringList& mergerNodesList() const;
+
+	bool isMergerNodes(const QString& node_name) const;
+
 signals:
 
 	// Node factory notifications.
@@ -371,6 +380,10 @@ private:
 	// Filter/hide list management.
 	bool        m_filter_enabled;
 	QStringList m_filter_nodes;
+
+	// Merger/unify list management.
+	bool        m_merger_enabled;
+	QStringList m_merger_nodes;
 };
 
 

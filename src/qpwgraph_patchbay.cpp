@@ -133,9 +133,9 @@ void qpwgraph_patchbay::snap (void)
 						m_items.addItem(Item(
 							node1->nodeType(),
 							port1->portType(),
-							node1->nodeName(),
+							node1->nodeNameEx(),
 							port1->portName(),
-							node2->nodeName(),
+							node2->nodeNameEx(),
 							port2->portName()));
 					}
 				}
@@ -339,9 +339,9 @@ bool qpwgraph_patchbay::scan (void)
 							const Item item12(
 								node1->nodeType(),
 								port1->portType(),
-								node1->nodeName(),
+								node1->nodeNameEx(),
 								port1->portName(),
-								node12->nodeName(),
+								node12->nodeNameEx(),
 								port12->portName());
 							if (m_items.constFind(item12) == iter_end)
 								disconnects.insert(item12, connect12);
@@ -358,9 +358,9 @@ bool qpwgraph_patchbay::scan (void)
 							const Item item21(
 								node21->nodeType(),
 								port21->portType(),
-								node21->nodeName(),
+								node21->nodeNameEx(),
 								port21->portName(),
-								node2->nodeName(),
+								node2->nodeNameEx(),
 								port2->portName());
 							if (m_items.constFind(item21) == iter_end) {
 								disconnects.insert(item21, connect21);
@@ -376,9 +376,9 @@ bool qpwgraph_patchbay::scan (void)
 					const Item item12(
 						node1->nodeType(),
 						port1->portType(),
-						node1->nodeName(),
+						node1->nodeNameEx(),
 						port1->portName(),
-						node2->nodeName(),
+						node2->nodeNameEx(),
 						port2->portName());
 					disconnects.insert(item12, connect12);
 				}
@@ -415,9 +415,9 @@ bool qpwgraph_patchbay::connectPorts (
 		const Item item(
 			node1->nodeType(),
 			port1->portType(),
-			node1->nodeName(),
+			node1->nodeNameEx(),
 			port1->portName(),
-			node2->nodeName(),
+			node2->nodeNameEx(),
 			port2->portName());
 		if (is_connect)
 			ret = m_items.addItem(item);
@@ -450,9 +450,9 @@ qpwgraph_patchbay::Item *qpwgraph_patchbay::findConnectPorts (
 			const Item item(
 				node1->nodeType(),
 				port1->portType(),
-				node1->nodeName(),
+				node1->nodeNameEx(),
 				port1->portName(),
-				node2->nodeName(),
+				node2->nodeNameEx(),
 				port2->portName());
 			ret = m_items.value(item, nullptr);
 		}

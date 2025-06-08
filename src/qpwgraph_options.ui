@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qpwgraph - A PipeWire Graph Qt GUI Interface
 
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -386,6 +386,174 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="MergerNodesTabPage">
+      <attribute name="title">
+       <string>Merger</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0" colspan="2">
+        <widget class="QCheckBox" name="MergerNodesEnabledCheckBox">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Whether to merge / unify nodes on the patchbay</string>
+         </property>
+         <property name="text">
+          <string>Enable merge / unify nodes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QComboBox" name="MergerNodesNameComboBox">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Node name (regex)</string>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QToolButton" name="MergerNodesAddToolButton">
+         <property name="minimumSize">
+          <size>
+           <width>72</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Add node name (regex) to merger / unify list</string>
+         </property>
+         <property name="text">
+          <string>&amp;Add</string>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" rowspan="3">
+        <widget class="QListWidget" name="MergerNodesListWidget">
+         <property name="minimumSize">
+          <size>
+           <width>320</width>
+           <height>80</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Node name (regex) merger / unify list</string>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="uniformItemSizes">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QToolButton" name="MergerNodesRemoveToolButton">
+         <property name="minimumSize">
+          <size>
+           <width>72</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Remove node name (regex) from merger / unify list</string>
+         </property>
+         <property name="text">
+          <string>&amp;Remove</string>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>8</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="1">
+        <widget class="QToolButton" name="MergerNodesClearToolButton">
+         <property name="minimumSize">
+          <size>
+           <width>72</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Clear merger / unify list</string>
+         </property>
+         <property name="text">
+          <string>&amp;Clear</string>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>8</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
@@ -414,6 +582,12 @@
   <tabstop>FilterNodesListWidget</tabstop>
   <tabstop>FilterNodesRemoveToolButton</tabstop>
   <tabstop>FilterNodesClearToolButton</tabstop>
+  <tabstop>MergerNodesEnabledCheckBox</tabstop>
+  <tabstop>MergerNodesNameComboBox</tabstop>
+  <tabstop>MergerNodesAddToolButton</tabstop>
+  <tabstop>MergerNodesListWidget</tabstop>
+  <tabstop>MergerNodesRemoveToolButton</tabstop>
+  <tabstop>MergerNodesClearToolButton</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

@@ -638,10 +638,23 @@ void qpwgraph_main::updateOptions (void)
 	m_ui.graphCanvas->setFilterNodesEnabled(m_config->isFilterNodesEnabled());
 	m_ui.graphCanvas->setFilterNodesList(m_config->filterNodesList());
 
+	m_ui.graphCanvas->setMergerNodesEnabled(m_config->isMergerNodesEnabled());
+	m_ui.graphCanvas->setMergerNodesList(m_config->mergerNodesList());
+
+	int nrefresh = 0;
+
 	if (m_config->isFilterNodesDirty()) {
 		m_config->setFilterNodesDirty(false);
-		viewRefresh();
+		++nrefresh;
 	}
+
+	if (m_config->isMergerNodesDirty()) {
+		m_config->setMergerNodesDirty(false);
+		++nrefresh;
+	}
+
+	if (nrefresh > 0)
+		viewRefresh();
 
 	stabilize();
 }

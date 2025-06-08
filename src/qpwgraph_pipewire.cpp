@@ -1035,6 +1035,7 @@ bool qpwgraph_pipewire::findNodePort (
 		(*node)->setNodeNum(n->name_num);
 		(*node)->setNodeLabel(n->media_name);
 		(*node)->setNodePrefix(n->node_nick);
+		(*node)->setNodeNameEx(canvas->isMergerNodes(node_name));
 		n->node_changed = false;
 		qpwgraph_sect::addItem(*node);
 	}

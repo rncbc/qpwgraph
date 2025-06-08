@@ -1,7 +1,7 @@
 // qpwgraph_config.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -74,8 +74,9 @@ static const char *SessionGroup = "/Session";
 static const char *SessionStartMinimizedKey = "/StartMinimized";
 
 static const char *FilterNodesGroup = "/FilterNodes";
-static const char *FilterNodesEnabledKey = "/Enabled";
-static const char *FilterNodesListKey = "/List";
+static const char *MergerNodesGroup = "/MergerNodes";
+static const char *NodesEnabledKey = "/Enabled";
+static const char *NodesListKey = "/List";
 
 static const char *HistoryGroup = "/History";
 
@@ -110,7 +111,9 @@ qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 		m_alsaseq_enabled(true),
 		m_start_minimized(false),
 		m_filter_enabled(false),
-		m_filter_dirty(false)
+		m_filter_dirty(false),
+		m_merger_enabled(false),
+		m_merger_dirty(false)
 {
 }
 
@@ -446,6 +449,39 @@ bool qpwgraph_config::isFilterNodesDirty (void) const
 }
 
 
+void qpwgraph_config::setMergerNodesEnabled ( bool enabled )
+{
+	m_merger_enabled = enabled;
+}
+
+bool qpwgraph_config::isMergerNodesEnabled (void) const
+{
+	return m_merger_enabled;
+}
+
+
+void qpwgraph_config::setMergerNodesList ( const QStringList& nodes )
+{
+	m_merger_nodes = nodes;
+}
+
+const QStringList& qpwgraph_config::mergerNodesList (void) const
+{
+	return m_merger_nodes;
+}
+
+
+void qpwgraph_config::setMergerNodesDirty ( bool dirty )
+{
+	m_merger_dirty = dirty;
+}
+
+bool qpwgraph_config::isMergerNodesDirty (void) const
+{
+	return m_merger_dirty;
+}
+
+
 void qpwgraph_config::setSessionStartMinimized ( bool start_minimized )
 {
 	m_settings->beginGroup(SessionGroup);
@@ -472,9 +508,14 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 	if (m_settings == nullptr || widget == nullptr)
 		return false;
 
+	m_settings->beginGroup(MergerNodesGroup);
+	m_merger_enabled = m_settings->value(NodesEnabledKey, false).toBool();
+	m_merger_nodes = m_settings->value(NodesListKey).toStringList();
+	m_settings->endGroup();
+
 	m_settings->beginGroup(FilterNodesGroup);
-	m_filter_enabled = m_settings->value(FilterNodesEnabledKey, false).toBool();
-	m_filter_nodes = m_settings->value(FilterNodesListKey).toStringList();
+	m_filter_enabled = m_settings->value(NodesEnabledKey, false).toBool();
+	m_filter_nodes = m_settings->value(NodesListKey).toStringList();
 	m_settings->endGroup();
 
 #ifdef CONFIG_SYSTEM_TRAY
@@ -573,9 +614,14 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 	if (m_settings == nullptr || widget == nullptr)
 		return false;
 
+	m_settings->beginGroup(MergerNodesGroup);
+	m_settings->setValue(NodesEnabledKey, m_merger_enabled);
+	m_settings->setValue(NodesListKey, m_merger_nodes);
+	m_settings->endGroup();
+
 	m_settings->beginGroup(FilterNodesGroup);
-	m_settings->setValue(FilterNodesEnabledKey, m_filter_enabled);
-	m_settings->setValue(FilterNodesListKey, m_filter_nodes);
+	m_settings->setValue(NodesEnabledKey, m_filter_enabled);
+	m_settings->setValue(NodesListKey, m_filter_nodes);
 	m_settings->endGroup();
 
 #ifdef CONFIG_SYSTEM_TRAY

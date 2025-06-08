@@ -1,7 +1,7 @@
 // qpwgraph_options.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,6 +57,13 @@ protected slots:
 	void clearFilterNodes();
 	void changedFilterNodes();
 
+	// Merger/unify list management slots.
+	void selectMergerNodes();
+	void addMergerNodes();
+	void removeMergerNodes();
+	void clearMergerNodes();
+	void changedMergerNodes();
+
 protected:
 
 	void stabilize();
@@ -68,6 +75,7 @@ private:
 
 	int m_dirty;
 	int m_dirty_filter;
+	int m_dirty_merger;
 };
 
 

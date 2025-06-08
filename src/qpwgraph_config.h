@@ -1,7 +1,7 @@
 // qpwgraph_config.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -126,6 +126,15 @@ public:
 	void setFilterNodesDirty(bool dirty);
 	bool isFilterNodesDirty() const;
 
+	void setMergerNodesEnabled(bool enabled);
+	bool isMergerNodesEnabled() const;
+
+	void setMergerNodesList(const QStringList& nodes);
+	const QStringList& mergerNodesList() const;
+
+	void setMergerNodesDirty(bool dirty);
+	bool isMergerNodesDirty() const;
+
 	void setStartMinimized(bool start_minimized);
 	bool isStartMinimized() const;
 
@@ -176,6 +185,10 @@ private:
 	bool        m_filter_enabled;
 	QStringList m_filter_nodes;
 	bool        m_filter_dirty;
+
+	bool        m_merger_enabled;
+	QStringList m_merger_nodes;
+	bool        m_merger_dirty;
 
 	bool        m_start_minimized;
 };

@@ -1,7 +1,7 @@
 // qpwgraph_options.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,10 +50,12 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 	m_dirty = 0;
 
 	m_dirty_filter = 0;
+	m_dirty_merger = 0;
 
 	// Setup current options...
 	qpwgraph_config *config = parent->config();
 	if (config) {
+		config->loadComboBoxHistory(m_ui.MergerNodesNameComboBox);
 		config->loadComboBoxHistory(m_ui.FilterNodesNameComboBox);
 	#ifdef CONFIG_SYSTEM_TRAY
 		m_ui.SystemTrayEnabledCheckBox->setChecked(
@@ -89,15 +91,31 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 
 	// Filter/hide list management...
 	//
-	m_ui.FilterNodesEnabledCheckBox->setChecked(
-		config->isFilterNodesEnabled());
-	m_ui.FilterNodesNameComboBox->lineEdit()->setClearButtonEnabled(true);
-	m_ui.FilterNodesNameComboBox->lineEdit()->setPlaceholderText(
-		m_ui.FilterNodesNameComboBox->toolTip());
-	m_ui.FilterNodesNameComboBox->setCurrentText(QString());
-	m_ui.FilterNodesListWidget->clear();
-	m_ui.FilterNodesListWidget->addItems(
-		config->filterNodesList());
+	if (config) {
+		m_ui.FilterNodesEnabledCheckBox->setChecked(
+			config->isFilterNodesEnabled());
+		m_ui.FilterNodesNameComboBox->lineEdit()->setClearButtonEnabled(true);
+		m_ui.FilterNodesNameComboBox->lineEdit()->setPlaceholderText(
+			m_ui.FilterNodesNameComboBox->toolTip());
+		m_ui.FilterNodesNameComboBox->setCurrentText(QString());
+		m_ui.FilterNodesListWidget->clear();
+		m_ui.FilterNodesListWidget->addItems(
+			config->filterNodesList());
+	}
+
+	// Merger/unify list management...
+	//
+	if (config) {
+		m_ui.MergerNodesEnabledCheckBox->setChecked(
+			config->isMergerNodesEnabled());
+		m_ui.MergerNodesNameComboBox->lineEdit()->setClearButtonEnabled(true);
+		m_ui.MergerNodesNameComboBox->lineEdit()->setPlaceholderText(
+			m_ui.MergerNodesNameComboBox->toolTip());
+		m_ui.MergerNodesNameComboBox->setCurrentText(QString());
+		m_ui.MergerNodesListWidget->clear();
+		m_ui.MergerNodesListWidget->addItems(
+			config->mergerNodesList());
+	}
 
 	// Try to restore old window positioning.
 	adjustSize();
@@ -141,6 +159,25 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 	QObject::connect(m_ui.FilterNodesClearToolButton,
 		SIGNAL(clicked()),
 		SLOT(clearFilterNodes()));
+
+	QObject::connect(m_ui.MergerNodesEnabledCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changedMergerNodes()));
+	QObject::connect(m_ui.MergerNodesNameComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(selectMergerNodes()));
+	QObject::connect(m_ui.MergerNodesAddToolButton,
+		SIGNAL(clicked()),
+		SLOT(addMergerNodes()));
+	QObject::connect(m_ui.MergerNodesListWidget,
+		SIGNAL(itemSelectionChanged()),
+		SLOT(selectMergerNodes()));
+	QObject::connect(m_ui.MergerNodesRemoveToolButton,
+		SIGNAL(clicked()),
+		SLOT(removeMergerNodes()));
+	QObject::connect(m_ui.MergerNodesClearToolButton,
+		SIGNAL(clicked()),
+		SLOT(clearMergerNodes()));
 
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
@@ -224,6 +261,21 @@ void qpwgraph_options::accept (void)
 			m_dirty_filter = 0;
 		}
 		config->saveComboBoxHistory(m_ui.FilterNodesNameComboBox);
+		if (m_dirty_merger > 0) {
+			config->setMergerNodesEnabled(
+				m_ui.MergerNodesEnabledCheckBox->isChecked());
+			QStringList nodes;
+			const int n = m_ui.MergerNodesListWidget->count();
+			for (int i = 0; i < n; ++i) {
+				QListWidgetItem *item = m_ui.MergerNodesListWidget->item(i);
+				if (item)
+					nodes.append(item->text());
+			}
+			config->setMergerNodesList(nodes);
+			config->setMergerNodesDirty(true);
+			m_dirty_merger = 0;
+		}
+		config->saveComboBoxHistory(m_ui.MergerNodesNameComboBox);
 		parent->updateOptions();
 	}
 
@@ -301,6 +353,67 @@ void qpwgraph_options::clearFilterNodes (void)
 }
 
 
+// Merger/unify list management...
+//
+void qpwgraph_options::changedMergerNodes (void)
+{
+	++m_dirty_merger;
+
+	changed();
+}
+
+
+void qpwgraph_options::selectMergerNodes (void)
+{
+	stabilize();
+}
+
+
+void qpwgraph_options::addMergerNodes (void)
+{
+	const QString& node_name
+		= m_ui.MergerNodesNameComboBox->currentText();
+	if (node_name.isEmpty())
+		return;
+
+	m_ui.MergerNodesListWidget->addItem(node_name);
+	m_ui.MergerNodesListWidget->setCurrentRow(
+		m_ui.MergerNodesListWidget->count() - 1);
+
+	const int i = m_ui.MergerNodesNameComboBox->findText(node_name);
+	if (i >= 0)
+		m_ui.MergerNodesNameComboBox->removeItem(i);
+	m_ui.MergerNodesNameComboBox->insertItem(0, node_name);
+	m_ui.MergerNodesNameComboBox->setEditText(QString());
+
+	m_ui.MergerNodesListWidget->setFocus();
+
+	changedMergerNodes();
+}
+
+
+void qpwgraph_options::removeMergerNodes (void)
+{
+	const int i	= m_ui.MergerNodesListWidget->currentRow();
+	if (i < 0)
+		return;
+
+	QListWidgetItem *item = m_ui.MergerNodesListWidget->takeItem(i);
+	if (item)
+		delete item;
+
+	changedMergerNodes();
+}
+
+
+void qpwgraph_options::clearMergerNodes (void)
+{
+	m_ui.MergerNodesListWidget->clear();
+
+	changedMergerNodes();
+}
+
+
 // Stabilize current form state.
 void qpwgraph_options::stabilize (void)
 {
@@ -327,6 +440,25 @@ void qpwgraph_options::stabilize (void)
 		m_ui.FilterNodesAddToolButton->setEnabled(false);
 		m_ui.FilterNodesRemoveToolButton->setEnabled(false);
 		m_ui.FilterNodesClearToolButton->setEnabled(false);
+	}
+
+	if (m_ui.MergerNodesEnabledCheckBox->isChecked()) {
+		m_ui.MergerNodesNameComboBox->setEnabled(true);
+		m_ui.MergerNodesListWidget->setEnabled(true);
+		const QString& node_name
+			= m_ui.MergerNodesNameComboBox->currentText();
+		m_ui.MergerNodesAddToolButton->setEnabled(!node_name.isEmpty() &&
+			m_ui.MergerNodesListWidget->findItems(node_name, Qt::MatchFixedString).isEmpty());
+		const int i	= m_ui.MergerNodesListWidget->currentRow();
+		m_ui.MergerNodesRemoveToolButton->setEnabled(i >= 0);
+		m_ui.MergerNodesClearToolButton->setEnabled(
+			m_ui.MergerNodesListWidget->count() > 0);
+	} else {
+		m_ui.MergerNodesNameComboBox->setEnabled(false);
+		m_ui.MergerNodesListWidget->setEnabled(false);
+		m_ui.MergerNodesAddToolButton->setEnabled(false);
+		m_ui.MergerNodesRemoveToolButton->setEnabled(false);
+		m_ui.MergerNodesClearToolButton->setEnabled(false);
 	}
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(m_dirty > 0);

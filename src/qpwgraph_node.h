@@ -78,6 +78,10 @@ public:
 	void setNodePrefix(const QString& prefix);
 	const QString& nodePrefix() const;
 
+	void setNodeNameEx(bool name_ex);
+	bool isNodeNameEx() const;
+	QString nodeNameEx() const;
+
 	// Port-list methods.
 	qpwgraph_port *addPort(uint id, const QString& name, Mode mode, int type = 0);
 
@@ -121,7 +125,7 @@ public:
 		NodeNameKey (const QString& name, Mode mode, uint type = 0)
 			: NameKey(name, mode, type) {}
 		NodeNameKey(qpwgraph_node *node)
-			: NameKey(node->nodeName(), node->nodeMode(), node->nodeType()) {}
+			: NameKey(node->nodeNameEx(), node->nodeMode(), node->nodeType()) {}
 	};
 
 	typedef QMultiHash<NodeNameKey, qpwgraph_node *> NodeNames;
@@ -150,6 +154,8 @@ private:
 	QString m_title;
 
 	QString m_prefix;
+
+	bool m_name_ex;
 
 	QGraphicsPixmapItem *m_pixmap;
 	QGraphicsTextItem   *m_text;
