@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Indulged on a new 'Add' (pinned connection) button into the
+  Patchbay/Manage... dialog. (EXPERIMENTAL)
 - Introducing Graph/Options.../Merger to unify node-names for
   Patchbay persistence, especially useful to PipeWire clients
   that spawn more than one node, having the very same name (eg.

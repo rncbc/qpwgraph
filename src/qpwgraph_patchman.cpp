@@ -1,7 +1,7 @@
 // qpwgraph_patchman.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -168,6 +168,9 @@ public:
 	void refresh();
 
 	// Patchbay management actions.
+	bool canAdd() const;
+	void add();
+
 	bool canRemove() const;
 	void remove();
 
@@ -188,6 +191,9 @@ protected:
 	// Patchbay connect line finder/removal.
 	bool findLine(
 		QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item) const;
+
+	bool addLine(
+		QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item);
 	bool removeLine(
 		QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item);
 
@@ -695,6 +701,155 @@ void qpwgraph_patchman::MainWidget::refresh (void)
 
 
 // Patchbay management actions.
+//
+bool qpwgraph_patchman::MainWidget::canAdd (void) const
+{
+	const QList<QTreeWidgetItem *>& items1
+		= m_outputs->selectedItems();
+	const QList<QTreeWidgetItem *>& items2
+		= m_inputs->selectedItems();
+
+	if (items1.isEmpty() || items2.isEmpty())
+		return false;
+
+	QListIterator<QTreeWidgetItem *> iter1(items1);
+	QListIterator<QTreeWidgetItem *> iter2(items2);
+
+	const int nitems
+		= qMax(items1.count(),items2.count());
+
+	for (int i = 0; i < nitems; ++i) {
+		if (!iter1.hasNext())
+			iter1.toFront();
+		if (!iter2.hasNext())
+			iter2.toFront();
+		QTreeWidgetItem *item1 = iter1.next();
+		QTreeWidgetItem *item2 = iter2.next();
+		if (item2->parent() == nullptr) {
+			if (item1->parent() == nullptr) {
+				// Each-to-each connections...
+				const int nchilds
+					= qMin(item1->childCount(), item2->childCount());
+				for (int j = 0; j < nchilds; ++j) {
+					QTreeWidgetItem *port1_item = item1->child(j);
+					QTreeWidgetItem *port2_item = item2->child(j);
+					if (port1_item->type() == port2_item->type()
+						&& !findLine(port1_item, port2_item))
+						return true;
+				}
+			} else {
+				// Many(all)-to-one/many connection...
+				const int nchilds = item2->childCount();
+				for (int j = 0; j < nchilds; ++j) {
+					QTreeWidgetItem *port1_item = item1;
+					QTreeWidgetItem *port2_item = item2->child(j);
+					if (port1_item->type() == port2_item->type()
+						&& !findLine(port1_item, port2_item))
+						return true;
+				}
+			}
+		} else {
+			if (item1->parent() == nullptr) {
+				// Many(all)-to-one/many connection...
+				const int nchilds = item1->childCount();
+				for (int j = 0; j < nchilds; ++j) {
+					QTreeWidgetItem *port1_item = item1->child(j);
+					QTreeWidgetItem *port2_item = item2;
+					if (port1_item->type() == port2_item->type()
+						&& !findLine(port1_item, port2_item))
+						return true;
+				}
+			} else {
+				// One-to-many(all) connection...
+				QTreeWidgetItem *port1_item = item1;
+				QTreeWidgetItem *port2_item = item2;
+				if (port1_item->type() == port2_item->type()
+					&& !findLine(port1_item, port2_item))
+					return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+
+void qpwgraph_patchman::MainWidget::add (void)
+{
+	int nadded = 0;
+
+	const QList<QTreeWidgetItem *>& items1
+		= m_outputs->selectedItems();
+	const QList<QTreeWidgetItem *>& items2
+		= m_inputs->selectedItems();
+
+	if (items1.isEmpty() || items2.isEmpty())
+		return;
+
+	QListIterator<QTreeWidgetItem *> iter1(items1);
+	QListIterator<QTreeWidgetItem *> iter2(items2);
+
+	const int nitems
+		= qMax(items1.count(),items2.count());
+
+	for (int i = 0; i < nitems; ++i) {
+		if (!iter1.hasNext())
+			iter1.toFront();
+		if (!iter2.hasNext())
+			iter2.toFront();
+		QTreeWidgetItem *item1 = iter1.next();
+		QTreeWidgetItem *item2 = iter2.next();
+		if (item2->parent() == nullptr) {
+			if (item1->parent() == nullptr) {
+				// Each-to-each connections...
+				const int nchilds
+					= qMin(item1->childCount(), item2->childCount());
+				for (int j = 0; j < nchilds; ++j) {
+					QTreeWidgetItem *port1_item = item1->child(j);
+					QTreeWidgetItem *port2_item = item2->child(j);
+					if (port1_item->type() == port2_item->type()
+						&& addLine(port1_item, port2_item))
+						++nadded;
+				}
+			} else {
+				// Many(all)-to-one/many connection...
+				const int nchilds = item2->childCount();
+				for (int j = 0; j < nchilds; ++j) {
+					QTreeWidgetItem *port1_item = item1;
+					QTreeWidgetItem *port2_item = item2->child(j);
+					if (port1_item->type() == port2_item->type()
+						&& addLine(port1_item, port2_item))
+						++nadded;
+				}
+			}
+		} else {
+			if (item1->parent() == nullptr) {
+				// Many(all)-to-one/many connection...
+				const int nchilds = item1->childCount();
+				for (int j = 0; j < nchilds; ++j) {
+					QTreeWidgetItem *port1_item = item1->child(j);
+					QTreeWidgetItem *port2_item = item2;
+					if (port1_item->type() == port2_item->type()
+						&& addLine(port1_item, port2_item))
+						++nadded;
+				}
+			} else {
+				// One-to-many(all) connection...
+				QTreeWidgetItem *port1_item = item1;
+				QTreeWidgetItem *port2_item = item2;
+				if (port1_item->type() == port2_item->type()
+					&& addLine(port1_item, port2_item))
+					++nadded;
+			}
+		}
+	}
+
+	// Refresh if anything has been added...
+	if (nadded > 0)
+		refresh();
+}
+
+
 bool qpwgraph_patchman::MainWidget::canRemove (void) const
 {
 	const QList<QTreeWidgetItem *>& items1
@@ -726,7 +881,8 @@ bool qpwgraph_patchman::MainWidget::canRemove (void) const
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1->child(j);
 					QTreeWidgetItem *port2_item = item2->child(j);
-					if (findLine(port1_item, port2_item))
+					if (port1_item->type() == port2_item->type()
+						&& findLine(port1_item, port2_item))
 						return true;
 				}
 			} else {
@@ -735,7 +891,8 @@ bool qpwgraph_patchman::MainWidget::canRemove (void) const
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1;
 					QTreeWidgetItem *port2_item = item2->child(j);
-					if (findLine(port1_item, port2_item))
+					if (port1_item->type() == port2_item->type()
+						&& findLine(port1_item, port2_item))
 						return true;
 				}
 			}
@@ -746,14 +903,16 @@ bool qpwgraph_patchman::MainWidget::canRemove (void) const
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1->child(j);
 					QTreeWidgetItem *port2_item = item2;
-					if (findLine(port1_item, port2_item))
+					if (port1_item->type() == port2_item->type()
+						&& findLine(port1_item, port2_item))
 						return true;
 				}
 			} else {
 				// One-to-many(all) connection...
 				QTreeWidgetItem *port1_item = item1;
 				QTreeWidgetItem *port2_item = item2;
-				if (findLine(port1_item, port2_item))
+				if (port1_item->type() == port2_item->type()
+					&& findLine(port1_item, port2_item))
 					return true;
 			}
 		}
@@ -796,7 +955,8 @@ void qpwgraph_patchman::MainWidget::remove (void)
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1->child(j);
 					QTreeWidgetItem *port2_item = item2->child(j);
-					if (removeLine(port1_item, port2_item))
+					if (port1_item->type() == port2_item->type()
+						&& removeLine(port1_item, port2_item))
 						++nremoved;
 				}
 			} else {
@@ -805,7 +965,8 @@ void qpwgraph_patchman::MainWidget::remove (void)
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1;
 					QTreeWidgetItem *port2_item = item2->child(j);
-					if (removeLine(port1_item, port2_item))
+					if (port1_item->type() == port2_item->type()
+						&& removeLine(port1_item, port2_item))
 						++nremoved;
 				}
 			}
@@ -816,15 +977,17 @@ void qpwgraph_patchman::MainWidget::remove (void)
 				for (int j = 0; j < nchilds; ++j) {
 					QTreeWidgetItem *port1_item = item1->child(j);
 					QTreeWidgetItem *port2_item = item2;
-					if (removeLine(port1_item, port2_item))
+					if (port1_item->type() == port2_item->type()
+						&& removeLine(port1_item, port2_item))
 						++nremoved;
 				}
 			} else {
 				// One-to-many(all) connection...
 				QTreeWidgetItem *port1_item = item1;
 				QTreeWidgetItem *port2_item = item2;
-					if (removeLine(port1_item, port2_item))
-						++nremoved;
+				if (port1_item->type() == port2_item->type()
+					&& removeLine(port1_item, port2_item))
+					++nremoved;
 			}
 		}
 	}
@@ -958,6 +1121,31 @@ bool qpwgraph_patchman::MainWidget::findLine (
 }
 
 
+bool qpwgraph_patchman::MainWidget::addLine (
+	QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item )
+{
+	if (findLine(port1_item, port2_item))
+		return false;
+
+	QTreeWidgetItem *node1_item = port1_item->parent();
+	QTreeWidgetItem *node2_item = port2_item->parent();
+
+	if (node1_item == nullptr || node2_item == nullptr)
+		return false;
+
+	m_connects->addLine(port1_item, port2_item);
+
+	return m_items.addItem(
+		qpwgraph_patchbay::Item(
+			node1_item->type(),
+			port1_item->type(),
+			node1_item->text(0),
+			port1_item->text(0),
+			node2_item->text(0),
+			port2_item->text(0)));
+}
+
+
 bool qpwgraph_patchman::MainWidget::removeLine (
 	QTreeWidgetItem *port1_item, QTreeWidgetItem *port2_item )
 {
@@ -1062,8 +1250,9 @@ qpwgraph_patchman::qpwgraph_patchman ( QWidget *parent )
 {
 	QDialog::setWindowTitle(tr("Manage Patchbay"));
 
+	m_add_button = new QPushButton("&Add");
 	m_remove_button = new QPushButton("&Remove");
-	m_remove_all_button = new QPushButton("Remove &All");
+	m_remove_all_button = new QPushButton("Remo&ve All");
 	m_cleanup_button = new QPushButton("Clean&up");
 	m_reset_button = new QPushButton("Re&set");
 
@@ -1077,6 +1266,7 @@ qpwgraph_patchman::qpwgraph_patchman ( QWidget *parent )
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->setContentsMargins(4, 8, 4, 4);
 	hbox->setSpacing(8);
+	hbox->addWidget(m_add_button);
 	hbox->addWidget(m_remove_button);
 	hbox->addWidget(m_remove_all_button);
 	hbox->addStretch(20);
@@ -1114,6 +1304,9 @@ qpwgraph_patchman::qpwgraph_patchman ( QWidget *parent )
 		SIGNAL(itemCollapsed(QTreeWidgetItem *)),
 		SLOT(stabilize()));
 
+	QObject::connect(m_add_button,
+		SIGNAL(clicked()),
+		SLOT(addClicked()));
 	QObject::connect(m_remove_button,
 		SIGNAL(clicked()),
 		SLOT(removeClicked()));
@@ -1166,6 +1359,16 @@ void qpwgraph_patchman::refresh (void)
 // Destructor.
 qpwgraph_patchman::~qpwgraph_patchman (void)
 {
+}
+
+
+void qpwgraph_patchman::addClicked (void)
+{
+	m_main->add();
+
+	++m_dirty;
+
+	stabilize();
 }
 
 
@@ -1250,6 +1453,7 @@ void qpwgraph_patchman::stabilize (void)
 {
 	m_main->stabilize();
 
+	m_add_button->setEnabled(m_main->canAdd());
 	m_remove_button->setEnabled(m_main->canRemove());
 	m_remove_all_button->setEnabled(m_main->canRemoveAll());
 	m_cleanup_button->setEnabled(m_main->canCleanup());
