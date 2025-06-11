@@ -825,7 +825,11 @@ void qpwgraph_main::patchbayManage (void)
 {
 	qpwgraph_patchman patchman(this);
 	patchman.setPatchbay(m_ui.graphCanvas->patchbay());
+	if (m_config)
+		m_config->loadWidgetGeometry(&patchman);
 	patchman.exec();
+	if (m_config)
+		m_config->saveWidgetGeometry(&patchman);
 }
 
 

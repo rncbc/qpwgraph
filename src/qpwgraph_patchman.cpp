@@ -1418,6 +1418,7 @@ void qpwgraph_patchman::accept (void)
 	if (m_patchbay)
 		m_patchbay->setItems(m_main->items());
 
+
 	QDialog::accept();
 }
 

@@ -149,6 +149,10 @@ public:
 	void loadComboBoxHistory(QComboBox *cbox, int nlimit = 8);
 	void saveComboBoxHistory(QComboBox *cbox, int nlimit = 8);
 
+	// Widget geometry persistence helpers.
+	void loadWidgetGeometry(QWidget *widget);
+	void saveWidgetGeometry(QWidget *widget);
+
 private:
 
 	// Instance variables.
