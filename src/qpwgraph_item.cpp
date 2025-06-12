@@ -1,7 +1,7 @@
 // qpwgraph_item.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,9 +81,6 @@ bool qpwgraph_item::isMarked (void) const
 void qpwgraph_item::setHighlight ( bool hilite )
 {
 	m_hilite = hilite;
-
-	if (m_hilite)
-		raise();
 
 	QGraphicsPathItem::update();
 }
