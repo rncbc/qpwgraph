@@ -1248,6 +1248,8 @@ QSize qpwgraph_patchman::MainWidget::sizeHint (void) const
 qpwgraph_patchman::qpwgraph_patchman ( QWidget *parent )
 	: QDialog(parent), m_patchbay(nullptr), m_dirty(0)
 {
+	QDialog::setObjectName("qpwgraph_patchman");
+
 	QDialog::setWindowTitle(tr("Manage Patchbay"));
 
 	m_add_button = new QPushButton("&Add");
