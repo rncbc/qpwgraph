@@ -1,7 +1,7 @@
 // qpwgraph_connect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -209,7 +209,7 @@ void qpwgraph_connect::paint ( QPainter *painter,
 	if (QGraphicsPathItem::isSelected())
 		color = option->palette.highlight().color();
 	else
-	if (qpwgraph_item::isHighlight() || QGraphicsPathItem::isUnderMouse())
+	if (qpwgraph_item::isHighlight())
 		color = qpwgraph_item::foreground().lighter();
 	else
 		color = qpwgraph_item::foreground();

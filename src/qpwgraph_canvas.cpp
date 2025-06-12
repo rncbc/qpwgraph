@@ -67,7 +67,7 @@ static const char *PortAliasesGroup = "/GraphPortAliases";
 // Constructor.
 qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 	: QGraphicsView(parent), m_state(DragNone), m_item(nullptr),
-		m_connect(nullptr), m_rubberband(nullptr),
+		m_connect(nullptr), m_port2(nullptr), m_rubberband(nullptr),
 		m_zoom(1.0), m_zoomrange(false), m_gesture(false),
 		m_commands(nullptr), m_settings(nullptr),
 		m_patchbay(nullptr), m_patchbay_edit(false),
@@ -848,14 +848,19 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 			// Hovering ports high-lighting...
 			const qreal zval = m_connect->zValue();
 			m_connect->setZValue(-1.0);
+			if (m_port2) {
+				m_port2->setHighlight(false);
+				m_port2 = nullptr;
+			}
 			QGraphicsItem *item = itemAt(pos);
 			if (item && item->type() == qpwgraph_port::Type) {
 				qpwgraph_port *port1 = m_connect->port1();
 				qpwgraph_port *port2 = static_cast<qpwgraph_port *> (item);
-				if (port1 && port2 &&
+				if (port1 && port2 && !port2->isHighlight() &&
 					port1->portType() == port2->portType() &&
 					port1->portMode() != port2->portMode()) {
-					port2->update();
+					m_port2 = port2;
+					m_port2->setHighlight(true);
 				}
 			}
 			m_connect->setZValue(zval);
@@ -945,6 +950,10 @@ void qpwgraph_canvas::mouseReleaseEvent ( QMouseEvent *event )
 				}
 			}
 			// Done with the hovering connection...
+			if (m_port2) {
+				m_port2->setHighlight(false);
+				m_port2 = nullptr;
+			}
 			if (m_connect) {
 				m_connect->disconnect();
 				delete m_connect;
@@ -1740,6 +1749,10 @@ void qpwgraph_canvas::clear (void)
 		delete m_rubberband;
 		m_rubberband = nullptr;
 		m_selected.clear();
+	}
+	if (m_port2) {
+		m_port2->setHighlight(false);
+		m_port2 = nullptr;
 	}
 	if (m_connect) {
 		m_connect->disconnect();

@@ -338,6 +338,7 @@ private:
 	QPointF           m_pos;
 	qpwgraph_item    *m_item;
 	qpwgraph_connect *m_connect;
+	qpwgraph_port    *m_port2;
 	QRubberBand      *m_rubberband;
 	qreal             m_zoom;
 	bool              m_zoomrange;
