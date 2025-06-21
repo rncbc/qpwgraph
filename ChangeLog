@@ -4,15 +4,15 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.9.4  2025-06-21  An Early-Summer'25 Beta Release.
 
 - Indulged on a new 'Add' (pinned connection) button into the
   Patchbay/Manage... dialog also make dialog size and position
-  persistent. (EXPERIMENTAL)
+  persistent.
 - Introducing Graph/Options.../Merger to unify node-names for
   Patchbay persistence, especially useful to PipeWire clients
   that spawn more than one node, having the very same name (eg.
-  web browsers). (EXPERIMENTAL)
+  web browsers).
 
 
 0.9.3  2025-06-02  An End-of-Spring'25 Beta Release.
