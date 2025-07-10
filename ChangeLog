@@ -4,6 +4,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Cope with in-flight node/port count changing. (EXPERIMENTAL)
+
+
 0.9.4  2025-06-21  An Early-Summer'25 Beta Release.
 
 - Indulged on a new 'Add' (pinned connection) button into the

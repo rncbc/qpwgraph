@@ -1341,6 +1341,7 @@ void qpwgraph_pipewire::destroyPort ( Port *port )
 
 	port->port_links.clear();
 	node->node_ports.removeAll(port);
+	node->node_changed = true;
 
 	delete port;
 }
