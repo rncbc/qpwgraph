@@ -1323,6 +1323,7 @@ qpwgraph_pipewire::Port *qpwgraph_pipewire::createPort (
 		node->node_mode2 = qpwgraph_item::Duplex;
 
 	node->node_ports.append(port);
+	node->node_changed = true;
 
 	addObjectEx(port_id, port);
 
