@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Make all node-names in merger list (Graph/Options.../Merger)
+  implicitly exclusive for Patchbay persistence. (GL Issue #105)
+  (EXPERIMENTAL)
+
 - Cope with in-flight node/port count changing. (EXPERIMENTAL)
 
 

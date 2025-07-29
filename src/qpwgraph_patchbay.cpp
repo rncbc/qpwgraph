@@ -1,7 +1,7 @@
 // qpwgraph_patchbay.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -319,6 +319,8 @@ bool qpwgraph_patchbay::scan (void)
 					item->node_type);
 			if (nodes2.isEmpty())
 				continue;
+			const bool node1_exclusive
+				= m_canvas->isMergerNodes(node1->nodeName());
 			foreach (qpwgraph_node *node2, nodes2) {
 				qpwgraph_port *port2
 					= node2->findPort(
@@ -327,7 +329,7 @@ bool qpwgraph_patchbay::scan (void)
 						item->port_type);
 				if (port2 == nullptr)
 					continue;
-				if (m_activated && m_exclusive) {
+				if (m_activated && (m_exclusive || node1_exclusive)) {
 					foreach (qpwgraph_connect *connect12, port1->connects()) {
 						qpwgraph_port *port12 = connect12->port2();
 						if (port12 == nullptr)
