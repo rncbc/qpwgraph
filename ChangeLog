@@ -4,13 +4,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.9.5  2025-08-15  A Mid-Summer'25 Beta Release.
 
 - Make all node-names in merger list (Graph/Options.../Merger)
-  implicitly exclusive for Patchbay persistence. (GL Issue #105)
-  (EXPERIMENTAL)
+  implicitly exclusive for Patchbay persistence.
 
-- Cope with in-flight node/port count changing. (EXPERIMENTAL)
+- Cope with in-flight node/port count changing.
 
 
 0.9.4  2025-06-21  An Early-Summer'25 Beta Release.
