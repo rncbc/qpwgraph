@@ -296,9 +296,7 @@ void qpwgraph_application::readyReadSlot (void)
 int main ( int argc, char *argv[] )
 {
 	Q_INIT_RESOURCE(qpwgraph);
-#if defined(Q_OS_LINUX) && !defined(CONFIG_WAYLAND)
-	::setenv("QT_QPA_PLATFORM", "xcb", 0);
-#endif
+
 	qpwgraph_application app(argc, argv);
 
 	if (!app.parse_args(app.arguments())) {

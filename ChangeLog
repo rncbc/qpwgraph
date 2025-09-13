@@ -4,6 +4,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Get rid of CONFIG_WAYLAND build config option.
+
+
 0.9.5  2025-08-15  A Mid-Summer'25 Beta Release.
 
 - Make all node-names in merger list (Graph/Options.../Merger)
