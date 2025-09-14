@@ -6,7 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- Get rid of CONFIG_WAYLAND build config option.
+- Get rid of CONFIG_WAYLAND build config option; add underlying
+  platform name (eg. xcb, wayland) to Qt version string.
 
 
 0.9.5  2025-08-15  A Mid-Summer'25 Beta Release.

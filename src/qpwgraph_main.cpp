@@ -1086,6 +1086,12 @@ void qpwgraph_main::helpAbout (void)
 #if defined(QT_STATIC)
 	text += "-static";
 #endif
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+	text += ' ';
+	text += '(';
+	text += QApplication::platformName();
+	text += ')';
+#endif
 	text += ", ";
 	text +=	tr("PipeWire %1 (headers: %2)")
 		.arg(pw_get_library_version())
