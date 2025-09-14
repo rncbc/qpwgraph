@@ -1976,6 +1976,13 @@ void qpwgraph_main::closeQuit (void)
 // Session management handler (eg. logoff)
 void qpwgraph_main::commitData ( QSessionManager& sm )
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+	QStringList args;
+	args << QApplication::applicationName();
+	args << "-platform" << QApplication::platformName();
+	args << "-session" << sm.sessionId();
+	sm.setRestartCommand(args);
+#endif
 	sm.release();
 
 	m_config->setSessionStartMinimized(!isVisible() && !isMinimized());
