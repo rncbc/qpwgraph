@@ -146,7 +146,7 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 		SLOT(changedFilterNodes()));
 	QObject::connect(m_ui.FilterNodesNameComboBox,
 		SIGNAL(editTextChanged(const QString&)),
-		SLOT(selectFilterNodes()));
+		SLOT(stabilize()));
 	QObject::connect(m_ui.FilterNodesAddToolButton,
 		SIGNAL(clicked()),
 		SLOT(addFilterNodes()));
@@ -165,7 +165,7 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 		SLOT(changedMergerNodes()));
 	QObject::connect(m_ui.MergerNodesNameComboBox,
 		SIGNAL(editTextChanged(const QString&)),
-		SLOT(selectMergerNodes()));
+		SLOT(stabilize()));
 	QObject::connect(m_ui.MergerNodesAddToolButton,
 		SIGNAL(clicked()),
 		SLOT(addMergerNodes()));
@@ -304,6 +304,10 @@ void qpwgraph_options::changedFilterNodes (void)
 
 void qpwgraph_options::selectFilterNodes (void)
 {
+	QListWidgetItem *item = m_ui.FilterNodesListWidget->currentItem();
+	if (item)
+		m_ui.FilterNodesNameComboBox->setEditText(item->text());
+
 	stabilize();
 }
 
@@ -365,6 +369,10 @@ void qpwgraph_options::changedMergerNodes (void)
 
 void qpwgraph_options::selectMergerNodes (void)
 {
+	QListWidgetItem *item = m_ui.MergerNodesListWidget->currentItem();
+	if (item)
+		m_ui.MergerNodesNameComboBox->setEditText(item->text());
+
 	stabilize();
 }
 

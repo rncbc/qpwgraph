@@ -993,7 +993,7 @@ bool qpwgraph_pipewire::findNodePort (
 	if (*node)
 		*port = (*node)->findPort(port_id, port_mode, port_type);
 
-	if (add_new && *node == nullptr && !canvas->isFilterNodes(n->node_name)) {
+	if (add_new && *node == nullptr) {
 		QString node_name = n->node_name;
 		if ((p->port_flags & Port::Physical) == Port::None) {
 			if (p->port_flags & Port::Monitor) {
@@ -1005,14 +1005,16 @@ bool qpwgraph_pipewire::findNodePort (
 				node_name += "[Control]";
 			}
 		}
-		*node = new qpwgraph_node(node_id, node_name, node_mode, node_type);
-		(*node)->setNodeIcon(n->node_icon);
-		(*node)->setNodeNum(n->name_num);
-		(*node)->setNodeLabel(n->media_name);
-		(*node)->setNodePrefix(n->node_nick);
-		(*node)->setNodeNameEx(canvas->isMergerNodes(node_name));
-		n->node_changed = false;
-		qpwgraph_sect::addItem(*node);
+		if (!canvas->isFilterNodes(node_name)) {
+			*node = new qpwgraph_node(node_id, node_name, node_mode, node_type);
+			(*node)->setNodeIcon(n->node_icon);
+			(*node)->setNodeNum(n->name_num);
+			(*node)->setNodeLabel(n->media_name);
+			(*node)->setNodePrefix(n->node_nick);
+			(*node)->setNodeNameEx(canvas->isMergerNodes(node_name));
+			n->node_changed = false;
+			qpwgraph_sect::addItem(*node);
+		}
 	}
 
 	if (add_new && *port == nullptr && *node) {

@@ -64,8 +64,6 @@ protected slots:
 	void clearMergerNodes();
 	void changedMergerNodes();
 
-protected:
-
 	void stabilize();
 
 private:
