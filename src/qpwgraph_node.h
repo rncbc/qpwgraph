@@ -163,6 +163,8 @@ private:
 	qpwgraph_port::PortIds   m_port_ids;
 	qpwgraph_port::PortNames m_port_names;
 	QList<qpwgraph_port *>   m_ports;
+
+	int m_depth;
 };
 
 

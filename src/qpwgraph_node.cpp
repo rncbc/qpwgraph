@@ -45,6 +45,8 @@ qpwgraph_node::qpwgraph_node (
 		m_id(id), m_name(name), m_mode(mode), m_type(type),
 		m_num(0), m_name_ex(false)
 {
+	m_depth = -1;
+
 	QGraphicsPathItem::setZValue(0.0);
 
 	const QPalette pal;

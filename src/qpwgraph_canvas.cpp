@@ -43,9 +43,11 @@
 #include <QGestureEvent>
 #include <QPinchGesture>
 
-#include <algorithm>
+#include <QQueue>
 
+#include <algorithm>
 #include <cmath>
+#include <iostream>
 
 
 // Local constants.
@@ -1946,12 +1948,73 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 }
 
 
+////////////////////////////////////////////////////
+// TODO: put in qpwgraph_node
+
+static int countInputPorts(qpwgraph_node *n)
+{
+	foreach (qpwgraph_port *p, n->ports()) {
+		std::cout << p;
+	}
+
+	return -1;
+}
+
+static int countOutputPorts(qpwgraph_node *n)
+{
+	QList<qpwgraph_port *> ports = n->ports();
+
+	foreach (qpwgraph_port *p, ports) {
+		std::cout << p;
+	}
+
+	return -1;
+}
+
+static bool nodeIsSource(qpwgraph_node *n)
+{
+	return countInputPorts(n) == 0;
+}
+
+static bool nodeIsSink(qpwgraph_node *n)
+{
+	return countOutputPorts(n) == 0;
+}
+
+/////////////////////////////////////////////////////
+
 // Rearrange nodes by type and connection.
 void qpwgraph_canvas::arrangeNodes(void)
 {
 	float offset = 15;
 
 	// TODO: sort nodes topologically
+	// TODO: might be useful to pre-sort by [input port count, -output port count, first port type]
+	QList<qpwgraph_node *> unsorted = QList(m_nodes);
+	QQueue<qpwgraph_node *> nextToVisit = QQueue<qpwgraph_node *>();
+	while (!unsorted.empty()) {
+		qsizetype initial_size = unsorted.length();
+
+		qpwgraph_node *source = *std::find_if(unsorted.begin(), unsorted.end(), nodeIsSink);
+		if (!source) {
+			// No source nodes (meaning there's a graph cycle); just take the first node
+			source = unsorted.first();
+		}
+
+		unsorted.removeOne(source);
+		nextToVisit.append(source);
+
+		while (!nextToVisit.empty()) {
+			// TODO: Append all connected nodes to nextToVisit if present in unsorted, and remove them from unsorted
+			qpwgraph_node *n = nextToVisit.dequeue();
+		}
+
+		if (initial_size == unsorted.length() && initial_size > 0) {
+			std::cout << "WARNING: topological sort failed to reduce the size of the unsorted node list" << std::endl;
+			break;
+		}
+	}
+
 	// TODO: place nodes based on topo sort
 	foreach (qpwgraph_node *node, m_nodes) {
 		node->setPos(node->pos() + QPointF(offset, 0));
