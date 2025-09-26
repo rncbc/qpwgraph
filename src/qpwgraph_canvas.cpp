@@ -1961,15 +1961,28 @@ static int countOutputPorts(qpwgraph_node *n)
 	return std::count_if(n->ports().begin(), n->ports().end(), [](qpwgraph_port *p) { return p->isOutput(); });
 }
 
-static bool nodeIsSource(qpwgraph_node *n)
+static int countInputConnections(qpwgraph_node *n)
 {
-	// FIXME: also need to check if the node has input ports but they are all disconnected
-	return countInputPorts(n) == 0;
+	int count = 0;
+
+	foreach (qpwgraph_port *p, n->ports()) {
+		if (!p->isInput()) {
+			continue;
+		}
+
+		count += p->connects().length();
+	}
+
+	return count;
 }
 
-static bool nodeIsSink(qpwgraph_node *n)
+static bool nodeIsEffectiveSource(qpwgraph_node *n)
 {
-	// FIXME: also need to check if the node has output ports but they are all disconnected
+	return countInputPorts(n) == 0 || countInputConnections(n) == 0;
+}
+
+static bool nodeIsTrueSink(qpwgraph_node *n)
+{
 	return countOutputPorts(n) == 0;
 }
 
@@ -2047,7 +2060,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 
 		qpwgraph_node *source;
 
-		auto srcIter = std::find_if(unsorted.begin(), unsorted.end(), nodeIsSource);
+		auto srcIter = std::find_if(unsorted.begin(), unsorted.end(), nodeIsEffectiveSource);
 		
 		if (srcIter == unsorted.end()) {
 			// No source nodes (meaning there's a graph cycle); just take the first node
@@ -2086,6 +2099,8 @@ void qpwgraph_canvas::arrangeNodes(void)
 					qpwgraph_port *dest_port = c->port2();
 					qpwgraph_node *dest_node = dest_port->portNode();
 
+					// FIXME: this marking approach is still not working right; really need to mark connections
+					// e.g. if there's a cycle, the nodes in the cycle both push each other deeper
 					if (dest_node->depth() != -2 && dest_node->depth() < next_depth && dest_node != n) {
 						std::cout << "TOPO: setting node " << dest_node->nodeName().toStdString() << " depth to " << next_depth << std::endl;
 
@@ -2115,7 +2130,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 	// Place all fake sources at first rank, and all sink nodes at final rank
 	float max_width = 0;
 	foreach (qpwgraph_node *node, m_nodes) {
-		if (nodeIsSink(node)) {
+		if (nodeIsTrueSink(node)) {
 			node->setDepth(max_depth);
 		} else if (node->depth() == -2) {
 			node->setDepth(0);
