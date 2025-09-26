@@ -1946,6 +1946,20 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 }
 
 
+// Rearrange nodes by type and connection.
+void qpwgraph_canvas::arrangeNodes(void)
+{
+	float offset = 15;
+
+	// TODO: sort nodes topologically
+	// TODO: place nodes based on topo sort
+	foreach (qpwgraph_node *node, m_nodes) {
+		node->setPos(node->pos() + QPointF(offset, 0));
+		offset = -offset;
+	}
+}
+
+
 // Gesture event handlers.
 //
 bool qpwgraph_canvas::event ( QEvent *event )

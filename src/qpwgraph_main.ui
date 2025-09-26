@@ -191,6 +191,8 @@
     <addaction name="viewConnectThroughNodesAction"/>
     <addaction name="separator"/>
     <addaction name="viewRefreshAction"/>
+    <addaction name="separator"/>
+    <addaction name="viewArrangeAction"/>
    </widget>
    <widget class="QMenu" name="helpMenu">
     <property name="title">
@@ -1254,6 +1256,11 @@
    </property>
    <property name="shortcut">
     <string/>
+   </property>
+  </action>
+  <action name="viewArrangeAction">
+   <property name="text">
+    <string>Arrange</string>
    </property>
   </action>
  </widget>

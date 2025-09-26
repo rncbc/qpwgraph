@@ -383,6 +383,10 @@ qpwgraph_main::qpwgraph_main (
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
 
+	QObject::connect(m_ui.viewArrangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewArrange()));
+
 	QObject::connect(m_ui.viewZoomInAction,
 		SIGNAL(triggered(bool)),
 		m_ui.graphCanvas, SLOT(zoomIn()));
@@ -965,6 +969,12 @@ void qpwgraph_main::viewRefresh (void)
 	++m_thumb_update;
 
 	refresh();
+}
+
+
+void qpwgraph_main::viewArrange (void)
+{
+	m_ui.graphCanvas->arrangeNodes();
 }
 
 

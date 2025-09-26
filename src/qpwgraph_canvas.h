@@ -175,6 +175,9 @@ public:
 	void repelOverlappingNodesAll(
 		qpwgraph_move_command *move_command = nullptr);
 
+	// Arrange nodes by connection
+	void arrangeNodes();
+
 	// Graph colors management.
 	void setPortTypeColor(uint port_type, const QColor& color);
 	const QColor& portTypeColor(uint port_type);

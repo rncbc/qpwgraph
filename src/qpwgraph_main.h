@@ -148,6 +148,8 @@ protected slots:
 	void viewCenter();
 	void viewRefresh();
 
+	void viewArrange();
+
 	void viewZoomRange(bool on);
 
 	void viewSortTypeAction();
