@@ -1953,32 +1953,76 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 
 static int countInputPorts(qpwgraph_node *n)
 {
-	foreach (qpwgraph_port *p, n->ports()) {
-		std::cout << p;
-	}
-
-	return -1;
+	return std::count_if(n->ports().begin(), n->ports().end(), [](qpwgraph_port *p) { return p->isInput(); });
 }
 
 static int countOutputPorts(qpwgraph_node *n)
 {
-	QList<qpwgraph_port *> ports = n->ports();
-
-	foreach (qpwgraph_port *p, ports) {
-		std::cout << p;
-	}
-
-	return -1;
+	return std::count_if(n->ports().begin(), n->ports().end(), [](qpwgraph_port *p) { return p->isOutput(); });
 }
 
 static bool nodeIsSource(qpwgraph_node *n)
 {
+	// FIXME: also need to check if the node has input ports but they are all disconnected
 	return countInputPorts(n) == 0;
 }
 
 static bool nodeIsSink(qpwgraph_node *n)
 {
+	// FIXME: also need to check if the node has output ports but they are all disconnected
 	return countOutputPorts(n) == 0;
+}
+
+static bool compareNodesTopologically(qpwgraph_node *n1, qpwgraph_node *n2)
+{
+	if (n1->depth() < n2->depth()) {
+		std::cout << "n1 depth < n2 depth" << std::endl;
+		return true;
+	}
+	if (n2->depth() < n1->depth()) {
+		std::cout << "n2 depth < n1 depth" << std::endl;
+		return false;
+	}
+
+	if (n1->ports().empty() && !n2->ports().empty()) {
+		std::cout << "n1 no ports" << std::endl;
+		return true;
+	}
+	if (n2->ports().empty() && !n1->ports().empty()) {
+		std::cout << "n2 no ports" << std::endl;
+		return false;
+	}
+
+	if (!(n1->ports().empty() || n2->ports().empty())) {
+		if (n1->ports().first()->portType() < n2->ports().first()->portType()) {
+			std::cout << "n1 port type" << std::endl;
+			return true;
+		}
+		if (n2->ports().first()->portType() < n1->ports().first()->portType()) {
+			std::cout << "n2 port type" << std::endl;
+			return false;
+		}
+	}
+
+	if (countInputPorts(n1) < countInputPorts(n2)) {
+		std::cout << "n1 input port count" << std::endl;
+		return true;
+	}
+	if (countInputPorts(n2) < countInputPorts(n1)) {
+		std::cout << "n2 input port count" << std::endl;
+		return false;
+	}
+
+	if (countOutputPorts(n1) < countOutputPorts(n2)) {
+		std::cout << "n1 output port count" << std::endl;
+		return true;
+	}
+	if (countOutputPorts(n2) < countOutputPorts(n1)) {
+		std::cout << "n2 output port count" << std::endl;
+		return false;
+	}
+
+	return false;
 }
 
 /////////////////////////////////////////////////////
@@ -1988,37 +2032,121 @@ void qpwgraph_canvas::arrangeNodes(void)
 {
 	float offset = 15;
 
-	// TODO: sort nodes topologically
-	// TODO: might be useful to pre-sort by [input port count, -output port count, first port type]
+	// Clear depth markers in case topology changed
+	foreach (qpwgraph_node *n, m_nodes) {
+		n->setDepth(0);
+	}
+
+	// Determine topological depth of nodes
+	// TODO: might be useful to pre-sort by [input port count, -output port count, first port type] so linear search its fewer nodes
+	int max_depth = 0;
 	QList<qpwgraph_node *> unsorted = QList(m_nodes);
 	QQueue<qpwgraph_node *> nextToVisit = QQueue<qpwgraph_node *>();
 	while (!unsorted.empty()) {
 		qsizetype initial_size = unsorted.length();
 
-		qpwgraph_node *source = *std::find_if(unsorted.begin(), unsorted.end(), nodeIsSink);
-		if (!source) {
+		qpwgraph_node *source;
+
+		auto srcIter = std::find_if(unsorted.begin(), unsorted.end(), nodeIsSource);
+		
+		if (srcIter == unsorted.end()) {
 			// No source nodes (meaning there's a graph cycle); just take the first node
+			std::cout << "TOPO: CYCLE OR ORPHAN SINK DETECTED: no source node found" << std::endl;
 			source = unsorted.first();
+
+			// Specially mark cycle-breaking fake sources so we don't change their depth later
+			source->setDepth(-2);
+		} else {
+			source = *srcIter;
+			source->setDepth(0);
 		}
+
+		std::cout << "TOPO: using node " << source->nodeId() << " / " << source->nodeName().toStdString() << " as the next source node" << std::endl;
 
 		unsorted.removeOne(source);
 		nextToVisit.append(source);
 
 		while (!nextToVisit.empty()) {
-			// TODO: Append all connected nodes to nextToVisit if present in unsorted, and remove them from unsorted
 			qpwgraph_node *n = nextToVisit.dequeue();
+			int next_depth = n->depth() + 1;
+			if (next_depth < 0) {
+				next_depth = 1;
+			}
+
+			std::cout << "TOPO: visiting node " << n->nodeId() << " / " << n->nodeName().toStdString() << std::endl;
+			std::cout << "TOPO: node has " << countInputPorts(source) << " input ports and " << countOutputPorts(source) << " output ports" << std::endl;
+
+			foreach (qpwgraph_port *p, n->ports()) {
+				if (!p->isOutput()) {
+					std::cout << "TOPO: skipping input port " << p->portName().toStdString() << std::endl;
+					continue;
+				}
+
+				foreach (qpwgraph_connect *c, p->connects()) {
+					qpwgraph_port *dest_port = c->port2();
+					qpwgraph_node *dest_node = dest_port->portNode();
+
+					if (dest_node->depth() != -2 && dest_node->depth() < next_depth && dest_node != n) {
+						std::cout << "TOPO: setting node " << dest_node->nodeName().toStdString() << " depth to " << next_depth << std::endl;
+
+						dest_node->setDepth(next_depth);
+						
+						if (max_depth < next_depth) {
+							max_depth = next_depth;
+						}
+					}
+
+					// TODO: use a fast set or something; this will probably be slow
+					if (unsorted.contains(dest_node)) {
+						std::cout << "TOPO: enqueuing " << dest_node->nodeName().toStdString() << std::endl;
+						unsorted.removeOne(dest_node);
+						nextToVisit.enqueue(dest_node);
+					}
+				}
+			}
 		}
 
 		if (initial_size == unsorted.length() && initial_size > 0) {
-			std::cout << "WARNING: topological sort failed to reduce the size of the unsorted node list" << std::endl;
+			std::cout << "TOPO: BUG/WARNING: topological sort failed to reduce the size of the unsorted node list" << std::endl;
 			break;
 		}
 	}
-
-	// TODO: place nodes based on topo sort
+	
+	// Place all fake sources at first rank, and all sink nodes at final rank
+	float max_width = 0;
 	foreach (qpwgraph_node *node, m_nodes) {
-		node->setPos(node->pos() + QPointF(offset, 0));
-		offset = -offset;
+		if (nodeIsSink(node)) {
+			node->setDepth(max_depth);
+		} else if (node->depth() == -2) {
+			node->setDepth(0);
+		}
+
+		if (max_width < node->boundingRect().width()) {
+			max_width = node->boundingRect().width();
+		}
+	}
+
+	// Sort nodes topologically based on depth and port types
+	QList<qpwgraph_node *> sorted = QList(m_nodes);
+	std::sort(sorted.begin(), sorted.end(), compareNodesTopologically);
+
+	// Place nodes based on topo sort
+	// TODO: extract spacing values to constants or parameters
+	QRectF bounds = boundingRect();
+	float xmin = bounds.left();
+	float ymin = bounds.top();
+	float x = xmin, y = ymin;
+	int current_rank = 0;
+	foreach (qpwgraph_node *node, sorted) {
+		if (node->depth() > current_rank) {
+			y = ymin;
+			x += max_width * 2 + 20;
+			current_rank = node->depth();
+		}
+
+		node->setPos(QPointF(x, y));
+
+		y += node->boundingRect().height() + 40;
 	}
 }
 

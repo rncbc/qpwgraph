@@ -82,6 +82,9 @@ public:
 	bool isNodeNameEx() const;
 	QString nodeNameEx() const;
 
+	void setDepth(int depth);
+	int depth() const;
+
 	// Port-list methods.
 	qpwgraph_port *addPort(uint id, const QString& name, Mode mode, int type = 0);
 

@@ -43,10 +43,9 @@ qpwgraph_node::qpwgraph_node (
 	uint id, const QString& name, qpwgraph_item::Mode mode, uint type )
 	: qpwgraph_item(nullptr),
 		m_id(id), m_name(name), m_mode(mode), m_type(type),
-		m_num(0), m_name_ex(false)
+		m_num(0), m_name_ex(false),
+		m_depth(-1)
 {
-	m_depth = -1;
-
 	QGraphicsPathItem::setZValue(0.0);
 
 	const QPalette pal;
@@ -263,6 +262,19 @@ bool qpwgraph_node::isNodeNameEx (void) const
 QString qpwgraph_node::nodeNameEx (void) const
 {
 	return (m_name_ex ? m_name : nodeName());
+}
+
+
+// Topological sort depth (distance from a source node)
+void qpwgraph_node::setDepth (int depth)
+{
+	m_depth = depth;
+}
+
+
+int qpwgraph_node::depth(void) const
+{
+	return m_depth;
 }
 
 
