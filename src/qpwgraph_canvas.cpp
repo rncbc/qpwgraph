@@ -2128,6 +2128,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 	}
 	
 	// Place all fake sources at first rank, and all sink nodes at final rank
+	// Also extract max size values needed for next loop
 	float max_width = 0;
 	foreach (qpwgraph_node *node, m_nodes) {
 		if (nodeIsTrueSink(node)) {
@@ -2147,13 +2148,17 @@ void qpwgraph_canvas::arrangeNodes(void)
 
 	// Place nodes based on topo sort
 	// TODO: extract spacing values to constants or parameters
-	QRectF bounds = boundingRect();
-	float xmin = bounds.left();
-	float ymin = bounds.top();
+	// TODO: right-align sources?  center-align middle nodes? left-align sinks?
+	// TODO: scroll to rearranged nodes in case nodes were super spread out
+	// TODO: never go below 0,0 for xmin/ymin?
+	QRectF bounds = m_scene->itemsBoundingRect();
+	float xmin = bounds.left() + 40;
+	float ymin = bounds.top() + 40;
 	float x = xmin, y = ymin;
 	int current_rank = 0;
 	foreach (qpwgraph_node *node, sorted) {
 		if (node->depth() > current_rank) {
+			// End of a rank; reset Y and move to the next column
 			y = ymin;
 			x += max_width * 2 + 20;
 			current_rank = node->depth();
