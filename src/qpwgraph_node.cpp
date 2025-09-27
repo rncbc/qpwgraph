@@ -44,7 +44,7 @@ qpwgraph_node::qpwgraph_node (
 	: qpwgraph_item(nullptr),
 		m_id(id), m_name(name), m_mode(mode), m_type(type),
 		m_num(0), m_name_ex(false),
-		m_depth(-1)
+		m_depth(0)
 {
 	QGraphicsPathItem::setZValue(0.0);
 
