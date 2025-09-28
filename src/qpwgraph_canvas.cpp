@@ -2040,7 +2040,13 @@ static bool compareNodesTopologically(qpwgraph_node *n1, qpwgraph_node *n2)
 
 /////////////////////////////////////////////////////
 
-// Rearrange nodes by type and connection.
+// Rearrange nodes by type and connection using a topological ordering.
+// Nodes with no incoming connections go first, nodes with no outgoing
+// connections go last.  Nodes are arranged in columns based on their distance
+// in the graph from a source node.
+//
+// Possible future improvements:
+// - Try to keep connected nodes near each other in Y
 void qpwgraph_canvas::arrangeNodes(void)
 {
 	float offset = 15;
@@ -2051,7 +2057,8 @@ void qpwgraph_canvas::arrangeNodes(void)
 	}
 
 	// Determine topological depth of nodes
-	// TODO: might be useful to pre-sort by [input port count, -output port count, first port type] so linear search its fewer nodes
+	// TODO: might be useful to pre-sort by [input port count, -output port
+	// count, first port type] so linear search hits fewer nodes
 	int max_depth = 0;
 	QList<qpwgraph_node *> unsorted = QList(m_nodes);
 	QQueue<qpwgraph_node *> nextToVisit = QQueue<qpwgraph_node *>();
@@ -2082,7 +2089,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 		while (!nextToVisit.empty()) {
 			qpwgraph_node *n = nextToVisit.dequeue();
 			int next_depth = n->depth() + 1;
-			if (next_depth < 0) {
+			if (next_depth <= 0) {
 				next_depth = 1;
 			}
 
@@ -2101,8 +2108,11 @@ void qpwgraph_canvas::arrangeNodes(void)
 
 					// FIXME: this marking approach is still not working right; really need to mark connections
 					// e.g. if there's a cycle, the nodes in the cycle both push each other deeper
+					// TODO: maybe keep each nextToVisit loop's contents in a set, so cycles can be
+					// identified by whether a node has already been visited _from_this_source_.
 					if (dest_node->depth() != -2 && dest_node->depth() < next_depth && dest_node != n) {
-						std::cout << "TOPO: setting node " << dest_node->nodeName().toStdString() << " depth to " << next_depth << std::endl;
+						std::cout << "TOPO: setting node " << dest_node->nodeName().toStdString() << " depth from " <<
+							dest_node->depth() << " to " << next_depth << std::endl;
 
 						dest_node->setDepth(next_depth);
 						
@@ -2128,12 +2138,14 @@ void qpwgraph_canvas::arrangeNodes(void)
 	}
 	
 	// Place all fake sources at first rank, and all sink nodes at final rank
+	// TODO: place disconnected mixed-I/O nodes in some middle rank?
 	// Also extract max size values needed for next loop
 	float max_width = 0;
 	foreach (qpwgraph_node *node, m_nodes) {
 		if (nodeIsTrueSink(node)) {
 			node->setDepth(max_depth);
 		} else if (node->depth() == -2) {
+			std::cout << "TOPO: Assigning depth for fake source " << node->nodeName().toStdString() << std::endl;
 			node->setDepth(0);
 		}
 
