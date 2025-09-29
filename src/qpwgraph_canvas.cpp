@@ -2038,6 +2038,30 @@ static bool compareNodesTopologically(qpwgraph_node *n1, qpwgraph_node *n2)
 	return false;
 }
 
+static std::string debugNodeName(qpwgraph_node *n)
+{
+	QString mode;
+	switch(n->nodeMode()) {
+		case qpwgraph_item::Mode::None:
+			mode = "None";
+			break;
+
+		case qpwgraph_item::Mode::Input:
+			mode = "Input";
+			break;
+
+		case qpwgraph_item::Mode::Output:
+			mode = "Output";
+			break;
+
+		case qpwgraph_item::Mode::Duplex:
+			mode = "Duplex";
+			break;
+	}
+
+	return (mode + " node " + QString::number(n->nodeId()) + " / " + n->nodeName()).toStdString();
+}
+
 /////////////////////////////////////////////////////
 
 // Rearrange nodes by type and connection using a topological ordering.
@@ -2061,39 +2085,44 @@ void qpwgraph_canvas::arrangeNodes(void)
 	// count, first port type] so linear search hits fewer nodes
 	int max_depth = 0;
 	float max_width = 0;
-	QList<qpwgraph_node *> unsorted = QList(m_nodes);
+	QSet<qpwgraph_node *> unsorted = QSet<qpwgraph_node *>(m_nodes.begin(), m_nodes.end());
 	QQueue<qpwgraph_node *> nextToVisit = QQueue<qpwgraph_node *>();
+	QSet<qpwgraph_node *> globalVisited = QSet<qpwgraph_node *>();
 	while (!unsorted.empty()) {
-		qsizetype initial_size = unsorted.length();
+		qsizetype initial_size = unsorted.size();
 
 		qpwgraph_node *source;
 
-		auto srcIter = std::find_if(unsorted.begin(), unsorted.end(), nodeIsEffectiveSource);
+		while(!unsorted.empty()) {
+			auto srcIter = std::find_if(unsorted.begin(), unsorted.end(), nodeIsEffectiveSource);
+			if (srcIter == unsorted.end()) {
+				if (globalVisited.empty()) {
+					// First iteration; we're just gathering sources
+					std::cout << "TOPO: End of first source search; nextToVisit has " << nextToVisit.size() << " entries" << std::endl;
+					break;
+				}
 
-		// TODO: add all sources to the nextToVisit list instead of one at a time so we do a true breadth-first search.
-		if (srcIter == unsorted.end()) {
-			// No source nodes (meaning there's a graph cycle); just take the first node
-			std::cout << "TOPO: CYCLE OR ORPHAN SINK DETECTED: no source node found" << std::endl;
-			source = unsorted.first();
+				// No source nodes (meaning there's a graph cycle); just take the first node
+				std::cout << "TOPO: CYCLE OR ORPHAN SINK DETECTED: no source node found" << std::endl;
+				source = *unsorted.begin();
+			} else {
+				source = *srcIter;
+				source->setDepth(0);
+			}
 
-			// Specially mark cycle-breaking fake sources so we don't change their depth later
-			source->setDepth(-2);
-		} else {
-			source = *srcIter;
-			source->setDepth(0);
+			std::cout << "TOPO: adding " << debugNodeName(source) << " as the next source node" << std::endl;
+
+			unsorted.remove(source);
+			nextToVisit.append(source);
 		}
 
-		std::cout << "TOPO: using node " << source->nodeId() << " / " << source->nodeName().toStdString() << " as the next source node" << std::endl;
-
-		unsorted.removeOne(source);
-		nextToVisit.append(source);
-
-		// This visited set keeps track of nodes reachable from the source node we just selected.
+		// This visited set keeps track of nodes reachable from the source nodes we just selected.
 		auto visited = QSet<qpwgraph_node *>();;
 
 		while (!nextToVisit.empty()) {
 			qpwgraph_node *n = nextToVisit.dequeue();
 			visited.insert(n);
+			globalVisited.insert(n);
 
 			int next_depth = n->depth() + 1;
 			if (next_depth <= 0) {
@@ -2145,17 +2174,18 @@ void qpwgraph_canvas::arrangeNodes(void)
 						if (unsorted.contains(dest_node)) {
 							// TODO: do we need to do anything for first ever visit?
 							std::cout << "TOPO: first time seeing node " << dest_node->nodeName().toStdString() << std::endl;
-							unsorted.removeOne(dest_node);
+							unsorted.remove(dest_node);
 						}
 
 						std::cout << "TOPO: enqueuing " << dest_node->nodeName().toStdString() << std::endl;
+						nextToVisit.removeAll(dest_node);
 						nextToVisit.enqueue(dest_node);
 					}
 				}
 			}
 		}
 
-		if (initial_size == unsorted.length() && initial_size > 0) {
+		if (initial_size == unsorted.size() && initial_size > 0) {
 			std::cout << "TOPO: BUG/WARNING: topological sort failed to reduce the size of the unsorted node list" << std::endl;
 			break;
 		}
