@@ -2060,6 +2060,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 	// TODO: might be useful to pre-sort by [input port count, -output port
 	// count, first port type] so linear search hits fewer nodes
 	int max_depth = 0;
+	float max_width = 0;
 	QList<qpwgraph_node *> unsorted = QList(m_nodes);
 	QQueue<qpwgraph_node *> nextToVisit = QQueue<qpwgraph_node *>();
 	while (!unsorted.empty()) {
@@ -2068,7 +2069,8 @@ void qpwgraph_canvas::arrangeNodes(void)
 		qpwgraph_node *source;
 
 		auto srcIter = std::find_if(unsorted.begin(), unsorted.end(), nodeIsEffectiveSource);
-		
+
+		// TODO: add all sources to the nextToVisit list instead of one at a time so we do a true breadth-first search.
 		if (srcIter == unsorted.end()) {
 			// No source nodes (meaning there's a graph cycle); just take the first node
 			std::cout << "TOPO: CYCLE OR ORPHAN SINK DETECTED: no source node found" << std::endl;
@@ -2086,11 +2088,20 @@ void qpwgraph_canvas::arrangeNodes(void)
 		unsorted.removeOne(source);
 		nextToVisit.append(source);
 
+		// This visited set keeps track of nodes reachable from the source node we just selected.
+		auto visited = QSet<qpwgraph_node *>();;
+
 		while (!nextToVisit.empty()) {
 			qpwgraph_node *n = nextToVisit.dequeue();
+			visited.insert(n);
+
 			int next_depth = n->depth() + 1;
 			if (next_depth <= 0) {
 				next_depth = 1;
+			}
+
+			if (max_width < n->boundingRect().width()) {
+				max_width = n->boundingRect().width();
 			}
 
 			std::cout << "TOPO: visiting node " << n->nodeId() << " / " << n->nodeName().toStdString() << std::endl;
@@ -2102,29 +2113,42 @@ void qpwgraph_canvas::arrangeNodes(void)
 					continue;
 				}
 
+				// TODO: it would be useful to have a function on qpwgraph_port that returns unique
+				// destination nodes for all outgoing connections
 				foreach (qpwgraph_connect *c, p->connects()) {
 					qpwgraph_port *dest_port = c->port2();
 					qpwgraph_node *dest_node = dest_port->portNode();
 
-					// FIXME: this marking approach is still not working right; really need to mark connections
-					// e.g. if there's a cycle, the nodes in the cycle both push each other deeper
-					// TODO: maybe keep each nextToVisit loop's contents in a set, so cycles can be
-					// identified by whether a node has already been visited _from_this_source_.
-					if (dest_node->depth() != -2 && dest_node->depth() < next_depth && dest_node != n) {
-						std::cout << "TOPO: setting node " << dest_node->nodeName().toStdString() << " depth from " <<
-							dest_node->depth() << " to " << next_depth << std::endl;
+					if (visited.contains(dest_node)) {
+						// FIXME: what happens if we have a graph like this?
+						// a -> d
+						// a -> b
+						// b -> c
+						// a -> d
+						// b -> d
+						// c -> d
+						// it seems like we'll enqueue d multiple times but only set the depth
+						// once.  We need to know, somehow, the path to the current iteration,
+						// and then check that path for the next node... right?
+						std::cout << "TOPO: CYCLE DETECTED -- already visited node " << dest_node->nodeName().toStdString() << " from this source" << std::endl;
+					} else {
+						if (dest_node->depth() < next_depth && dest_node != n) {
+							std::cout << "TOPO: setting node " << dest_node->nodeName().toStdString() << " depth from " << dest_node->depth() << " to " << next_depth << std::endl;
 
-						dest_node->setDepth(next_depth);
-						
-						if (max_depth < next_depth) {
-							max_depth = next_depth;
+							dest_node->setDepth(next_depth);
+
+							if (max_depth < next_depth) {
+								max_depth = next_depth;
+							}
 						}
-					}
 
-					// TODO: use a fast set or something; this will probably be slow
-					if (unsorted.contains(dest_node)) {
+						if (unsorted.contains(dest_node)) {
+							// TODO: do we need to do anything for first ever visit?
+							std::cout << "TOPO: first time seeing node " << dest_node->nodeName().toStdString() << std::endl;
+							unsorted.removeOne(dest_node);
+						}
+
 						std::cout << "TOPO: enqueuing " << dest_node->nodeName().toStdString() << std::endl;
-						unsorted.removeOne(dest_node);
 						nextToVisit.enqueue(dest_node);
 					}
 				}
@@ -2136,21 +2160,15 @@ void qpwgraph_canvas::arrangeNodes(void)
 			break;
 		}
 	}
-	
+
 	// Place all fake sources at first rank, and all sink nodes at final rank
 	// TODO: place disconnected mixed-I/O nodes in some middle rank?
-	// Also extract max size values needed for next loop
-	float max_width = 0;
 	foreach (qpwgraph_node *node, m_nodes) {
 		if (nodeIsTrueSink(node)) {
 			node->setDepth(max_depth);
 		} else if (node->depth() == -2) {
 			std::cout << "TOPO: Assigning depth for fake source " << node->nodeName().toStdString() << std::endl;
 			node->setDepth(0);
-		}
-
-		if (max_width < node->boundingRect().width()) {
-			max_width = node->boundingRect().width();
 		}
 	}
 
