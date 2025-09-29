@@ -2107,21 +2107,20 @@ void qpwgraph_canvas::arrangeNodes(void)
 				source = *unsorted.begin();
 			} else {
 				source = *srcIter;
-				source->setDepth(0);
 			}
 
 			std::cout << "TOPO: adding " << debugNodeName(source) << " as the next source node" << std::endl;
 
+			source->setDepth(0);
 			unsorted.remove(source);
 			nextToVisit.append(source);
 		}
 
-		// This visited set keeps track of nodes reachable from the source nodes we just selected.
-		auto visited = QSet<qpwgraph_node *>();;
+		// This visited set keeps track of connections we have traversed, to detect cycles.
+		auto visited = QSet<qpwgraph_connect *>();
 
 		while (!nextToVisit.empty()) {
 			qpwgraph_node *n = nextToVisit.dequeue();
-			visited.insert(n);
 			globalVisited.insert(n);
 
 			int next_depth = n->depth() + 1;
@@ -2133,7 +2132,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 				max_width = n->boundingRect().width();
 			}
 
-			std::cout << "TOPO: visiting node " << n->nodeId() << " / " << n->nodeName().toStdString() << std::endl;
+			std::cout << "TOPO: visiting " << debugNodeName(n) << std::endl;
 			std::cout << "TOPO: node has " << countInputPorts(source) << " input ports and " << countOutputPorts(source) << " output ports" << std::endl;
 
 			foreach (qpwgraph_port *p, n->ports()) {
@@ -2148,7 +2147,23 @@ void qpwgraph_canvas::arrangeNodes(void)
 					qpwgraph_port *dest_port = c->port2();
 					qpwgraph_node *dest_node = dest_port->portNode();
 
-					if (visited.contains(dest_node)) {
+					if (dest_node->depth() < next_depth && dest_node != n) {
+						std::cout << "TOPO: setting node " << debugNodeName(dest_node) << " depth from " << dest_node->depth() << " to " << next_depth << std::endl;
+
+						dest_node->setDepth(next_depth);
+
+						if (max_depth < next_depth) {
+							max_depth = next_depth;
+						}
+					}
+
+					if (unsorted.contains(dest_node)) {
+						// TODO: do we need to do anything for first ever visit?
+						std::cout << "TOPO: first time seeing " << debugNodeName(dest_node) << std::endl;
+						unsorted.remove(dest_node);
+					}
+
+					if (visited.contains(c)) {
 						// FIXME: what happens if we have a graph like this?
 						// a -> d
 						// a -> b
@@ -2159,30 +2174,18 @@ void qpwgraph_canvas::arrangeNodes(void)
 						// it seems like we'll enqueue d multiple times but only set the depth
 						// once.  We need to know, somehow, the path to the current iteration,
 						// and then check that path for the next node... right?
-						std::cout << "TOPO: CYCLE DETECTED -- already visited node " << dest_node->nodeName().toStdString() << " from this source" << std::endl;
+						std::cout << "TOPO: CYCLE DETECTED -- already visited " << debugNodeName(dest_node) << " using this connection" << std::endl;
 					} else {
-						if (dest_node->depth() < next_depth && dest_node != n) {
-							std::cout << "TOPO: setting node " << dest_node->nodeName().toStdString() << " depth from " << dest_node->depth() << " to " << next_depth << std::endl;
-
-							dest_node->setDepth(next_depth);
-
-							if (max_depth < next_depth) {
-								max_depth = next_depth;
-							}
-						}
-
-						if (unsorted.contains(dest_node)) {
-							// TODO: do we need to do anything for first ever visit?
-							std::cout << "TOPO: first time seeing node " << dest_node->nodeName().toStdString() << std::endl;
-							unsorted.remove(dest_node);
-						}
-
-						std::cout << "TOPO: enqueuing " << dest_node->nodeName().toStdString() << std::endl;
+						std::cout << "TOPO: enqueuing " << debugNodeName(dest_node) << std::endl;
 						nextToVisit.removeAll(dest_node);
 						nextToVisit.enqueue(dest_node);
+
+						visited.insert(c);
 					}
 				}
 			}
+
+			// TODO: maybe bug out if the max depth is greater than the number of nodes
 		}
 
 		if (initial_size == unsorted.size() && initial_size > 0) {
@@ -2196,9 +2199,6 @@ void qpwgraph_canvas::arrangeNodes(void)
 	foreach (qpwgraph_node *node, m_nodes) {
 		if (nodeIsTrueSink(node)) {
 			node->setDepth(max_depth);
-		} else if (node->depth() == -2) {
-			std::cout << "TOPO: Assigning depth for fake source " << node->nodeName().toStdString() << std::endl;
-			node->setDepth(0);
 		}
 	}
 
@@ -2220,8 +2220,9 @@ void qpwgraph_canvas::arrangeNodes(void)
 		if (node->depth() > current_rank) {
 			// End of a rank; reset Y and move to the next column
 			y = ymin;
-			x += max_width * 2 + 20;
 			current_rank = node->depth();
+			// x += max_width * 2 + 20;
+			x = xmin + (max_width * 2 + 20) * current_rank;
 		}
 
 		node->setPos(QPointF(x, y));
