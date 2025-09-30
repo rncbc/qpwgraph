@@ -2062,7 +2062,7 @@ static std::string debugNode(qpwgraph_node *n)
 	int c = (n->nodeId() * 773) % 200 + 20;
 
 	QString s = "\e[38;5;" + QString::number(c) + "m" +
-			modeName(n->nodeMode()) + " node at depth " + QString::number(n->depth()) + " " +
+			modeName(n->nodeMode()) + " node d" + QString::number(n->depth()) + " id" +
 			QString::number(n->nodeId()) + " / " + n->nodeName() +
 			"\e[37m";
 
@@ -2115,6 +2115,24 @@ static QList<qpwgraph_connect *> nodeOutboundConnections(qpwgraph_node *n)
 	return outbound;
 }
 
+static qpwgraph_node *connectionFromNode(qpwgraph_connect *c)
+{
+	if (c->port1()->isInput()) {
+		return c->port2()->portNode();
+	} else {
+		return c->port1()->portNode();
+	}
+}
+
+static qpwgraph_node *connectionToNode(qpwgraph_connect *c)
+{
+	if (c->port1()->isInput()) {
+		return c->port1()->portNode();
+	} else {
+		return c->port2()->portNode();
+	}
+}
+
 /////////////////////////////////////////////////////
 
 // Rearrange nodes by type and connection using a topological ordering.
@@ -2130,7 +2148,11 @@ void qpwgraph_canvas::arrangeNodes(void)
 
 	// Clear depth markers in case topology changed
 	foreach (qpwgraph_node *n, m_nodes) {
-		n->setDepth(0);
+		if (countInputPorts(n) > 0 && countOutputPorts(n) > 0) {
+			n->setDepth(1);
+		} else {
+			n->setDepth(0);
+		}
 	}
 
 	// Determine topological depth of nodes
@@ -2139,87 +2161,92 @@ void qpwgraph_canvas::arrangeNodes(void)
 	int max_depth = 0;
 	int node_count = m_nodes.size();
 	float max_width = 0;
-	auto unsorted = QSet<qpwgraph_node *>(m_nodes.begin(), m_nodes.end());
+
+	auto unsorted = QList<qpwgraph_node *>(m_nodes.begin(), m_nodes.end());
+	std::sort(unsorted.begin(), unsorted.end(), compareNodesTopologically);
+
 	auto nextToVisit = QQueue<qpwgraph_connect *>();
 	auto globalVisitedNodes = QSet<qpwgraph_node *>();
-	auto globalVisitedConnections = QSet<qpwgraph_connect *>();
+	auto visitedConnections = QSet<qpwgraph_connect *>();
 
 	while (!unsorted.empty()) {
 		qsizetype initial_size = unsorted.size();
+
+		// auto visitedConnections = QSet<qpwgraph_connect *>();
 
 		while(!unsorted.empty()) {
 			qpwgraph_node *source;
 
 			auto srcIter = std::find_if(unsorted.begin(), unsorted.end(), nodeIsEffectiveSource);
 			if (srcIter == unsorted.end()) {
-				if (globalVisitedConnections.empty()) {
+				if (visitedConnections.empty()) {
 					// First iteration; we're just gathering sources
 					std::cout << "TOPO: End of first source search; nextToVisit has " << nextToVisit.size() << " entries" << std::endl;
 					break;
+				} else {
+					// No source nodes (meaning there's a graph cycle); just take the first node
+					std::cout << "TOPO: CYCLE OR ORPHAN SINK DETECTED: no source node found" << std::endl;
+					source = *unsorted.begin();
+
+					std::cout << "TOPO: CYCLE BROKEN by " << debugNode(source) << std::endl;
+
+					// FIXME: why do cycles sometimes result in cycle-breaker nodes ending up at the
+					// same depth instead of having one after the other?
+					auto outbound = nodeOutboundConnections(source);
+					auto inbound = nodeInboundConnections(source);
+
+					foreach (qpwgraph_connect *c, inbound) {
+						if (!visitedConnections.contains(c)) {
+							std::cout << "TOPO: CYCLE: skipping inbound " << debugConnection(c) << std::endl;
+						}
+
+						qpwgraph_node *n = connectionFromNode(c);
+						if (n != source && n->depth() >= source->depth() && globalVisitedNodes.contains(n)) {
+							std::cout << "TOPO: CYCLE: setting depth to " << n->depth() + 1 << " for " << debugConnection(c) << std::endl;
+							source->setDepth(n->depth() + 1);
+						} else if (source->depth() < 1) {
+							source->setDepth(1);
+						}
+					}
+
+					visitedConnections |= QSet(inbound.begin(), inbound.end());
+
+					nextToVisit << outbound;
+
+					unsorted.removeOne(source);
+
+					break;
 				}
-
-				// No source nodes (meaning there's a graph cycle); just take the first node
-				std::cout << "TOPO: CYCLE OR ORPHAN SINK DETECTED: no source node found" << std::endl;
-				source = *unsorted.begin();
-				source->setDepth(1);
-
-				auto inbound = nodeInboundConnections(source);
-				globalVisitedConnections |= QSet(inbound.begin(), inbound.end());
 			} else {
 				source = *srcIter;
-				source->setDepth(0);
-			}
+				unsorted.removeOne(source);
 
-			unsorted.remove(source);
-
-			auto outbound = nodeOutboundConnections(source);
-			if (outbound.empty()) {
-				std::cout << "TOPO: skipping source " << debugNode(source) << " because it has no outbound connections" << std::endl;
-				globalVisitedNodes << source;
-			} else {
-				std::cout << "TOPO: adding " << debugNode(source) << " as the next source node" << std::endl;
-				nextToVisit << outbound;
+				auto outbound = nodeOutboundConnections(source);
+				if (outbound.empty()) {
+					std::cout << "TOPO: skipping source " << debugNode(source) << " because it has no outbound connections" << std::endl;
+					globalVisitedNodes << source;
+				} else {
+					std::cout << "TOPO: adding " << debugNode(source) << " as the next source node" << std::endl;
+					nextToVisit << outbound;
+				}
 			}
 		}
-
-		// This visited set keeps track of connections we have traversed, to detect cycles.
-		auto visited = QSet<qpwgraph_connect *>();
 
 		// TODO: maybe only visit a node once all of its inbound
 		// connections have been visited, so we know its depth will
 		// never need to change?  Will this handle edge cases?
 		while (!nextToVisit.empty()) {
 			qpwgraph_connect *c = nextToVisit.dequeue();
-			qpwgraph_node *fromNode = c->port1()->portNode();
-			qpwgraph_node *toNode = c->port2()->portNode();
+			qpwgraph_node *fromNode = connectionFromNode(c);
+			qpwgraph_node *toNode = connectionToNode(c);
 
-			if (globalVisitedConnections.contains(c)) {
+			if (visitedConnections.contains(c)) {
 				std::cout << "TOPO: already visited " << debugConnection(c) << std::endl;
 				continue;
 			}
 
 			std::cout << "TOPO: visiting " << debugConnection(c) << std::endl;
-			globalVisitedConnections += c;
-
-			// See if all inbound connections to this node have been visited.
-			auto inbound = nodeInboundConnections(toNode);
-			auto remaining = QSet(inbound.begin(), inbound.end()) - globalVisitedConnections;
-			if (!remaining.empty()) {
-				foreach (qpwgraph_connect *unvisited, remaining) {
-					std::cout << "TOPO: not visiting node because " << debugConnection(unvisited) << " has not been visited" << std::endl;
-				}
-				continue;
-			}
-
-			std::cout << "TOPO: visiting " << debugNode(toNode) << std::endl;
-			std::cout << "TOPO: destination node has " << countInputPorts(toNode) << " input ports and " << countOutputPorts(toNode) << " output ports" << std::endl;
-			globalVisitedNodes << toNode;
-
-			if (unsorted.contains(toNode)) {
-				// TODO: do we need to do anything for first ever visit?
-				std::cout << "TOPO: first time visiting " << debugNode(toNode) << std::endl;
-				unsorted.remove(toNode);
-			}
+			visitedConnections << c;
 
 			int next_depth = fromNode->depth() + 1;
 			if (toNode->depth() < next_depth) {
@@ -2234,6 +2261,28 @@ void qpwgraph_canvas::arrangeNodes(void)
 				std::cout << "TOPO: node " << debugNode(toNode) << " depth is already " << toNode->depth() << ", so not setting to " << next_depth << std::endl;
 			}
 
+			// See if all inbound connections to this node have been visited.
+			auto inbound = nodeInboundConnections(toNode);
+			auto remaining = QSet(inbound.begin(), inbound.end()) - visitedConnections;
+			if (!remaining.empty()) {
+				foreach (qpwgraph_connect *unvisited, remaining) {
+					std::cout << "TOPO: not visiting node because " << debugConnection(unvisited) << " has not been visited" << std::endl;
+				}
+				continue;
+			}
+
+			std::cout << "TOPO: visiting " << debugNode(toNode) << std::endl;
+			std::cout << "TOPO: destination node has " << countInputPorts(toNode) << " input ports and " << countOutputPorts(toNode) << " output ports" << std::endl;
+			globalVisitedNodes << toNode;
+
+			if (unsorted.contains(toNode)) {
+				// TODO: do we need to do anything for first ever visit?
+				std::cout << "TOPO: first time visiting " << debugNode(toNode) << std::endl;
+				unsorted.removeOne(toNode);
+			} else {
+				std::cout << "TOPO: \e[1;31mBUG\e[0m: revisited " << debugNode(toNode) << std::endl;
+			}
+
 			if (max_width < toNode->boundingRect().width()) {
 				max_width = toNode->boundingRect().width();
 			}
@@ -2241,14 +2290,14 @@ void qpwgraph_canvas::arrangeNodes(void)
 			nextToVisit << nodeOutboundConnections(toNode);
 
 			if (max_depth > node_count) {
-				std::cout << "TOPO: BUG: set a depth greater than number of nodes; must be an unhandled cycle or something" << std::endl;
+				std::cout << "TOPO: \e[1;31mBUG\e[0m: set a depth greater than number of nodes; must be an unhandled cycle or something" << std::endl;
 				nextToVisit.clear();
 				break;
 			}
 		}
 
 		if (initial_size == unsorted.size() && initial_size > 0) {
-			std::cout << "TOPO: BUG: topological sort failed to reduce the size of the unsorted node list" << std::endl;
+			std::cout << "TOPO: \e[1;31mBUG\e[0m: topological sort failed to reduce the size of the unsorted node list" << std::endl;
 			break;
 		}
 	}
@@ -2281,7 +2330,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 			y = ymin;
 			current_rank = node->depth();
 			// x += max_width * 2 + 20;
-			x = xmin + (max_width * 2 + 20) * current_rank;
+			x = xmin + (max_width * 1.5 + 20) * current_rank;
 		}
 
 		node->setPos(QPointF(x, y));
