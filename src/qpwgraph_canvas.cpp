@@ -2157,28 +2157,25 @@ void qpwgraph_canvas::arrangeNodes(void)
 	}
 
 	// Determine topological depth of nodes
-	// TODO: might be useful to pre-sort by [input port count, -output port
-	// count, first port type] so linear search hits fewer nodes
 	int max_depth = 0;
 	int node_count = m_nodes.size();
 
-	auto unsorted = QList<qpwgraph_node *>(m_nodes.begin(), m_nodes.end());
-	std::sort(unsorted.begin(), unsorted.end(), compareNodesTopologically);
-
+	auto unprocessed = QList<qpwgraph_node *>(m_nodes.begin(), m_nodes.end());
 	auto nextToVisit = QQueue<qpwgraph_connect *>();
 	auto globalVisitedNodes = QSet<qpwgraph_node *>();
 	auto visitedConnections = QSet<qpwgraph_connect *>();
 
-	while (!unsorted.empty()) {
-		qsizetype initial_size = unsorted.size();
+	while (!unprocessed.empty()) {
+		// Sort before each source-identification loop so that cycle-breaking picks nodes close to sources.
+		std::sort(unprocessed.begin(), unprocessed.end(), compareNodesTopologically);
 
-		// auto visitedConnections = QSet<qpwgraph_connect *>();
+		qsizetype initial_size = unprocessed.size();
 
-		while(!unsorted.empty()) {
+		while(!unprocessed.empty()) {
 			qpwgraph_node *source;
 
-			auto srcIter = std::find_if(unsorted.begin(), unsorted.end(), nodeIsEffectiveSource);
-			if (srcIter == unsorted.end()) {
+			auto srcIter = std::find_if(unprocessed.begin(), unprocessed.end(), nodeIsEffectiveSource);
+			if (srcIter == unprocessed.end()) {
 				if (visitedConnections.empty()) {
 					// First iteration; we're just gathering sources
 					std::cout << "TOPO: End of first source search; nextToVisit has " << nextToVisit.size() << " entries" << std::endl;
@@ -2186,7 +2183,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 				} else {
 					// No source nodes (meaning there's a graph cycle); just take the first node
 					std::cout << "TOPO: CYCLE OR ORPHAN SINK DETECTED: no source node found" << std::endl;
-					source = *unsorted.begin();
+					source = *unprocessed.begin();
 
 					std::cout << "TOPO: CYCLE BROKEN by " << debugNode(source) << std::endl;
 
@@ -2195,31 +2192,35 @@ void qpwgraph_canvas::arrangeNodes(void)
 					auto outbound = nodeOutboundConnections(source);
 					auto inbound = nodeInboundConnections(source);
 
+					// Make sure the node's depth is after any previously processed nodes
 					foreach (qpwgraph_connect *c, inbound) {
 						if (!visitedConnections.contains(c)) {
-							std::cout << "TOPO: CYCLE: skipping inbound " << debugConnection(c) << std::endl;
+							std::cout << "TOPO: CYCLE: skipping unvisited inbound " << debugConnection(c) << std::endl;
 						}
 
 						qpwgraph_node *n = connectionFromNode(c);
 						if (n != source && n->depth() >= source->depth() && globalVisitedNodes.contains(n)) {
 							std::cout << "TOPO: CYCLE: setting depth to " << n->depth() + 1 << " for " << debugConnection(c) << std::endl;
 							source->setDepth(n->depth() + 1);
-						} else if (source->depth() < 1) {
-							source->setDepth(1);
 						}
+					}
+
+					if (source->depth() < 1) {
+						std::cout << "TOPO: CYCLE: setting depth to 1" << std::endl;
+						source->setDepth(1);
 					}
 
 					visitedConnections |= QSet(inbound.begin(), inbound.end());
 
 					nextToVisit << outbound;
 
-					unsorted.removeOne(source);
+					unprocessed.removeOne(source);
 
 					break;
 				}
 			} else {
 				source = *srcIter;
-				unsorted.removeOne(source);
+				unprocessed.removeOne(source);
 
 				auto outbound = nodeOutboundConnections(source);
 				if (outbound.empty()) {
@@ -2275,10 +2276,10 @@ void qpwgraph_canvas::arrangeNodes(void)
 			std::cout << "TOPO: destination node has " << countInputPorts(toNode) << " input ports and " << countOutputPorts(toNode) << " output ports" << std::endl;
 			globalVisitedNodes << toNode;
 
-			if (unsorted.contains(toNode)) {
+			if (unprocessed.contains(toNode)) {
 				// TODO: do we need to do anything for first ever visit?
 				std::cout << "TOPO: first time visiting " << debugNode(toNode) << std::endl;
-				unsorted.removeOne(toNode);
+				unprocessed.removeOne(toNode);
 			} else {
 				std::cout << "TOPO: \e[1;31mBUG\e[0m: revisited " << debugNode(toNode) << std::endl;
 			}
@@ -2292,8 +2293,8 @@ void qpwgraph_canvas::arrangeNodes(void)
 			}
 		}
 
-		if (initial_size == unsorted.size() && initial_size > 0) {
-			std::cout << "TOPO: \e[1;31mBUG\e[0m: topological sort failed to reduce the size of the unsorted node list" << std::endl;
+		if (initial_size == unprocessed.size() && initial_size > 0) {
+			std::cout << "TOPO: \e[1;31mBUG\e[0m: topological sort failed to reduce the size of the unprocessed node list" << std::endl;
 			break;
 		}
 	}
