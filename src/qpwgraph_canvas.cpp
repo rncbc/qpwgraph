@@ -2149,6 +2149,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 	// Clear depth markers in case topology changed
 	foreach (qpwgraph_node *n, m_nodes) {
 		if (countInputPorts(n) > 0 && countOutputPorts(n) > 0) {
+			// Place duplex nodes in the middle
 			n->setDepth(1);
 		} else {
 			n->setDepth(0);
@@ -2160,7 +2161,6 @@ void qpwgraph_canvas::arrangeNodes(void)
 	// count, first port type] so linear search hits fewer nodes
 	int max_depth = 0;
 	int node_count = m_nodes.size();
-	float max_width = 0;
 
 	auto unsorted = QList<qpwgraph_node *>(m_nodes.begin(), m_nodes.end());
 	std::sort(unsorted.begin(), unsorted.end(), compareNodesTopologically);
@@ -2283,10 +2283,6 @@ void qpwgraph_canvas::arrangeNodes(void)
 				std::cout << "TOPO: \e[1;31mBUG\e[0m: revisited " << debugNode(toNode) << std::endl;
 			}
 
-			if (max_width < toNode->boundingRect().width()) {
-				max_width = toNode->boundingRect().width();
-			}
-
 			nextToVisit << nodeOutboundConnections(toNode);
 
 			if (max_depth > node_count) {
@@ -2302,17 +2298,26 @@ void qpwgraph_canvas::arrangeNodes(void)
 		}
 	}
 
-	// Place all fake sources at first rank, and all sink nodes at final rank
-	// TODO: place disconnected mixed-I/O nodes in some middle rank?
+	// Place sink nodes at final rank
+	float max_width = 0;
 	foreach (qpwgraph_node *node, m_nodes) {
+		if (max_width < node->boundingRect().width()) {
+			max_width = node->boundingRect().width();
+		}
+
 		if (nodeIsTrueSink(node)) {
-			node->setDepth(max_depth);
+			node->setDepth(qMax(2, max_depth));
 		}
 	}
 
 	// Sort nodes topologically based on depth and port types
 	QList<qpwgraph_node *> sorted = QList(m_nodes);
 	std::sort(sorted.begin(), sorted.end(), compareNodesTopologically);
+
+	std::cout << "TOPO: max width: " << max_width << std::endl;
+	foreach (qpwgraph_node *n, sorted) {
+		std::cout << "TOPO: " << debugNode(n) << std::endl;
+	}
 
 	// Place nodes based on topo sort
 	// TODO: extract spacing values to constants or parameters
@@ -2327,6 +2332,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 	foreach (qpwgraph_node *node, sorted) {
 		if (node->depth() > current_rank) {
 			// End of a rank; reset Y and move to the next column
+			std::cout << "TOPO: next rank: from " << current_rank << " to " << node->depth() << std::endl;
 			y = ymin;
 			current_rank = node->depth();
 			// x += max_width * 2 + 20;
