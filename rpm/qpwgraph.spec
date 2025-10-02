@@ -25,12 +25,6 @@ Source:		%{name}-%{version}.tar.gz
 URL:		https://gitlab.freedesktop.org/rncbc/qpwgraph
 #Packager:	rncbc.org
 
-%if 0%{?fedora_version} >= 34 || 0%{?suse_version} > 1500 || ( 0%{?sle_version} == 150200 && 0%{?is_opensuse} )
-%define qt_major_version  6
-%else
-%define qt_major_version  5
-%endif
-
 BuildRequires:	coreutils
 BuildRequires:	pkgconfig
 BuildRequires:	glibc-devel
