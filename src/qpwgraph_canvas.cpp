@@ -2040,13 +2040,14 @@ void qpwgraph_canvas::arrangeNodes (void)
 	double ymin = bounds.top();
 	double x = xmin, y = ymin;
 	int current_rank = sorted.first()->depth();
+	const double xpad = 120;
 	const double ypad = 40;
 	foreach (qpwgraph_node *node, sorted) {
 		if (node->depth() > current_rank) {
 			// End of a rank; reset Y and move to the next column
 			std::cout << "TOPO: next rank: from " << current_rank << " to " << node->depth() << std::endl;
 			y = ymin;
-			x += rankMaxWidth[current_rank] + 120;
+			x += rankMaxWidth[current_rank] + xpad;
 			current_rank = node->depth();
 		}
 
@@ -2066,27 +2067,31 @@ void qpwgraph_canvas::arrangeNodes (void)
 	}
 
 	// Move columns vertically for shorter and neater wires
-	const int maxIterations = 1;
-	for (int iterations = 0; iterations < maxIterations; iterations++) {
-		for (int i = 1; i <= maxRank; i++) {
-			// Sort each column by average connection source port Y value
-			std::sort(rankNodes[i].begin(), rankNodes[i].end(), [](qpwgraph_node *n1, qpwgraph_node *n2) { return meanParentPortY({n1}) < meanParentPortY({n2}); });
+	for (int i = 1; i <= maxRank; i++) {
+		// Sort each column by average connection source port Y value
+		std::sort(rankNodes[i].begin(), rankNodes[i].end(), [](qpwgraph_node *n1, qpwgraph_node *n2) { return meanParentPortY({n1}) < meanParentPortY({n2}); });
 
-			float minY = rankNodes[i].first()->pos().y();
-			foreach (qpwgraph_node *n, rankNodes[i]) {
-				minY = qMin(minY, n->pos().y());
-			}
+		qreal minY = rankNodes[i].first()->pos().y();
+		foreach (qpwgraph_node *n, rankNodes[i]) {
+			minY = qMin(minY, n->pos().y());
+		}
 
-			float y = minY;
-			foreach (qpwgraph_node *n, rankNodes[i]) {
-				std::cout << "TOPO: " << qpwgraph_toposort::debugNode(n) << " parent Y is " << meanParentPortY({n}) << std::endl;
-				std::cout << "TOPO: Setting " << qpwgraph_toposort::debugNode(n) << " Y from " << n->pos().y() << " to " << y << std::endl;
-				n->setPos(n->pos().x(), y);
-				y += n->boundingRect().height() + ypad;
-			}
+		qreal y = minY;
+		foreach (qpwgraph_node *n, rankNodes[i]) {
+			std::cout << "TOPO: COLUMN SORT: " << qpwgraph_toposort::debugNode(n) << " parent Y is " << meanParentPortY({n}) << std::endl;
+			std::cout << "TOPO: COLUMN SORT: Setting " << qpwgraph_toposort::debugNode(n) << " Y from " << n->pos().y() << " to " << y << std::endl;
+			n->setPos(n->pos().x(), y);
+			y += n->boundingRect().height() + ypad;
+		}
 
-			// TODO: center each column's average connection input port Y value on
-			// the previous column's average connection output port Y value
+		// Center each column's average input port Y value on the source ports' average Y value
+		qreal parentY = meanParentPortY(rankNodes[i]);
+		qreal inputY = meanInputPortY(rankNodes[i]);
+		qreal delta = inputY - parentY;
+		foreach (qpwgraph_node *n, rankNodes[i]) {
+			float newY = n->pos().y() - delta;
+			std::cout << "TOPO: COLUMN SHIFT: Setting " << qpwgraph_toposort::debugNode(n) << " Y from " << n->pos().y() << " to " << newY << std::endl;
+			n->setPos(n->pos().x(), newY);
 		}
 	}
 
