@@ -106,9 +106,9 @@ void qpwgraph_toposort::visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n)
 		// b -> c
 		// d -> e
 		// e -> c
-		if (!visitedNodes.contains(next)) {
+		// XXX if (!visitedNodes.contains(next)) {
 			visitNode(newPath, next);
-		}
+		// XXX }
 	}
 }
 

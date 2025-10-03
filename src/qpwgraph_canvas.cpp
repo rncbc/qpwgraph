@@ -2047,7 +2047,12 @@ void qpwgraph_canvas::arrangeNodes (void)
 			// End of a rank; reset Y and move to the next column
 			std::cout << "TOPO: next rank: from " << current_rank << " to " << node->depth() << std::endl;
 			y = ymin;
-			x += rankMaxWidth[current_rank] + xpad;
+
+			// XXX restore if FIXME from qpwgraph_toposort.cpp is fixed (node->depth() - current_rank)
+			// XXX int xpad_count = (node->depth() - current_rank)
+			int xpad_count = 1; // XXX
+
+			x += rankMaxWidth[current_rank] + xpad_count * xpad;
 			current_rank = node->depth();
 		}
 
