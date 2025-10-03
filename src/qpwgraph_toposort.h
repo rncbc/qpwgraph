@@ -14,9 +14,7 @@ public:
 
 	qpwgraph_toposort(QList<qpwgraph_node *> nodes);
 
-	void sort();
-
-	QList<qpwgraph_node *> sortedNodes();
+	QList<qpwgraph_node *> sort();
 
 	static qsizetype countInputPorts(qpwgraph_node *n);
 	static qsizetype countOutputPorts(qpwgraph_node *n);
@@ -37,6 +35,7 @@ public:
 	static QString modeName(qpwgraph_item::Mode mode);
 	static std::string debugNode(qpwgraph_node *n);
 	static std::string debugConnection(qpwgraph_connect *c);
+	static std::string debugPath(QSet<qpwgraph_node *> path);
 
 private:
 	void visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n);

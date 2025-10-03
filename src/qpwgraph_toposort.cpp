@@ -9,7 +9,7 @@ qpwgraph_toposort::qpwgraph_toposort(QList<qpwgraph_node *> nodes) :
 {
 }
 
-void qpwgraph_toposort::sort()
+QList<qpwgraph_node *> qpwgraph_toposort::sort()
 {
 	std::cout << "TOPO: beginning sorting" << std::endl;
 
@@ -44,14 +44,31 @@ void qpwgraph_toposort::sort()
 			break;
 		}
 	}
+
+	// Place sink nodes at final rank
+	int sinkDepth = 2;
+	foreach (qpwgraph_node *n, inputNodes) {
+		if (nodeIsTrueSink(n)) {
+			sinkDepth = qMax(sinkDepth, n->depth());
+		} else {
+			sinkDepth = qMax(sinkDepth, n->depth() + 1);
+		}
+	}
+	foreach (qpwgraph_node *n, inputNodes) {
+		if (nodeIsTrueSink(n)) {
+			std::cout << "TOPO: Setting sink " << debugNode(n) << " depth to " << sinkDepth << std::endl;
+			n->setDepth(qMax(n->depth(), sinkDepth));
+		}
+	}
+
+	std::sort(inputNodes.begin(), inputNodes.end(), compareNodes);
+
+	return QList<qpwgraph_node *>(inputNodes);
 }
 
 void qpwgraph_toposort::visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n)
 {
-	if (path.contains(n)) {
-		std::cout << "TOPO: already visited " << debugNode(n) << std::endl;
-		return;
-	}
+	std::cout << "TOPO: visiting " << debugNode(n) << " from path " << debugPath(path) << std::endl;
 
 	unvisitedNodes.removeOne(n);
 	visitedNodes << n;
@@ -60,6 +77,17 @@ void qpwgraph_toposort::visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n)
 	newPath += n;
 
 	foreach (qpwgraph_node *next, childNodes(n)) {
+		if (newPath.contains(next)) {
+			std::cout << "TOPO: already visited " << debugNode(n) << std::endl;
+			continue;
+		}
+
+		// FIXME: this can push graph cycles out to a crazy high rank if there are inbound connections to nodes
+		// in the feedback loop (basically length of the feedback loop plus one?)
+		int newDepth = qMax(n->depth() + 1, next->depth());
+		std::cout << "TOPO: setting " << debugNode(next) << " depth from " << next->depth() << " to " << newDepth << std::endl;
+		next->setDepth(newDepth);
+
 		visitNode(newPath, next);
 	}
 }
@@ -239,4 +267,15 @@ std::string qpwgraph_toposort::debugConnection(qpwgraph_connect *c)
 		QString::fromStdString(debugNode(toNode)) + ":" + toPort->portName().split(':').last();
 
 	return s.toStdString();
+}
+
+std::string qpwgraph_toposort::debugPath(QSet<qpwgraph_node *> path)
+{
+	QStringList pathList;
+
+	foreach (qpwgraph_node *n, path) {
+		pathList << QString::fromStdString(debugNode(n));
+	}
+
+	return pathList.join(" \e[0;1m->\e[0m ").toStdString();
 }
