@@ -20,7 +20,6 @@ public:
 	static qsizetype countOutputPorts(qpwgraph_node *n);
 
 	static qsizetype countExternalConnections(qpwgraph_node *n, bool input);
-
 	static qsizetype countInputConnections(qpwgraph_node *n);
 	static qsizetype countOutputConnections(qpwgraph_node *n);
 
@@ -29,6 +28,10 @@ public:
 	static bool nodeIsTrueSink(qpwgraph_node *n);
 
 	static QSet<qpwgraph_node *> childNodes(qpwgraph_node *n);
+
+	static QSet<qpwgraph_port *> connectedParentPorts(qpwgraph_node *n);
+	static QSet<qpwgraph_port *> connectedInputPorts(qpwgraph_node *n);
+	static QSet<qpwgraph_port *> connectedOutputPorts(qpwgraph_node *n);
 
 	static bool compareNodes(qpwgraph_node *n1, qpwgraph_node *n2);
 

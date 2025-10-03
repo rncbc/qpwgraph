@@ -172,6 +172,39 @@ QSet<qpwgraph_node *> qpwgraph_toposort::childNodes(qpwgraph_node *n)
 	return children;
 }
 
+QSet<qpwgraph_port *> qpwgraph_toposort::connectedParentPorts(qpwgraph_node *n)
+{
+	QSet<qpwgraph_port *> portList;
+
+	foreach (qpwgraph_port *p, n->ports()) {
+		if (!p->isInput()) {
+			continue;
+		}
+
+		foreach (qpwgraph_connect *c, p->connects()) {
+			if (c->port1()->portNode() == c->port2()->portNode()) {
+				// self feedback
+				continue;
+			}
+
+			if (c->port1()->portNode() == n) {
+				portList << c->port2();
+			} else {
+				portList << c->port1();
+			}
+		}
+	}
+
+	return portList;
+}
+
+QSet<qpwgraph_port *> qpwgraph_toposort::connectedInputPorts(qpwgraph_node *n)
+{
+	QList<qpwgraph_port *> portList;
+	std::copy_if(n->ports().begin(), n->ports().end(), std::back_inserter(portList), [](qpwgraph_port *p) { return p->connects().size() > 0; });
+	return QSet<qpwgraph_port *>(portList.begin(), portList.end());
+}
+
 bool qpwgraph_toposort::compareNodes(qpwgraph_node *n1, qpwgraph_node *n2)
 {
 	if (n1->depth() < n2->depth()) {
