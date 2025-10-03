@@ -2068,6 +2068,10 @@ void qpwgraph_canvas::arrangeNodes (void)
 
 	// Move columns vertically for shorter and neater wires
 	for (int i = 1; i <= maxRank; i++) {
+		if (!rankNodes.contains(i)) {
+			continue;
+		}
+
 		// Sort each column by average connection source port Y value
 		std::sort(rankNodes[i].begin(), rankNodes[i].end(), [](qpwgraph_node *n1, qpwgraph_node *n2) { return meanParentPortY({n1}) < meanParentPortY({n2}); });
 
@@ -2088,10 +2092,12 @@ void qpwgraph_canvas::arrangeNodes (void)
 		qreal parentY = meanParentPortY(rankNodes[i]);
 		qreal inputY = meanInputPortY(rankNodes[i]);
 		qreal delta = inputY - parentY;
-		foreach (qpwgraph_node *n, rankNodes[i]) {
-			float newY = n->pos().y() - delta;
-			std::cout << "TOPO: COLUMN SHIFT: Setting " << qpwgraph_toposort::debugNode(n) << " Y from " << n->pos().y() << " to " << newY << std::endl;
-			n->setPos(n->pos().x(), newY);
+		if (std::isfinite(delta)) {
+			foreach (qpwgraph_node *n, rankNodes[i]) {
+				float newY = n->pos().y() - delta;
+				std::cout << "TOPO: COLUMN SHIFT: Setting " << qpwgraph_toposort::debugNode(n) << " Y from " << n->pos().y() << " to " << newY << std::endl;
+				n->setPos(n->pos().x(), newY);
+			}
 		}
 	}
 

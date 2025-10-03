@@ -88,6 +88,24 @@ void qpwgraph_toposort::visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n)
 		std::cout << "TOPO: setting " << debugNode(next) << " depth from " << next->depth() << " to " << newDepth << std::endl;
 		next->setDepth(newDepth);
 
+		// FIXME: fixes some issues with cyclic graphs but prevents
+		// updating depth in parallel graphs
+		//
+		// in1 -> a
+		// in1 -> b
+		// in1 -> c
+		// in1 -> d
+		// in1 -> e
+		// in2 -> e
+		// a -> out
+		// b -> out
+		// c -> out
+		// d -> out
+		// e -> out
+		// a -> b
+		// b -> c
+		// d -> e
+		// e -> c
 		if (!visitedNodes.contains(next)) {
 			visitNode(newPath, next);
 		}
