@@ -1969,8 +1969,7 @@ void qpwgraph_canvas::arrangeNodes (void)
 	// TODO: extract spacing values to constants or parameters
 	// TODO: right-align sources?  center-align middle nodes? left-align sinks?  This would require two passes over each rank.
 	// TODO: never go below 0,0 for xmin/ymin?
-	// FIXME: canvas area isn't (always?) updated when items are moved
-	// FIXME: canvas isn't always fully redrawn, resulting in leftover borders and lines
+	// FIXME: items sometimes end up on very edge of scroll area
 	QRectF bounds = m_scene->itemsBoundingRect();
 	float xmin = bounds.left();
 	float ymin = bounds.top();
@@ -1999,8 +1998,7 @@ void qpwgraph_canvas::arrangeNodes (void)
 	ensureVisible(sorted.last());
 	ensureVisible(sorted.first());
 
-	// FIXME: doesn't prevent garbage left on canvas
-	invalidateScene(QRectF(xmin, ymin, x + max_width, max_y));
+	m_scene->invalidate();
 }
 
 
