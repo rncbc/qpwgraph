@@ -1976,6 +1976,11 @@ static int countInputConnections(qpwgraph_node *n)
 	return count;
 }
 
+static bool nodeIsInputAndOutput(qpwgraph_node *n)
+{
+	return countInputPorts(n) > 0 && countOutputPorts(n) > 0;
+}
+
 static bool nodeIsEffectiveSource(qpwgraph_node *n)
 {
 	return countInputPorts(n) == 0 || countInputConnections(n) == 0;
@@ -2087,17 +2092,23 @@ static std::string debugConnection(qpwgraph_connect *c)
 
 static QList<qpwgraph_connect *> nodeInboundConnections(qpwgraph_node *n)
 {
-	auto outbound = QList<qpwgraph_connect *>();
+	auto inbound = QList<qpwgraph_connect *>();
 
 	foreach (qpwgraph_port *p, n->ports()) {
 		if (!p->isInput()) {
 			continue;
 		}
 
-		outbound += p->connects();
+		foreach (qpwgraph_connect *c, p->connects()) {
+			if (c->port1()->portNode() == c->port2()->portNode()) {
+				continue;
+			}
+
+			inbound << c;
+		}
 	}
 
-	return outbound;
+	return inbound;
 }
 
 static QList<qpwgraph_connect *> nodeOutboundConnections(qpwgraph_node *n)
@@ -2109,7 +2120,13 @@ static QList<qpwgraph_connect *> nodeOutboundConnections(qpwgraph_node *n)
 			continue;
 		}
 
-		outbound += p->connects();
+		foreach (qpwgraph_connect *c, p->connects()) {
+			if (c->port1()->portNode() == c->port2()->portNode()) {
+				continue;
+			}
+
+			outbound << c;
+		}
 	}
 
 	return outbound;
@@ -2148,12 +2165,7 @@ void qpwgraph_canvas::arrangeNodes(void)
 
 	// Clear depth markers in case topology changed
 	foreach (qpwgraph_node *n, m_nodes) {
-		if (countInputPorts(n) > 0 && countOutputPorts(n) > 0) {
-			// Place duplex nodes in the middle
-			n->setDepth(1);
-		} else {
-			n->setDepth(0);
-		}
+		n->setDepth(0);
 	}
 
 	// Determine topological depth of nodes
@@ -2304,6 +2316,10 @@ void qpwgraph_canvas::arrangeNodes(void)
 	foreach (qpwgraph_node *node, m_nodes) {
 		if (max_width < node->boundingRect().width()) {
 			max_width = node->boundingRect().width();
+		}
+
+		if (nodeIsInputAndOutput(node)) {
+			node->setDepth(qMax(1, node->depth()));
 		}
 
 		if (nodeIsTrueSink(node)) {
