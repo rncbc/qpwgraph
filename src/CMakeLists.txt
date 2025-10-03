@@ -20,6 +20,7 @@ set (HEADERS
   qpwgraph_connect.h
   qpwgraph_port.h
   qpwgraph_node.h
+  qpwgraph_toposort.h
   qpwgraph_item.h
   qpwgraph_sect.h
   qpwgraph_pipewire.h
@@ -41,6 +42,7 @@ set (SOURCES
   qpwgraph_connect.cpp
   qpwgraph_port.cpp
   qpwgraph_node.cpp
+  qpwgraph_toposort.cpp
   qpwgraph_item.cpp
   qpwgraph_sect.cpp
   qpwgraph_pipewire.cpp
