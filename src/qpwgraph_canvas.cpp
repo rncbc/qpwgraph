@@ -1958,41 +1958,72 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 // - Try to keep connected nodes near each other in Y
 void qpwgraph_canvas::arrangeNodes (void)
 {
+	if (m_nodes.empty()) {
+		std::cout << "TOPO: no nodes to arrange" << std::endl;
+		return;
+	}
+
 	qpwgraph_toposort topo(m_nodes);
 	QList<qpwgraph_node *> sorted = topo.sort();
 
+	QMap<int, QList<qpwgraph_node *>> rankNodes;
+	QMap<int, float> rankMaxWidth;
+	int maxRank = 0;
+
 	foreach (qpwgraph_node *n, sorted) {
 		std::cout << "TOPO: " << qpwgraph_toposort::debugNode(n) << std::endl;
+
+		int rank = n->depth();
+		if (!rankNodes.contains(rank)) {
+			rankNodes[rank] = QList<qpwgraph_node *>();
+		}
+		rankNodes[rank] << n;
+
+		if (!rankMaxWidth.contains(rank)) {
+			rankMaxWidth[rank] = 0;
+		}
+		rankMaxWidth[rank] = qMax(rankMaxWidth[rank], n->boundingRect().width());
+
+		maxRank = qMax(maxRank, rank);
+	}
+
+	for (int i = 0; i <= maxRank; i++) {
+		if (rankMaxWidth.contains(i)) {
+			std::cout << "TOPO: rank " << i << ": maxWidth=" << rankMaxWidth[i] << " count=" << rankNodes[i].size() << std::endl;
+		}
 	}
 
 	// Place nodes based on topological sort
 	// TODO: extract spacing values to constants or parameters
-	// TODO: right-align sources?  center-align middle nodes? left-align sinks?  This would require two passes over each rank.
 	// TODO: never go below 0,0 for xmin/ymin?
 	// FIXME: items sometimes end up on very edge of scroll area
 	QRectF bounds = m_scene->itemsBoundingRect();
-	float xmin = bounds.left();
-	float ymin = bounds.top();
-	float x = xmin, y = ymin;
-	int current_rank = 0;
-	float max_width = 0;
-	float max_y = 0;
+	double xmin = bounds.left();
+	double ymin = bounds.top();
+	double x = xmin, y = ymin;
+	int current_rank = sorted.first()->depth();
 	foreach (qpwgraph_node *node, sorted) {
 		if (node->depth() > current_rank) {
 			// End of a rank; reset Y and move to the next column
 			std::cout << "TOPO: next rank: from " << current_rank << " to " << node->depth() << std::endl;
 			y = ymin;
+			x += rankMaxWidth[current_rank] + 120;
 			current_rank = node->depth();
-			x += max_width + 120;
-			max_width = 0;
 		}
 
-		node->setPos(QPointF(x, y));
+		double w = node->boundingRect().width();
+		if (current_rank == 0) {
+			// Right-align sources
+			node->setPos(QPointF(x + (rankMaxWidth[current_rank] - w), y));
+		} else if (current_rank == maxRank) {
+			// Left-align sinks
+			node->setPos(QPointF(x, y));
+		} else {
+			// Center-align everything else
+			node->setPos(QPointF(x + (rankMaxWidth[current_rank] - w) / 2, y));
+		}
 
 		y += node->boundingRect().height() + 40;
-
-		max_y = qMax(max_y, y);
-		max_width = qMax(max_width, node->boundingRect().width());
 	}
 
 	ensureVisible(sorted.last());
