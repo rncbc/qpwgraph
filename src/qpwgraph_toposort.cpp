@@ -221,6 +221,16 @@ bool qpwgraph_toposort::compareNodes(qpwgraph_node *n1, qpwgraph_node *n2)
 		return false;
 	}
 
+	if (n1->nodeName() < n2->nodeName()) {
+		std::cout << "n1 node name" << std::endl;
+		return true;
+	}
+	if (n2->nodeName() < n1->nodeName()) {
+		std::cout << "n2 node name" << std::endl;
+		return false;
+	}
+
+	std::cout << "n1 n2 equal" << std::endl;
 	return false;
 }
 
