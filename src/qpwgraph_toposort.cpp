@@ -37,7 +37,9 @@ QList<qpwgraph_node *> qpwgraph_toposort::sort()
 	while (!unvisitedNodes.empty()) {
 		qsizetype initialCount = unvisitedNodes.size();
 
-		visitNode(QSet<qpwgraph_node *>(), unvisitedNodes.first());
+		qpwgraph_node *n = unvisitedNodes.first();
+		std::cout << "TOPO: CYCLE: breaking cycle with " << debugNode(n) << std::endl;
+		visitNode(QSet<qpwgraph_node *>(), n);
 
 		if (initialCount == unvisitedNodes.size()) {
 			std::cerr << "TOPO: \e[1;31mBUG\e[0m: unvisited count did not change during cycle breaking" << std::endl;
@@ -78,17 +80,17 @@ void qpwgraph_toposort::visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n)
 
 	foreach (qpwgraph_node *next, childNodes(n)) {
 		if (newPath.contains(next)) {
-			std::cout << "TOPO: already visited " << debugNode(n) << std::endl;
+			std::cout << "TOPO: CYCLE: already visited " << debugNode(n) << std::endl;
 			continue;
 		}
 
-		// FIXME: this can push graph cycles out to a crazy high rank if there are inbound connections to nodes
-		// in the feedback loop (basically length of the feedback loop plus one?)
 		int newDepth = qMax(n->depth() + 1, next->depth());
 		std::cout << "TOPO: setting " << debugNode(next) << " depth from " << next->depth() << " to " << newDepth << std::endl;
 		next->setDepth(newDepth);
 
-		visitNode(newPath, next);
+		if (!visitedNodes.contains(next)) {
+			visitNode(newPath, next);
+		}
 	}
 }
 
