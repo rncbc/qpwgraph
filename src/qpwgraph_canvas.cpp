@@ -1958,49 +1958,49 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 // - Try to keep connected nodes near each other in Y
 void qpwgraph_canvas::arrangeNodes (void)
 {
-	float offset = 15;
-
 	qpwgraph_toposort topo(m_nodes);
 	QList<qpwgraph_node *> sorted = topo.sort();
 
-	float max_width = 0;
-	foreach (qpwgraph_node *n, m_nodes) {
-		if (max_width < n->boundingRect().width()) {
-			max_width = n->boundingRect().width();
-		}
-
-	std::sort(sorted.begin(), sorted.end(), qpwgraph_toposort::compareNodes);
-	}
-
-	std::cout << "TOPO: max width: " << max_width << std::endl;
 	foreach (qpwgraph_node *n, sorted) {
 		std::cout << "TOPO: " << qpwgraph_toposort::debugNode(n) << std::endl;
 	}
 
-	// Place nodes based on topo sort
+	// Place nodes based on topological sort
 	// TODO: extract spacing values to constants or parameters
-	// TODO: right-align sources?  center-align middle nodes? left-align sinks?
-	// TODO: scroll to rearranged nodes in case nodes were super spread out
+	// TODO: right-align sources?  center-align middle nodes? left-align sinks?  This would require two passes over each rank.
 	// TODO: never go below 0,0 for xmin/ymin?
+	// FIXME: canvas area isn't (always?) updated when items are moved
+	// FIXME: canvas isn't always fully redrawn, resulting in leftover borders and lines
 	QRectF bounds = m_scene->itemsBoundingRect();
 	float xmin = bounds.left();
 	float ymin = bounds.top();
 	float x = xmin, y = ymin;
 	int current_rank = 0;
+	float max_width = 0;
+	float max_y = 0;
 	foreach (qpwgraph_node *node, sorted) {
 		if (node->depth() > current_rank) {
 			// End of a rank; reset Y and move to the next column
 			std::cout << "TOPO: next rank: from " << current_rank << " to " << node->depth() << std::endl;
 			y = ymin;
 			current_rank = node->depth();
-			// x += max_width * 2 + 20;
-			x = xmin + (max_width * 1.5 + 20) * current_rank;
+			x += max_width + 120;
+			max_width = 0;
 		}
 
 		node->setPos(QPointF(x, y));
 
 		y += node->boundingRect().height() + 40;
+
+		max_y = qMax(max_y, y);
+		max_width = qMax(max_width, node->boundingRect().width());
 	}
+
+	ensureVisible(sorted.last());
+	ensureVisible(sorted.first());
+
+	// FIXME: doesn't prevent garbage left on canvas
+	invalidateScene(QRectF(xmin, ymin, x + max_width, max_y));
 }
 
 
