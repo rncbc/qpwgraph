@@ -200,8 +200,16 @@ QSet<qpwgraph_port *> qpwgraph_toposort::connectedParentPorts(qpwgraph_node *n)
 		}
 
 		foreach (qpwgraph_connect *c, p->connects()) {
-			if (c->port1()->portNode() == c->port2()->portNode()) {
+			qpwgraph_node *n1 = c->port1()->portNode();
+			qpwgraph_node *n2 = c->port2()->portNode();
+			if (n1 == n2) {
 				// self feedback
+				continue;
+			}
+
+			if (n1->depth() > n->depth() || n2->depth() > n->depth()) {
+				// left-pointing edge in a cycle
+				std::cout << "TOPO: ignoring parent by depth: " << debugConnection(c) << std::endl;
 				continue;
 			}
 
@@ -218,9 +226,32 @@ QSet<qpwgraph_port *> qpwgraph_toposort::connectedParentPorts(qpwgraph_node *n)
 
 QSet<qpwgraph_port *> qpwgraph_toposort::connectedInputPorts(qpwgraph_node *n)
 {
-	QList<qpwgraph_port *> portList;
-	std::copy_if(n->ports().begin(), n->ports().end(), std::back_inserter(portList), [](qpwgraph_port *p) { return p->connects().size() > 0; });
-	return QSet<qpwgraph_port *>(portList.begin(), portList.end());
+	QSet<qpwgraph_port *> portList;
+
+	foreach (qpwgraph_port *p, n->ports()) {
+		if (!p->isInput()) {
+			continue;
+		}
+
+		foreach (qpwgraph_connect *c, p->connects()) {
+			qpwgraph_node *n1 = c->port1()->portNode();
+			qpwgraph_node *n2 = c->port2()->portNode();
+			if (n1 == n2) {
+				// self feedback
+				continue;
+			}
+
+			if (n1->depth() > n->depth() || n2->depth() > n->depth()) {
+				// left-pointing edge in a cycle
+				std::cout << "TOPO: ignoring input by depth: " << debugConnection(c) << std::endl;
+				continue;
+			}
+
+			portList << p;
+		}
+	}
+
+	return portList;
 }
 
 bool qpwgraph_toposort::compareNodes(qpwgraph_node *n1, qpwgraph_node *n2)
