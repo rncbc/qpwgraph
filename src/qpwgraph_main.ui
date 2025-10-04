@@ -1260,7 +1260,13 @@
   </action>
   <action name="viewArrangeAction">
    <property name="text">
-    <string>Arrange</string>
+    <string>&amp;Arrange Nodes</string>
+   </property>
+   <property name="toolTip">
+    <string>Rearrange nodes following signal path from left to right.</string>
+   </property>
+   <property name="statusTip">
+    <string>Use topological sort to arrange nodes following signal path from left to right.</string>
    </property>
   </action>
  </widget>
