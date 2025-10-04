@@ -31,8 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
-#include <QList>
-#include <QSet>
+#include <QtContainerFwd>
 
 class qpwgraph_toposort
 {
