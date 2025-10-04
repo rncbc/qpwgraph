@@ -29,13 +29,16 @@
 
 #include <QtContainerFwd>
 
+class qpwgraph_canvas;
+
+
 class qpwgraph_toposort
 {
 public:
 
-	qpwgraph_toposort(QList<qpwgraph_node *> nodes);
+	qpwgraph_toposort(qpwgraph_canvas *canvas, QList<qpwgraph_node *> nodes);
 
-	QList<qpwgraph_node *> sort();
+	void arrange();
 
 	static qsizetype countInputPorts(qpwgraph_node *n);
 	static qsizetype countOutputPorts(qpwgraph_node *n);
@@ -54,6 +57,10 @@ public:
 	static QSet<qpwgraph_port *> connectedInputPorts(qpwgraph_node *n);
 	static QSet<qpwgraph_port *> connectedOutputPorts(qpwgraph_node *n);
 
+	static qreal meanPortY(QSet<qpwgraph_port *> ports, QMap<qpwgraph_node *, QPointF> positions);
+	static qreal meanParentPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions);
+	static qreal meanInputPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions);
+
 	static bool compareNodes(qpwgraph_node *n1, qpwgraph_node *n2);
 
 	static QString modeName(qpwgraph_item::Mode mode);
@@ -63,12 +70,14 @@ public:
 	static std::string debugPoint(QPointF p);
 
 private:
+	QList<qpwgraph_node *> sort();
 	void visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n);
 
 	// Instance variables
 	QList<qpwgraph_node *> inputNodes;
 	QList<qpwgraph_node *> unvisitedNodes;
 	QSet<qpwgraph_node *> visitedNodes;
+	qpwgraph_canvas *canvas;
 };
 
 #endif /* __qpwgraph_toposort_h */

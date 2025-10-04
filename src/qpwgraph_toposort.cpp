@@ -21,15 +21,157 @@
 
 #include "qpwgraph_toposort.h"
 #include "qpwgraph_connect.h"
+#include "qpwgraph_port.h"
+#include "qpwgraph_node.h"
+#include "qpwgraph_canvas.h"
 
 #include <algorithm>
 #include <iostream>
 
-qpwgraph_toposort::qpwgraph_toposort(QList<qpwgraph_node *> nodes) :
-	inputNodes(nodes), unvisitedNodes(nodes), visitedNodes()
+qpwgraph_toposort::qpwgraph_toposort(qpwgraph_canvas *canvas, QList<qpwgraph_node *> nodes) :
+	canvas(canvas), inputNodes(nodes), unvisitedNodes(nodes), visitedNodes()
 {
 }
 
+// Rearrange nodes by type and connection using a topological ordering.
+// Nodes with no incoming connections go first, nodes with no outgoing
+// connections go last.  Nodes are arranged in columns based on their distance
+// in the graph from a source node.
+//
+// Possible future improvements:
+// - Try to keep connected nodes near each other in Y
+void qpwgraph_toposort::arrange()
+{
+	// Sort nodes topologically, using heuristics to break cycles.
+	QList<qpwgraph_node *> sorted = sort();
+
+	// Precompute and store information used during arrangement.
+	QMap<qpwgraph_node *, QPointF> oldPositions;
+	QMap<qpwgraph_node *, QPointF> newPositions;
+	QMap<int, QList<qpwgraph_node *>> rankNodes;
+	QMap<int, float> rankMaxWidth;
+	int maxRank = 0;
+	foreach (qpwgraph_node *n, sorted) {
+		std::cout << "TOPO: " << debugNode(n) << std::endl;
+
+		oldPositions[n] = n->pos();
+
+		int rank = n->depth();
+		if (!rankNodes.contains(rank)) {
+			rankNodes[rank] = QList<qpwgraph_node *>();
+		}
+		rankNodes[rank] << n;
+
+		if (!rankMaxWidth.contains(rank)) {
+			rankMaxWidth[rank] = 0;
+		}
+		rankMaxWidth[rank] = qMax(rankMaxWidth[rank], n->boundingRect().width());
+
+		maxRank = qMax(maxRank, rank);
+	}
+
+	for (int i = 0; i <= maxRank; i++) {
+		if (rankMaxWidth.contains(i)) {
+			std::cout << "TOPO: rank " << i << ": maxWidth=" << rankMaxWidth[i] << " count=" << rankNodes[i].size() << std::endl;
+		}
+	}
+
+	// Place nodes based on topological sort
+	// TODO: extract spacing values to constants or parameters
+	// TODO: never go below 0,0 for xmin/ymin?
+	// FIXME: items sometimes end up on very edge of scroll area
+	QRectF bounds = canvas->scene()->itemsBoundingRect();
+	double xmin = bounds.left();
+	double ymin = bounds.top();
+	double x = xmin, y = ymin;
+	int current_rank = sorted.first()->depth();
+	const double xpad = 120;
+	const double ypad = 40;
+	foreach (qpwgraph_node *node, sorted) {
+		if (node->depth() > current_rank) {
+			// End of a rank; reset Y and move to the next column
+			std::cout << "TOPO: next rank: from " << current_rank << " to " << node->depth() << std::endl;
+			y = ymin;
+
+			// XXX restore if FIXME from qpwgraph_toposort.cpp is fixed (node->depth() - current_rank)
+			// XXX int xpad_count = (node->depth() - current_rank)
+			int xpad_count = 1; // XXX
+
+			x += rankMaxWidth[current_rank] + xpad_count * xpad;
+			current_rank = node->depth();
+		}
+
+		double w = node->boundingRect().width();
+		if (current_rank == 0) {
+			// Right-align sources
+			newPositions[node] = QPointF(x + (rankMaxWidth[current_rank] - w), y);
+		} else if (current_rank == maxRank) {
+			// Left-align sinks
+			newPositions[node] = QPointF(x, y);
+		} else {
+			// Center-align everything else
+			newPositions[node] = QPointF(x + (rankMaxWidth[current_rank] - w) / 2, y);
+		}
+
+		y += node->boundingRect().height() + ypad;
+	}
+
+	// Move columns vertically for shorter and neater wires
+	for (int i = 1; i <= maxRank; i++) {
+		if (!rankNodes.contains(i)) {
+			continue;
+		}
+
+		// Sort each column by average connection source port Y value
+		std::sort(rankNodes[i].begin(), rankNodes[i].end(), [newPositions](qpwgraph_node *n1, qpwgraph_node *n2) { return meanParentPortY({n1}, newPositions) < meanParentPortY({n2}, newPositions); });
+
+		qreal minY = newPositions[rankNodes[i].first()].y();
+		foreach (qpwgraph_node *n, rankNodes[i]) {
+			minY = qMin(minY, newPositions[n].y());
+		}
+
+		qreal y = minY;
+		foreach (qpwgraph_node *n, rankNodes[i]) {
+			std::cout << "TOPO: COLUMN SORT: " << debugNode(n) << " parent Y is " << meanParentPortY({n}, newPositions) << std::endl;
+			std::cout << "TOPO: COLUMN SORT: Setting " << debugNode(n) << " Y from " << newPositions[n].y() << " to " << y << std::endl;
+			newPositions[n] = QPointF(newPositions[n].x(), y);
+			y += n->boundingRect().height() + ypad;
+		}
+
+		// Center each column's average input port Y value on the source ports' average Y value
+		qreal parentY = meanParentPortY(rankNodes[i], newPositions);
+		qreal inputY = meanInputPortY(rankNodes[i], newPositions);
+		qreal delta = inputY - parentY;
+		if (std::isfinite(delta)) {
+			foreach (qpwgraph_node *n, rankNodes[i]) {
+				float newY = newPositions[n].y() - delta;
+				std::cout << "TOPO: COLUMN SHIFT: Setting " << debugNode(n) << " Y from " << newPositions[n].y() << " to " << newY << std::endl;
+				newPositions[n] = QPointF(newPositions[n].x(), newY);
+			}
+		}
+	}
+
+	// FIXME: this way of building the move command is messy; maybe create an arrange command that inherits from move command
+	qpwgraph_move_command *mc = new qpwgraph_move_command(canvas, QList<qpwgraph_node *>(), QPointF(0, 0), QPointF(0, 0));
+	mc->setText(QObject::tr("Arrange Nodes"));
+	foreach (qpwgraph_node *n, sorted) {
+		std::cout << "TOPO: " << debugNode(n) << " final move: " << debugPoint(oldPositions[n]) << " to " << debugPoint(newPositions[n]) << std::endl;
+		n->setPos(newPositions[n]);
+		mc->addItem(n, oldPositions[n], newPositions[n]);
+	}
+
+	canvas->commands()->push(mc);
+
+	canvas->ensureVisible(sorted.last());
+	canvas->ensureVisible(sorted.first());
+
+	canvas->scene()->invalidate();
+}
+
+// Assigns ranks to and sorts the nodes given to the constructor, returning a
+// new, sorted list of nodes.
+//
+// TODO: Allow passing a list of nodes to sort here instead of the constructor?
 QList<qpwgraph_node *> qpwgraph_toposort::sort()
 {
 	std::cout << "TOPO: beginning sorting" << std::endl;
@@ -335,6 +477,42 @@ bool qpwgraph_toposort::compareNodes(qpwgraph_node *n1, qpwgraph_node *n2)
 
 	std::cout << "n1 n2 equal" << std::endl;
 	return false;
+}
+
+qreal qpwgraph_toposort::meanPortY(QSet<qpwgraph_port *> ports, QMap<qpwgraph_node *, QPointF> positions)
+{
+	if (ports.empty()) {
+		return -std::numeric_limits<double>::infinity();
+	}
+
+	qreal y = 0;
+	foreach (qpwgraph_port *p, ports) {
+		y += p->pos().y() + positions[p->portNode()].y();
+	}
+
+	return y / ports.size();
+}
+
+qreal qpwgraph_toposort::meanParentPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions)
+{
+	auto ports = QSet<qpwgraph_port *>();
+
+	foreach (qpwgraph_node *n, nodes) {
+		ports |= connectedParentPorts(n);
+	}
+
+	return meanPortY(ports, positions);
+}
+
+qreal qpwgraph_toposort::meanInputPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions)
+{
+	auto ports = QSet<qpwgraph_port *>();
+
+	foreach (qpwgraph_node *n, nodes) {
+		ports |= connectedInputPorts(n);
+	}
+
+	return meanPortY(ports, positions);
 }
 
 QString qpwgraph_toposort::modeName(qpwgraph_item::Mode mode)
