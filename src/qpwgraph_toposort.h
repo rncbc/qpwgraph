@@ -60,6 +60,7 @@ public:
 	static std::string debugNode(qpwgraph_node *n);
 	static std::string debugConnection(qpwgraph_connect *c);
 	static std::string debugPath(QSet<qpwgraph_node *> path);
+	static std::string debugPoint(QPointF p);
 
 private:
 	void visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n);

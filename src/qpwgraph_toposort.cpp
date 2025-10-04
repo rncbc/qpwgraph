@@ -394,3 +394,8 @@ std::string qpwgraph_toposort::debugPath(QSet<qpwgraph_node *> path)
 
 	return pathList.join(" \e[0;1m->\e[0m ").toStdString();
 }
+
+std::string qpwgraph_toposort::debugPoint(QPointF p)
+{
+	return (QString("(") + QString::number(p.x()) + ", " + QString::number(p.y()) + ")").toStdString();
+}
