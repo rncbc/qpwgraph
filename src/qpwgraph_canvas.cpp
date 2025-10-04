@@ -2111,10 +2111,16 @@ void qpwgraph_canvas::arrangeNodes (void)
 		}
 	}
 
+	// FIXME: this way of building the move command is messy; maybe create an arrange command that inherits from move command
+	qpwgraph_move_command *mc = new qpwgraph_move_command(this, QList<qpwgraph_node *>(), QPointF(0, 0), QPointF(0, 0));
+	mc->setText(QObject::tr("Arrange Nodes"));
 	foreach (qpwgraph_node *n, sorted) {
 		std::cout << "TOPO: " << qpwgraph_toposort::debugNode(n) << " final move: " << qpwgraph_toposort::debugPoint(oldPositions[n]) << " to " << qpwgraph_toposort::debugPoint(newPositions[n]) << std::endl;
 		n->setPos(newPositions[n]);
+		mc->addItem(n, oldPositions[n], newPositions[n]);
 	}
+
+	m_commands->push(mc);
 
 	ensureVisible(sorted.last());
 	ensureVisible(sorted.first());
