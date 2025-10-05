@@ -1962,6 +1962,9 @@ void qpwgraph_canvas::arrangeNodes (void)
 
 	qpwgraph_toposort topo(this, m_nodes);
 	topo.arrange();
+	m_scene->setSceneRect(boundingRect(true));
+
+	std::cout << "TOPO: bounding rect " << qpwgraph_toposort::debugRect(boundingRect()) << std::endl;
 }
 
 
