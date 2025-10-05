@@ -1958,6 +1958,8 @@ void qpwgraph_canvas::arrangeNodes (void)
 
 	// TODO: Allow selecting specific nodes to arrange??
 
+	std::cout << "TOPO: bounding rect " << qpwgraph_toposort::debugRect(boundingRect()) << std::endl;
+
 	qpwgraph_toposort topo(this, m_nodes);
 	topo.arrange();
 }

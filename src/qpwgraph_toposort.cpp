@@ -24,6 +24,7 @@
 #include "qpwgraph_port.h"
 #include "qpwgraph_node.h"
 #include "qpwgraph_canvas.h"
+#include "qpwgraph_arrange_command.h"
 
 #include <algorithm>
 #include <iostream>
@@ -152,20 +153,21 @@ void qpwgraph_toposort::arrange()
 	}
 
 	// FIXME: this way of building the move command is messy; maybe create an arrange command that inherits from move command
-	qpwgraph_move_command *mc = new qpwgraph_move_command(canvas, QList<qpwgraph_node *>(), QPointF(0, 0), QPointF(0, 0));
-	mc->setText(QObject::tr("Arrange Nodes"));
+	qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(canvas, sorted, newPositions);
 	foreach (qpwgraph_node *n, sorted) {
 		std::cout << "TOPO: " << debugNode(n) << " final move: " << debugPoint(oldPositions[n]) << " to " << debugPoint(newPositions[n]) << std::endl;
 		n->setPos(newPositions[n]);
-		mc->addItem(n, oldPositions[n], newPositions[n]);
 	}
 
+	std::cout << "TOPO: items rect " << debugRect(canvas->scene()->itemsBoundingRect()) << std::endl;
+
+	// TODO: move all canvas access back into the canvas class
 	canvas->commands()->push(mc);
 
 	canvas->ensureVisible(sorted.last());
 	canvas->ensureVisible(sorted.first());
 
-	canvas->scene()->invalidate();
+	canvas->scene()->update();
 }
 
 // Assigns ranks to and sorts the nodes given to the constructor, returning a
@@ -576,4 +578,9 @@ std::string qpwgraph_toposort::debugPath(QSet<qpwgraph_node *> path)
 std::string qpwgraph_toposort::debugPoint(QPointF p)
 {
 	return (QString("(") + QString::number(p.x()) + ", " + QString::number(p.y()) + ")").toStdString();
+}
+
+std::string qpwgraph_toposort::debugRect(QRectF p)
+{
+	return QString::asprintf("(%.01f..%.01f, %.01f..%.01f)", p.x(), p.x() + p.width(), p.y(), p.y() + p.height()).toStdString();
 }

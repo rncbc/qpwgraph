@@ -68,6 +68,7 @@ public:
 	static std::string debugConnection(qpwgraph_connect *c);
 	static std::string debugPath(QSet<qpwgraph_node *> path);
 	static std::string debugPoint(QPointF p);
+	static std::string debugRect(QRectF p);
 
 private:
 	QList<qpwgraph_node *> sort();
