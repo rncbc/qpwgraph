@@ -4,10 +4,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.9.6  2025-10-06  An Early-Fall'25 Beta Release.
 
 - Allow the complete node name to get the same treatment in the
-  Graph/Options.../Filter as same for Merger. (EXPERIMENTAL)
+  Graph/Options.../Filter as same for Merger.
 
 - Get rid of CONFIG_WAYLAND build config option; add underlying
   platform name (eg. xcb, wayland) to Qt version string.

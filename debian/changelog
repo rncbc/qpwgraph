@@ -1,3 +1,9 @@
+qpwgraph (0.9.6-55.1) unstable; urgency=low
+
+  * An early-fall'25 beta release.
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Mon,  6 Oct 2025 20:00:00 +0100
+
 qpwgraph (0.9.5-54.1) unstable; urgency=low
 
   * A mid-summer'25 beta release.
