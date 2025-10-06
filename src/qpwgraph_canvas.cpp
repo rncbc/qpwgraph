@@ -24,6 +24,7 @@
 #include "qpwgraph_connect.h"
 #include "qpwgraph_patchbay.h"
 #include "qpwgraph_toposort.h"
+#include "qpwgraph_arrange_command.h"
 
 #include <QGraphicsScene>
 #include <QRegularExpression>
@@ -1960,9 +1961,24 @@ void qpwgraph_canvas::arrangeNodes (void)
 
 	std::cout << "TOPO: bounding rect " << qpwgraph_toposort::debugRect(boundingRect()) << std::endl;
 
-	qpwgraph_toposort topo(this, m_nodes);
-	topo.arrange();
+	qpwgraph_toposort topo(m_nodes);
+	auto newPositions = topo.arrange();
 	m_scene->setSceneRect(boundingRect(true));
+
+	qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(this, newPositions);
+	foreach (qpwgraph_node *n, newPositions.keys()) {
+		std::cout << "TOPO: " << qpwgraph_toposort::debugNode(n) << " final move: " << qpwgraph_toposort::debugPoint(n->pos()) << " to " << qpwgraph_toposort::debugPoint(newPositions[n]) << std::endl;
+		n->setPos(newPositions[n]);
+	}
+
+	std::cout << "TOPO: items rect " << qpwgraph_toposort::debugRect(m_scene->itemsBoundingRect()) << std::endl;
+
+	commands()->push(mc);
+
+	ensureVisible(topo.last());
+	ensureVisible(topo.first());
+
+	m_scene->update();
 
 	std::cout << "TOPO: bounding rect " << qpwgraph_toposort::debugRect(boundingRect()) << std::endl;
 }

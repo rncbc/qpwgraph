@@ -29,16 +29,22 @@
 
 #include <QtContainerFwd>
 
-class qpwgraph_canvas;
 
-
+// Contains code for topologically sorting nodes, as well as arranging those
+// nodes based on the sort.
+//
+// This class is non-reentrant, so use each instance just once from a single
+// function.
 class qpwgraph_toposort
 {
 public:
 
-	qpwgraph_toposort(qpwgraph_canvas *canvas, QList<qpwgraph_node *> nodes);
+	qpwgraph_toposort(QList<qpwgraph_node *> nodes);
 
-	void arrange();
+	QMap<qpwgraph_node *, QPointF> arrange();
+
+	qpwgraph_node *first();
+	qpwgraph_node *last();
 
 	static qsizetype countInputPorts(qpwgraph_node *n);
 	static qsizetype countOutputPorts(qpwgraph_node *n);
@@ -71,14 +77,13 @@ public:
 	static std::string debugRect(QRectF p);
 
 private:
-	QList<qpwgraph_node *> sort();
+	void sort();
 	void visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n);
 
 	// Instance variables
 	QList<qpwgraph_node *> inputNodes;
 	QList<qpwgraph_node *> unvisitedNodes;
 	QSet<qpwgraph_node *> visitedNodes;
-	qpwgraph_canvas *canvas;
 };
 
 #endif /* __qpwgraph_toposort_h */

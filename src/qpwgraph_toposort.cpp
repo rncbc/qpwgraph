@@ -23,14 +23,13 @@
 #include "qpwgraph_connect.h"
 #include "qpwgraph_port.h"
 #include "qpwgraph_node.h"
-#include "qpwgraph_canvas.h"
 #include "qpwgraph_arrange_command.h"
 
 #include <algorithm>
 #include <iostream>
 
-qpwgraph_toposort::qpwgraph_toposort(qpwgraph_canvas *canvas, QList<qpwgraph_node *> nodes) :
-	canvas(canvas), inputNodes(nodes), unvisitedNodes(nodes), visitedNodes()
+qpwgraph_toposort::qpwgraph_toposort(QList<qpwgraph_node *> nodes) :
+	inputNodes(nodes), unvisitedNodes(), visitedNodes()
 {
 }
 
@@ -39,23 +38,23 @@ qpwgraph_toposort::qpwgraph_toposort(qpwgraph_canvas *canvas, QList<qpwgraph_nod
 // connections go last.  Nodes are arranged in columns based on their distance
 // in the graph from a source node.
 //
-// Possible future improvements:
-// - Try to keep connected nodes near each other in Y
-void qpwgraph_toposort::arrange()
+// Returns a Map from node pointer to position, without modifying the nodes.
+//
+// TODO: Allow passing a list of nodes here instead of the constructor?
+QMap<qpwgraph_node *, QPointF> qpwgraph_toposort::arrange()
 {
 	// Sort nodes topologically, using heuristics to break cycles.
-	QList<qpwgraph_node *> sorted = sort();
+	sort();
 
 	// Precompute and store information used during arrangement.
-	QMap<qpwgraph_node *, QPointF> oldPositions;
 	QMap<qpwgraph_node *, QPointF> newPositions;
 	QMap<int, QList<qpwgraph_node *>> rankNodes;
 	QMap<int, float> rankMaxWidth;
+	qreal xmin = std::numeric_limits<double>::infinity();
+	qreal ymin = std::numeric_limits<double>::infinity();
 	int maxRank = 0;
-	foreach (qpwgraph_node *n, sorted) {
+	foreach (qpwgraph_node *n, inputNodes) {
 		std::cout << "TOPO: " << debugNode(n) << std::endl;
-
-		oldPositions[n] = n->pos();
 
 		int rank = n->depth();
 		if (!rankNodes.contains(rank)) {
@@ -69,6 +68,9 @@ void qpwgraph_toposort::arrange()
 		rankMaxWidth[rank] = qMax(rankMaxWidth[rank], n->boundingRect().width());
 
 		maxRank = qMax(maxRank, rank);
+
+		xmin = qMin(xmin, n->pos().x());
+		ymin = qMin(ymin, n->pos().y());
 	}
 
 	for (int i = 0; i <= maxRank; i++) {
@@ -80,15 +82,11 @@ void qpwgraph_toposort::arrange()
 	// Place nodes based on topological sort
 	// TODO: extract spacing values to constants or parameters
 	// TODO: never go below 0,0 for xmin/ymin?
-	// FIXME: items sometimes end up on very edge of scroll area
-	QRectF bounds = canvas->scene()->itemsBoundingRect();
-	double xmin = bounds.left();
-	double ymin = bounds.top();
 	double x = xmin, y = ymin;
-	int current_rank = sorted.first()->depth();
+	int current_rank = inputNodes.first()->depth();
 	const double xpad = 120;
 	const double ypad = 40;
-	foreach (qpwgraph_node *node, sorted) {
+	foreach (qpwgraph_node *node, inputNodes) {
 		if (node->depth() > current_rank) {
 			// End of a rank; reset Y and move to the next column
 			std::cout << "TOPO: next rank: from " << current_rank << " to " << node->depth() << std::endl;
@@ -152,33 +150,27 @@ void qpwgraph_toposort::arrange()
 		}
 	}
 
-	// FIXME: this way of building the move command is messy; maybe create an arrange command that inherits from move command
-	qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(canvas, sorted, newPositions);
-	foreach (qpwgraph_node *n, sorted) {
-		std::cout << "TOPO: " << debugNode(n) << " final move: " << debugPoint(oldPositions[n]) << " to " << debugPoint(newPositions[n]) << std::endl;
-		n->setPos(newPositions[n]);
-	}
-
-	std::cout << "TOPO: items rect " << debugRect(canvas->scene()->itemsBoundingRect()) << std::endl;
-
-	// TODO: move all canvas access back into the canvas class
-	canvas->commands()->push(mc);
-
-	canvas->ensureVisible(sorted.last());
-	canvas->ensureVisible(sorted.first());
-
-	canvas->scene()->update();
+	return newPositions;
 }
 
-// Assigns ranks to and sorts the nodes given to the constructor, returning a
-// new, sorted list of nodes.
-//
-// TODO: Allow passing a list of nodes to sort here instead of the constructor?
-QList<qpwgraph_node *> qpwgraph_toposort::sort()
+qpwgraph_node *qpwgraph_toposort::first()
+{
+	return inputNodes.first();
+}
+
+qpwgraph_node *qpwgraph_toposort::last()
+{
+	return inputNodes.last();
+}
+
+// Assigns ranks to and sorts the nodes given to the constructor.  Sort occurs
+// in-place in the inputNodes member variable.
+void qpwgraph_toposort::sort()
 {
 	std::cout << "TOPO: beginning sorting" << std::endl;
 
 	foreach (qpwgraph_node *n, inputNodes) {
+		// TODO: move rank storage into this class as a map?
 		if (nodeIsTrueSource(n)) {
 			n->setDepth(0);
 		} else if (nodeIsTrueSink(n)) {
@@ -188,8 +180,10 @@ QList<qpwgraph_node *> qpwgraph_toposort::sort()
 		}
 	}
 
+	// Sort before for best cycle-breaking heuristics
 	std::sort(inputNodes.begin(), inputNodes.end(), compareNodes);
-	std::sort(unvisitedNodes.begin(), unvisitedNodes.end(), compareNodes);
+	unvisitedNodes.clear();
+	unvisitedNodes << inputNodes;
 
 	// Visit sources
 	foreach (qpwgraph_node *n, inputNodes) {
@@ -228,9 +222,8 @@ QList<qpwgraph_node *> qpwgraph_toposort::sort()
 		}
 	}
 
+	// Sort again with rank
 	std::sort(inputNodes.begin(), inputNodes.end(), compareNodes);
-
-	return QList<qpwgraph_node *>(inputNodes);
 }
 
 void qpwgraph_toposort::visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n)
