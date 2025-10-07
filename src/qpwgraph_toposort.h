@@ -41,8 +41,11 @@ public:
 
 	qpwgraph_toposort(QList<qpwgraph_node *> nodes);
 
+	// Call this to perform ranking and node arrangement.  Returns the map
+	// of new positions without applying those positions to the nodes.
 	QMap<qpwgraph_node *, QPointF> arrange();
 
+	// Callers may need the sorted first or last nodes for scrolling.
 	qpwgraph_node *first();
 	qpwgraph_node *last();
 
@@ -59,31 +62,37 @@ public:
 
 	static QSet<qpwgraph_node *> childNodes(qpwgraph_node *n);
 
-	static QSet<qpwgraph_port *> connectedParentPorts(qpwgraph_node *n);
-	static QSet<qpwgraph_port *> connectedInputPorts(qpwgraph_node *n);
-	static QSet<qpwgraph_port *> connectedOutputPorts(qpwgraph_node *n);
+	QSet<qpwgraph_port *> connectedParentPorts(qpwgraph_node *n);
+	QSet<qpwgraph_port *> connectedInputPorts(qpwgraph_node *n);
+	QSet<qpwgraph_port *> connectedOutputPorts(qpwgraph_node *n);
 
-	static qreal meanPortY(QSet<qpwgraph_port *> ports, QMap<qpwgraph_node *, QPointF> positions);
-	static qreal meanParentPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions);
-	static qreal meanInputPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions);
+	qreal meanPortY(QSet<qpwgraph_port *> ports, QMap<qpwgraph_node *, QPointF> positions);
+	qreal meanParentPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions);
+	qreal meanInputPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions);
 
-	static bool compareNodes(qpwgraph_node *n1, qpwgraph_node *n2);
+	bool compareNodes(qpwgraph_node *n1, qpwgraph_node *n2);
 
 	static QString modeName(qpwgraph_item::Mode mode);
-	static std::string debugNode(qpwgraph_node *n);
-	static std::string debugConnection(qpwgraph_connect *c);
-	static std::string debugPath(QSet<qpwgraph_node *> path);
+	std::string debugNode(qpwgraph_node *n);
+	std::string debugConnection(qpwgraph_connect *c);
+	std::string debugPath(QSet<qpwgraph_node *> path);
 	static std::string debugPoint(QPointF p);
 	static std::string debugRect(QRectF p);
 
 private:
-	void sort();
+	void rankAndSort();
 	void visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n);
+
+	void sortNodesByRank(QList<qpwgraph_node *> &nodes);
+	void sortNodesByConnectionY(QList<qpwgraph_node *> &nodes);
 
 	// Instance variables
 	QList<qpwgraph_node *> inputNodes;
 	QList<qpwgraph_node *> unvisitedNodes;
 	QSet<qpwgraph_node *> visitedNodes;
+
+	QMap<qpwgraph_node *, QPointF> newPositions;
+	QMap<qpwgraph_node *, int> nodeRanks;
 };
 
 #endif /* __qpwgraph_toposort_h */

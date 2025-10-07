@@ -29,7 +29,7 @@
 #include <iostream>
 
 qpwgraph_toposort::qpwgraph_toposort(QList<qpwgraph_node *> nodes) :
-	inputNodes(nodes), unvisitedNodes(), visitedNodes()
+	inputNodes(nodes)
 {
 }
 
@@ -44,10 +44,9 @@ qpwgraph_toposort::qpwgraph_toposort(QList<qpwgraph_node *> nodes) :
 QMap<qpwgraph_node *, QPointF> qpwgraph_toposort::arrange()
 {
 	// Sort nodes topologically, using heuristics to break cycles.
-	sort();
+	rankAndSort();
 
 	// Precompute and store information used during arrangement.
-	QMap<qpwgraph_node *, QPointF> newPositions;
 	QMap<int, QList<qpwgraph_node *>> rankNodes;
 	QMap<int, float> rankMaxWidth;
 	qreal xmin = std::numeric_limits<double>::infinity();
@@ -56,7 +55,7 @@ QMap<qpwgraph_node *, QPointF> qpwgraph_toposort::arrange()
 	foreach (qpwgraph_node *n, inputNodes) {
 		std::cout << "TOPO: " << debugNode(n) << std::endl;
 
-		int rank = n->depth();
+		int rank = nodeRanks[n];
 		if (!rankNodes.contains(rank)) {
 			rankNodes[rank] = QList<qpwgraph_node *>();
 		}
@@ -83,21 +82,23 @@ QMap<qpwgraph_node *, QPointF> qpwgraph_toposort::arrange()
 	// TODO: extract spacing values to constants or parameters
 	// TODO: never go below 0,0 for xmin/ymin?
 	double x = xmin, y = ymin;
-	int current_rank = inputNodes.first()->depth();
+	int current_rank = nodeRanks[inputNodes.first()];
 	const double xpad = 120;
 	const double ypad = 40;
 	foreach (qpwgraph_node *node, inputNodes) {
-		if (node->depth() > current_rank) {
+		std::cout << "TOPO: placing " << debugNode(node) << std::endl;
+
+		if (nodeRanks[node] != current_rank) {
 			// End of a rank; reset Y and move to the next column
-			std::cout << "TOPO: next rank: from " << current_rank << " to " << node->depth() << std::endl;
+			std::cout << "TOPO: next rank: from " << current_rank << " to " << nodeRanks[node] << std::endl;
 			y = ymin;
 
-			// XXX restore if FIXME from qpwgraph_toposort.cpp is fixed (node->depth() - current_rank)
-			// XXX int xpad_count = (node->depth() - current_rank)
+			// XXX restore if FIXME from qpwgraph_toposort.cpp is fixed (nodeRanks[node] - current_rank)
+			// XXX int xpad_count = (nodeRanks[node] - current_rank)
 			int xpad_count = 1; // XXX
 
 			x += rankMaxWidth[current_rank] + xpad_count * xpad;
-			current_rank = node->depth();
+			current_rank = nodeRanks[node];
 		}
 
 		double w = node->boundingRect().width();
@@ -122,7 +123,8 @@ QMap<qpwgraph_node *, QPointF> qpwgraph_toposort::arrange()
 		}
 
 		// Sort each column by average connection source port Y value
-		std::sort(rankNodes[i].begin(), rankNodes[i].end(), [newPositions](qpwgraph_node *n1, qpwgraph_node *n2) { return meanParentPortY({n1}, newPositions) < meanParentPortY({n2}, newPositions); });
+		// to place nodes vertically closer to their upstream nodes.
+		sortNodesByConnectionY(rankNodes[i]);
 
 		qreal minY = newPositions[rankNodes[i].first()].y();
 		foreach (qpwgraph_node *n, rankNodes[i]) {
@@ -165,23 +167,25 @@ qpwgraph_node *qpwgraph_toposort::last()
 
 // Assigns ranks to and sorts the nodes given to the constructor.  Sort occurs
 // in-place in the inputNodes member variable.
-void qpwgraph_toposort::sort()
+void qpwgraph_toposort::rankAndSort()
 {
 	std::cout << "TOPO: beginning sorting" << std::endl;
 
 	foreach (qpwgraph_node *n, inputNodes) {
-		// TODO: move rank storage into this class as a map?
 		if (nodeIsTrueSource(n)) {
-			n->setDepth(0);
+			nodeRanks[n] = 0;
+			std::cout << "TOPO: init rank 0 for " << debugNode(n) << std::endl;
 		} else if (nodeIsTrueSink(n)) {
-			n->setDepth(2);
+			nodeRanks[n] = 2;
+			std::cout << "TOPO: init rank 2 for " << debugNode(n) << std::endl;
 		} else {
-			n->setDepth(1);
+			nodeRanks[n] = 1;
+			std::cout << "TOPO: init rank 1 for " << debugNode(n) << std::endl;
 		}
 	}
 
 	// Sort before for best cycle-breaking heuristics
-	std::sort(inputNodes.begin(), inputNodes.end(), compareNodes);
+	sortNodesByRank(inputNodes);
 	unvisitedNodes.clear();
 	unvisitedNodes << inputNodes;
 
@@ -210,20 +214,20 @@ void qpwgraph_toposort::sort()
 	int sinkDepth = 2;
 	foreach (qpwgraph_node *n, inputNodes) {
 		if (nodeIsTrueSink(n)) {
-			sinkDepth = qMax(sinkDepth, n->depth());
+			sinkDepth = qMax(sinkDepth, nodeRanks[n]);
 		} else {
-			sinkDepth = qMax(sinkDepth, n->depth() + 1);
+			sinkDepth = qMax(sinkDepth, nodeRanks[n] + 1);
 		}
 	}
 	foreach (qpwgraph_node *n, inputNodes) {
 		if (nodeIsTrueSink(n)) {
 			std::cout << "TOPO: Setting sink " << debugNode(n) << " depth to " << sinkDepth << std::endl;
-			n->setDepth(qMax(n->depth(), sinkDepth));
+			nodeRanks[n] = qMax(nodeRanks[n], sinkDepth);
 		}
 	}
 
-	// Sort again with rank
-	std::sort(inputNodes.begin(), inputNodes.end(), compareNodes);
+	// Sort again with computed ranks
+	sortNodesByRank(inputNodes);
 }
 
 void qpwgraph_toposort::visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n)
@@ -242,11 +246,11 @@ void qpwgraph_toposort::visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n)
 			continue;
 		}
 
-		int newDepth = qMax(n->depth() + 1, next->depth());
-		std::cout << "TOPO: setting " << debugNode(next) << " depth from " << next->depth() << " to " << newDepth << std::endl;
-		next->setDepth(newDepth);
+		int newDepth = qMax(nodeRanks[n] + 1, nodeRanks[next]);
+		std::cout << "TOPO: setting " << debugNode(next) << " depth from " << nodeRanks[next] << " to " << newDepth << std::endl;
+		nodeRanks[next] = newDepth;
 
-		// FIXME: fixes some issues with cyclic graphs but prevents
+		// FIXME: fixes excess depth numbers with cyclic graphs but prevents
 		// updating depth in parallel graphs
 		//
 		// in1 -> a
@@ -268,6 +272,16 @@ void qpwgraph_toposort::visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n)
 			visitNode(newPath, next);
 		// XXX }
 	}
+}
+
+void qpwgraph_toposort::sortNodesByRank(QList<qpwgraph_node *> &nodes)
+{
+	std::sort(nodes.begin(), nodes.end(), [this](qpwgraph_node *n1, qpwgraph_node *n2) { return compareNodes(n1, n2); });
+}
+
+void qpwgraph_toposort::sortNodesByConnectionY(QList<qpwgraph_node *> &nodes)
+{
+	std::sort(nodes.begin(), nodes.end(), [this](qpwgraph_node *n1, qpwgraph_node *n2) { return meanParentPortY({n1}, newPositions) < meanParentPortY({n2}, newPositions); });
 }
 
 qsizetype qpwgraph_toposort::countInputPorts(qpwgraph_node *n)
@@ -365,7 +379,7 @@ QSet<qpwgraph_port *> qpwgraph_toposort::connectedParentPorts(qpwgraph_node *n)
 				continue;
 			}
 
-			if (n1->depth() > n->depth() || n2->depth() > n->depth()) {
+			if (nodeRanks[n1] > nodeRanks[n] || nodeRanks[n2] > nodeRanks[n]) {
 				// left-pointing edge in a cycle
 				std::cout << "TOPO: ignoring parent by depth: " << debugConnection(c) << std::endl;
 				continue;
@@ -399,7 +413,7 @@ QSet<qpwgraph_port *> qpwgraph_toposort::connectedInputPorts(qpwgraph_node *n)
 				continue;
 			}
 
-			if (n1->depth() > n->depth() || n2->depth() > n->depth()) {
+			if (nodeRanks[n1] > nodeRanks[n] || nodeRanks[n2] > nodeRanks[n]) {
 				// left-pointing edge in a cycle
 				std::cout << "TOPO: ignoring input by depth: " << debugConnection(c) << std::endl;
 				continue;
@@ -414,11 +428,12 @@ QSet<qpwgraph_port *> qpwgraph_toposort::connectedInputPorts(qpwgraph_node *n)
 
 bool qpwgraph_toposort::compareNodes(qpwgraph_node *n1, qpwgraph_node *n2)
 {
-	if (n1->depth() < n2->depth()) {
+	std::cout << "TOPO: comparing n1 " << debugNode(n1) << " to n2 " << debugNode(n2) << std::endl;
+	if (nodeRanks[n1] < nodeRanks[n2]) {
 		std::cout << "n1 depth < n2 depth" << std::endl;
 		return true;
 	}
-	if (n2->depth() < n1->depth()) {
+	if (nodeRanks[n2] < nodeRanks[n1]) {
 		std::cout << "n2 depth < n1 depth" << std::endl;
 		return false;
 	}
@@ -534,7 +549,7 @@ std::string qpwgraph_toposort::debugNode(qpwgraph_node *n)
 	int color = (n->nodeId() * 773) % 200 + 20;
 
 	QString s = "\e[38;5;" + QString::number(color) + "m" +
-			modeName(n->nodeMode()) + " node d" + QString::number(n->depth()) + " id" +
+			modeName(n->nodeMode()) + " node d" + QString::number(nodeRanks[n]) + " id" +
 			QString::number(n->nodeId()) + " / " + n->nodeName() +
 			"\e[37m";
 

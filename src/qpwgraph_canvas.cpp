@@ -1974,7 +1974,7 @@ void qpwgraph_canvas::arrangeNodes (void)
 
 	qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(this, newPositions);
 	foreach (qpwgraph_node *n, newPositions.keys()) {
-		std::cout << "TOPO: " << qpwgraph_toposort::debugNode(n) << " final move: " << qpwgraph_toposort::debugPoint(n->pos()) << " to " << qpwgraph_toposort::debugPoint(newPositions[n]) << std::endl;
+		std::cout << "TOPO: " << n->nodeName().toStdString() << " final move: " << qpwgraph_toposort::debugPoint(n->pos()) << " to " << qpwgraph_toposort::debugPoint(newPositions[n]) << std::endl;
 		n->setPos(newPositions[n]);
 	}
 
