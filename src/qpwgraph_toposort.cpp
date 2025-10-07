@@ -39,8 +39,6 @@ qpwgraph_toposort::qpwgraph_toposort(QList<qpwgraph_node *> nodes) :
 // in the graph from a source node.
 //
 // Returns a Map from node pointer to position, without modifying the nodes.
-//
-// TODO: Allow passing a list of nodes here instead of the constructor?
 QMap<qpwgraph_node *, QPointF> qpwgraph_toposort::arrange()
 {
 	// Sort nodes topologically, using heuristics to break cycles.
@@ -49,8 +47,6 @@ QMap<qpwgraph_node *, QPointF> qpwgraph_toposort::arrange()
 	// Precompute and store information used during arrangement.
 	QMap<int, QList<qpwgraph_node *>> rankNodes;
 	QMap<int, float> rankMaxWidth;
-	qreal xmin = std::numeric_limits<double>::infinity();
-	qreal ymin = std::numeric_limits<double>::infinity();
 	int maxRank = 0;
 	foreach (qpwgraph_node *n, inputNodes) {
 		std::cout << "TOPO: " << debugNode(n) << std::endl;
@@ -67,9 +63,6 @@ QMap<qpwgraph_node *, QPointF> qpwgraph_toposort::arrange()
 		rankMaxWidth[rank] = qMax(rankMaxWidth[rank], n->boundingRect().width());
 
 		maxRank = qMax(maxRank, rank);
-
-		xmin = qMin(xmin, n->pos().x());
-		ymin = qMin(ymin, n->pos().y());
 	}
 
 	for (int i = 0; i <= maxRank; i++) {
@@ -80,11 +73,12 @@ QMap<qpwgraph_node *, QPointF> qpwgraph_toposort::arrange()
 
 	// Place nodes based on topological sort
 	// TODO: extract spacing values to constants or parameters
-	// TODO: never go below 0,0 for xmin/ymin?
-	double x = xmin, y = ymin;
+	// TODO: expand graph to fill width of window if it's smaller?
+	const qreal xmin = 20, ymin = 20;
+	const qreal xpad = 120;
+	const qreal ypad = 40;
+	qreal x = xmin, y = ymin;
 	int current_rank = nodeRanks[inputNodes.first()];
-	const double xpad = 120;
-	const double ypad = 40;
 	foreach (qpwgraph_node *node, inputNodes) {
 		std::cout << "TOPO: placing " << debugNode(node) << std::endl;
 
