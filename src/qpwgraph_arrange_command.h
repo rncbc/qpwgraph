@@ -32,6 +32,10 @@ public:
 
 	qpwgraph_arrange_command(qpwgraph_canvas *canvas, QMap<qpwgraph_node *, QPointF> newPositions);
 
+protected:
+
+	bool execute(bool is_undo) override;
+
 private:
 
 	qpwgraph_canvas *canvas;

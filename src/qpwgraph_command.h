@@ -168,7 +168,7 @@ protected:
 	};
 
 	// Command executive method.
-	bool execute(bool is_undo);
+	virtual bool execute(bool is_undo) override;
 
 private:
 

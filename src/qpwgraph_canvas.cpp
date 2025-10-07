@@ -1347,6 +1347,7 @@ void qpwgraph_canvas::zoomReset (void)
 
 void qpwgraph_canvas::centerView (void)
 {
+	m_scene->setSceneRect(boundingRect(true));
 	QGraphicsView::centerOn(m_scene->itemsBoundingRect().center());
 }
 
@@ -1981,8 +1982,6 @@ void qpwgraph_canvas::arrangeNodes (void)
 	std::cout << "TOPO: items rect " << qpwgraph_toposort::debugRect(m_scene->itemsBoundingRect()) << std::endl;
 
 	commands()->push(mc);
-
-	m_scene->setSceneRect(boundingRect(true));
 
 	// Center on the graph if the window is large enough; otherwise scroll to the top-left
 	centerView();

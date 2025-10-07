@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #include "qpwgraph_arrange_command.h"
+#include "qpwgraph_canvas.h"
 
 qpwgraph_arrange_command::qpwgraph_arrange_command(qpwgraph_canvas *canvas, QMap<qpwgraph_node *, QPointF> newPositions) :
 	qpwgraph_move_command(canvas, QList<qpwgraph_node *>(), QPointF(), QPointF())
@@ -29,4 +30,17 @@ qpwgraph_arrange_command::qpwgraph_arrange_command(qpwgraph_canvas *canvas, QMap
 	foreach (qpwgraph_node *n, newPositions.keys()) {
 		addItem(n, n->pos(), newPositions[n]);
 	}
+}
+
+bool qpwgraph_arrange_command::execute(bool is_undo)
+{
+	bool ret = qpwgraph_move_command::execute(is_undo);
+
+	qpwgraph_canvas *canvas = qpwgraph_command::canvas();
+	if (canvas != nullptr) {
+		canvas->update();
+		canvas->centerView();
+	}
+
+	return ret;
 }
