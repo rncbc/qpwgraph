@@ -943,10 +943,7 @@ void qpwgraph_main::viewTextBesideIcons ( bool on )
 
 void qpwgraph_main::viewCenter (void)
 {
-	const QRectF& scene_rect
-		= m_ui.graphCanvas->scene()->itemsBoundingRect();
-	m_ui.graphCanvas->centerOn(scene_rect.center());
-
+	m_ui.graphCanvas->centerView();
 	stabilize();
 }
 

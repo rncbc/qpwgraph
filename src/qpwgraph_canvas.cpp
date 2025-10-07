@@ -1345,6 +1345,12 @@ void qpwgraph_canvas::zoomReset (void)
 }
 
 
+void qpwgraph_canvas::centerView (void)
+{
+	QGraphicsView::centerOn(m_scene->itemsBoundingRect().center());
+}
+
+
 // Update all nodes.
 void qpwgraph_canvas::updateNodes (void)
 {
@@ -1950,6 +1956,8 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 }
 
 
+// Node rearrangement by topological sort.
+//
 void qpwgraph_canvas::arrangeNodes (void)
 {
 	if (m_nodes.empty()) {
@@ -1963,7 +1971,6 @@ void qpwgraph_canvas::arrangeNodes (void)
 
 	qpwgraph_toposort topo(m_nodes);
 	auto newPositions = topo.arrange();
-	m_scene->setSceneRect(boundingRect(true));
 
 	qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(this, newPositions);
 	foreach (qpwgraph_node *n, newPositions.keys()) {
@@ -1975,7 +1982,10 @@ void qpwgraph_canvas::arrangeNodes (void)
 
 	commands()->push(mc);
 
-	ensureVisible(topo.last());
+	m_scene->setSceneRect(boundingRect(true));
+
+	// Center on the graph if the window is large enough; otherwise scroll to the top-left
+	centerView();
 	ensureVisible(topo.first());
 
 	m_scene->update();

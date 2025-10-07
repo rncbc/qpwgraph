@@ -24,7 +24,8 @@
 
 #include "qpwgraph_command.h"
 
-// Undo/redo action for the Arrange Nodes command.
+// Undo/redo action for the Arrange Nodes command.  This should be created
+// before applying the new positions to the nodes.
 class qpwgraph_arrange_command : public qpwgraph_move_command
 {
 public:
