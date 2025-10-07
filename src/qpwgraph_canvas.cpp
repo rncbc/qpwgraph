@@ -1346,10 +1346,16 @@ void qpwgraph_canvas::zoomReset (void)
 }
 
 
+// Centers the view on the middle of the graph, then makes sure each selected
+// item is visible.
 void qpwgraph_canvas::centerView (void)
 {
 	m_scene->setSceneRect(boundingRect(true));
+
 	QGraphicsView::centerOn(m_scene->itemsBoundingRect().center());
+	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+		ensureVisible(item);
+	}
 }
 
 
