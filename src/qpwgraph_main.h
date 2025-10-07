@@ -148,7 +148,7 @@ protected slots:
 	void viewCenter();
 	void viewRefresh();
 
-	void viewArrange();
+	void viewArrangeNodes();
 
 	void viewZoomRange(bool on);
 
@@ -160,6 +160,7 @@ protected slots:
 
 	void viewRepelOverlappingNodes(bool on);
 	void viewConnectThroughNodes(bool on);
+	void viewAutoArrangeNodes(bool on);
 
 	void helpAbout();
 	void helpAboutQt();
@@ -241,6 +242,7 @@ private:
 	int m_ins, m_mids, m_outs;
 
 	int m_repel_overlapping_nodes;
+	int m_auto_arrange_nodes;
 
 	QSlider  *m_zoom_slider;
 	QSpinBox *m_zoom_spinbox;

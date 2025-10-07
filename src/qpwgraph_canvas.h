@@ -178,7 +178,9 @@ public:
 		qpwgraph_move_command *move_command = nullptr);
 
 	// Arrange nodes by connection
-	void arrangeNodes();
+	void setAutoArrangeNodes(bool on);
+	bool isAutoArrangeNodes() const;
+	void arrangeNodes(bool isAuto);
 
 	// Graph colors management.
 	void setPortTypeColor(uint port_type, const QColor& color);
@@ -365,6 +367,8 @@ private:
 	int m_selected_nodes;
 
 	bool m_repel_overlapping_nodes;
+	
+	bool m_auto_arrange_nodes;
 
 	// Graph port colors.
 	QHash<uint, QColor> m_port_colors;

@@ -77,6 +77,7 @@ qpwgraph_canvas::qpwgraph_canvas ( QWidget *parent )
 		m_patchbay(nullptr), m_patchbay_edit(false),
 		m_patchbay_autopin(true), m_patchbay_autodisconnect(false),
 		m_selected_nodes(0), m_repel_overlapping_nodes(false),
+		m_auto_arrange_nodes(false),
 		m_rename_item(nullptr), m_rename_editor(nullptr), m_renamed(0),
 		m_search_editor(nullptr), m_filter_enabled(false),
 		m_merger_enabled(false)
@@ -1959,7 +1960,20 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 
 // Node rearrangement by topological sort.
 //
-void qpwgraph_canvas::arrangeNodes (void)
+void qpwgraph_canvas::setAutoArrangeNodes ( bool on )
+{
+	std::cout << "TOPO: auto-arrange turned " << (on ? "on" : "off") << std::endl;
+	m_auto_arrange_nodes = on;
+}
+
+
+bool qpwgraph_canvas::isAutoArrangeNodes (void) const
+{
+	return m_auto_arrange_nodes;
+}
+
+
+void qpwgraph_canvas::arrangeNodes (bool isAuto)
 {
 	if (m_nodes.empty()) {
 		std::cout << "TOPO: no nodes to arrange" << std::endl;
@@ -1973,19 +1987,26 @@ void qpwgraph_canvas::arrangeNodes (void)
 	qpwgraph_toposort topo(m_nodes);
 	auto newPositions = topo.arrange();
 
-	qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(this, newPositions);
+	if (isAuto) {
+		std::cout << "TOPO: skipping undo/redo and scrolling for auto-arrange" << std::endl;
+	} else {
+		qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(this, newPositions, nullptr);
+
+		std::cout << "TOPO: items rect " << qpwgraph_toposort::debugRect(m_scene->itemsBoundingRect()) << std::endl;
+
+		commands()->push(mc);
+
+		// Center on the graph if the window is large enough; otherwise scroll to the top-left
+		// TODO: just center always for consistency?
+		ensureVisible(topo.first());
+	}
+
 	foreach (qpwgraph_node *n, newPositions.keys()) {
 		std::cout << "TOPO: " << n->nodeName().toStdString() << " final move: " << qpwgraph_toposort::debugPoint(n->pos()) << " to " << qpwgraph_toposort::debugPoint(newPositions[n]) << std::endl;
 		n->setPos(newPositions[n]);
 	}
 
-	std::cout << "TOPO: items rect " << qpwgraph_toposort::debugRect(m_scene->itemsBoundingRect()) << std::endl;
-
-	commands()->push(mc);
-
-	// Center on the graph if the window is large enough; otherwise scroll to the top-left
 	centerView();
-	ensureVisible(topo.first());
 
 	m_scene->update();
 
