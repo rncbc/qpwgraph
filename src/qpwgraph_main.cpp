@@ -943,7 +943,7 @@ void qpwgraph_main::viewTextBesideIcons ( bool on )
 
 void qpwgraph_main::viewCenter (void)
 {
-	m_ui.graphCanvas->centerView();
+	m_ui.graphCanvas->centerView(false);
 	stabilize();
 }
 

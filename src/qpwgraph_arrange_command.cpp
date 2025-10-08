@@ -39,7 +39,7 @@ bool qpwgraph_arrange_command::execute(bool is_undo)
 	qpwgraph_canvas *canvas = qpwgraph_command::canvas();
 	if (canvas != nullptr) {
 		canvas->update();
-		canvas->centerView();
+		canvas->centerView(true);
 	}
 
 	return ret;

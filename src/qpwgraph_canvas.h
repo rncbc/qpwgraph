@@ -121,7 +121,7 @@ public:
 	void setZoomRange(bool zoomrange);
 	bool isZoomRange() const;
 
-	void centerView();
+	void centerView(bool showSelected);
 
 	// Clean-up all un-marked nodes...
 	void resetNodes(uint node_type);
