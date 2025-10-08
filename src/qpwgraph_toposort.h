@@ -45,9 +45,12 @@ public:
 	// of new positions without applying those positions to the nodes.
 	QMap<qpwgraph_node *, QPointF> arrange();
 
-	// Callers may need the sorted first or last nodes for scrolling.
-	qpwgraph_node *first();
-	qpwgraph_node *last();
+private:
+	void rankAndSort();
+	void visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n);
+
+	void sortNodesByRank(QList<qpwgraph_node *> &nodes);
+	void sortNodesByConnectionY(QList<qpwgraph_node *> &nodes);
 
 	static qsizetype countInputPorts(qpwgraph_node *n);
 	static qsizetype countOutputPorts(qpwgraph_node *n);
@@ -72,24 +75,9 @@ public:
 
 	bool compareNodes(qpwgraph_node *n1, qpwgraph_node *n2);
 
-	static QString modeName(qpwgraph_item::Mode mode);
-	std::string debugNode(qpwgraph_node *n);
-	std::string debugConnection(qpwgraph_connect *c);
-	std::string debugPath(QSet<qpwgraph_node *> path);
-	static std::string debugPoint(QPointF p);
-	static std::string debugRect(QRectF p);
-
-private:
-	void rankAndSort();
-	void visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n);
-
-	void sortNodesByRank(QList<qpwgraph_node *> &nodes);
-	void sortNodesByConnectionY(QList<qpwgraph_node *> &nodes);
-
 	// Instance variables
 	QList<qpwgraph_node *> inputNodes;
 	QList<qpwgraph_node *> unvisitedNodes;
-	QSet<qpwgraph_node *> visitedNodes;
 
 	QMap<qpwgraph_node *, QPointF> newPositions;
 	QMap<qpwgraph_node *, int> nodeRanks;

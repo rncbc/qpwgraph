@@ -47,9 +47,7 @@
 
 #include <QQueue>
 
-#include <algorithm>
 #include <cmath>
-#include <iostream>
 
 
 // Local constants.
@@ -1971,34 +1969,23 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 void qpwgraph_canvas::arrangeNodes (void)
 {
 	if (m_nodes.empty()) {
-		std::cout << "TOPO: no nodes to arrange" << std::endl;
 		return;
 	}
-
-	// TODO: Allow selecting specific nodes to arrange??
-
-	std::cout << "TOPO: bounding rect " << qpwgraph_toposort::debugRect(boundingRect()) << std::endl;
 
 	qpwgraph_toposort topo(m_nodes);
 	auto newPositions = topo.arrange();
 
 	qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(this, newPositions);
+	commands()->push(mc);
+
 	foreach (qpwgraph_node *n, newPositions.keys()) {
-		std::cout << "TOPO: " << n->nodeName().toStdString() << " final move: " << qpwgraph_toposort::debugPoint(n->pos()) << " to " << qpwgraph_toposort::debugPoint(newPositions[n]) << std::endl;
 		n->setPos(newPositions[n]);
 	}
 
-	std::cout << "TOPO: items rect " << qpwgraph_toposort::debugRect(m_scene->itemsBoundingRect()) << std::endl;
-
-	commands()->push(mc);
-
-	// Center on the graph if the window is large enough; otherwise scroll to the top-left
 	centerView(true);
-	ensureVisible(topo.first());
 
+	// Repaint to avoid glitch trails
 	m_scene->update();
-
-	std::cout << "TOPO: bounding rect " << qpwgraph_toposort::debugRect(boundingRect()) << std::endl;
 }
 
 
