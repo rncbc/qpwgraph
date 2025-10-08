@@ -30,7 +30,7 @@ class qpwgraph_arrange_command : public qpwgraph_move_command
 {
 public:
 
-	qpwgraph_arrange_command(qpwgraph_canvas *canvas, QMap<qpwgraph_node *, QPointF> newPositions, qpwgraph_command *parent);
+	qpwgraph_arrange_command(qpwgraph_canvas *canvas, QMap<qpwgraph_node *, QPointF> newPositions);
 
 protected:
 

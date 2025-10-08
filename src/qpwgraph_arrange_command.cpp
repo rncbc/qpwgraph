@@ -22,8 +22,8 @@
 #include "qpwgraph_arrange_command.h"
 #include "qpwgraph_canvas.h"
 
-qpwgraph_arrange_command::qpwgraph_arrange_command(qpwgraph_canvas *canvas, QMap<qpwgraph_node *, QPointF> newPositions, qpwgraph_command *parent) :
-	qpwgraph_move_command(canvas, QList<qpwgraph_node *>(), QPointF(), QPointF(), parent)
+qpwgraph_arrange_command::qpwgraph_arrange_command(qpwgraph_canvas *canvas, QMap<qpwgraph_node *, QPointF> newPositions) :
+	qpwgraph_move_command(canvas, QList<qpwgraph_node *>(), QPointF(), QPointF())
 {
 	setText(QObject::tr("Arrange %1 Nodes").arg(newPositions.size()));
 

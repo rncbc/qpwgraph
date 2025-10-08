@@ -192,8 +192,7 @@
     <addaction name="separator"/>
     <addaction name="viewRefreshAction"/>
     <addaction name="separator"/>
-    <addaction name="viewArrangeNodesAction"/>
-    <addaction name="viewAutoArrangeNodesAction"/>
+    <addaction name="viewArrangeAction"/>
    </widget>
    <widget class="QMenu" name="helpMenu">
     <property name="title">
@@ -1259,7 +1258,7 @@
     <string/>
    </property>
   </action>
-  <action name="viewArrangeNodesAction">
+  <action name="viewArrangeAction">
    <property name="text">
     <string>&amp;Arrange Nodes</string>
    </property>
@@ -1268,20 +1267,6 @@
    </property>
    <property name="statusTip">
     <string>Use topological sort to arrange nodes following signal path from left to right.</string>
-   </property>
-  </action>
-  <action name="viewAutoArrangeNodesAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Auto-arrange Nodes</string>
-   </property>
-   <property name="toolTip">
-    <string>Auto-arrange nodes whenever the signal flow changes.</string>
-   </property>
-   <property name="statusTip">
-    <string>Auto-arrange nodes whenever the signal flow changes.</string>
    </property>
   </action>
  </widget>

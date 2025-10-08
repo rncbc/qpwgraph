@@ -63,7 +63,7 @@
 #include <QSessionManager>
 
 #include <cmath>
-#include <iostream>
+
 
 //----------------------------------------------------------------------------
 // qpwgraph_zoom_slider -- Custom slider widget.
@@ -120,7 +120,6 @@ qpwgraph_main::qpwgraph_main (
 	m_ins = m_mids = m_outs = 0;
 
 	m_repel_overlapping_nodes = 0;
-	m_auto_arrange_nodes = 0;
 
 	m_patchbay_names = new QComboBox(m_ui.patchbayToolbar);
 	m_patchbay_names->setEditable(false);
@@ -384,9 +383,9 @@ qpwgraph_main::qpwgraph_main (
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
 
-	QObject::connect(m_ui.viewArrangeNodesAction,
+	QObject::connect(m_ui.viewArrangeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(viewArrangeNodes()));
+		SLOT(viewArrange()));
 
 	QObject::connect(m_ui.viewZoomInAction,
 		SIGNAL(triggered(bool)),
@@ -411,9 +410,6 @@ qpwgraph_main::qpwgraph_main (
 	QObject::connect(m_ui.viewConnectThroughNodesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewConnectThroughNodes(bool)));
-	QObject::connect(m_ui.viewAutoArrangeNodesAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewAutoArrangeNodes(bool)));
 
 	m_ui.viewColorsPipewireAudioAction->setData(qpwgraph_pipewire::audioPortType());
 	m_ui.viewColorsPipewireMidiAction->setData(qpwgraph_pipewire::midiPortType());
@@ -973,9 +969,9 @@ void qpwgraph_main::viewRefresh (void)
 }
 
 
-void qpwgraph_main::viewArrangeNodes (void)
+void qpwgraph_main::viewArrange (void)
 {
-	m_ui.graphCanvas->arrangeNodes(false);
+	m_ui.graphCanvas->arrangeNodes();
 }
 
 
@@ -1061,13 +1057,6 @@ void qpwgraph_main::viewConnectThroughNodes ( bool on )
 {
 	qpwgraph_connect::setConnectThroughNodes(on);
 	m_ui.graphCanvas->updateConnects();
-}
-
-
-void qpwgraph_main::viewAutoArrangeNodes ( bool on )
-{
-	m_ui.graphCanvas->setAutoArrangeNodes(on);
-	if (on) ++m_auto_arrange_nodes;
 }
 
 
@@ -1225,9 +1214,6 @@ void qpwgraph_main::updated ( qpwgraph_node */*node*/ )
 {
 	if (m_ui.graphCanvas->isRepelOverlappingNodes())
 		++m_repel_overlapping_nodes;
-
-	if (m_ui.graphCanvas->isAutoArrangeNodes())
-		++m_auto_arrange_nodes;
 }
 
 
@@ -1268,10 +1254,6 @@ void qpwgraph_main::connected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 	}
 #endif
 
-	if (m_ui.graphCanvas->isAutoArrangeNodes()) {
-		++m_auto_arrange_nodes;
-	}
-
 	stabilize();
 }
 
@@ -1291,10 +1273,6 @@ void qpwgraph_main::disconnected ( qpwgraph_port *port1, qpwgraph_port *port2 )
 		alsamidi_changed();
 	}
 #endif
-
-	if (m_ui.graphCanvas->isAutoArrangeNodes()) {
-		++m_auto_arrange_nodes;
-	}
 
 	stabilize();
 }
@@ -1317,10 +1295,6 @@ void qpwgraph_main::connected ( qpwgraph_connect *connect )
 			m_alsamidi->addItem(connect, false);
 	}
 #endif
-
-	if (m_ui.graphCanvas->isAutoArrangeNodes()) {
-		++m_auto_arrange_nodes;
-	}
 }
 
 
@@ -1392,12 +1366,6 @@ void qpwgraph_main::refresh (void)
 		m_ui.graphCanvas->repelOverlappingNodesAll();
 		stabilize();
 		++nchanged;
-	}
-
-	if (m_auto_arrange_nodes > 0) {
-		std::cout << "TOPO: auto-arranging nodes" << std::endl;
-		m_auto_arrange_nodes = 0;
-		m_ui.graphCanvas->arrangeNodes(true);
 	}
 
 	if (m_thumb_update > 0 || nchanged > 0) {
@@ -1915,7 +1883,6 @@ void qpwgraph_main::restoreState (void)
 	m_ui.viewZoomRangeAction->setChecked(m_config->isZoomRange());
 	m_ui.viewRepelOverlappingNodesAction->setChecked(m_config->isRepelOverlappingNodes());
 	m_ui.viewConnectThroughNodesAction->setChecked(m_config->isConnectThroughNodes());
-	m_ui.viewAutoArrangeNodesAction->setChecked(m_config->isAutoArrangeNodes());
 
 	const qpwgraph_port::SortType sort_type
 		= qpwgraph_port::SortType(m_config->sortType());
@@ -1957,7 +1924,6 @@ void qpwgraph_main::restoreState (void)
 	viewZoomRange(m_config->isZoomRange());
 	viewRepelOverlappingNodes(m_config->isRepelOverlappingNodes());
 	viewConnectThroughNodes(m_config->isConnectThroughNodes());
-	viewAutoArrangeNodes(m_config->isAutoArrangeNodes());
 
 	m_ui.graphCanvas->restoreState();
 
@@ -1980,7 +1946,6 @@ void qpwgraph_main::saveState (void)
 	m_config->setSortOrder(int(qpwgraph_port::sortOrder()));
 	m_config->setRepelOverlappingNodes(m_ui.viewRepelOverlappingNodesAction->isChecked());
 	m_config->setConnectThroughNodes(m_ui.viewConnectThroughNodesAction->isChecked());
-	m_config->setAutoArrangeNodes(m_ui.viewAutoArrangeNodesAction->isChecked());
 
 	m_config->setStatusbar(m_ui.StatusBar->isVisible());
 	m_config->setToolbar(m_ui.graphToolbar->isVisible());
