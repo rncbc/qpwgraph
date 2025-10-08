@@ -73,6 +73,7 @@ private:
 	qreal meanInputPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions);
 
 	bool compareNodes(qpwgraph_node *n1, qpwgraph_node *n2);
+	bool compareNodesByConnectionLocation(qpwgraph_node *n1, qpwgraph_node *n2);
 
 	// Instance variables
 	QList<qpwgraph_node *> inputNodes;

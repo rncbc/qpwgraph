@@ -215,8 +215,7 @@ void qpwgraph_toposort::sortNodesByRank(QList<qpwgraph_node *> &nodes)
 
 void qpwgraph_toposort::sortNodesByConnectionY(QList<qpwgraph_node *> &nodes)
 {
-	// TODO: still group ports by type
-	std::sort(nodes.begin(), nodes.end(), [this](qpwgraph_node *n1, qpwgraph_node *n2) { return meanParentPortY({n1}, newPositions) < meanParentPortY({n2}, newPositions); });
+	std::sort(nodes.begin(), nodes.end(), [this](qpwgraph_node *n1, qpwgraph_node *n2) { return compareNodesByConnectionLocation(n1, n2); });
 }
 
 qsizetype qpwgraph_toposort::countInputPorts(qpwgraph_node *n)
@@ -401,6 +400,29 @@ bool qpwgraph_toposort::compareNodes(qpwgraph_node *n1, qpwgraph_node *n2)
 	}
 
 	return false;
+}
+
+bool qpwgraph_toposort::compareNodesByConnectionLocation(qpwgraph_node *n1, qpwgraph_node *n2)
+{
+	// Compare port types first so that e.g. MIDI-only nodes still appear above audio nodes
+	if (n1->ports().empty() && !n2->ports().empty()) {
+		return true;
+	}
+	if (n2->ports().empty() && !n1->ports().empty()) {
+		return false;
+	}
+
+	if (!(n1->ports().empty() || n2->ports().empty())) {
+		if (n1->ports().first()->portType() < n2->ports().first()->portType()) {
+			return true;
+		}
+		if (n2->ports().first()->portType() < n1->ports().first()->portType()) {
+			return false;
+		}
+	}
+
+	// Compare source port locations
+	return meanParentPortY({n1}, newPositions) < meanParentPortY({n2}, newPositions);
 }
 
 qreal qpwgraph_toposort::meanPortY(QSet<qpwgraph_port *> ports, QMap<qpwgraph_node *, QPointF> positions)
