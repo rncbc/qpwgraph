@@ -57,7 +57,6 @@ private:
 
 	static qsizetype countExternalConnections(qpwgraph_node *n, bool input);
 	static qsizetype countInputConnections(qpwgraph_node *n);
-	static qsizetype countOutputConnections(qpwgraph_node *n);
 
 	static bool nodeIsTrueSource(qpwgraph_node *n);
 	static bool nodeIsEffectiveSource(qpwgraph_node *n);

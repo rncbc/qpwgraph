@@ -45,7 +45,6 @@
 #include <QGestureEvent>
 #include <QPinchGesture>
 
-#include <QQueue>
 
 #include <cmath>
 
@@ -1344,7 +1343,7 @@ void qpwgraph_canvas::zoomReset (void)
 
 
 // Centers the view on the middle of the graph, then makes sure each selected
-// item is visible.
+// item is visible if showSelected is true.
 void qpwgraph_canvas::centerView (bool showSelected)
 {
 	m_scene->setSceneRect(boundingRect(true));
@@ -1976,7 +1975,7 @@ void qpwgraph_canvas::arrangeNodes (void)
 	auto newPositions = topo.arrange();
 
 	qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(this, newPositions);
-	commands()->push(mc);
+	m_commands->push(mc);
 
 	foreach (qpwgraph_node *n, newPositions.keys()) {
 		n->setPos(newPositions[n]);

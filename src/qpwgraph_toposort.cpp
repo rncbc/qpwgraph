@@ -248,11 +248,6 @@ qsizetype qpwgraph_toposort::countInputConnections(qpwgraph_node *n)
 	return countExternalConnections(n, true);
 }
 
-qsizetype qpwgraph_toposort::countOutputConnections(qpwgraph_node *n)
-{
-	return countExternalConnections(n, false);
-}
-
 bool qpwgraph_toposort::nodeIsTrueSource(qpwgraph_node *n)
 {
 	return countInputPorts(n) == 0;
