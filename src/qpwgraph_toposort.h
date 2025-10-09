@@ -1,4 +1,4 @@
-// qpwgraph_toposort.h -- Topological sort and related code for graph nodes
+// qpwgraph_toposort.h
 //
 /****************************************************************************
    Copyright (C) 2025, Mike Bourgeous. All rights reserved.
@@ -25,10 +25,12 @@
 
 #include "qpwgraph_node.h"
 
-#include <string>
+#include <QSet>
 
-#include <QtContainerFwd>
 
+//----------------------------------------------------------------------------
+// qpwgraph_toposort -- Topological sort and related code for graph nodes decl.
+//
 
 // Contains code for topologically sorting nodes, as well as arranging those
 // nodes based on the sort.
@@ -39,18 +41,20 @@ class qpwgraph_toposort
 {
 public:
 
-	qpwgraph_toposort(QList<qpwgraph_node *> nodes);
+	//Constructor.
+	qpwgraph_toposort(const QList<qpwgraph_node *>& nodes);
 
 	// Call this to perform ranking and node arrangement.  Returns the map
 	// of new positions without applying those positions to the nodes.
-	QMap<qpwgraph_node *, QPointF> arrange();
+	const QHash<qpwgraph_node *, QPointF>& arrange();
 
-private:
+protected:
+
 	void rankAndSort();
-	void visitNode(QSet<qpwgraph_node *> path, qpwgraph_node *n);
+	void visitNode(const QSet<qpwgraph_node *>& path, qpwgraph_node *n);
 
-	void sortNodesByRank(QList<qpwgraph_node *> &nodes);
-	void sortNodesByConnectionY(QList<qpwgraph_node *> &nodes);
+	void sortNodesByRank(QList<qpwgraph_node *>& nodes);
+	void sortNodesByConnectionY(QList<qpwgraph_node *>& nodes);
 
 	static qsizetype countInputPorts(qpwgraph_node *n);
 	static qsizetype countOutputPorts(qpwgraph_node *n);
@@ -68,19 +72,23 @@ private:
 	QSet<qpwgraph_port *> connectedInputPorts(qpwgraph_node *n);
 	QSet<qpwgraph_port *> connectedOutputPorts(qpwgraph_node *n);
 
-	qreal meanPortY(QSet<qpwgraph_port *> ports, QMap<qpwgraph_node *, QPointF> positions);
-	qreal meanParentPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions);
-	qreal meanInputPortY(QList<qpwgraph_node *> nodes, QMap<qpwgraph_node *, QPointF> positions);
+	qreal meanPortY(const QSet<qpwgraph_port *>& ports, const QHash<qpwgraph_node *, QPointF>& positions);
+	qreal meanParentPortY(const QList<qpwgraph_node *>& nodes, const QHash<qpwgraph_node *, QPointF>& positions);
+	qreal meanInputPortY(const QList<qpwgraph_node *>& nodes, const QHash<qpwgraph_node *, QPointF>& positions);
 
 	bool compareNodes(qpwgraph_node *n1, qpwgraph_node *n2);
 	bool compareNodesByConnectionLocation(qpwgraph_node *n1, qpwgraph_node *n2);
 
-	// Instance variables
-	QList<qpwgraph_node *> inputNodes;
-	QList<qpwgraph_node *> unvisitedNodes;
+private:
 
-	QMap<qpwgraph_node *, QPointF> newPositions;
-	QMap<qpwgraph_node *, int> nodeRanks;
+	// Instance variables
+	QList<qpwgraph_node *> m_inputNodes;
+	QList<qpwgraph_node *> m_unvisitedNodes;
+
+	QHash<qpwgraph_node *, QPointF> m_newPositions;
+	QHash<qpwgraph_node *, int> m_nodeRanks;
 };
 
 #endif /* __qpwgraph_toposort_h */
+
+// end of qpwgraph_toposort.h

@@ -143,11 +143,14 @@ class qpwgraph_move_command : public qpwgraph_command
 {
 public:
 
-	// Constructor.
+	// Constructors.
 	qpwgraph_move_command(qpwgraph_canvas *canvas,
 		const QList<qpwgraph_node *>& nodes,
 		const QPointF& pos1, const QPointF& pos2,
 		qpwgraph_command *parent = nullptr);
+
+	qpwgraph_move_command(qpwgraph_canvas *canvas,
+		const QHash<qpwgraph_node *, QPointF>& positions);
 
 	// Destructor.
 	~qpwgraph_move_command();
@@ -176,6 +179,7 @@ private:
 	QHash<qpwgraph_node *, Item *> m_items;
 
 	int m_nexec;
+	bool m_center;
 };
 
 

@@ -24,7 +24,6 @@
 #include "qpwgraph_connect.h"
 #include "qpwgraph_patchbay.h"
 #include "qpwgraph_toposort.h"
-#include "qpwgraph_arrange_command.h"
 
 #include <QGraphicsScene>
 #include <QRegularExpression>
@@ -1974,7 +1973,8 @@ void qpwgraph_canvas::arrangeNodes (void)
 	qpwgraph_toposort topo(m_nodes);
 	auto newPositions = topo.arrange();
 
-	qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(this, newPositions);
+	qpwgraph_move_command *mc = new qpwgraph_move_command(this, newPositions);
+
 	m_commands->push(mc);
 
 	foreach (qpwgraph_node *n, newPositions.keys()) {

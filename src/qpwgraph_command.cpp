@@ -120,10 +120,11 @@ bool qpwgraph_connect_command::execute ( bool is_undo )
 //----------------------------------------------------------------------------
 // qpwgraph_move_command -- Move (node) graph command
 
-// Constructor.
+// Constructors.
 qpwgraph_move_command::qpwgraph_move_command ( qpwgraph_canvas *canvas,
 	const QList<qpwgraph_node *>& nodes, const QPointF& pos1, const QPointF& pos2,
-	qpwgraph_command *parent ) : qpwgraph_command(canvas, parent), m_nexec(0)
+	qpwgraph_command *parent ) : qpwgraph_command(canvas, parent),
+		m_nexec(0), m_center(false)
 {
 	qpwgraph_command::setText(QObject::tr("Move"));
 
@@ -145,6 +146,18 @@ qpwgraph_move_command::qpwgraph_move_command ( qpwgraph_canvas *canvas,
 	if (canvas && canvas->isRepelOverlappingNodes()) {
 		foreach (qpwgraph_node *node, nodes)
 			canvas->repelOverlappingNodes(node, this);
+	}
+}
+
+
+qpwgraph_move_command::qpwgraph_move_command ( qpwgraph_canvas *canvas,
+	const QHash<qpwgraph_node *, QPointF>& positions )
+	: qpwgraph_command(canvas), m_nexec(0), m_center(true)
+{
+	qpwgraph_command::setText(QObject::tr("Arrange"));
+
+	foreach (qpwgraph_node *n, positions.keys()) {
+		addItem(n, n->pos(), positions.value(n));
 	}
 }
 
@@ -204,6 +217,10 @@ bool qpwgraph_move_command::execute ( bool /* is_undo */ )
 				}
 			}
 		}
+	}
+
+	if (m_center) {
+		canvas->centerView(true);
 	}
 
 	canvas->emitChanged();
