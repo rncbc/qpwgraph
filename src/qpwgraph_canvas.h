@@ -121,6 +121,8 @@ public:
 	void setZoomRange(bool zoomrange);
 	bool isZoomRange() const;
 
+	void centerView(bool showSelected);
+
 	// Clean-up all un-marked nodes...
 	void resetNodes(uint node_type);
 	void clearNodes(uint node_type);
@@ -174,6 +176,9 @@ public:
 		const QPointF& delta = QPointF());
 	void repelOverlappingNodesAll(
 		qpwgraph_move_command *move_command = nullptr);
+
+	// Arrange nodes by connection
+	void arrangeNodes();
 
 	// Graph colors management.
 	void setPortTypeColor(uint port_type, const QColor& color);

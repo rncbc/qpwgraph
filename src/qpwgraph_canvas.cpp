@@ -23,6 +23,8 @@
 
 #include "qpwgraph_connect.h"
 #include "qpwgraph_patchbay.h"
+#include "qpwgraph_toposort.h"
+#include "qpwgraph_arrange_command.h"
 
 #include <QGraphicsScene>
 #include <QRegularExpression>
@@ -43,7 +45,6 @@
 #include <QGestureEvent>
 #include <QPinchGesture>
 
-#include <algorithm>
 
 #include <cmath>
 
@@ -1341,6 +1342,22 @@ void qpwgraph_canvas::zoomReset (void)
 }
 
 
+// Centers the view on the middle of the graph, then makes sure each selected
+// item is visible if showSelected is true.
+void qpwgraph_canvas::centerView (bool showSelected)
+{
+	m_scene->setSceneRect(boundingRect(true));
+
+	QGraphicsView::centerOn(m_scene->itemsBoundingRect().center());
+
+	if (showSelected) {
+		foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+			ensureVisible(item);
+		}
+	}
+}
+
+
 // Update all nodes.
 void qpwgraph_canvas::updateNodes (void)
 {
@@ -1943,6 +1960,31 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 {
 	foreach (qpwgraph_node *node, m_nodes)
 		repelOverlappingNodes(node, move_command);
+}
+
+
+// Node rearrangement by topological sort.
+//
+void qpwgraph_canvas::arrangeNodes (void)
+{
+	if (m_nodes.empty()) {
+		return;
+	}
+
+	qpwgraph_toposort topo(m_nodes);
+	auto newPositions = topo.arrange();
+
+	qpwgraph_arrange_command *mc = new qpwgraph_arrange_command(this, newPositions);
+	m_commands->push(mc);
+
+	foreach (qpwgraph_node *n, newPositions.keys()) {
+		n->setPos(newPositions[n]);
+	}
+
+	centerView(true);
+
+	// Repaint to avoid glitch trails
+	m_scene->update();
 }
 
 

@@ -159,6 +159,8 @@ protected slots:
 	void viewRepelOverlappingNodes(bool on);
 	void viewConnectThroughNodes(bool on);
 
+	void viewArrangeNodes();
+
 	void helpAbout();
 	void helpAboutQt();
 

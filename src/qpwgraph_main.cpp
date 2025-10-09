@@ -407,6 +407,10 @@ qpwgraph_main::qpwgraph_main (
 		SIGNAL(triggered(bool)),
 		SLOT(viewConnectThroughNodes(bool)));
 
+	QObject::connect(m_ui.viewArrangeNodesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewArrangeNodes()));
+
 	m_ui.viewColorsPipewireAudioAction->setData(qpwgraph_pipewire::audioPortType());
 	m_ui.viewColorsPipewireMidiAction->setData(qpwgraph_pipewire::midiPortType());
 	m_ui.viewColorsPipewireVideoAction->setData(qpwgraph_pipewire::videoPortType());
@@ -939,10 +943,7 @@ void qpwgraph_main::viewTextBesideIcons ( bool on )
 
 void qpwgraph_main::viewCenter (void)
 {
-	const QRectF& scene_rect
-		= m_ui.graphCanvas->scene()->itemsBoundingRect();
-	m_ui.graphCanvas->centerOn(scene_rect.center());
-
+	m_ui.graphCanvas->centerView(false);
 	stabilize();
 }
 
@@ -1050,6 +1051,12 @@ void qpwgraph_main::viewConnectThroughNodes ( bool on )
 {
 	qpwgraph_connect::setConnectThroughNodes(on);
 	m_ui.graphCanvas->updateConnects();
+}
+
+
+void qpwgraph_main::viewArrangeNodes (void)
+{
+	m_ui.graphCanvas->arrangeNodes();
 }
 
 
