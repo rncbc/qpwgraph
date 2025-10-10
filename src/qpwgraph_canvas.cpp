@@ -1970,8 +1970,12 @@ void qpwgraph_canvas::arrangeNodes (void)
 		return;
 	}
 
+	const QRectF& viewportRect
+		= QGraphicsView::mapToScene(QGraphicsView::viewport()->rect())
+			.boundingRect();
+
 	qpwgraph_toposort topo(m_nodes);
-	auto newPositions = topo.arrange();
+	auto newPositions = topo.arrange(viewportRect);
 
 	qpwgraph_move_command *mc = new qpwgraph_move_command(this, newPositions);
 

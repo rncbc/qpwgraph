@@ -27,8 +27,6 @@
 
 #include <QMap>
 
-#include <algorithm>
-
 
 //----------------------------------------------------------------------------
 // qpwgraph_toposort -- Topological sort and related code for graph nodes impl.
@@ -46,14 +44,16 @@ qpwgraph_toposort::qpwgraph_toposort ( const QList<qpwgraph_node *>& nodes )
 // in the graph from a source node.
 //
 // Returns a Map from node pointer to position, without modifying the nodes.
-const QHash<qpwgraph_node *, QPointF>& qpwgraph_toposort::arrange (void)
+const QHash<qpwgraph_node *, QPointF>& qpwgraph_toposort::arrange ( const QRectF& viewportRect )
 {
 	// Sort nodes topologically, using heuristics to break cycles.
 	rankAndSort();
 
 	// Precompute and store information used during arrangement.
 	QMap<int, QList<qpwgraph_node *>> rankNodes;
-	QMap<int, float> rankMaxWidth;
+	QMap<int, qreal> rankMaxWidth;
+	qreal xmin = std::numeric_limits<double>::infinity();
+	qreal ymin = std::numeric_limits<double>::infinity();
 	int maxRank = 0;
 	foreach (qpwgraph_node *n, m_inputNodes) {
 		int rank = m_nodeRanks[n];
@@ -68,13 +68,21 @@ const QHash<qpwgraph_node *, QPointF>& qpwgraph_toposort::arrange (void)
 		rankMaxWidth[rank] = qMax(rankMaxWidth[rank], n->boundingRect().width());
 
 		maxRank = qMax(maxRank, rank);
+
+		xmin = qMin(xmin, n->pos().x());
+		ymin = qMin(ymin, n->pos().y());
+	}
+
+	// Calculate total space required for all columns plus margins, for
+	// expanding to fill viewport width.
+	qreal totalColumnWidths = 40.0;
+	foreach (qreal w, rankMaxWidth) {
+		totalColumnWidths += w;
 	}
 
 	// Place nodes based on topological sort
-	// TODO: expand graph to fill width of window if it's smaller?
-	const qreal xmin = 20, ymin = 20;
-	const qreal xpad = 120;
-	const qreal ypad = 40;
+	const qreal xpad = qMax(40.0, (viewportRect.width() - totalColumnWidths) / qMax(2, rankMaxWidth.size() - 1));
+	const qreal ypad = 20.0;
 	qreal x = xmin, y = ymin;
 	int current_rank = m_nodeRanks[m_inputNodes.first()];
 	foreach (qpwgraph_node *node, m_inputNodes) {
@@ -86,7 +94,7 @@ const QHash<qpwgraph_node *, QPointF>& qpwgraph_toposort::arrange (void)
 			current_rank = m_nodeRanks[node];
 		}
 
-		double w = node->boundingRect().width();
+		const qreal w = node->boundingRect().width();
 		if (current_rank == 0) {
 			// Right-align sources
 			m_newPositions[node] = QPointF(x + (rankMaxWidth[current_rank] - w), y);

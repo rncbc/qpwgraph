@@ -46,7 +46,7 @@ public:
 
 	// Call this to perform ranking and node arrangement.  Returns the map
 	// of new positions without applying those positions to the nodes.
-	const QHash<qpwgraph_node *, QPointF>& arrange();
+	const QHash<qpwgraph_node *, QPointF>& arrange(const QRectF& viewportRect);
 
 protected:
 
