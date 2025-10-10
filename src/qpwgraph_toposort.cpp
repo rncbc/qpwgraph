@@ -44,7 +44,7 @@ qpwgraph_toposort::qpwgraph_toposort ( const QList<qpwgraph_node *>& nodes )
 // in the graph from a source node.
 //
 // Returns a Map from node pointer to position, without modifying the nodes.
-const QHash<qpwgraph_node *, QPointF>& qpwgraph_toposort::arrange ( const QRectF& viewportRect )
+const QHash<qpwgraph_node *, QPointF>& qpwgraph_toposort::arrange ( const QRect& viewportRect )
 {
 	// Sort nodes topologically, using heuristics to break cycles.
 	rankAndSort();
