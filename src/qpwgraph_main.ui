@@ -626,26 +626,6 @@
     <string>Ctrl+I</string>
    </property>
   </action>
-  <action name="editRenameItemAction">
-   <property name="icon">
-    <iconset resource="qpwgraph.qrc">:/images/itemEdit.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Rename...</string>
-   </property>
-   <property name="iconText">
-    <string>Rename Item</string>
-   </property>
-   <property name="toolTip">
-    <string>Rename item</string>
-   </property>
-   <property name="statusTip">
-    <string>Rename item</string>
-   </property>
-   <property name="shortcut">
-    <string>F2</string>
-   </property>
-  </action>
   <action name="editSearchItemAction">
    <property name="icon">
     <iconset resource="qpwgraph.qrc">:/images/itemFind.png</iconset>
@@ -664,6 +644,26 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="editRenameItemAction">
+   <property name="icon">
+    <iconset resource="qpwgraph.qrc">:/images/itemEdit.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Rename...</string>
+   </property>
+   <property name="iconText">
+    <string>Rename Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Rename item</string>
+   </property>
+   <property name="statusTip">
+    <string>Rename item</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
    </property>
   </action>
   <action name="viewMenubarAction">
@@ -1204,23 +1204,6 @@
     <string/>
    </property>
   </action>
-  <action name="viewArrangeNodesAction">
-   <property name="text">
-    <string>&amp;Arrange Nodes</string>
-   </property>
-   <property name="iconText">
-    <string>Arrange Nodes</string>
-   </property>
-   <property name="toolTip">
-    <string>Arrange nodes (topological sort)</string>
-   </property>
-   <property name="statusTip">
-    <string>Use topological sort to arrange nodes following signal path from left to right.</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-  </action>
   <action name="viewConnectThroughNodesAction">
    <property name="checkable">
     <bool>true</bool>
@@ -1236,6 +1219,23 @@
    </property>
    <property name="statusTip">
     <string>Whether to draw connectors through or around nodes</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewArrangeNodesAction">
+   <property name="text">
+    <string>&amp;Arrange Nodes</string>
+   </property>
+   <property name="iconText">
+    <string>Arrange Nodes</string>
+   </property>
+   <property name="toolTip">
+    <string>Arrange nodes (topological sort)</string>
+   </property>
+   <property name="statusTip">
+    <string>Use topological sort to arrange selected nodes following signal path from left to right.</string>
    </property>
    <property name="shortcut">
     <string/>

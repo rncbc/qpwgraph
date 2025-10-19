@@ -322,12 +322,12 @@ qpwgraph_main::qpwgraph_main (
 		SIGNAL(triggered(bool)),
 		m_ui.graphCanvas, SLOT(selectInvert()));
 
-	QObject::connect(m_ui.editRenameItemAction,
-		SIGNAL(triggered(bool)),
-		m_ui.graphCanvas, SLOT(renameItem()));
 	QObject::connect(m_ui.editSearchItemAction,
 		SIGNAL(triggered(bool)),
 		m_ui.graphCanvas, SLOT(searchItem()));
+	QObject::connect(m_ui.editRenameItemAction,
+		SIGNAL(triggered(bool)),
+		m_ui.graphCanvas, SLOT(renameItem()));
 
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
@@ -409,7 +409,7 @@ qpwgraph_main::qpwgraph_main (
 
 	QObject::connect(m_ui.viewArrangeNodesAction,
 		SIGNAL(triggered(bool)),
-		SLOT(viewArrangeNodes()));
+		m_ui.graphCanvas, SLOT(arrangeNodes()));
 
 	m_ui.viewColorsPipewireAudioAction->setData(qpwgraph_pipewire::audioPortType());
 	m_ui.viewColorsPipewireMidiAction->setData(qpwgraph_pipewire::midiPortType());
@@ -837,7 +837,7 @@ void qpwgraph_main::patchbayManage (void)
 }
 
 
-// Main menu slots.
+// View menu slots.
 void qpwgraph_main::viewMenubar ( bool on )
 {
 	m_ui.MenuBar->setVisible(on);
@@ -1054,12 +1054,7 @@ void qpwgraph_main::viewConnectThroughNodes ( bool on )
 }
 
 
-void qpwgraph_main::viewArrangeNodes (void)
-{
-	m_ui.graphCanvas->arrangeNodes();
-}
-
-
+// Help menu slots.
 void qpwgraph_main::helpAbout (void)
 {
 	static const QString title     = PROJECT_NAME;
@@ -1399,6 +1394,9 @@ void qpwgraph_main::stabilize (void)
 	if (m_systray) m_systray->setToolTip(title);
 #endif
 
+	m_ui.graphConnectAction->setEnabled(canvas->canConnect());
+	m_ui.graphDisconnectAction->setEnabled(canvas->canDisconnect());
+
 	m_ui.patchbayExclusiveAction->setEnabled(is_activated);
 	m_ui.patchbaySaveAction->setEnabled(is_dirty);
 
@@ -1407,15 +1405,14 @@ void qpwgraph_main::stabilize (void)
 
 	m_ui.patchbayManageAction->setEnabled(!canvas->isPatchbayEmpty());
 
-	m_ui.graphConnectAction->setEnabled(canvas->canConnect());
-	m_ui.graphDisconnectAction->setEnabled(canvas->canDisconnect());
-
 	m_ui.editSelectNoneAction->setEnabled(
 		!canvas->scene()->selectedItems().isEmpty());
-	m_ui.editRenameItemAction->setEnabled(
-		canvas->canRenameItem());
 	m_ui.editSearchItemAction->setEnabled(
 		canvas->canSearchItem());
+	m_ui.editRenameItemAction->setEnabled(
+		canvas->canRenameItem());
+
+	m_ui.viewArrangeNodesAction->setEnabled(canvas->canArrangeNodes());
 
 #if 0
 	const QRectF& outter_rect

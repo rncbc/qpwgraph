@@ -111,8 +111,10 @@ public:
 	bool canDisconnect() const;
 
 	// Edit predicates.
-	bool canRenameItem() const;
 	bool canSearchItem() const;
+	bool canRenameItem() const;
+
+	bool canArrangeNodes() const;
 
 	// Zooming methods.
 	void setZoom(qreal zoom);
@@ -176,9 +178,6 @@ public:
 		const QPointF& delta = QPointF());
 	void repelOverlappingNodesAll(
 		qpwgraph_move_command *move_command = nullptr);
-
-	// Arrange nodes by connection
-	void arrangeNodes();
 
 	// Graph colors management.
 	void setPortTypeColor(uint port_type, const QColor& color);
@@ -252,8 +251,10 @@ public slots:
 	void selectInvert();
 
 	// Edit actions.
-	void renameItem();
 	void searchItem();
+	void renameItem();
+
+	void arrangeNodes();
 
 	// Discrete zooming actions.
 	void zoomIn();

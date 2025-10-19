@@ -134,7 +134,7 @@ protected slots:
 
 	void patchbayManage();
 
-	// Main menu slots.
+	// View menu slots.
 	void viewMenubar(bool on);
 	void viewGraphToolbar(bool on);
 	void viewPatchbayToolbar(bool on);
@@ -159,8 +159,7 @@ protected slots:
 	void viewRepelOverlappingNodes(bool on);
 	void viewConnectThroughNodes(bool on);
 
-	void viewArrangeNodes();
-
+	// Help menu slots.
 	void helpAbout();
 	void helpAboutQt();
 

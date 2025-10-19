@@ -445,6 +445,12 @@ bool qpwgraph_canvas::canDisconnect (void) const
 
 
 // Edit predicates.
+bool qpwgraph_canvas::canSearchItem (void) const
+{
+	return !m_nodes.isEmpty();
+}
+
+
 bool qpwgraph_canvas::canRenameItem (void) const
 {
 	qpwgraph_item *item = currentItem();
@@ -455,9 +461,14 @@ bool qpwgraph_canvas::canRenameItem (void) const
 }
 
 
-bool qpwgraph_canvas::canSearchItem (void) const
+bool qpwgraph_canvas::canArrangeNodes (void) const
 {
-	return !m_nodes.isEmpty();
+	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+		if (item->type() == qpwgraph_node::Type)
+			return true;
+	}
+
+	return false;
 }
 
 
@@ -1212,6 +1223,13 @@ void qpwgraph_canvas::selectInvert (void)
 
 
 // Edit actions.
+void qpwgraph_canvas::searchItem (void)
+{
+	if (!m_search_editor->isEnabled())
+		startSearchEditor();
+}
+
+
 void qpwgraph_canvas::renameItem (void)
 {
 	qpwgraph_item *item = currentItem();
@@ -1275,13 +1293,6 @@ void qpwgraph_canvas::renameItem (void)
 	m_rename_item = item;
 
 	updateRenameEditor();
-}
-
-
-void qpwgraph_canvas::searchItem (void)
-{
-	if (!m_search_editor->isEnabled())
-		startSearchEditor();
 }
 
 
@@ -1966,20 +1977,33 @@ void qpwgraph_canvas::repelOverlappingNodesAll (
 //
 void qpwgraph_canvas::arrangeNodes (void)
 {
-	if (m_nodes.empty()) {
-		return;
+	QList<qpwgraph_node *> nodes;
+	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
+		if (item->type() == qpwgraph_node::Type) {
+			qpwgraph_node *node = static_cast<qpwgraph_node *> (item);
+			if (node)
+				nodes.append(node);
+		}
 	}
 
-	qpwgraph_toposort topo(m_nodes);
+	if (nodes.empty())
+		return;
+
+	qpwgraph_toposort topo(nodes);
 	auto newPositions = topo.arrange(QGraphicsView::viewport()->rect());
 
 	qpwgraph_move_command *mc = new qpwgraph_move_command(this, newPositions);
 
-	m_commands->push(mc);
-
 	foreach (qpwgraph_node *n, newPositions.keys()) {
-		n->setPos(newPositions[n]);
+		n->setPos(newPositions.value(n));
 	}
+
+	if (isRepelOverlappingNodes()) {
+		foreach (qpwgraph_node *node, nodes)
+			repelOverlappingNodes(node, mc);
+	}
+
+	m_commands->push(mc);
 
 	centerView(true);
 
