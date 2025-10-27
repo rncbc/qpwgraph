@@ -463,8 +463,10 @@ bool qpwgraph_canvas::canRenameItem (void) const
 
 bool qpwgraph_canvas::canArrangeNodes (void) const
 {
+	int n = 0;
+
 	foreach (QGraphicsItem *item, m_scene->selectedItems()) {
-		if (item->type() == qpwgraph_node::Type)
+		if (item->type() == qpwgraph_node::Type && ++n > 1)
 			return true;
 	}
 
@@ -1986,7 +1988,7 @@ void qpwgraph_canvas::arrangeNodes (void)
 		}
 	}
 
-	if (nodes.empty())
+	if (nodes.size() < 2)
 		return;
 
 	qpwgraph_toposort topo(nodes);
