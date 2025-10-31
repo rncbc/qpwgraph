@@ -26,6 +26,7 @@
 #include "qpwgraph_connect.h"
 
 #include <QMap>
+#include <cmath>
 
 
 //----------------------------------------------------------------------------
