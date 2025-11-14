@@ -4,10 +4,10 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+0.9.7  2025-11-14  An Autumn'25 Beta Release.
 
 - Add topological sort node arrangement (cf. View/Arrange Nodes;
-  by Mike Bourgeous) (EXPERIMENTAL)
+  by Mike Bourgeous)
 
 
 0.9.6  2025-10-06  An Early-Fall'25 Beta Release.

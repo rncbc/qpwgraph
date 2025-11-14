@@ -22,6 +22,7 @@
   </screenshot>
  </screenshots>
  <keywords>
+  <keyword>PipeWire</keyword>
   <keyword>AudioVideo</keyword>
   <keyword>Audio</keyword>
   <keyword>Video</keyword>
@@ -33,6 +34,7 @@
  <developer_name>rncbc aka. Rui Nuno Capela</developer_name>
  <update_contact>rncbc@rncbc.org</update_contact>
  <releases>
+  <release version="0.9.7" date="2025-11-14" urgency="low" />
   <release version="0.9.6" date="2025-10-06" urgency="low" />
   <release version="0.9.5" date="2025-08-15" urgency="low" />
   <release version="0.9.4" date="2025-06-21" urgency="low" />
