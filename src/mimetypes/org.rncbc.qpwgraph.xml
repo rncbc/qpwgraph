@@ -4,5 +4,6 @@
     <sub-class-of type="text/xml"/>
     <comment>qpwgraph patchbay</comment>
     <glob pattern="*.qpwgraph"/>
+    <icon name="org.rncbc.qpwgraph.application-x-qpwgraph-patchbay"/>
   </mime-type>
 </mime-info>
