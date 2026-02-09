@@ -93,5 +93,35 @@ qpwgraph can remember the current connections and apply them again in a later
 moment. This feature is called Patchbay, and it is further documented at [How
 To Use The Patchbay](qpwgraph_patchbay-user_manual.md)
 
+## Options
+
+Main menu Graph > Options...
+
+### General
+
+> Enable system tray icon
+
+>> Show system tray message on close
+
+>> Start minimized to system tray
+
+> Show activated patchbay message on exit
+
+> Enable ALSA MIDI support
+
+### Filter
+
+> Enable filter / hide nodes
+
+> List of node names or titles that shall never appear on the graph;
+  case insensitive; regular expressions allowed.
+
+### Merger
+
+> Enable merge / unify nodes
+
+> List of node name or title prefixes that will match as same by the Patchbay scan;
+  case insensitive; regular expressions allowed.
+
 ---
 Credits: @denilsonsa (a.k.a. Denilson Sá Maia).
