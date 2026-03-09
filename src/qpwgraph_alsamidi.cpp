@@ -1,7 +1,7 @@
 // qpwgraph_alsamidi.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,8 +39,6 @@
 qpwgraph_alsamidi::qpwgraph_alsamidi ( qpwgraph_canvas *canvas )
 	: qpwgraph_sect(canvas), m_seq(nullptr), m_notifier(nullptr)
 {
-	resetPortTypeColors();
-
 	open();
 }
 
@@ -443,10 +441,9 @@ void qpwgraph_alsamidi::clearItems (void)
 }
 
 
-// Special port-type colors defaults (virtual).
-void qpwgraph_alsamidi::resetPortTypeColors (void)
+// Special port-type colors defaults (static).
+void qpwgraph_alsamidi::resetPortTypeColors ( qpwgraph_canvas *canvas )
 {
-	qpwgraph_canvas *canvas = qpwgraph_sect::canvas();
 	if (canvas) {
 		canvas->setPortTypeColor(
 			qpwgraph_alsamidi::midiPortType(),

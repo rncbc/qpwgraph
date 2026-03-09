@@ -1,7 +1,7 @@
 // qpwgraph_alsamidi.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,9 +63,6 @@ public:
 	void updateItems();
 	void clearItems();
 
-	// Special port-type colors defaults (virtual).
-	void resetPortTypeColors();
-
 	// ALSA node type inquirer.
 	static bool isNodeType(uint node_type);
 	// ALSA node type.
@@ -75,6 +72,9 @@ public:
 	static bool isPortType(uint port_type);
 	// ALSA port type.
 	static uint midiPortType();
+
+	// Special port-type colors defaults (virtual).
+	static void resetPortTypeColors(qpwgraph_canvas *canvas);
 
 signals:
 

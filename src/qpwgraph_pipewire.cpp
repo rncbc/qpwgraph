@@ -1,7 +1,7 @@
 // qpwgraph_pipewire.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -669,8 +669,6 @@ const struct pw_proxy_events qpwgraph_link_proxy_events = {
 qpwgraph_pipewire::qpwgraph_pipewire ( qpwgraph_canvas *canvas )
 	: qpwgraph_sect(canvas), m_data(nullptr)
 {
-	resetPortTypeColors();
-
 	if (!open())
 		QTimer::singleShot(3000, this, SLOT(reset()));
 }
@@ -1126,10 +1124,9 @@ void qpwgraph_pipewire::clearItems (void)
 }
 
 
-// Special port-type colors defaults (virtual).
-void qpwgraph_pipewire::resetPortTypeColors (void)
+// Special port-type colors defaults (static).
+void qpwgraph_pipewire::resetPortTypeColors ( qpwgraph_canvas *canvas )
 {
-	qpwgraph_canvas *canvas = qpwgraph_sect::canvas();
 	if (canvas) {
 		canvas->setPortTypeColor(
 			qpwgraph_pipewire::audioPortType(),

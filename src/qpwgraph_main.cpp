@@ -1,7 +1,7 @@
 // qpwgraph_main.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -495,6 +495,11 @@ qpwgraph_main::qpwgraph_main (
 
 	m_ui.graphCanvas->setSearchPlaceholderText(
 		m_ui.editSearchItemAction->statusTip() + QString(3, '.'));
+
+	qpwgraph_pipewire::resetPortTypeColors(m_ui.graphCanvas);
+#ifdef CONFIG_ALSA_MIDI
+	qpwgraph_alsamidi::resetPortTypeColors(m_ui.graphCanvas);
+#endif
 
 	restoreState();
 
@@ -999,12 +1004,9 @@ void qpwgraph_main::viewColorsAction (void)
 void qpwgraph_main::viewColorsReset (void)
 {
 	m_ui.graphCanvas->clearPortTypeColors();
-
-	if (m_pipewire)
-		m_pipewire->resetPortTypeColors();
+	qpwgraph_pipewire::resetPortTypeColors(m_ui.graphCanvas);
 #ifdef CONFIG_ALSA_MIDI
-	if (m_alsamidi)
-		m_alsamidi->resetPortTypeColors();
+	qpwgraph_alsamidi::resetPortTypeColors(m_ui.graphCanvas);
 #endif
 	m_ui.graphCanvas->updatePortTypeColors();
 
