@@ -31,11 +31,11 @@
   <keyword>Qt</keyword>
  </keywords>
  <url type="homepage">https://gitlab.freedesktop.org/rncbc/qpwgraph</url>
- <url type="vcs-browser">https://github.com/rncbc/qpwgraph</url>
+ <url type="vcs-browser">https://gitlab.freedesktop.org/rncbc/qpwgraph</url>
  <developer_name>rncbc aka. Rui Nuno Capela</developer_name>
  <update_contact>rncbc@rncbc.org</update_contact>
  <releases>
-  <release version="0.9.9" date="2026-02-10" urgency="low" />
+  <release version="1.0.0" date="2026-03-17" urgency="low" />
  </releases>
  <content_rating type="oars-1.0"/>
 </component>

@@ -4,7 +4,7 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+1.0.0  2026-03-17  An Early-Spring'26 Release.
 
 - Configured ALSA MIDI port colors now reset/restored properly.
 
