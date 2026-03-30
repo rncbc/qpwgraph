@@ -32,7 +32,9 @@
  </keywords>
  <url type="homepage">https://gitlab.freedesktop.org/rncbc/qpwgraph</url>
  <url type="vcs-browser">https://gitlab.freedesktop.org/rncbc/qpwgraph</url>
- <developer_name>rncbc aka. Rui Nuno Capela</developer_name>
+ <developer id="rncbc.org">
+   <name>rncbc aka. Rui Nuno Capela</name>
+ </developer>
  <update_contact>rncbc@rncbc.org</update_contact>
  <releases>
   <release version="1.0.0" date="2026-03-17" urgency="low" />
