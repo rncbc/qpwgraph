@@ -72,6 +72,8 @@ public:
 		{ return m_patchbay_exclusive > 0; }
 	bool isStartMinimized() const
 		{ return m_start_minimized; }
+	const QString& remoteName() const
+		{ return m_remote_name; }
 
 #ifdef CONFIG_XUNIQUE
 
@@ -106,6 +108,7 @@ private:
 	int     m_patchbay_activated;
 	int     m_patchbay_exclusive;
 	bool    m_start_minimized;
+	QString m_remote_name;
 };
 
 

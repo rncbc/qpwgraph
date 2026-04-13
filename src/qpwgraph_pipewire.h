@@ -125,6 +125,10 @@ public:
 	Link *createLink(uint link_id, uint port1_id, uint port2_id);
 	void destroyLink(Link *link);
 
+	// Remote name accessors.
+	void setRemoteName(const QString& remote_name);
+	const QString& remoteName() const;
+
 signals:
 
 	void changed();
@@ -158,6 +162,9 @@ private:
 	// Callback sanity mutex.
 	QMutex m_mutex1;
 	QMutex m_mutex2;
+
+	// PipeWire remote daemon name.
+	QString m_remote_name;
 };
 
 

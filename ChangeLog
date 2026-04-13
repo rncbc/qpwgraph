@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Added command line option to connect on a remote PipeWire
+  daemon context, by name (-r, --remote); nb. PIPEWIRE_REMOTE
+  environment variable takes precedence though. (EXPERIMENTAL)
+
 - Separate the singleton/unique application instance setup logic
   from system-tray icon build option; add PipeWire remote-name,
   if any, to singleton/unique application instance identifier.

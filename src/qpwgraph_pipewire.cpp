@@ -716,8 +716,14 @@ bool qpwgraph_pipewire::open (void)
 		return false;
 	}
 
+	struct pw_properties *props = nullptr;
+	if (!m_remote_name.isEmpty()) {
+		props = pw_properties_new(PW_KEY_REMOTE_NAME,
+			m_remote_name.toUtf8().constData(), nullptr);
+	}
+
 	m_data->core = pw_context_connect(m_data->context,
-		nullptr /*properties*/, 0 /*user_data size*/);
+		props, 0 /*user_data size*/);
 	if (m_data->core == nullptr) {
 		qDebug("pw_context_connect: Can't connect context.");
 		pw_thread_loop_unlock(m_data->loop);
@@ -730,7 +736,7 @@ bool qpwgraph_pipewire::open (void)
 	}
 
 	pw_core_add_listener(m_data->core,
-		 &m_data->core_listener, &qpwgraph_core_events, this);
+		&m_data->core_listener, &qpwgraph_core_events, this);
 
 	m_data->registry = pw_core_get_registry(m_data->core,
 		PW_VERSION_REGISTRY, 0 /*user_data size*/);
@@ -1405,6 +1411,23 @@ qpwgraph_node *qpwgraph_pipewire::findNode (
 		node = qpwgraph_sect::findNode(node_id, qpwgraph_item::Duplex, node_type);
 
 	return node;
+}
+
+
+// Remote name accessors.
+void qpwgraph_pipewire::setRemoteName ( const QString& remote_name )
+{
+	close();
+
+	m_remote_name = remote_name;
+
+	open();
+}
+
+
+const QString& qpwgraph_pipewire::remoteName (void) const
+{
+	return m_remote_name;
 }
 
 

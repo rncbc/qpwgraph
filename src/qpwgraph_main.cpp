@@ -560,6 +560,13 @@ qpwgraph_config *qpwgraph_main::config (void) const
 // Take care of command line options and arguments...
 void qpwgraph_main::apply_args ( qpwgraph_application *app )
 {
+	if (m_pipewire) {
+		const QString& remote_name = app->remoteName();
+		if (remote_name != m_pipewire->remoteName()) {
+			m_pipewire->setRemoteName(remote_name);
+		}
+	}
+
 	if (app->isPatchbayActivatedSet())
 		m_ui.patchbayActivatedAction->setChecked(app->isPatchbayActivated());
 	if (app->isPatchbayExclusiveSet())

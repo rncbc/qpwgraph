@@ -85,6 +85,7 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 	const QString s_exclusive    = "exclusive";
 	const QString s_nonexclusive = "non" + s_exclusive;
 	const QString s_minimized    = "minimized";
+	const QString s_remote_name  = "remote";
 
 	parser.addOption({{"a", s_activated},
 		QObject::tr("Activated patchbay.")});
@@ -96,6 +97,9 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 		QObject::tr("Non-exclusive patchbay.")});
 	parser.addOption({{"m", s_minimized},
 		QObject::tr("Start minimized.")});
+	parser.addOption({{"r", s_remote_name},
+		QObject::tr("Remote daemon name."),
+		QObject::tr("name")});
 	const QCommandLineOption& helpOption = parser.addHelpOption();
 	const QCommandLineOption& versionOption = parser.addVersionOption();
 	parser.addPositionalArgument("patchbay-file",
@@ -150,6 +154,9 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 
 	m_start_minimized = parser.isSet(s_minimized);
 
+	if (parser.isSet(s_remote_name))
+		m_remote_name = parser.value(s_remote_name);
+
 	int nargs = 0;
 	m_patchbay_path.clear();
 	foreach (const QString& arg, parser.positionalArguments()) {
@@ -180,10 +187,13 @@ bool qpwgraph_application::setupServer (void)
 		m_unique += ':';
 		m_unique += uname;
 	}
-	uname = QString::fromUtf8(::getenv("PIPEWIRE_REMOTE"));
-	if (!uname.isEmpty()) {
+	QString uremote = QString::fromUtf8(::getenv("PIPEWIRE_REMOTE"));
+	if (uremote.isEmpty())
+		uremote = m_remote_name;
+	if (!uremote.isEmpty()) {
 		m_unique += ':';
-		m_unique += uname;
+		m_unique += uremote;
+		m_remote_name = uremote;
 	}
 	m_unique += '@';
 	m_unique += QHostInfo::localHostName();
