@@ -180,6 +180,11 @@ bool qpwgraph_application::setupServer (void)
 		m_unique += ':';
 		m_unique += uname;
 	}
+	uname = QString::fromUtf8(::getenv("PIPEWIRE_REMOTE"));
+	if (!uname.isEmpty()) {
+		m_unique += ':';
+		m_unique += uname;
+	}
 	m_unique += '@';
 	m_unique += QHostInfo::localHostName();
 #if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
