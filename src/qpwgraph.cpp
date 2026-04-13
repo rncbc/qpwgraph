@@ -1,7 +1,7 @@
 // qpwgraph.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 
-#ifdef CONFIG_SYSTEM_TRAY
+#ifdef CONFIG_XUNIQUE
 #include <QSharedMemory>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
 #include <QNativeIpcKey>
@@ -47,7 +47,7 @@
 // Constructor.
 qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 	: QApplication(argc, argv), m_widget(nullptr)
-#ifdef CONFIG_SYSTEM_TRAY
+#ifdef CONFIG_XUNIQUE
 	, m_memory(nullptr), m_server(nullptr)
 #endif
 	, m_patchbay_activated(-1)
@@ -67,7 +67,7 @@ qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 // Destructor.
 qpwgraph_application::~qpwgraph_application (void)
 {
-#ifdef CONFIG_SYSTEM_TRAY
+#ifdef CONFIG_XUNIQUE
 	clearServer();
 #endif
 }
@@ -164,7 +164,7 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 }
 
 
-#ifdef CONFIG_SYSTEM_TRAY
+#ifdef CONFIG_XUNIQUE
 
 // Check if another instance is running,
 // and raise its proper main widget...
@@ -291,7 +291,7 @@ void qpwgraph_application::readyReadSlot (void)
 	}
 }
 
-#endif	// CONFIG_SYSTEM_TRAY
+#endif	// CONFIG_XUNIQUE
 
 
 //----------------------------------------------------------------------------
@@ -309,7 +309,7 @@ int main ( int argc, char *argv[] )
 		return 1;
 	}
 
-#ifdef CONFIG_SYSTEM_TRAY
+#ifdef CONFIG_XUNIQUE
 	// Have another instance running?
 	if (!app.setupServer()) {
 		app.quit();
