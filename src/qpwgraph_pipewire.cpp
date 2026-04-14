@@ -571,6 +571,19 @@ const struct pw_registry_events qpwgraph_registry_events = {
 
 // core-events...
 static
+void qpwgraph_core_event_info ( void *data, const struct pw_core_info *info )
+{
+	qpwgraph_pipewire *pw = static_cast<qpwgraph_pipewire *> (data);
+	qpwgraph_pipewire::Data *pd = pw->data();
+#ifdef CONFIG_DEBUG
+	qDebug("qpwgraph_core_event_info[%p]: name:%s", pd, info->name);
+#endif
+
+	pw->setRemoteName(info->name);
+	pw->changedNotify();
+}
+
+static
 void qpwgraph_core_event_done ( void *data, uint32_t id, int seq )
 {
 	qpwgraph_pipewire *pw = static_cast<qpwgraph_pipewire *> (data);
@@ -614,7 +627,7 @@ void qpwgraph_core_event_error (
 static
 const struct pw_core_events qpwgraph_core_events = {
 	.version = PW_VERSION_CORE_EVENTS,
-	.info = nullptr,
+	.info = qpwgraph_core_event_info,
 	.done = qpwgraph_core_event_done,
 	.error = qpwgraph_core_event_error,
 };
@@ -1417,11 +1430,7 @@ qpwgraph_node *qpwgraph_pipewire::findNode (
 // Remote name accessors.
 void qpwgraph_pipewire::setRemoteName ( const QString& remote_name )
 {
-	if (remote_name != m_remote_name) {
-		close();
-		m_remote_name = remote_name;
-		open();
-	}
+	m_remote_name = remote_name;
 }
 
 

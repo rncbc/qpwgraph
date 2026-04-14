@@ -133,7 +133,7 @@ signals:
 
 	void changed();
 
-protected slots:
+public slots:
 
 	void reset();
 

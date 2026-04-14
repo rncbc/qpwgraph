@@ -578,6 +578,7 @@ void qpwgraph_main::apply_args ( qpwgraph_application *app )
 		const QString& remote_name = app->remoteName();
 		if (remote_name != m_pipewire->remoteName()) {
 			m_pipewire->setRemoteName(remote_name);
+			m_pipewire->reset();
 		}
 	}
 
