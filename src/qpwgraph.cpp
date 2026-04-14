@@ -53,6 +53,7 @@ qpwgraph_application::qpwgraph_application ( int& argc, char **argv )
 	, m_patchbay_activated(-1)
 	, m_patchbay_exclusive(-1)
 	, m_start_minimized(false)
+	, m_remote_name("pipewire-0")
 {
 	QApplication::setApplicationName(PROJECT_NAME);
 	QApplication::setApplicationDisplayName(PROJECT_DESCRIPTION);
