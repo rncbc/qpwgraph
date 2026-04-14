@@ -49,6 +49,7 @@
 
 #include <QHBoxLayout>
 #include <QToolButton>
+#include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
 #include <QComboBox>
@@ -155,6 +156,19 @@ qpwgraph_main::qpwgraph_main (
 	m_ui.graphToolbar->insertAction(before, undo_action);
 	m_ui.graphToolbar->insertAction(before, redo_action);
 	m_ui.graphToolbar->insertSeparator(before);
+
+	// Status-bar labels...
+	m_remote_label = new QLabel();
+	m_remote_label->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+	m_remote_label->setFixedHeight(22);
+	m_remote_label->setMinimumWidth(66);
+	m_ui.StatusBar->addPermanentWidget(m_remote_label);
+
+	m_status_label = new QLabel();
+	m_status_label->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+	m_status_label->setFixedHeight(22);
+	m_status_label->setMinimumWidth(33);
+	m_ui.StatusBar->addPermanentWidget(m_status_label);
 
 	// Special zoom composite widget...
 	QWidget *zoom_widget = new QWidget();
@@ -1453,6 +1467,16 @@ void qpwgraph_main::stabilize (void)
 #ifdef CONFIG_ALSA_MIDI
 	m_ui.viewColorsAlsaMidiAction->setEnabled(m_alsamidi != nullptr);
 #endif
+
+	if (m_pipewire)
+		m_remote_label->setText(m_pipewire->remoteName());
+	else
+		m_remote_label->clear();
+
+	if (is_dirty)
+		m_status_label->setText(tr("MOD"));
+	else
+		m_status_label->clear();
 }
 
 

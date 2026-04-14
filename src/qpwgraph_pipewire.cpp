@@ -1417,11 +1417,11 @@ qpwgraph_node *qpwgraph_pipewire::findNode (
 // Remote name accessors.
 void qpwgraph_pipewire::setRemoteName ( const QString& remote_name )
 {
-	close();
-
-	m_remote_name = remote_name;
-
-	open();
+	if (remote_name != m_remote_name) {
+		close();
+		m_remote_name = remote_name;
+		open();
+	}
 }
 
 

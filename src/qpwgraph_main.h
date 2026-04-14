@@ -43,6 +43,7 @@ class qpwgraph_thumb;
 class QResizeEvent;
 class QCloseEvent;
 
+class QLabel;
 class QSlider;
 class QSpinBox;
 class QComboBox;
@@ -240,6 +241,9 @@ private:
 	int m_ins, m_mids, m_outs;
 
 	int m_repel_overlapping_nodes;
+
+	QLabel *m_status_label;
+	QLabel *m_remote_label;
 
 	QSlider  *m_zoom_slider;
 	QSpinBox *m_zoom_spinbox;

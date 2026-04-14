@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Added remote daemon name and modified state labels to the main
+  status-bar.
+
 - Added command line option to connect on a remote PipeWire
   daemon context, by name (-r, --remote); nb. PIPEWIRE_REMOTE
   environment variable takes precedence though. (EXPERIMENTAL)
