@@ -87,6 +87,7 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 	const QString s_nonexclusive = "non" + s_exclusive;
 	const QString s_minimized    = "minimized";
 	const QString s_remote_name  = "remote";
+	const QString s_help         = "help";
 
 	parser.addOption({{"a", s_activated},
 		QObject::tr("Activated patchbay.")});
@@ -101,7 +102,8 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 	parser.addOption({{"r", s_remote_name},
 		QObject::tr("Remote daemon name."),
 		QObject::tr("name")});
-	const QCommandLineOption& helpOption = parser.addHelpOption();
+	parser.addOption({{"h", s_help},
+		QObject::tr("Displays help on command-line options.")});
 	const QCommandLineOption& versionOption = parser.addVersionOption();
 	parser.addPositionalArgument("patchbay-file",
 		QObject::tr("Patchbay file (.%1)")
@@ -115,7 +117,7 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 		return false;
 	}
 
-	if (parser.isSet(helpOption)) {
+	if (parser.isSet(s_help)) {
 		out << parser.helpText() << '\n';
 		return false;
 	}
