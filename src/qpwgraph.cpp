@@ -102,7 +102,7 @@ bool qpwgraph_application::parse_args ( const QStringList& args )
 	parser.addOption({{"r", s_remote_name},
 		QObject::tr("Remote daemon name."),
 		QObject::tr("name")});
-	parser.addOption({{"h", s_help},
+	parser.addOption({{"?", s_help},
 		QObject::tr("Displays help on command-line options.")});
 	const QCommandLineOption& versionOption = parser.addVersionOption();
 	parser.addPositionalArgument("patchbay-file",
