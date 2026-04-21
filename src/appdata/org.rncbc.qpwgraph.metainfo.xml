@@ -37,6 +37,7 @@
  </developer>
  <update_contact>rncbc@rncbc.org</update_contact>
  <releases>
+  <release version="1.0.1" date="2026-04-21" urgency="low" />
   <release version="1.0.0" date="2026-03-17" urgency="low" />
  </releases>
  <content_rating type="oars-1.0"/>
