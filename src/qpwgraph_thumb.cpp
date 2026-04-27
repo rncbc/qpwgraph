@@ -1,7 +1,7 @@
 // qpwgraph_thumb.cpp
 //
 /****************************************************************************
-   Copyright (C) 2018-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2018-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -59,6 +59,7 @@ public:
 		pal.setColor(role, color.darker(120));
 		QGraphicsView::setPalette(pal);
 		QGraphicsView::setBackgroundRole(role);
+		QGraphicsView::setAutoFillBackground(true);
 
 		QGraphicsView::setScene(canvas->scene());
 	}
