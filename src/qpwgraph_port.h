@@ -1,7 +1,7 @@
 // qpwgraph_port.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,6 +78,10 @@ public:
 
 	void setPortIndex(int index);
 	int portIndex() const;
+
+	void setPortLabelEx(bool label_ex);
+	bool isPortLabelEx() const;
+	QString portNameLabelEx() const;
 
 	QPointF portPos() const;
 
@@ -183,6 +187,8 @@ private:
 
 	int m_selectx;
 	int m_hilitex;
+
+	bool m_label_ex;
 
 	static SortType  g_sort_type;
 	static SortOrder g_sort_order;

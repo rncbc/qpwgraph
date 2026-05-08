@@ -1,7 +1,7 @@
 // qpwgraph_node.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,7 +43,7 @@ qpwgraph_node::qpwgraph_node (
 	uint id, const QString& name, qpwgraph_item::Mode mode, uint type )
 	: qpwgraph_item(nullptr),
 		m_id(id), m_name(name), m_mode(mode), m_type(type),
-		m_num(0), m_name_ex(false)
+		m_num(0), m_name_ex(false), m_label_ex(false)
 {
 	QGraphicsPathItem::setZValue(0.0);
 
@@ -110,7 +110,7 @@ void qpwgraph_node::setNodeName ( const QString& name )
 {
 	m_name = name;
 
-	QGraphicsPathItem::setToolTip(nodeNameLabel());
+	QGraphicsPathItem::setToolTip(nodeNameLabelEx());
 }
 
 
@@ -211,8 +211,6 @@ QString qpwgraph_node::nodeNameLabel (void) const
 void qpwgraph_node::setNodeTitle ( const QString& title )
 {
 	const QString& name_label = nodeNameLabel();
-	QGraphicsPathItem::setToolTip(name_label);
-
 	const QFont& font = m_text->font();
 	m_text->setFont(QFont(font.family(), font.pointSize(), QFont::Bold));
 	m_title = (title.isEmpty() ? name_label : title);
@@ -225,6 +223,8 @@ void qpwgraph_node::setNodeTitle ( const QString& title )
 		text = text.left(MAX_TITLE_LENGTH).trimmed() + ellipsis;
 
 	m_text->setPlainText(text);
+
+	QGraphicsPathItem::setToolTip(nodeNameLabelEx());
 }
 
 
@@ -251,7 +251,6 @@ void qpwgraph_node::setNodeNameEx ( bool name_ex )
 	m_name_ex = name_ex;
 }
 
-
 bool qpwgraph_node::isNodeNameEx (void) const
 {
 	return m_name_ex;
@@ -261,6 +260,33 @@ bool qpwgraph_node::isNodeNameEx (void) const
 QString qpwgraph_node::nodeNameEx (void) const
 {
 	return (m_name_ex ? m_name : nodeName());
+}
+
+
+void qpwgraph_node::setNodeLabelEx ( bool label_ex )
+{
+	m_label_ex = label_ex;
+
+	setNodeTitle(QString()); // reset title.
+}
+
+
+bool qpwgraph_node::isNodeLabelEx (void) const
+{
+	return m_label_ex;
+}
+
+
+QString qpwgraph_node::nodeNameLabelEx (void) const
+{
+	QString name_label;
+
+	if (m_label_ex) {
+		name_label += QString::number(nodeId());
+		name_label += ':';
+	}
+
+	return name_label + nodeNameLabel();
 }
 
 

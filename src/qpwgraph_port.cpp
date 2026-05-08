@@ -1,7 +1,7 @@
 // qpwgraph_port.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -44,7 +44,8 @@ qpwgraph_port::qpwgraph_port ( qpwgraph_node *node, uint id,
 	: qpwgraph_item(node), m_node(node), m_id(id),
 		m_name(name), m_mode(mode), m_type(type),
 		m_index(node->ports().count()),
-		m_selectx(0), m_hilitex(0)
+		m_selectx(0), m_hilitex(0),
+		m_label_ex(false)
 {
 	QGraphicsPathItem::setZValue(+1.0);
 
@@ -91,7 +92,7 @@ void qpwgraph_port::setPortName ( const QString& name )
 {
 	m_name = name;
 
-	QGraphicsPathItem::setToolTip(portNameLabel());
+	QGraphicsPathItem::setToolTip(portNameLabelEx());
 }
 
 
@@ -169,7 +170,6 @@ QString qpwgraph_port::portNameLabel (void) const
 void qpwgraph_port::setPortTitle ( const QString& title )
 {
 	const QString& name_label = portNameLabel();
-	QGraphicsPathItem::setToolTip(name_label);
 
 	m_title = (title.isEmpty() ? name_label : title);
 
@@ -194,6 +194,8 @@ void qpwgraph_port::setPortTitle ( const QString& title )
 		= m_text->boundingRect().adjusted(0, +2, 0, -2);
 	path.addRoundedRect(rect, 5, 5);
 	/*QGraphicsPathItem::*/setPath(path);
+
+	QGraphicsPathItem::setToolTip(portNameLabelEx());
 }
 
 
@@ -212,6 +214,33 @@ void qpwgraph_port::setPortIndex ( int index )
 int qpwgraph_port::portIndex (void) const
 {
 	return m_index;
+}
+
+
+void qpwgraph_port::setPortLabelEx ( bool label_ex )
+{
+	m_label_ex = label_ex;
+
+	setPortTitle(QString()); // reset title.
+}
+
+
+bool qpwgraph_port::isPortLabelEx (void) const
+{
+	return m_label_ex;
+}
+
+
+QString qpwgraph_port::portNameLabelEx (void) const
+{
+	QString name_label;
+
+	if (m_label_ex) {
+		name_label += QString::number(portId());
+		name_label += ':';
+	}
+
+	return name_label + portNameLabel();
 }
 
 

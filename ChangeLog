@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- PipeWire node and port IDs are now shown on hovering tooltips.
+
 - Make sure thumb-view widget background is filled/opaque (ie.
   not transparent)
 

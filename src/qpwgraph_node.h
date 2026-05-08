@@ -1,7 +1,7 @@
 // qpwgraph_node.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -82,6 +82,10 @@ public:
 	bool isNodeNameEx() const;
 	QString nodeNameEx() const;
 
+	void setNodeLabelEx(bool label_ex);
+	bool isNodeLabelEx() const;
+	QString nodeNameLabelEx() const;
+
 	// Port-list methods.
 	qpwgraph_port *addPort(uint id, const QString& name, Mode mode, int type = 0);
 
@@ -156,6 +160,7 @@ private:
 	QString m_prefix;
 
 	bool m_name_ex;
+	bool m_label_ex;
 
 	QGraphicsPixmapItem *m_pixmap;
 	QGraphicsTextItem   *m_text;

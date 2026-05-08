@@ -1029,6 +1029,7 @@ bool qpwgraph_pipewire::findNodePort (
 			(*node)->setNodeLabel(n->media_name);
 			(*node)->setNodePrefix(n->node_nick);
 			(*node)->setNodeNameEx(canvas->isMergerNodes(node_name));
+			(*node)->setNodeLabelEx(true);
 			n->node_changed = false;
 			qpwgraph_sect::addItem(*node);
 		}
@@ -1037,6 +1038,7 @@ bool qpwgraph_pipewire::findNodePort (
 	if (add_new && *port == nullptr && *node) {
 		*port = (*node)->addPort(port_id, p->port_name, port_mode, port_type);
 		(*port)->updatePortTypeColors(canvas);
+		(*port)->setPortLabelEx(true);
 		qpwgraph_sect::addItem(*port);
 	}
 
