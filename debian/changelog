@@ -1,3 +1,9 @@
+qpwgraph (1.0.2-3.1) unstable; urgency=low
+
+  * A mid-spring'26 release.
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Sat, 23 May 2026 18:00:00 +0100
+
 qpwgraph (1.0.1-2.1) unstable; urgency=low
 
   * A spring'26 release.
