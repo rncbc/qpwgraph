@@ -1653,6 +1653,9 @@ bool qpwgraph_main::patchbayQueryQuit (void)
 			cbox.setChecked(false);
 			cbox.blockSignals(true);
 			mbox.addButton(&cbox, QMessageBox::ActionRole);
+		#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+			mbox.setOptions(QMessageBox::Option::DontUseNativeDialog);
+		#endif
 			ret = (mbox.exec() == QMessageBox::Ok);
 			if (ret && cbox.isChecked()) {
 				m_config->setPatchbayQueryQuit(false);
@@ -1756,6 +1759,9 @@ void qpwgraph_main::closeEvent ( QCloseEvent *event )
 			cbox.setChecked(false);
 			cbox.blockSignals(true);
 			mbox.addButton(&cbox, QMessageBox::ActionRole);
+		#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+			mbox.setOptions(QMessageBox::Option::DontUseNativeDialog);
+		#endif
 			m_systray_closed = (mbox.exec() == QMessageBox::Ok);
 			if (cbox.isChecked()) {
 				m_config->setSystemTrayQueryClose(false);

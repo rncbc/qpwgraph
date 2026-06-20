@@ -4,6 +4,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed crash when selecting the "Don't ask this again" option
+  on some message-box prompts. (EXPERIMENTAL)
+
+
 1.0.2  2026-05-23 A Mid-Spring'26 Release.
 
 - PipeWire node and port IDs are now shown on hovering tooltips.
