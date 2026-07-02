@@ -78,6 +78,7 @@ You can link ports by left click and dragging from one port to another. You can 
 | Ctrl + M         | Toggle menu bar visibility |
 | Ctrl + Q         | Quit                       |
 | F5               | Refresh (usually not needed, as the canvas is updated automatically) |
+| Ctrl + R         | Arrange selected nodes using topological sort                   |
 
 ## Configuration file
 

@@ -1238,7 +1238,7 @@
     <string>Use topological sort to arrange selected nodes following signal path from left to right.</string>
    </property>
    <property name="shortcut">
-    <string/>
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="helpAboutAction">
