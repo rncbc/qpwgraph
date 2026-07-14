@@ -4,16 +4,16 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
-GIT HEAD
+1.0.3  2026-07-14  A Summer'26 Release.
 
 - Fixed crash when selecting the "Don't ask this again" option
-  on some message-box prompts. (EXPERIMENTAL)
+  on some message-box prompts.
+- Added Ctrl+R keyboard shortcut for View/Arrange Nodes.
 
 
-1.0.2  2026-05-23 A Mid-Spring'26 Release.
+1.0.2  2026-05-23  A Mid-Spring'26 Release.
 
 - PipeWire node and port IDs are now shown on hovering tooltips.
-
 - Make sure thumb-view widget background is filled/opaque (ie.
   not transparent)
 
@@ -22,15 +22,12 @@ GIT HEAD
 
 - Added remote daemon name and modified state labels to the main
   status-bar.
-
 - Added command line option to connect on a remote PipeWire
   daemon context, by name (-r, --remote); nb. PIPEWIRE_REMOTE
   environment variable takes precedence though.
-
 - Separate the singleton/unique application instance setup logic
   from system-tray icon build option; add PipeWire remote-name,
   if any, to singleton/unique application instance identifier.
-
 - Settling on all boards to next development cycle (Qt >= 6.11)
 
 
@@ -59,7 +56,6 @@ GIT HEAD
 
 - Allow the complete node name to get the same treatment in the
   Graph/Options.../Filter as same for Merger.
-
 - Get rid of CONFIG_WAYLAND build config option; add underlying
   platform name (eg. xcb, wayland) to Qt version string.
 
@@ -68,7 +64,6 @@ GIT HEAD
 
 - Make all node-names in merger list (Graph/Options.../Merger)
   implicitly exclusive for Patchbay persistence.
-
 - Cope with in-flight node/port count changing.
 
 
@@ -94,7 +89,6 @@ GIT HEAD
 - Save node positions as soon as they are taken or moved around,
   avoiding accidental re-positioning to the previous or original
   state.
-
 - Regression to the late uniform and generic patchbay node-names
   which was a terrible mistake: while it sort of fixed some issues
   regarding multimedia players, it sent all other cases bonkers.
