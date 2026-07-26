@@ -1,7 +1,7 @@
 // qpwgraph_connect.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -72,7 +72,7 @@ public:
 
 	// Dim/transparency option.
 	void setDimmed(bool dimmed);
-	int isDimmed() const;
+	bool isDimmed() const;
 
 	// Connector curve draw style (through vs. around nodes)
 	static void setConnectThroughNodes(bool on);

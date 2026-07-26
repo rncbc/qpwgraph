@@ -1,7 +1,7 @@
 // qpwgraph_connect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -313,7 +313,7 @@ void qpwgraph_connect::setDimmed ( bool dimmed )
 	update();
 }
 
-int qpwgraph_connect::isDimmed (void) const
+bool qpwgraph_connect::isDimmed (void) const
 {
 	return m_dimmed;
 }
