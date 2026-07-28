@@ -40,6 +40,7 @@ class qpwgraph_connect;
 class qpwgraph_systray;
 class qpwgraph_thumb;
 
+class QEvent;
 class QResizeEvent;
 class QCloseEvent;
 
@@ -160,6 +161,8 @@ protected slots:
 	void viewRepelOverlappingNodes(bool on);
 	void viewConnectThroughNodes(bool on);
 
+	void viewFullscreen(bool on);
+
 	// Help menu slots.
 	void helpAbout();
 	void helpAboutQt();
@@ -206,6 +209,7 @@ protected:
 	void resizeEvent(QResizeEvent *event);
 
 	// Widget event handlers.
+	void changeEvent(QEvent *event);
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
 	void closeEvent(QCloseEvent *event);

@@ -193,6 +193,8 @@
     <addaction name="viewArrangeNodesAction"/>
     <addaction name="separator"/>
     <addaction name="viewRefreshAction"/>
+    <addaction name="separator"/>
+    <addaction name="viewFullscreenAction"/>
    </widget>
    <widget class="QMenu" name="helpMenu">
     <property name="title">
@@ -1222,6 +1224,26 @@
    </property>
    <property name="shortcut">
     <string/>
+   </property>
+  </action>
+  <action name="viewFullscreenAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Fullscreen</string>
+   </property>
+   <property name="iconText">
+    <string>Fullscreen</string>
+   </property>
+   <property name="toolTip">
+    <string>Fullscreen</string>
+   </property>
+   <property name="statusTip">
+    <string>Toggle fullscreen mode</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
    </property>
   </action>
   <action name="viewArrangeNodesAction">

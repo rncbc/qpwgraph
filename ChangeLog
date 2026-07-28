@@ -4,6 +4,11 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Added View/Fullscreen toggle action (F11 shortcut).
+
+
 1.0.3  2026-07-14  A Summer'26 Release.
 
 - Fixed crash when selecting the "Don't ask this again" option

@@ -58,6 +58,7 @@
 
 #include <QActionGroup>
 
+#include <QEvent>
 #include <QResizeEvent>
 #include <QCloseEvent>
 
@@ -253,6 +254,7 @@ qpwgraph_main::qpwgraph_main (
 	// Some actions surely need those
 	// shortcuts firmly attached...
 	addAction(m_ui.viewMenubarAction);
+	addAction(m_ui.viewFullscreenAction);
 	addAction(m_ui.editSearchItemAction);
 
 	// HACK: Make old Ins/Del standard shortcuts
@@ -420,6 +422,10 @@ qpwgraph_main::qpwgraph_main (
 	QObject::connect(m_ui.viewConnectThroughNodesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewConnectThroughNodes(bool)));
+
+	QObject::connect(m_ui.viewFullscreenAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewFullscreen(bool)));
 
 	QObject::connect(m_ui.viewArrangeNodesAction,
 		SIGNAL(triggered(bool)),
@@ -1078,6 +1084,15 @@ void qpwgraph_main::viewConnectThroughNodes ( bool on )
 }
 
 
+void qpwgraph_main::viewFullscreen ( bool on )
+{
+	if (on)
+		showFullScreen();
+	else
+		showNormal();
+}
+
+
 // Help menu slots.
 void qpwgraph_main::helpAbout (void)
 {
@@ -1709,6 +1724,17 @@ void qpwgraph_main::resizeEvent ( QResizeEvent *event )
 
 
 // Widget event handlers.
+void qpwgraph_main::changeEvent ( QEvent *event )
+{
+	QMainWindow::changeEvent(event);
+
+	if (event->type() == QEvent::WindowStateChange) {
+		const bool is_fullscreen = isFullScreen();
+		m_ui.viewFullscreenAction->setChecked(is_fullscreen);
+	}
+}
+
+
 void qpwgraph_main::showEvent ( QShowEvent *event )
 {
 	++m_thumb_update;
