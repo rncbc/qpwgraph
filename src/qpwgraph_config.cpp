@@ -117,7 +117,6 @@ qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 		m_filter_dirty(false),
 		m_merger_enabled(false),
 		m_merger_dirty(false),
-		m_filter_dirty(false),
 		m_color_dirty(false),
 		m_style_dirty(false),
 		m_start_minimized(false)
