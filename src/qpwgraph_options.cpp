@@ -1,7 +1,7 @@
 // qpwgraph_options.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@
 
 #include "qpwgraph_main.h"
 #include "qpwgraph_config.h"
+#include "qpwgraph_palette.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -34,6 +35,12 @@
 #ifdef CONFIG_SYSTEM_TRAY
 #include <QSystemTrayIcon>
 #endif
+
+#include <QStyleFactory>
+
+
+// Default (empty/blank) name.
+static const char *DefaultName  = "(default)";
 
 
 //----------------------------------------------------------------------------
@@ -71,6 +78,8 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 		m_ui.AlsaMidiEnabledCheckBox->setChecked(
 			config->isAlsaMidiEnabled());
 	#endif
+		resetCustomColorThemes(config->customColorTheme());
+		resetCustomStyleThemes(config->customStyleTheme());
 	}
 
 #ifdef CONFIG_SYSTEM_TRAY
@@ -179,6 +188,16 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 		SIGNAL(clicked()),
 		SLOT(clearMergerNodes()));
 
+	QObject::connect(m_ui.CustomColorThemeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.CustomColorThemeToolButton,
+		SIGNAL(clicked()),
+		SLOT(editCustomColorThemes()));
+	QObject::connect(m_ui.CustomStyleThemeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -276,7 +295,39 @@ void qpwgraph_options::accept (void)
 			m_dirty_merger = 0;
 		}
 		config->saveComboBoxHistory(m_ui.MergerNodesNameComboBox);
-		parent->updateOptions();
+		// Custom themeing...
+		int nrestart = 0;
+		const QString& old_style_theme
+			= config->customStyleTheme();
+		QString style_theme;
+		if (m_ui.CustomStyleThemeComboBox->currentIndex() > 0)
+			style_theme = m_ui.CustomStyleThemeComboBox->currentText();
+		if (style_theme != old_style_theme) {
+			if (style_theme.isEmpty())
+				++nrestart;
+			config->setCustomStyleTheme(style_theme);
+			config->setCustomStyleDirty(true);
+		}
+		const QString& old_color_theme
+			= config->customColorTheme();
+		QString color_theme;
+		if (m_ui.CustomColorThemeComboBox->currentIndex() > 0)
+			color_theme = m_ui.CustomColorThemeComboBox->currentText();
+		if (color_theme != old_color_theme) {
+			if (color_theme.isEmpty())
+				++nrestart;
+			config->setCustomColorTheme(color_theme);
+			config->setCustomColorDirty(true);
+		}
+		// Show restart message if needed...
+		if (nrestart > 0) {
+			QMessageBox::information(this,
+				tr("Information"),
+				tr("Some settings may be only effective\n"
+				"next time you start this application."));
+		}
+		// Realize options...
+		parent->updateOptions(true);
 	}
 
 	QDialog::accept();
@@ -419,6 +470,80 @@ void qpwgraph_options::clearMergerNodes (void)
 	m_ui.MergerNodesListWidget->clear();
 
 	changedMergerNodes();
+}
+
+
+// Custom color palette theme manager.
+void qpwgraph_options::editCustomColorThemes (void)
+{
+	qpwgraph_config *config = nullptr;
+	qpwgraph_main *parent = qobject_cast<qpwgraph_main *> (parentWidget());
+	if (parent)
+		config = parent->config();
+	if (config == nullptr)
+		return;
+
+	qpwgraph_palette form(this);
+	form.setSettings(config->settings());
+
+	QString color_theme;
+	int color_dirty = 0;
+
+	const int color_index
+		= m_ui.CustomColorThemeComboBox->currentIndex();
+	if (color_index > 0) {
+		color_theme = m_ui.CustomColorThemeComboBox->itemText(color_index);
+		form.setPaletteName(color_theme);
+	}
+
+	if (form.exec() == QDialog::Accepted) {
+		color_theme = form.paletteName();
+		++color_dirty;
+	}
+
+	if (color_dirty > 0 || form.isDirty()) {
+		resetCustomColorThemes(color_theme);
+		changed();
+	}
+}
+
+
+// Custom color palette themes settler.
+void qpwgraph_options::resetCustomColorThemes ( const QString& color_theme )
+{
+	m_ui.CustomColorThemeComboBox->clear();
+	m_ui.CustomColorThemeComboBox->addItem(tr(DefaultName));
+	qpwgraph_config *config = nullptr;
+	qpwgraph_main *parent = qobject_cast<qpwgraph_main *> (parentWidget());
+	if (parent)
+		config = parent->config();
+	if (config) m_ui.CustomColorThemeComboBox->addItems(
+		qpwgraph_palette::namedPaletteList(config->settings()));
+
+	int color_index = 0;
+	if (!color_theme.isEmpty()) {
+		color_index = m_ui.CustomColorThemeComboBox->findText(color_theme);
+		if (color_index < 0)
+			color_index = 0;
+	}
+	m_ui.CustomColorThemeComboBox->setCurrentIndex(color_index);
+}
+
+
+// Custom widget style themes settler.
+void qpwgraph_options::resetCustomStyleThemes ( const QString& style_theme )
+{
+	m_ui.CustomStyleThemeComboBox->clear();
+	m_ui.CustomStyleThemeComboBox->addItem(tr(DefaultName));
+	m_ui.CustomStyleThemeComboBox->addItems(QStyleFactory::keys());
+
+	int style_index = 0;
+	if (!style_theme.isEmpty()) {
+		style_index = m_ui.CustomStyleThemeComboBox->findText(style_theme);
+		if (style_index < 0)
+			style_index = 0;
+	}
+	m_ui.CustomStyleThemeComboBox->setCurrentIndex(style_index);
 }
 
 

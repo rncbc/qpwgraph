@@ -1,7 +1,7 @@
 // qpwgraph_options.h
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -64,7 +64,16 @@ protected slots:
 	void clearMergerNodes();
 	void changedMergerNodes();
 
+	// Custom slots.
+	void editCustomColorThemes();
+
 	void stabilize();
+
+protected:
+
+	// Custom color/style themes settlers.
+	void resetCustomColorThemes(const QString& color_theme);
+	void resetCustomStyleThemes(const QString& color_theme);
 
 private:
 

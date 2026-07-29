@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Graph/Options.../Custom/Color theme (with palette editor) and
+  (widget) Style theme selectors are introduced. (EXPERIMENTAL)
 - Added View/Fullscreen toggle action (F11 shortcut).
 
 

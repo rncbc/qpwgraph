@@ -32,6 +32,7 @@ set (HEADERS
   qpwgraph_thumb.h
   qpwgraph_main.h
   qpwgraph_options.h
+  qpwgraph_palette.h
 )
 
 set (SOURCES
@@ -53,11 +54,13 @@ set (SOURCES
   qpwgraph_thumb.cpp
   qpwgraph_main.cpp
   qpwgraph_options.cpp
+  qpwgraph_palette.cpp
 )
 
 set (FORMS
   qpwgraph_main.ui
   qpwgraph_options.ui
+  qpwgraph_palette.ui
 )
 
 set (RESOURCES

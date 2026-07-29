@@ -37,6 +37,7 @@
 #include <pipewire/pipewire.h>
 
 #include "qpwgraph_options.h"
+#include "qpwgraph_palette.h"
 
 #include <QTimer>
 #include <QMenu>
@@ -63,6 +64,8 @@
 #include <QCloseEvent>
 
 #include <QSessionManager>
+
+#include <QStyleFactory>
 
 #include <cmath>
 
@@ -629,7 +632,7 @@ void qpwgraph_main::apply_args ( qpwgraph_application *app )
 
 
 // Update configure options.
-void qpwgraph_main::updateOptions (void)
+void qpwgraph_main::updateOptions ( bool prompt )
 {
 #ifdef CONFIG_SYSTEM_TRAY
 	const bool systray_enabled
@@ -689,6 +692,37 @@ void qpwgraph_main::updateOptions (void)
 		m_config->setMergerNodesDirty(false);
 		++nrefresh;
 	}
+
+	if (m_config->isCustomStyleDirty() || !prompt) {
+		m_config->setCustomStyleDirty(false);
+		const QString& style_theme
+			= m_config->customStyleTheme();
+		if (!style_theme.isEmpty()) {
+			QApplication::setStyle(
+				QStyleFactory::create(style_theme));
+			if (prompt)
+				++nrefresh;
+		}
+	}
+ 
+	if (m_config->isCustomColorDirty() || !prompt) {
+		m_config->setCustomColorDirty(false);
+		const QString& color_theme
+			= m_config->customColorTheme();
+		if (!color_theme.isEmpty()) {
+			QPalette pal;
+			if (qpwgraph_palette::namedPalette(
+					m_config->settings(), color_theme, pal)) {
+				QApplication::setPalette(pal);
+				m_ui.graphCanvas->setPalette(pal);
+				viewThumbview(0); // force
+				if (prompt)
+					++nrefresh;
+			}
+		}
+	}
+
+	viewThumbview(m_config->thumbview());
 
 	if (nrefresh > 0)
 		viewRefresh();
@@ -1981,7 +2015,7 @@ void qpwgraph_main::restoreState (void)
 	viewPatchbayToolbar(m_config->isPatchbayToolbar());
 	viewStatusbar(m_config->isStatusbar());
 
-	viewThumbview(m_config->thumbview());
+//	viewThumbview(m_config->thumbview()); -- postponed to updateOptions()...
 
 	viewTextBesideIcons(m_config->isTextBesideIcons());
 	viewZoomRange(m_config->isZoomRange());

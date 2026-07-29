@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qpwgraph - A PipeWire Graph Qt GUI Interface
 
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -554,6 +554,117 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="CustomTabPage">
+      <attribute name="title">
+       <string>Custom</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="CustomColorThemeTextLabel">
+         <property name="text">
+          <string>&amp;Color theme:</string>
+         </property>
+         <property name="buddy">
+          <cstring>CustomColorThemeComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="CustomColorThemeComboBox">
+         <property name="toolTip">
+          <string>Custom color palette theme</string>
+         </property>
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string>(default)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QToolButton" name="CustomColorThemeToolButton">
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Manage custom color palette themes</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>8</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="CustomStyleThemeTextLabel">
+         <property name="text">
+          <string>&amp;Style theme:</string>
+         </property>
+         <property name="buddy">
+          <cstring>CustomStyleThemeComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="CustomStyleThemeComboBox">
+         <property name="toolTip">
+          <string>Custom widget style theme</string>
+         </property>
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string>(default)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="4">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>8</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
@@ -588,6 +699,9 @@
   <tabstop>MergerNodesListWidget</tabstop>
   <tabstop>MergerNodesRemoveToolButton</tabstop>
   <tabstop>MergerNodesClearToolButton</tabstop>
+  <tabstop>CustomColorThemeComboBox</tabstop>
+  <tabstop>CustomColorThemeToolButton</tabstop>
+  <tabstop>CustomStyleThemeComboBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

@@ -77,7 +77,7 @@ public:
 	void apply_args(qpwgraph_application *app);
 
 	// Update configure options.
-	void updateOptions();
+	void updateOptions(bool prompt = false);
 
 	// Current selected patchbay path accessor.
 	const QString& patchbayPath() const;

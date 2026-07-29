@@ -1,7 +1,7 @@
 // qpwgraph_config.cpp
 //
 /****************************************************************************
-   Copyright (C) 2021-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2021-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,6 +78,10 @@ static const char *MergerNodesGroup = "/MergerNodes";
 static const char *NodesEnabledKey = "/Enabled";
 static const char *NodesListKey = "/List";
 
+static const char *CustomGroup = "/Custom";
+static const char *CustomColorThemeKey = "/ColorTheme";
+static const char *CustomStyleThemeKey = "/StyleTheme";
+
 static const char *HistoryGroup = "/History";
 
 
@@ -109,11 +113,14 @@ qpwgraph_config::qpwgraph_config ( QSettings *settings, bool owner )
 		m_systray_queryclose(false),
 		m_systray_enabled(true),
 		m_alsaseq_enabled(true),
-		m_start_minimized(false),
 		m_filter_enabled(false),
 		m_filter_dirty(false),
 		m_merger_enabled(false),
-		m_merger_dirty(false)
+		m_merger_dirty(false),
+		m_filter_dirty(false),
+		m_color_dirty(false),
+		m_style_dirty(false),
+		m_start_minimized(false)
 {
 }
 
@@ -482,6 +489,50 @@ bool qpwgraph_config::isMergerNodesDirty (void) const
 }
 
 
+void qpwgraph_config::setCustomColorTheme ( const QString& color_theme )
+{
+	m_color_theme = color_theme;
+}
+
+const QString& qpwgraph_config::customColorTheme (void) const
+{
+	return m_color_theme;
+}
+
+
+void qpwgraph_config::setCustomColorDirty ( bool color_dirty )
+{
+	m_color_dirty = color_dirty;
+}
+
+bool qpwgraph_config::isCustomColorDirty (void) const
+{
+	return m_color_dirty;
+}
+
+
+void qpwgraph_config::setCustomStyleTheme ( const QString& style_theme )
+{
+	m_style_theme = style_theme;
+}
+
+const QString& qpwgraph_config::customStyleTheme (void) const
+{
+	return m_style_theme;
+}
+
+
+void qpwgraph_config::setCustomStyleDirty ( bool style_dirty )
+{
+	m_style_dirty = style_dirty;
+}
+
+bool qpwgraph_config::isCustomStyleDirty (void) const
+{
+	return m_style_dirty;
+}
+
+
 void qpwgraph_config::setSessionStartMinimized ( bool start_minimized )
 {
 	m_settings->beginGroup(SessionGroup);
@@ -546,9 +597,14 @@ bool qpwgraph_config::restoreState ( QMainWindow *widget )
 
 	QMutableStringListIterator iter(m_patchbay_recentfiles);
 	while (iter.hasNext()) {
-		if (!QFileInfo(iter.next()).exists())
+		if (!QFileInfo::exists(iter.next()))
 			iter.remove();
 	}
+
+	m_settings->beginGroup(CustomGroup);
+	m_color_theme = m_settings->value(CustomColorThemeKey).toString();
+	m_style_theme = m_settings->value(CustomStyleThemeKey).toString();
+	m_settings->endGroup();
 
 	m_settings->beginGroup(GraphViewGroup);
 	m_menubar = m_settings->value(ViewMenubarKey, true).toBool();
@@ -648,6 +704,11 @@ bool qpwgraph_config::saveState ( QMainWindow *widget ) const
 	m_settings->setValue(PatchbayAutoDisconnectKey, m_patchbay_autodisconnect);
 	m_settings->setValue(PatchbayRecentFilesKey, m_patchbay_recentfiles);
 	m_settings->setValue(PatchbayQueryQuitKey, m_patchbay_queryquit);
+	m_settings->endGroup();
+
+	m_settings->beginGroup(CustomGroup);
+	m_settings->setValue(CustomColorThemeKey, m_color_theme);
+	m_settings->setValue(CustomStyleThemeKey, m_style_theme);
 	m_settings->endGroup();
 
 	m_settings->beginGroup(GraphViewGroup);

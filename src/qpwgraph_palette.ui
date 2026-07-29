@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qpwgraph - JACK/ALSA Graph connection manager.
+
+  Copyright (C) 2018-2026, rncbc aka Rui Nuno Capela. All rights reserved.
+
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along
+  with this program; if not, write to the Free Software Foundation, Inc.,
+  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ </comment>
+ <class>qpwgraph_palette</class>
+ <widget class="QDialog" name="qpwgraph_palette">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>534</width>
+    <height>640</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Color Themes</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <item>
+    <widget class="QGroupBox" name="nameBox">
+     <property name="title">
+      <string>Name</string>
+     </property>
+     <layout class="QHBoxLayout">
+      <item>
+       <widget class="QComboBox" name="nameCombo">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>320</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Current color palette name</string>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <property name="insertPolicy">
+         <enum>QComboBox::NoInsert</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="saveButton">
+        <property name="toolTip">
+         <string>Save current color palette name</string>
+        </property>
+        <property name="text">
+         <string>Save</string>
+        </property>
+        <property name="icon">
+         <iconset resource="synthv1.qrc">:/images/presetSave.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="deleteButton">
+        <property name="toolTip">
+         <string>Delete current color palette name</string>
+        </property>
+        <property name="text">
+         <string>Delete</string>
+        </property>
+        <property name="icon">
+         <iconset resource="synthv1.qrc">:/images/presetDelete.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="paletteBox">
+     <property name="title">
+      <string>Palette</string>
+     </property>
+     <layout class="QGridLayout">
+      <item row="0" column="0" colspan="8">
+       <widget class="QTreeView" name="paletteView">
+        <property name="minimumSize">
+         <size>
+          <width>280</width>
+          <height>360</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Current color palette</string>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="generateLabel">
+        <property name="text">
+         <string>Generate:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="qpwgraph_palette::ColorButton" name="generateButton" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string>Base color to generate palette</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="resetButton">
+        <property name="toolTip">
+         <string>Reset all current palette colors</string>
+        </property>
+        <property name="text">
+         <string> Reset</string>
+        </property>
+        <property name="icon">
+         <iconset resource="synthv1.qrc">:/images/itemReset.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint">
+         <size>
+          <width>8</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="importButton">
+        <property name="toolTip">
+         <string>Import a custom color theme (palette) from file</string>
+        </property>
+        <property name="text">
+         <string>Import...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="synthv1.qrc">:/images/presetOpen.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QPushButton" name="exportButton">
+        <property name="toolTip">
+         <string>Export a custom color theme (palette) to file</string>
+        </property>
+        <property name="text">
+         <string>Export...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="synthv1.qrc">:/images/presetSave.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint">
+         <size>
+          <width>8</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="7">
+       <widget class="QCheckBox" name="detailsCheck">
+        <property name="text">
+         <string>Show Details</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="dialogButtons">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qpwgraph_palette::ColorButton</class>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>nameCombo</tabstop>
+  <tabstop>saveButton</tabstop>
+  <tabstop>deleteButton</tabstop>
+  <tabstop>paletteView</tabstop>
+  <tabstop>generateButton</tabstop>
+  <tabstop>resetButton</tabstop>
+  <tabstop>importButton</tabstop>
+  <tabstop>exportButton</tabstop>
+  <tabstop>detailsCheck</tabstop>
+  <tabstop>dialogButtons</tabstop>
+ </tabstops>
+ <resources>
+  <include location="synthv1.qrc"/>
+ </resources>
+ <connections/>
+</ui>
