@@ -160,6 +160,8 @@ qpwgraph_palette::qpwgraph_palette ( QWidget *parent, const QPalette& pal )
 qpwgraph_palette::~qpwgraph_palette (void)
 {
 	setSettings(nullptr);
+
+	delete p_ui;
 }
 
 
