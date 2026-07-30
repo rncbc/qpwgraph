@@ -59,6 +59,8 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 	m_dirty_filter = 0;
 	m_dirty_merger = 0;
 
+	m_style = nullptr;
+
 	// Setup current options...
 	qpwgraph_config *config = parent->config();
 	if (config) {
@@ -190,13 +192,13 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 
 	QObject::connect(m_ui.CustomColorThemeComboBox,
 		SIGNAL(activated(int)),
-		SLOT(changed()));
+		SLOT(customColorThemeChanged(int)));
 	QObject::connect(m_ui.CustomColorThemeToolButton,
 		SIGNAL(clicked()),
 		SLOT(editCustomColorThemes()));
 	QObject::connect(m_ui.CustomStyleThemeComboBox,
 		SIGNAL(activated(int)),
-		SLOT(changed()));
+		SLOT(customStyleThemeChanged(int)));
 
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
@@ -213,6 +215,8 @@ qpwgraph_options::qpwgraph_options ( qpwgraph_main *parent )
 // Destructor.
 qpwgraph_options::~qpwgraph_options (void)
 {
+	if (m_style)
+		delete m_style;
 }
 
 
@@ -505,6 +509,61 @@ void qpwgraph_options::editCustomColorThemes (void)
 		resetCustomColorThemes(color_theme);
 		changed();
 	}
+}
+
+
+void qpwgraph_options::customColorThemeChanged ( int color_index )
+{
+	qpwgraph_config *config = nullptr;
+	qpwgraph_main *parent = qobject_cast<qpwgraph_main *> (parentWidget());
+	if (parent)
+		config = parent->config();
+	if (config == nullptr)
+		return;
+
+	QString color_theme;
+	if (color_index > 0)
+		color_theme = m_ui.CustomColorThemeComboBox->currentText();
+	else
+		color_theme = config->customColorTheme();
+	if (!color_theme.isEmpty()) {
+		QPalette pal;
+		if (qpwgraph_palette::namedPalette(
+				config->settings(), color_theme, pal)) {
+			m_ui.CustomPreviewFrame->setPalette(pal);
+		}
+	}
+
+	changed();
+}
+
+
+void qpwgraph_options::customStyleThemeChanged ( int style_index )
+{
+	qpwgraph_config *config = nullptr;
+	qpwgraph_main *parent = qobject_cast<qpwgraph_main *> (parentWidget());
+	if (parent)
+		config = parent->config();
+	if (config == nullptr)
+		return;
+
+	QString style_theme;
+	if (style_index > 0)
+		style_theme = m_ui.CustomStyleThemeComboBox->currentText();
+	else
+		style_theme = config->customStyleTheme();
+	if (!style_theme.isEmpty()) {
+		if (m_style)
+			delete m_style;
+		m_style = QStyleFactory::create(style_theme);
+		m_ui.CustomPreviewWidget->setStyle(m_style);
+		const QList<QWidget *>& widgets
+			= m_ui.CustomPreviewWidget->findChildren<QWidget *>();
+		foreach (QWidget *widget, widgets)
+			widget->setStyle(m_style);
+	}
+
+	changed();
 }
 
 

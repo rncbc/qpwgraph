@@ -67,6 +67,9 @@ protected slots:
 	// Custom slots.
 	void editCustomColorThemes();
 
+	void customColorThemeChanged(int color_index);
+	void customStyleThemeChanged(int style_index);
+
 	void stabilize();
 
 protected:
@@ -83,6 +86,8 @@ private:
 	int m_dirty;
 	int m_dirty_filter;
 	int m_dirty_merger;
+
+	QStyle *m_style;
 };
 
 

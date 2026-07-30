@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
-    <height>120</height>
+    <width>480</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -648,20 +648,140 @@
         </widget>
        </item>
        <item row="2" column="0" colspan="4">
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+        <widget class="QFrame" name="CustomPreviewFrame">
+         <property name="toolTip">
+          <string>Custom theme preview</string>
          </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Expanding</enum>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
-         <property name="sizeHint">
-          <size>
-           <width>20</width>
-           <height>8</height>
-          </size>
+         <property name="frameShape">
+          <enum>QFrame::Shape::Panel</enum>
          </property>
-        </spacer>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Sunken</enum>
+         </property>
+         <layout class="QVBoxLayout">
+          <property name="spacing">
+           <number>8</number>
+          </property>
+          <property name="margin">
+           <number>8</number>
+          </property>
+          <item>
+           <widget class="QWidget" name="CustomPreviewWidget">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>240</width>
+              <height>120</height>
+             </size>
+            </property>
+            <layout class="QVBoxLayout">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QTabWidget" name="CustomPreviewTabWidget">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <widget class="QWidget" name="CustomPreviewTab1">
+                <attribute name="title">
+                 <string>Tab 1</string>
+                </attribute>
+                <layout class="QGridLayout">
+                 <property name="spacing">
+                  <number>4</number>
+                 </property>
+                 <property name="margin">
+                  <number>4</number>
+                 </property>
+                 <item row="1" column="0">
+                  <widget class="QPushButton" name="CustomPreviewPushButton">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>PushButton</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1" colspan="2">
+                  <widget class="QProgressBar" name="CustomPreviewProgressBar">
+                   <property name="value">
+                    <number>25</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLineEdit" name="CustomPreviewLineEdit">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1" colspan="2">
+                  <widget class="QSpinBox" name="CustomPreviewSpinBox">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="CustomPreviewTab2">
+                <attribute name="title">
+                 <string>Tab 2</string>
+                </attribute>
+                <layout class="QVBoxLayout">
+                 <property name="spacing">
+                  <number>4</number>
+                 </property>
+                 <property name="margin">
+                  <number>4</number>
+                 </property>
+                 <item>
+                  <widget class="QRadioButton" name="CustomPreviewRadioButton">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>RadioButton</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="CustomPreviewCheckBox">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>CheckBox</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
