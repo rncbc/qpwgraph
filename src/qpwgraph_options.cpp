@@ -507,7 +507,10 @@ void qpwgraph_options::editCustomColorThemes (void)
 
 	if (color_dirty > 0 || form.isDirty()) {
 		resetCustomColorThemes(color_theme);
-		changed();
+		if (!color_theme.isEmpty()) {
+			customColorThemeChanged(
+				m_ui.CustomColorThemeComboBox->findText(color_theme));
+		}
 	}
 }
 
