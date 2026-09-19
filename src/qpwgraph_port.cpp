@@ -273,10 +273,11 @@ void qpwgraph_port::removeConnect ( qpwgraph_connect *connect )
 void qpwgraph_port::removeConnects (void)
 {
 	foreach (qpwgraph_connect *connect, m_connects) {
-		if (connect->port1() != this)
-			connect->setPort1(nullptr);
-		if (connect->port2() != this)
-			connect->setPort2(nullptr);
+		// Clear both ends, not just the far one: a connection that
+		// keeps pointing at this port outlives it -- connections are
+		// owned elsewhere -- and the next disconnect() then calls
+		// removeConnect() on freed memory.
+		connect->disconnect();
 	}
 
 	// Do not delete connects here as they are owned elsewhere...
