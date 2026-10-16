@@ -281,7 +281,7 @@ protected slots:
 protected:
 
 	// Item finder (internal).
-	qpwgraph_item *itemAt(const QPointF& pos) const;
+	qpwgraph_item *itemAt(const QPointF& pos, bool nodes_only = false) const;
 
 	// Port (dis)connection commands.
 	void connectPorts(

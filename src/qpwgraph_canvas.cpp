@@ -658,14 +658,19 @@ void qpwgraph_canvas::emitChanged (void)
 
 
 // Item finder (internal).
-qpwgraph_item *qpwgraph_canvas::itemAt ( const QPointF& pos ) const
+qpwgraph_item *qpwgraph_canvas::itemAt ( const QPointF& pos, const bool nodes_only ) const
 {
 	const QList<QGraphicsItem *>& items
 		= m_scene->items(QRectF(pos - QPointF(2, 2), QSizeF(5, 5)));
 
 	foreach (QGraphicsItem *item, items) {
-		if (item->type() >= QGraphicsItem::UserType)
-			return static_cast<qpwgraph_item *> (item);
+		if (nodes_only) {
+			if (item->type() == qpwgraph_node::Type)
+				return static_cast<qpwgraph_item *> (item);
+		}
+		else
+			if (item->type() >= QGraphicsItem::UserType)
+				return static_cast<qpwgraph_item *> (item);
 	}
 
 	return nullptr;
@@ -704,7 +709,7 @@ void qpwgraph_canvas::mousePressEvent ( QMouseEvent *event )
 	m_pos = QGraphicsView::mapToScene(event->pos());
 
 	if (event->button() == Qt::LeftButton) {
-		m_item = itemAt(m_pos);
+		m_item = itemAt(m_pos, (event->modifiers() & Qt::AltModifier) != 0);
 		m_state = DragStart;
 	}
 
@@ -819,14 +824,17 @@ void qpwgraph_canvas::mouseMoveEvent ( QMouseEvent *event )
 					++nchanged;
 				}
 				const QRectF range_rect(m_pos, pos);
+				const bool nodes_only = (event->modifiers() & Qt::AltModifier);
 				foreach (QGraphicsItem *item,
 						m_scene->items(range_rect.normalized())) {
 					if (item->type() >= QGraphicsItem::UserType) {
+						if (nodes_only && item->type() != qpwgraph_node::Type)
+							continue;
 						if (item->type() != qpwgraph_node::Type)
 							++m_selected_nodes;
 						else
-						if (m_selected_nodes > 0)
-							continue;
+							if (m_selected_nodes > 0)
+								continue;
 						const bool is_selected = item->isSelected();
 						if (event->modifiers() & Qt::ControlModifier) {
 							m_selected.append(item);
