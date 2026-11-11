@@ -4,6 +4,12 @@ qpwgraph - A PipeWire Graph Qt GUI Interface
 ChangeLog
 
 
+GIT HEAD
+
+- Recover from a stale single-instance key instead of exiting 2. (#39)
+- Fix use-after-free when a port is removed. (#86)
+
+
 1.0.4  2026-08-26  A Mid-Summer'26 Release.
 
 - Graph/Options.../Custom/Color theme (with palette editor) and
