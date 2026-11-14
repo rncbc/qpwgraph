@@ -1184,7 +1184,15 @@ void qpwgraph_main::helpAbout (void)
 	text += "<br />\n";
 	text += "</p>\n";
 
-	QMessageBox::about(this, tr("About") + ' ' + title, text);
+	QMessageBox mbox(this);
+	mbox.setWindowTitle(tr("About") + ' ' + title);
+	mbox.setText(text);
+	mbox.setIcon(QMessageBox::Information);
+	mbox.setStandardButtons(QMessageBox::Ok);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+	mbox.setOptions(QMessageBox::Option::DontUseNativeDialog);
+#endif
+	mbox.exec();
 }
 
 
@@ -2094,4 +2102,3 @@ void qpwgraph_main::commitData ( QSessionManager& sm )
 
 
 // end of qpwgraph_main.cpp
-
